@@ -1,0 +1,13 @@
+# Frontend real-gate proof (replaced echo stubs):
+## npm run lint
+== JS syntax check (node --check) ==
+  [PASS] syntax public/js/auth.js
+  [PASS] syntax public/js/deadline.js
+  [PASS] syntax public/js/document_preview.js
+
+RESULT: PASS
+## npm run build
+== Asset reference resolution ==
+  [PASS] 58 local asset references all resolve
+
+RESULT: PASS

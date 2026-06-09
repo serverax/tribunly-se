@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lawapp-embedding-job-latest
+  namespace: lawapp-rag
+  labels:
+    app: lawapp-embedding
+    part-of: lawapp
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: embedding
+        image: ghcr.io/serverax/lawapp/backend:0fec3d8
+        imagePullPolicy: Always
+        command: ["python", "-m", "ingestion.embeddings.embedder"]
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          runAsNonRoot: true
+          runAsUser: 10001
+          runAsGroup: 10001
+        envFrom:
+        - configMapRef:
+            name: lawapp-config
+        - secretRef:
+            name: lawapp-secrets
+        resources:
+          requests:
+            cpu: 100m
+            memory: 2Gi
+          limits:
+            cpu: 500m
+            memory: 2Gi
+      restartPolicy: OnFailure
+      imagePullSecrets:
+      - name: ghcr-pull-secret

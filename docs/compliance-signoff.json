@@ -1,0 +1,33 @@
+{
+  "_comment": "Compliance sign-off state. Update when genuine review is completed. GUARDRAIL: reviewer_name AND review_date are REQUIRED when any sign-off flag is set true — a boolean alone is not sufficient evidence.",
+  "_phase": "6D — evidence structure formalised; awaiting DPO and legal review",
+  "_guidance": {
+    "dpia": "See docs/dpia-review-checklist.md for what the DPO must verify before signing.",
+    "privacy_notice": "See docs/privacy-review-checklist.md for what legal must verify before signing.",
+    "how_to_sign_off": "Set the relevant flag to true, AND fill in reviewer_name, review_date, review_scope, and evidence_reference. All four fields are required for sign-off to be accepted."
+  },
+
+  "dpia": {
+    "drafted": true,
+    "reviewed_by_dpo": false,
+    "approved": false,
+    "reviewer_name": null,
+    "review_date": null,
+    "approval_date": null,
+    "review_scope": null,
+    "evidence_reference": null,
+    "notes": "Artefact: docs/dpia-artefact.md. DPO review required before controlled beta. Complete docs/dpia-review-checklist.md, then set reviewed_by_dpo=true with reviewer_name, review_date, review_scope, and evidence_reference."
+  },
+
+  "privacy_notice": {
+    "drafted": true,
+    "legally_reviewed": false,
+    "published": false,
+    "reviewer_name": null,
+    "review_date": null,
+    "publish_date": null,
+    "review_scope": null,
+    "evidence_reference": null,
+    "notes": "Artefact: docs/privacy-notice-draft.md. Legal review required before controlled beta. Complete docs/privacy-review-checklist.md, then set legally_reviewed=true with reviewer_name, review_date, review_scope, and evidence_reference."
+  }
+}

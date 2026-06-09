@@ -1,0 +1,23 @@
+===== NAMESPACE: lawapp-ai =====
+--- pods ---
+NAME                                      READY   STATUS    RESTARTS   AGE     IP             NODE                    NOMINATED NODE   READINESS GATES
+lawapp-brain-5cd8d84655-qf7pr             1/1     Running   0          4m16s   10.244.4.241   talos-5h3-83r           <none>           <none>
+lawapp-document-service-b88c5f49b-k6cs2   1/1     Running   0          25h     10.244.0.55    talos-h93-b9x           <none>           <none>
+lawapp-llm-gateway-75fdbcbb64-hxrsk       1/1     Running   0          25h     10.244.5.44    talos-138-201-202-174   <none>           <none>
+lawapp-rules-engine-76554dc996-9pmng      1/1     Running   0          45m     10.244.4.240   talos-5h3-83r           <none>           <none>
+ollama-inference-6gj24                    1/1     Running   0          42h     10.244.5.55    talos-138-201-202-174   <none>           <none>
+ollama-inference-cm2s7                    1/1     Running   0          42h     10.244.0.170   talos-h93-b9x           <none>           <none>
+ollama-inference-d485m                    1/1     Running   0          42h     10.244.4.38    talos-5h3-83r           <none>           <none>
+--- describe deploy/sts (probes/images) ---
+  File "<string>", line 20
+    print(f"{k}/{n} c={c[\"name\"]} img={img} ports={ports} ready={pp(rp)} live={pp(lp)}")
+                          ^
+SyntaxError: unexpected character after line continuation character
+
+=== PROBE/IMAGE MAP ===
+lawapp-ai/Deployment/lawapp-brain c=brain img=ghcr.io/serverax/lawapp/backend:latest ports=[8000] ready=[GET /health:8000] live=[tcp:8000]
+lawapp-ai/Deployment/lawapp-document-service c=lawapp-document-service img=ghcr.io/serverax/lawapp-document-service:b13c59d01e73e861b35498cac2b37d566609c262 ports=[8080] ready=[GET /ready:8080] live=[GET /health:8080]
+lawapp-ai/Deployment/lawapp-llm-gateway c=lawapp-llm-gateway img=ghcr.io/serverax/lawapp-llm-gateway:b13c59d01e73e861b35498cac2b37d566609c262 ports=[8080] ready=[GET /health:8080] live=[GET /health:8080]
+lawapp-ai/Deployment/lawapp-reasoning-worker c=reasoning img=ghcr.io/serverax/lawapp/backend:latest ports=[] ready=[none] live=[none]
+lawapp-ai/Deployment/lawapp-rules-engine c=lawapp-rules-engine img=ghcr.io/serverax/lawapp-rules-engine:b13c59d01e73e861b35498cac2b37d566609c262 ports=[8080] ready=[GET /health:8080] live=[GET /health:8080]
+lawapp-ai/DaemonSet/ollama-inference c=ollama img=ollama/ollama:latest ports=[11434] ready=[GET /api/tags:11434] live=[GET /api/tags:11434]

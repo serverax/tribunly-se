@@ -1,0 +1,77 @@
+name: lawapp — Deploy to staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to deploy"
+        required: false
+        default: "latest"
+
+jobs:
+  deploy:
+    name: Deploy to iterlaw-ai namespace
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_HETZNER }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Confirm context — must be lawapp cluster
+        run: |
+          kubectl config current-context
+          kubectl get ns iterlaw-ai
+
+      - name: Confirm required resources exist
+        run: |
+          kubectl get secret lawapp-secrets -n iterlaw-ai
+          kubectl get secret ghcr-pull-secret -n iterlaw-ai
+          kubectl get configmap lawapp-config -n iterlaw-ai
+
+      - name: Apply configmap
+        run: kubectl apply -f infra/k8s/iterlaw/configmap.yaml -n iterlaw-ai
+
+      - name: Run DB migrations
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        run: |
+          for f in db/migrations/*.sql; do
+            echo "Applying $f"
+            psql "$DATABASE_URL" -f "$f"
+          done
+
+      - name: Set image and rollout
+        run: |
+          TAG="${{ inputs.image_tag }}"
+          kubectl set image deployment/lawapp-backend \
+            backend=ghcr.io/serverax/lawapp/backend:${TAG} \
+            -n iterlaw-ai
+          kubectl rollout status deployment/lawapp-backend \
+            -n iterlaw-ai --timeout=180s
+
+      - name: Smoke test
+        run: |
+          POD=$(kubectl get pod -n iterlaw-ai -l app=lawapp-backend \
+            -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n iterlaw-ai $POD -- \
+            curl -sf http://localhost:8000/health | grep '"status":"ok"'
+          kubectl exec -n iterlaw-ai $POD -- curl -sf -X POST \
+            http://localhost:8000/api/diagnosis \
+            -H "Content-Type: application/json" \
+            -d '{"query":"I was dismissed","facts":{"jurisdiction":"EW","edt":"2026-01-01","service_start_date":"2023-01-01"}}' \
+            | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('claim_type')=='unfair_dismissal'; assert (d.get('deadline_info') or {}).get('source')=='rules'; assert d.get('boundary_log',{}).get('pii_in_output')==[]; print('SMOKE PASS')"
+
+      - name: Post status
+        if: always()
+        run: |
+          kubectl get pods -n iterlaw-ai
+          kubectl logs -n iterlaw-ai deploy/lawapp-backend --tail=30

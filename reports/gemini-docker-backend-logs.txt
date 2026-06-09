@@ -1,0 +1,6 @@
+backend-1  | INFO:     Started server process [1]
+backend-1  | INFO:     Waiting for application startup.
+backend-1  | Missing production vars (OK in development mode): ['APP_BASE_URL']
+backend-1  | INFO:     Application startup complete.
+backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+backend-1  | INFO:     127.0.0.1:54790 - "GET /health HTTP/1.1" 503 Service Unavailable

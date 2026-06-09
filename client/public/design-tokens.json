@@ -1,0 +1,103 @@
+{
+  "_meta": {
+    "project": "lawapp",
+    "version": "1.0.0",
+    "description": "Design tokens for lawapp UK Employment Claim Co-Pilot. Authoritative, minimal, tool-like. No gradients, no decoration."
+  },
+
+  "color": {
+    "brand": {
+      "900": { "value": "#1a3a5c", "usage": "Primary — nav, headings, deadline card, next-step bg" },
+      "700": { "value": "#1e4d7a", "usage": "Hover states, focused borders" },
+      "100": { "value": "#e8f0f8", "usage": "Brand tint — info surfaces" }
+    },
+    "accent": {
+      "DEFAULT": { "value": "#e84f25", "usage": "CTA buttons only — primary action on each page" }
+    },
+    "danger": {
+      "700": { "value": "#c0392b", "usage": "Error text, border, warn label" },
+      "100": { "value": "#f8d7da", "usage": "Error/badge surface" },
+      "text": { "value": "#721c24", "usage": "Text on danger-100 surface" },
+      "surface": { "value": "#fff8f8", "usage": "Weakness list item background" }
+    },
+    "success": {
+      "700": { "value": "#1e7e34", "usage": "Success text, wizard done step" },
+      "100": { "value": "#d4edda", "usage": "Success badge surface" },
+      "text": { "value": "#155724", "usage": "Text on success-100 surface" }
+    },
+    "warning": {
+      "700": { "value": "#856404", "usage": "Mid-strength label, wizard mid step" },
+      "border": { "value": "#ffc107", "usage": "Warning border (legal notice, grounding alert)" },
+      "100": { "value": "#fff3cd", "usage": "Warning surface (legal notice, grounding alert)" },
+      "text": { "value": "#664d03", "usage": "Text on warning-100 surface" }
+    },
+    "neutral": {
+      "text": { "value": "#1a1a1a", "usage": "Body text" },
+      "muted": { "value": "#5a5a5a", "usage": "Secondary text, labels, trust items" },
+      "border": { "value": "#d0d5dd", "usage": "All borders" },
+      "surface": { "value": "#f8f9fa", "usage": "Page background" },
+      "surface-alt": { "value": "#f0f4ff", "usage": "Employer-argument list items" },
+      "footer": { "value": "#eeeeee", "usage": "Footer background" },
+      "white": { "value": "#ffffff", "usage": "Card/input backgrounds" }
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "base": { "value": "'Segoe UI', system-ui, sans-serif", "usage": "All text — system stack, no webfont load" }
+    },
+    "lineHeight": {
+      "tight": { "value": "1.25", "usage": "Headings" },
+      "base": { "value": "1.6", "usage": "Body text" }
+    },
+    "fontSize": {
+      "xs":   { "value": "0.75rem",  "px": "12px", "usage": "Wizard step labels, small badges" },
+      "sm":   { "value": "0.875rem", "px": "14px", "usage": "Hints, citations, legal notice, trust items, form-error" },
+      "base": { "value": "1rem",     "px": "16px", "usage": "Body, inputs, buttons, list items" },
+      "md":   { "value": "1.05rem",  "px": "17px", "usage": "Next-step text, form-section headings" },
+      "lg":   { "value": "1.125rem", "px": "18px", "usage": "Dashboard case titles" },
+      "xl":   { "value": "1.25rem",  "px": "20px", "usage": "Nav brand, assessment header h2" },
+      "2xl":  { "value": "1.5rem",   "px": "24px", "usage": "Page section headings" },
+      "hero": { "value": "clamp(1.45rem, 4vw, 2.2rem)", "usage": "Hero h1 — scales from mobile to desktop" },
+      "deadline": { "value": "2.5rem", "px": "40px", "usage": "Deadline card days-remaining number only" }
+    },
+    "fontWeight": {
+      "normal": { "value": "400" },
+      "semibold": { "value": "600", "usage": "Labels, buttons, brand, step numbers" },
+      "bold": { "value": "700", "usage": "Active wizard step, deadline number, brand" }
+    }
+  },
+
+  "spacing": {
+    "note": "8px base scale. Use multiples of --space-1 (4px) or --space-2 (8px). Never use arbitrary values like 0.35rem.",
+    "1":  { "value": "0.25rem", "px": "4px" },
+    "2":  { "value": "0.5rem",  "px": "8px" },
+    "3":  { "value": "0.75rem", "px": "12px" },
+    "4":  { "value": "1rem",    "px": "16px" },
+    "5":  { "value": "1.25rem", "px": "20px" },
+    "6":  { "value": "1.5rem",  "px": "24px" },
+    "8":  { "value": "2rem",    "px": "32px" },
+    "10": { "value": "2.5rem",  "px": "40px" },
+    "12": { "value": "3rem",    "px": "48px" }
+  },
+
+  "borderRadius": {
+    "sm":   { "value": "4px",  "usage": "Subtle — inner elements" },
+    "base": { "value": "6px",  "usage": "Cards, inputs, buttons (--radius)" },
+    "pill": { "value": "20px", "usage": "Badges only" },
+    "full": { "value": "50%",  "usage": "Spinner, step-number circles" }
+  },
+
+  "shadow": {
+    "sm": { "value": "0 1px 3px rgba(0,0,0,0.12)", "usage": "Cards, form sections (--shadow)" }
+  },
+
+  "breakpoint": {
+    "md": { "value": "768px",  "usage": "Tablet — stack deadline card, reduce wizard labels" },
+    "sm": { "value": "480px",  "usage": "Mobile — hide nav links, full-width buttons" }
+  },
+
+  "zIndex": {
+    "nav-dropdown": { "value": "100", "usage": "Mobile nav open state" }
+  }
+}

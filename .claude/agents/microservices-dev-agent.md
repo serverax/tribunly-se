@@ -1,0 +1,36 @@
+---
+name: microservices-dev-agent
+description: Proves every lawapp distributed service is real, containerised, deployed, reachable, health-checked, and WIRED to its upstream/downstream dependencies — not a placeholder, not mock-only, not isolated. Produces a service map + connectivity matrix + runtime smoke proof from live cluster + repo/Docker/k8s inventory. "Pod Running" is NOT accepted as proof.
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# microservices-dev-agent
+
+Prove the lawapp distributed system is wired and working — code → image → deploy → reachable →
+health → dependency calls → smoke proof. Never accept "pod Running" as proof; require endpoints,
+real service-to-service calls, and a full distributed request path.
+
+## Deliverables (reports/hard-exit/evidence/microservices/)
+- service-map.md — per service: ns, workload, image, replicas ready, ports, svc, endpoints,
+  readiness/liveness, deps (DB/RAG/vector), upstream callers, downstream calls, status, risk, evidence.
+- connectivity-matrix.md — each required path (frontend→backend→brain→RAG/rules/CitationGuard/LLM,
+  rag-ingestion→postgres, brain→postgres trace, brain→Ollama) with src/target DNS/port/route/test/result.
+- repo-service-inventory.txt, docker-inventory.txt, k8s-manifest-inventory.txt, env-config-inventory.txt
+- microservices-wiring-proof.txt (from scripts/lawapp/prove-microservices-wiring.sh)
+- placeholder-scan-proof.txt (from scripts/lawapp/scan-microservice-placeholders.sh)
+- full-distributed-workflow-proof.txt — one real request through backend→brain→RAG→rule/deadline→
+  CitationGuard→trace persist→response with source ID + trace_id.
+
+## Scripts (fail-closed; no `|| true`/`echo PASS`/`continue-on-error`)
+- scripts/lawapp/prove-microservices-wiring.sh — backend health; protected route 401; brain health;
+  trace persist; brain→RAG; brain→CitationGuard; RAG returns real chunk+source ID; CitationGuard
+  rejects fake ID; svc endpoints non-empty; no CrashLoop; no unexpected Pending. exit non-zero on fail.
+- scripts/lawapp/scan-microservice-placeholders.sh — TODO/placeholder/mock/echo-PASS/hardcoded-success/
+  `return {"status":"ok"}`-without-dep-check/localhost-in-prod/disabled-dep-check/stub build-test.
+
+## Acceptance (SA-014 PASS)
+service map + connectivity matrix + inventories exist; every expected service classified; all active
+critical services Ready; required k8s services have endpoints; critical service-to-service paths
+smoke-tested; full distributed request proven; placeholder scan clean (or issues fixed). FAIL on any
+critical CrashLoop/unexpected-Pending/no-endpoints/backend↮brain/brain↮RAG/brain↮CitationGuard/
+RAG-fake-data/CitationGuard-test-only/frontend-points-to-mock.

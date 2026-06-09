@@ -1,0 +1,189 @@
+./audit_gather.sh:30:grep -R -E "fetch\(|axios|XMLHttpRequest|localStorage|sessionStorage|document\.cookie|innerHTML|dangerouslySetInnerHTML" client -n > reports/gemini-client-risk-grep.txt || true
+./audit_gather.sh:59:grep -R -E "innerHTML|dangerouslySetInnerHTML|eval\(|exec\(|subprocess|os\.system|shell=True|raw SQL|execute\(f|format\(" . -n --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv > reports/gemini-dangerous-code-grep.txt || true
+./audit_output.txt:515:./backend/api/main.py:                "last_verified_at": r[9].isoformat() if r[9] else None,
+./audit_output.txt:522:./backend/api/main.py:                "last_verified_at":   r["last_verified_at"].isoformat() if r.get("last_verified_at") else None,
+./backend/api/main.py:274:            "created_at":          row[2].isoformat(),
+./backend/api/main.py:333:                "oldest_verified": r[2].isoformat() if r[2] else None,
+./backend/api/main.py:384:                "effective_from":  r[6].isoformat() if r[6] else None,
+./backend/api/main.py:385:                "effective_to":    r[7].isoformat() if r[7] else None,
+./backend/api/main.py:387:                "last_verified_at": r[9].isoformat() if r[9] else None,
+./backend/api/main.py:627:        return {"case_id": str(row[0]), "created_at": row[1].isoformat()}
+./backend/api/main.py:669:                    "created_at":  r[6].isoformat(),
+./backend/api/main.py:730:            "created_at":   row[6].isoformat(),
+./backend/api/main.py:874:            "created_at":         row[1].isoformat(),
+./backend/api/main.py:1006:            "created_at":  row[1].isoformat(),
+./backend/api/main.py:1047:                "due_at":        r[2].isoformat() if r[2] else None,
+./backend/api/main.py:1051:                "created_at":    r[6].isoformat(),
+./backend/api/main.py:1172:            "created_at":        row[1].isoformat(),
+./backend/api/main.py:1224:                "created_at":        r[7].isoformat(),
+./backend/api/main.py:1617:                "created_at": r[3].isoformat(),
+./backend/api/main.py:1670:            "occurred_at": row[1].isoformat(),
+./backend/api/main.py:1701:             "occurred_at": r[2].isoformat(), "metadata": r[3] or {}}
+./backend/api/main.py:1776:                "effective_from":     r["effective_from"].isoformat() if r["effective_from"] else None,
+./backend/api/main.py:1777:                "effective_to":       r["effective_to"].isoformat() if r["effective_to"] else None,
+./backend/api/main.py:1781:                "last_verified_at":   r["last_verified_at"].isoformat() if r.get("last_verified_at") else None,
+./backend/api/main.py:1892:                {"id": str(r[0]), "trigger_reason": r[1], "created_at": r[2].isoformat()}
+./backend/api/main.py:1992:            "created_at": row[1].isoformat(),
+./backend/api/main.py:2033:            "event_date":  req.event_date  if req.event_date  is not None else (current["event_date"].isoformat() if current["event_date"] else None),
+./backend/api/main.py:3170:            "created_at":      r[8].isoformat() if r[8] else None,
+./backend/api/main.py:3207:        edt_date = dt.date.fromisoformat(req.edt)
+./backend/api/main.py:3208:        ec_a = dt.date.fromisoformat(req.ec_day_a) if req.ec_day_a else None
+./backend/api/main.py:3209:        ec_b = dt.date.fromisoformat(req.ec_day_b) if req.ec_day_b else None
+./backend/api/main.py:3362:        edt = date.fromisoformat(str(edt_str))
+./backend/api/main.py:3363:        ec_a = date.fromisoformat(str(acas_start)) if acas_start else None
+./backend/api/main.py:3364:        ec_b = date.fromisoformat(str(acas_end))   if acas_end   else None
+./backend/core/agents/registry.py:111:                lim = _dt.date.fromisoformat(result["limitation_date"])
+./backend/core/brain.py:319:            "ts":     _dt.datetime.now(_dt.timezone.utc).isoformat(),
+./backend/core/brain.py:390:    started_at = _dt.datetime.now(_dt.timezone.utc).isoformat()
+./backend/core/brain.py:447:                lim = _dt.date.fromisoformat(deadline_result["limitation_date"])
+./backend/core/bundle.py:60:        d = date.fromisoformat(s)
+./backend/core/bundle.py:294:            return date.fromisoformat(e[0]).isoformat()
+./backend/core/classify.py:145:                "content": _ML_CLASSIFY_PROMPT.format(query=safe_query),
+./backend/core/conflict_detector.py:32:            return _dt.date.fromisoformat(s)
+./backend/core/conflict_detector.py:33:        return _dt.date.fromisoformat(s[:10])
+./backend/core/documents.py:95:        d = date.fromisoformat(s)
+./backend/core/documents.py:108:        d_start = date.fromisoformat(start)
+./backend/core/documents.py:109:        d_edt   = date.fromisoformat(edt)
+./backend/core/mcp_connectors.py:175:            date_obj = _dt.date.fromisoformat(str(ref_date))
+./backend/core/memory.py:141:                "created_at": row[5].isoformat() if row[5] else None,
+./backend/core/memory.py:142:                "updated_at": row[6].isoformat() if row[6] else None,
+./backend/core/models.py:87:            limitation_date=date.fromisoformat(deadline_info["limitation_date"])
+./backend/core/pipeline.py:102:        ref_date = date.fromisoformat(str(ref_str))
+./backend/core/pipeline.py:130:    ec_day_a = date.fromisoformat(str(ec_day_a_str)) if ec_day_a_str else None
+./backend/core/pipeline.py:131:    ec_day_b = date.fromisoformat(str(ec_day_b_str)) if ec_day_b_str else None
+./backend/core/pipeline.py:144:            service_start = date.fromisoformat(str(service_start_str))
+./backend/core/pipeline.py:215:                limitation_date=date.fromisoformat(dl_date) if dl_date else None,
+./backend/domains/employment/deadline.py:74:            "limitation_date": base_limit.isoformat(),
+./backend/domains/employment/deadline.py:78:            "base_limit": base_limit.isoformat(),
+./backend/domains/employment/deadline.py:97:        "limitation_date": final.isoformat(),
+./backend/domains/employment/deadline.py:101:        "base_limit": base_limit.isoformat(),
+./backend/domains/employment/deadline.py:103:        "adjusted_limit": adjusted.isoformat(),
+./backend/domains/employment/deadline.py:104:        "ec_floor": floor.isoformat(),
+./backend/domains/employment/reminders.py:64:    today = date.fromisoformat(today_str) if today_str else date.today()
+./backend/domains/employment/reminders.py:65:    limit = date.fromisoformat(limitation_date_str)
+./backend/domains/employment/reminders.py:79:        "as_of":           today.isoformat(),
+./backend/domains/employment/timeline.py:89:        d = date.fromisoformat(s)
+./backend/domains/employment/timeline.py:240:            "event_date":   ev["event_date"].isoformat() if ev["event_date"] else None,
+./backend/domains/employment/timeline.py:241:            "display_date": _fmt(ev["event_date"].isoformat()) if ev["event_date"] else None,
+./client/public/pages/intake.html:284:    labelsEl.innerHTML = '';
+./client/public/pages/intake.html:397:    badge.innerHTML = `<span class="deadline-badge ${badgeClass}">${badgeText}</span>`;
+./client/public/wasm/lawapp_wasm.js:133:    const builtInMatches = /\[object ([^\]]+)\]/.exec(toString.call(val));
+./client/wasm/src/lib.rs:29:    d.format("%Y-%m-%d").to_string()
+./ingestion/case_law/akn_parser.py:79:        return date.fromisoformat(s[:10])
+./ingestion/legislation/clml_parser.py:76:        return date.fromisoformat(date_str[:10])
+./reports/gemini-all-files.txt:3126:./.venv/lib/python3.12/site-packages/anyio/_core/__pycache__/_subprocesses.cpython-312-pytest-9.0.3.pyc
+./reports/gemini-all-files.txt:3127:./.venv/lib/python3.12/site-packages/anyio/_core/__pycache__/_subprocesses.cpython-312.pyc
+./reports/gemini-all-files.txt:3147:./.venv/lib/python3.12/site-packages/anyio/_core/_subprocesses.py
+./reports/gemini-all-files.txt:3164:./.venv/lib/python3.12/site-packages/anyio/abc/__pycache__/_subprocesses.cpython-312-pytest-9.0.3.pyc
+./reports/gemini-all-files.txt:3165:./.venv/lib/python3.12/site-packages/anyio/abc/__pycache__/_subprocesses.cpython-312.pyc
+./reports/gemini-all-files.txt:3174:./.venv/lib/python3.12/site-packages/anyio/abc/_subprocesses.py
+./reports/gemini-all-files.txt:6545:./.venv/lib/python3.12/site-packages/cuda/pathfinder/_dynamic_libs/__pycache__/dynamic_lib_subprocess.cpython-312.pyc
+./reports/gemini-all-files.txt:6554:./.venv/lib/python3.12/site-packages/cuda/pathfinder/_dynamic_libs/__pycache__/subprocess_protocol.cpython-312.pyc
+./reports/gemini-all-files.txt:6557:./.venv/lib/python3.12/site-packages/cuda/pathfinder/_dynamic_libs/dynamic_lib_subprocess.py
+./reports/gemini-all-files.txt:6566:./.venv/lib/python3.12/site-packages/cuda/pathfinder/_dynamic_libs/subprocess_protocol.py
+./reports/gemini-all-files.txt:7705:./.venv/lib/python3.12/site-packages/huggingface_hub/utils/__pycache__/_subprocess.cpython-312.pyc
+./reports/gemini-all-files.txt:7738:./.venv/lib/python3.12/site-packages/huggingface_hub/utils/_subprocess.py
+./reports/gemini-all-files.txt:9456:./.venv/lib/python3.12/site-packages/mypy/typeshed/stdlib/_posixsubprocess.pyi
+./reports/gemini-all-files.txt:9494:./.venv/lib/python3.12/site-packages/mypy/typeshed/stdlib/asyncio/base_subprocess.pyi
+./reports/gemini-all-files.txt:9514:./.venv/lib/python3.12/site-packages/mypy/typeshed/stdlib/asyncio/subprocess.pyi
+./reports/gemini-all-files.txt:10046:./.venv/lib/python3.12/site-packages/mypy/typeshed/stdlib/subprocess.pyi
+./reports/gemini-all-files.txt:17798:./.venv/lib/python3.12/site-packages/pip/_internal/utils/__pycache__/subprocess.cpython-312.pyc
+./reports/gemini-all-files.txt:17823:./.venv/lib/python3.12/site-packages/pip/_internal/utils/subprocess.py
+./reports/gemini-all-files.txt:18449:./.venv/lib/python3.12/site-packages/pip_audit/__pycache__/_subprocess.cpython-312.pyc
+./reports/gemini-all-files.txt:18491:./.venv/lib/python3.12/site-packages/pip_audit/_subprocess.py
+./reports/gemini-all-files.txt:31680:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/__init__.py
+./reports/gemini-all-files.txt:31681:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/__pycache__/__init__.cpython-312.pyc
+./reports/gemini-all-files.txt:31682:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/__pycache__/handlers.cpython-312.pyc
+./reports/gemini-all-files.txt:31683:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/__pycache__/subprocess_handler.cpython-312.pyc
+./reports/gemini-all-files.txt:31684:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/handlers.py
+./reports/gemini-all-files.txt:31685:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/subprocess_handler.py
+./reports/gemini-all-files.txt:48925:./.venv/lib/python3.12/site-packages/uvicorn/__pycache__/_subprocess.cpython-312.pyc
+./reports/gemini-all-files.txt:48934:./.venv/lib/python3.12/site-packages/uvicorn/_subprocess.py
+./reports/gemini-brain-ai-grep.txt:19:backend/api/main.py:1892:                {"id": str(r[0]), "trigger_reason": r[1], "created_at": r[2].isoformat()}
+./reports/gemini-client-risk-grep.txt:24:client/public/pages/intake.html:284:    labelsEl.innerHTML = '';
+./reports/gemini-client-risk-grep.txt:25:client/public/pages/intake.html:397:    badge.innerHTML = `<span class="deadline-badge ${badgeClass}">${badgeText}</span>`;
+./reports/gemini-lawapp-full-project-audit-and-claude-workpack.md:107:- **XSS**: PASS. No `innerHTML` for user data.
+./reports/gemini-lawapp-full-qa-security-report.md:55:| Frontend        | PASS (Security)             | Zero `innerHTML` usage.          | Low | - |
+./reports/gemini-lawapp-full-qa-security-report.md:70:grep -rn "innerHTML" client/public/
+./reports/gemini-lawapp-full-qa-security-report.md:88:### SEC-001 — Unescaped innerHTML Injection (XSS)
+./reports/gemini-lawapp-full-qa-security-report.md:90:- **Fix**: Replaced all instances of `.innerHTML =` with safe DOM APIs (`createElement`, `textContent`) across all frontend pages.
+./reports/gemini-lawapp-full-qa-security-report.md:91:- **Verification**: `grep` returns zero results for `innerHTML` in `client/public/`.
+./reports/gemini-lawapp-repair-plan.md:7:- **SEC-001 (XSS)**: Refactored `assessment.html`, `intake.html`, and `saved_case.html` to remove all `innerHTML` usage. [DONE]
+./reports/gemini-lawapp-super-ultimate-qa-security-audit.md:173:| No unsafe user-data innerHTML | PASS              | Grep search clean |
+./reports/gemini-lawapp-super-ultimate-qa-security-audit.md:272:No unsafe innerHTML.
+./reports/gemini-new-tech-grep.txt:362:./audit_gather.sh:59:grep -R -E "innerHTML|dangerouslySetInnerHTML|eval\(|exec\(|subprocess|os\.system|shell=True|raw SQL|execute\(f|format\(" . -n --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv > reports/gemini-dangerous-code-grep.txt || true
+./reports/gemini-new-tech-grep.txt:3447:./reports/gemini-all-files.txt:3126:./.venv/lib/python3.12/site-packages/anyio/_core/__pycache__/_subprocesses.cpython-312-pytest-9.0.3.pyc
+./reports/gemini-new-tech-grep.txt:3448:./reports/gemini-all-files.txt:3127:./.venv/lib/python3.12/site-packages/anyio/_core/__pycache__/_subprocesses.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:3469:./reports/gemini-all-files.txt:3164:./.venv/lib/python3.12/site-packages/anyio/abc/__pycache__/_subprocesses.cpython-312-pytest-9.0.3.pyc
+./reports/gemini-new-tech-grep.txt:3470:./reports/gemini-all-files.txt:3165:./.venv/lib/python3.12/site-packages/anyio/abc/__pycache__/_subprocesses.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:4131:./reports/gemini-all-files.txt:6545:./.venv/lib/python3.12/site-packages/cuda/pathfinder/_dynamic_libs/__pycache__/dynamic_lib_subprocess.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:4140:./reports/gemini-all-files.txt:6554:./.venv/lib/python3.12/site-packages/cuda/pathfinder/_dynamic_libs/__pycache__/subprocess_protocol.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:4659:./reports/gemini-all-files.txt:7705:./.venv/lib/python3.12/site-packages/huggingface_hub/utils/__pycache__/_subprocess.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:8624:./reports/gemini-all-files.txt:17798:./.venv/lib/python3.12/site-packages/pip/_internal/utils/__pycache__/subprocess.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:8926:./reports/gemini-all-files.txt:18449:./.venv/lib/python3.12/site-packages/pip_audit/__pycache__/_subprocess.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:15001:./reports/gemini-all-files.txt:31681:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/__pycache__/__init__.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:15002:./reports/gemini-all-files.txt:31682:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/__pycache__/handlers.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:15003:./reports/gemini-all-files.txt:31683:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/__pycache__/subprocess_handler.cpython-312.pyc
+./reports/gemini-new-tech-grep.txt:18829:./reports/gemini-all-files.txt:48925:./.venv/lib/python3.12/site-packages/uvicorn/__pycache__/_subprocess.cpython-312.pyc
+./reports/gemini-secret-grep.txt:69:./audit_gather.sh:30:grep -R -E "fetch\(|axios|XMLHttpRequest|localStorage|sessionStorage|document\.cookie|innerHTML|dangerouslySetInnerHTML" client -n > reports/gemini-client-risk-grep.txt || true
+./reports/gemini-secret-grep.txt:684:./reports/lawapp-phase0-push-ci-confirmation-report.txt:7:  60bbfa0 — lawapp: fix run_legal_accuracy.py subprocess DATABASE_URL propagation
+./reports/gemini-wasm-grep.txt:93:client/public/pages/intake.html:397:    badge.innerHTML = `<span class="deadline-badge ${badgeClass}">${badgeText}</span>`;
+./reports/gemini-wasm-grep.txt:475:backend/core/brain.py:447:                lim = _dt.date.fromisoformat(deadline_result["limitation_date"])
+./reports/gemini-wasm-grep.txt:545:backend/core/models.py:87:            limitation_date=date.fromisoformat(deadline_info["limitation_date"])
+./reports/lawapp-phase0-push-ci-confirmation-report.txt:7:  60bbfa0 — lawapp: fix run_legal_accuracy.py subprocess DATABASE_URL propagation
+./reports/lawapp-phase0-push-ci-confirmation-report.txt:22:  Integration Regression        FAIL — legal accuracy gate subprocess auth failure
+./reports/lawapp-phase0-push-ci-confirmation-report.txt:25:        to pytest subprocess from POSTGRES_* env vars).
+./tests/deadlines/test_deadlines.py:76:        lim = dt.date.fromisoformat(result["limitation_date"])
+./tests/deadlines/test_deadlines.py:83:        lim = dt.date.fromisoformat(result["limitation_date"])
+./tests/integration/conftest.py:8:credential for subsequent subprocess-based tests.
+./tests/integration/conftest.py:11:test-session start and restores them after every test, so subprocess
+./tests/integration/test_phase2c_regression.py:93:        limit = date.fromisoformat(dl["limitation_date"])
+./tests/integration/test_phase5a_hardening.py:56:import subprocess
+./tests/integration/test_phase5a_hardening.py:212:    result = subprocess.run(
+./tests/integration/test_phase5a_hardening.py:222:    result = subprocess.run(
+./tests/integration/test_phase5b_unpaid_wages.py:49:import subprocess
+./tests/integration/test_phase5b_unpaid_wages.py:329:    result = subprocess.run(
+./tests/integration/test_phase5c_verification.py:42:import subprocess
+./tests/integration/test_phase5c_verification.py:302:    result = subprocess.run(
+./tests/integration/test_phase5c_verification.py:311:    result = subprocess.run(
+./tests/integration/test_phase6a_deployment.py:53:import subprocess
+./tests/integration/test_phase6a_deployment.py:374:    result = subprocess.run(
+./tests/integration/test_phase6b_beta_readiness.py:58:import subprocess
+./tests/integration/test_phase6b_beta_readiness.py:356:    result = subprocess.run(
+./tests/integration/test_phase6b_beta_readiness.py:383:    result = subprocess.run(
+./tests/integration/test_phase6c_jwt.py:47:import subprocess
+./tests/integration/test_phase6c_jwt.py:337:    result = subprocess.run(
+./tests/integration/test_phase6c_jwt.py:345:    result = subprocess.run(
+./tests/integration/test_phase6d_compliance.py:43:import subprocess
+./tests/integration/test_phase6d_compliance.py:307:    result = subprocess.run(
+./tests/integration/test_phase6d_compliance.py:315:    result = subprocess.run(
+./tests/integration/test_phase6e_prelaunch.py:43:import subprocess
+./tests/integration/test_phase6e_prelaunch.py:109:    result = subprocess.run(
+./tests/integration/test_phase6e_prelaunch.py:223:    result = subprocess.run(
+./tests/integration/test_phase6e_prelaunch.py:231:    result = subprocess.run(
+./tests/integration/test_phase6_production.py:6:import subprocess
+./tests/integration/test_phase6_production.py:202:    result = subprocess.run(
+./tests/integration/test_phase6_production.py:269:    result = subprocess.run(
+./tests/integration/test_phase7a_jwks.py:51:import subprocess
+./tests/integration/test_phase7a_jwks.py:414:    result = subprocess.run(
+./tests/integration/test_phase7a_jwks.py:422:    result = subprocess.run(
+./tests/integration/test_phase7b_kms.py:48:import subprocess
+./tests/integration/test_phase7b_kms.py:314:    result = subprocess.run(
+./tests/integration/test_phase7b_kms.py:322:    result = subprocess.run(
+./tests/integration/test_phase7c_aws_kms.py:54:import subprocess
+./tests/integration/test_phase7c_aws_kms.py:405:    result = subprocess.run(
+./tests/integration/test_phase7d_envelope_encryption.py:56:import subprocess
+./tests/integration/test_phase7d_envelope_encryption.py:459:    result = subprocess.run(
+./tests/integration/test_phase7e_envelope_integration.py:50:import subprocess
+./tests/integration/test_phase7e_envelope_integration.py:481:    result = subprocess.run(
+./tests/integration/test_phase8b_algorithm_brain.py:50:import subprocess
+./tests/integration/test_phase8b_algorithm_brain.py:344:    result = subprocess.run(
+./tests/integration/test_phase8b_algorithm_brain.py:352:    result = subprocess.run(
+./tests/integration/test_pipeline_stub.py:134:        dl_date = __import__("datetime").date.fromisoformat(dl)
+./tests/integration/test_rules_deadline_phase1.py:176:    assert date.fromisoformat(result["limitation_date"]) >= date(2016, 10, 18)
+./tests/test_deadline.py:42:    last_day = date.fromisoformat(result["limitation_date"])
+./tests/test_xss_protection.py:13:    Ensure that no unsafe innerHTML usages remain in critical frontend files.
+./tests/test_xss_protection.py:14:    Genuinely static innerHTML (e.g. for icons) is discouraged but may be allowed
+./tests/test_xss_protection.py:17:    unsafe_pattern = re.compile(r'\.innerHTML\s*=')
+./tests/test_xss_protection.py:27:        # We expect zero innerHTML usages in the refactored files
+./tests/test_xss_protection.py:28:        assert len(matches) == 0, f"Unsafe innerHTML found in {file_path}"

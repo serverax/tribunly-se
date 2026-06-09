@@ -1,0 +1,123 @@
+ M .claude-flow/sessions/current.json
+ M .github/workflows/ci.yml
+ M .github/workflows/lawapp-ci.yml
+ M Dockerfile.ingestion
+ M backend/api/main.py
+ M backend/core/brain.py
+ M backend/core/config_validation.py
+ M backend/core/models.py
+ M backend/core/payment.py
+ M backend/core/pipeline.py
+ M backend/core/retrieve.py
+ M backend/core/user_auth.py
+ M backend/domains/employment/assess_logic.py
+ M client/public/pages/intake.html
+ M ingestion/config.py
+ M ingestion/rules/seed_unfair_dismissal.py
+ M scripts/ingest_uk_legal_dataset_chunked.sh
+ M scripts/lawapp-full-local-bootstrap.sh
+ M scripts/prove_employment_law_corpus.sh
+ M scripts/prove_uk_legal_dataset.sh
+ M tests/conftest.py
+ M tests/documents/test_documents.py
+ M tests/ingestion/test_ingestion.py
+ M tests/integration/test_phase4b_bundle.py
+ M tests/integration/test_phase8b_algorithm_brain.py
+ M tests/knowledge_graph/test_knowledge_graph.py
+ M tests/mcp/test_mcp.py
+ M tests/payment/test_payment.py
+ M tests/security/test_encryption.py
+ M tests/test_brain_outbox.py
+ M tests/uploads/test_uploads.py
+ M tests/user_isolation/test_user_isolation.py
+?? .claude-flow/sessions/session-1780616274080.json
+?? audit/
+?? backend/api/reasoning_routes.py
+?? backend/core/agentic/corpus_citation_guard.py
+?? backend/core/agentic/critic.py
+?? backend/core/agentic/ingestion_critic.py
+?? backend/core/agentic/optimizer.py
+?? backend/core/ingestion/
+?? backend/core/path_splitter.py
+?? db/migrations/031_legal_data_spine.sql
+?? db/migrations/032_corpus_chunks_and_audits.sql
+?? db/migrations/033_seed_required_rules.sql
+?? db/migrations/034_corpus_quality_views.sql
+?? db/migrations/035_legal_db_performance.sql
+?? db/migrations/036_verification_status_canonical.sql
+?? db/migrations/037_core_workspace_ingestion_errors.sql
+?? db/migrations/038_feedback_registry.sql
+?? db/migrations/039_corpus_chunks_ingestion_run_id.sql
+?? db/migrations/040_case_law_table.sql
+?? docker-compose.override.yml
+?? infra/k8s/inference/
+?? infra/k8s/llm-inference-fabric.yaml
+?? ingestion/sources/
+?? reports/corpus-quality-proof.md
+?? reports/corpus-quality-report.md
+?? reports/find-case-law-blocker-proof.md
+?? reports/full-pytest-suite-result.md
+?? reports/ingestion-runs-proof.md
+?? reports/lawapp-mvp-end-to-end-proof.md
+?? reports/legal-corpus-final-status.md
+?? reports/legal-data-spine-proof.md
+?? reports/legal-db-performance-proof.md
+?? reports/legal-jurisdiction-proof.md
+?? reports/live-assess-retrieval-wiring-proof.md
+?? reports/node-local-inference-and-perpetual-law-brain.md
+?? reports/retrieval-pipeline-proof.md
+?? reports/rules-integrity-proof.md
+?? reports/source-freshness-proof.md
+?? reports/uk-law-scraping-fetching-status.md
+?? reports/ultimate-hostile-qa-audit-report.md
+?? scripts/bench_local_inference.py
+?? scripts/ops/
+?? scripts/prove_all_chunking_embeddings.sh
+?? scripts/prove_all_fetching.sh
+?? scripts/prove_all_legal_dbs.sh
+?? scripts/prove_case_law_blocker_or_ingestion.sh
+?? scripts/prove_corpus_quality.sh
+?? scripts/prove_deadline_tracker.sh
+?? scripts/prove_document_generation.sh
+?? scripts/prove_frontend_backend_wiring.sh
+?? scripts/prove_full_pytest_suite.sh
+?? scripts/prove_full_regression.sh
+?? scripts/prove_handoff_workflow.sh
+?? scripts/prove_ingestion_runs.sh
+?? scripts/prove_jurisdiction_model.sh
+?? scripts/prove_legal_boundary_notices.sh
+?? scripts/prove_legal_data_spine.sh
+?? scripts/prove_legal_db_performance.sh
+?? scripts/prove_live_assess_retrieval_wiring.sh
+?? scripts/prove_mvp_user_journey.sh
+?? scripts/prove_no_fake_claims_or_uncited_law.sh
+?? scripts/prove_no_fake_legal_data.sh
+?? scripts/prove_retrieval_pipeline.sh
+?? scripts/prove_rules_integrity.sh
+?? scripts/prove_source_freshness.sh
+?? scripts/prove_uk_law_scraping_fetching.sh
+?? scripts/refresh_legal_materialized_views.sh
+?? scripts/report_slow_legal_queries.sh
+?? scripts/run_hostile_audit.py
+?? scripts/verify_llm_fabric_cluster.sh
+?? tests/graph_rag/test_graph_rag_art_integration.py
+?? tests/integration/test_brain_gatekeeper.py
+?? tests/test_assess_orchestrator.py
+?? tests/test_autonomous_ingestion.py
+?? tests/test_corpus_citation_guard.py
+?? tests/test_corpus_quality_views.py
+?? tests/test_deadline_rules_audit.py
+?? tests/test_evolution_gate.py
+?? tests/test_ingestion_run_tracking.py
+?? tests/test_integrity_framework.py
+?? tests/test_jurisdiction_fail_closed.py
+?? tests/test_legal_db_indexes.py
+?? tests/test_legal_sources_integrity.py
+?? tests/test_local_inference.py
+?? tests/test_materialized_current_chunks.py
+?? tests/test_no_hardcoded_legal_values.py
+?? tests/test_path_splitter.py
+?? tests/test_reasoning_routes.py
+?? tests/test_retrieval_jurisdiction_and_provenance.py
+?? tests/test_rules_integrity.py
+?? tests/test_streaming_inference.py

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome — lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
+  <script src="/js/a11y.js"></script>
+  <style>
+    .wizard-progress { display:flex; gap:.4rem; margin-bottom:1.75rem; }
+    .wizard-progress .dot {
+      height:6px; flex:1; border-radius:3px; background:var(--border);
+      transition:background .2s;
+    }
+    .wizard-progress .dot.active { background:var(--accent, #2f9b91); }
+    .wizard-step { display:none; }
+    .wizard-step.active { display:block; }
+    .role-option {
+      display:flex; align-items:flex-start; gap:.75rem;
+      border:1px solid var(--border); border-radius:8px;
+      padding:.9rem 1rem; margin-bottom:.6rem; cursor:pointer;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    .role-option:hover { border-color:var(--accent, #2f9b91); }
+    .role-option input { margin-top:.2rem; }
+    .role-option.selected { border-color:var(--accent, #2f9b91); box-shadow:0 0 0 1px var(--accent, #2f9b91); }
+    .role-option .role-label { font-weight:600; color:var(--primary); }
+    .role-option .role-desc { font-size:.82rem; color:var(--muted); margin-top:.1rem; }
+    .wizard-actions { display:flex; justify-content:space-between; gap:.75rem; margin-top:1.5rem; }
+    .wizard-actions .spacer { flex:1; }
+    .success-icon {
+      width:64px; height:64px; border-radius:50%; background:#e8f6f4;
+      display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;
+    }
+    .tool-card {
+      border:1px solid var(--border); border-radius:10px; padding:1.25rem;
+      margin:1.5rem 0; background:#f9fbfb; text-align:left;
+    }
+    .tool-card h3 { margin:0 0 .35rem; color:var(--primary); font-size:1.05rem; }
+    .tool-card p { margin:0 0 .9rem; color:var(--muted); font-size:.9rem; }
+  </style>
+</head>
+<body>
+
+<div class="legal-notice" role="alert">
+  <strong>Not a law firm. Not legal advice.</strong>
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <div class="nav-links" id="navlinks"><!-- updated by auth.js --></div>
+</nav>
+
+<main class="page-narrow" style="padding-top:2.5rem;">
+
+  <div id="loading-state" style="padding:3rem 0; text-align:center;">
+    <div class="spinner"></div>
+    <p style="margin-top:1rem; color:var(--muted);">Loading…</p>
+  </div>
+
+  <div id="wizard" class="form-section" style="display:none;">
+    <div class="wizard-progress" aria-hidden="true">
+      <span class="dot" data-dot="0"></span>
+      <span class="dot" data-dot="1"></span>
+      <span class="dot" data-dot="2"></span>
+      <span class="dot" data-dot="3"></span>
+      <span class="dot" data-dot="4"></span>
+    </div>
+
+    <div id="error-summary" style="display:none; background:#fff8f8; border:1px solid var(--warn); border-radius:6px; padding:.75rem 1rem; margin-bottom:1rem;">
+      <p id="error-text" style="color:var(--warn); font-size:.9rem; margin:0;" role="alert"></p>
+    </div>
+
+    <!-- Step 0: Welcome -->
+    <section class="wizard-step active" id="step-welcome" aria-labelledby="welcome-h">
+      <h1 id="welcome-h" style="color:var(--primary); margin:0 0 .75rem;">Let's get started</h1>
+      <p style="color:var(--muted); margin:0 0 1.5rem;">
+        A few quick questions so we can set up your account and your first case.
+        This takes under a minute.
+      </p>
+      <div class="form-group">
+        <label for="full_name">Your name <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
+        <input type="text" id="full_name" autocomplete="name" placeholder="e.g. Alex Taylor">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" readonly style="background:#f1f5f5; color:var(--muted);">
+        <span class="hint">From your sign-up — this is the account you're signed in as.</span>
+      </div>
+      <div class="wizard-actions">
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-next>Get started</button>
+      </div>
+    </section>
+
+    <!-- Step 1: Role (required) -->
+    <section class="wizard-step" id="step-role" aria-labelledby="role-h">
+      <h2 id="role-h" style="color:var(--primary); margin:0 0 .25rem;">Which best describes you?</h2>
+      <p style="color:var(--muted); margin:0 0 1.25rem; font-size:.9rem;">Pick one. <span style="color:var(--warn);">Required.</span></p>
+
+      <div id="role-options" role="radiogroup" aria-label="Your role"></div>
+
+      <div class="wizard-actions">
+        <button type="button" class="btn btn-outline" data-prev>Back</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-next id="role-next">Continue</button>
+      </div>
+    </section>
+
+    <!-- Step 2: Employer (optional) -->
+    <section class="wizard-step" id="step-employer" aria-labelledby="emp-h">
+      <h2 id="emp-h" style="color:var(--primary); margin:0 0 .25rem;">Who is (or was) your employer?</h2>
+      <p style="color:var(--muted); margin:0 0 1.25rem; font-size:.9rem;">Optional — you can add this later.</p>
+      <div class="form-group">
+        <label for="employer_name">Employer name <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
+        <input type="text" id="employer_name" autocomplete="organization" placeholder="e.g. Acme Retail Ltd">
+      </div>
+      <div class="wizard-actions">
+        <button type="button" class="btn btn-outline" data-prev>Back</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" data-next>Continue</button>
+      </div>
+    </section>
+
+    <!-- Step 3: Case type (optional; only for employee / former employee) -->
+    <section class="wizard-step" id="step-casetype" aria-labelledby="ct-h">
+      <h2 id="ct-h" style="color:var(--primary); margin:0 0 .25rem;">What's this about?</h2>
+      <p style="color:var(--muted); margin:0 0 1.25rem; font-size:.9rem;">Optional — pick the closest, or skip if you're not sure.</p>
+      <div class="form-group">
+        <label for="case_type">Type of issue <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
+        <select id="case_type">
+          <option value="">Not sure / skip</option>
+          <option value="unfair_dismissal">Unfair dismissal</option>
+          <option value="constructive_dismissal">Constructive dismissal</option>
+          <option value="redundancy">Redundancy</option>
+          <option value="discrimination">Discrimination</option>
+          <option value="unpaid_wages">Unpaid wages</option>
+          <option value="other">Something else</option>
+        </select>
+      </div>
+      <div class="wizard-actions">
+        <button type="button" class="btn btn-outline" data-prev>Back</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" id="finish-btn" data-finish>Finish setup</button>
+      </div>
+    </section>
+
+    <!-- Step 4: Success + first free tool -->
+    <section class="wizard-step" id="step-success" aria-labelledby="done-h" style="text-align:center;">
+      <div class="success-icon" aria-hidden="true">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2f9b91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <h2 id="done-h" style="color:var(--primary); margin:0 0 .5rem;">Your account is ready!</h2>
+      <p style="color:var(--muted); margin:0 0 .5rem;">
+        We've created your first case: <strong id="case-title-out"></strong>.
+      </p>
+
+      <div class="tool-card" id="tool-card">
+        <h3 id="tool-name"></h3>
+        <p id="tool-desc"></p>
+        <a id="tool-link" class="btn btn-primary" href="#" style="width:100%;">Start now</a>
+      </div>
+
+      <a id="dashboard-link" class="btn btn-outline" href="/pages/dashboard.html" style="width:100%;">Go to my dashboard</a>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script>
+(function () {
+  if (!LAWAPP_AUTH.ensureLoggedIn()) return;
+  LAWAPP_AUTH.updateNav();
+
+  // Canonical role slugs — MUST match backend _ONBOARDING_ROLES in backend/api/main.py.
+  var ROLES = [
+    { slug: 'employee',        label: 'Employee',              desc: 'Currently employed' },
+    { slug: 'former_employee', label: 'Former employee',       desc: 'No longer with this employer' },
+    { slug: 'solicitor',       label: 'Solicitor',             desc: 'Acting for a client' },
+    { slug: 'hr',              label: 'HR / People team',      desc: 'Handling this from the employer side' },
+    { slug: 'union_rep',       label: 'Union representative',  desc: 'Supporting a member' },
+    { slug: 'insurer',         label: 'Insurer',               desc: 'Legal expenses / cover' },
+    { slug: 'other',           label: 'Something else',        desc: '' }
+  ];
+  // Case type is only relevant for the worker-facing roles.
+  var CASE_TYPE_ROLES = { employee: true, former_employee: true };
+
+  var loadingEl = document.getElementById('loading-state');
+  var wizardEl  = document.getElementById('wizard');
+  var errBox    = document.getElementById('error-summary');
+  var errText   = document.getElementById('error-text');
+
+  // Ordered list of step ids. step-casetype is conditionally skipped.
+  var STEPS = ['step-welcome', 'step-role', 'step-employer', 'step-casetype', 'step-success'];
+  var stepIndex = 0;
+  var selectedRole = null;
+
+  function showError(msg) { errText.textContent = msg; errBox.style.display = 'block'; }
+  function clearError() { errBox.style.display = 'none'; }
+
+  function shouldSkip(id) {
+    // Skip the case-type step unless the role is a worker-facing one.
+    return id === 'step-casetype' && !CASE_TYPE_ROLES[selectedRole];
+  }
+
+  function renderStep() {
+    var sections = document.querySelectorAll('.wizard-step');
+    sections.forEach(function (s) { s.classList.remove('active'); });
+    var current = document.getElementById(STEPS[stepIndex]);
+    current.classList.add('active');
+    // progress dots — light up steps completed so far
+    var dots = document.querySelectorAll('.wizard-progress .dot');
+    dots.forEach(function (d, i) { d.classList.toggle('active', i <= stepIndex); });
+    var firstInput = current.querySelector('input:not([readonly]), select, button[data-next], button[data-finish]');
+    if (firstInput) { try { firstInput.focus(); } catch (e) {} }
+  }
+
+  function goNext() {
+    clearError();
+    // Validate role step before advancing.
+    if (STEPS[stepIndex] === 'step-role' && !selectedRole) {
+      showError('Please choose the option that best describes you to continue.');
+      return;
+    }
+    var next = stepIndex + 1;
+    while (next < STEPS.length && shouldSkip(STEPS[next])) next++;
+    stepIndex = Math.min(next, STEPS.length - 1);
+    renderStep();
+  }
+
+  function goPrev() {
+    clearError();
+    var prev = stepIndex - 1;
+    while (prev > 0 && shouldSkip(STEPS[prev])) prev--;
+    stepIndex = Math.max(prev, 0);
+    renderStep();
+  }
+
+  function buildRoleOptions() {
+    var box = document.getElementById('role-options');
+    ROLES.forEach(function (r) {
+      var label = document.createElement('label');
+      label.className = 'role-option';
+      label.setAttribute('data-role', r.slug);
+
+      var input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'role';
+      input.value = r.slug;
+
+      var textWrap = document.createElement('div');
+      var lbl = document.createElement('div');
+      lbl.className = 'role-label';
+      lbl.textContent = r.label;
+      textWrap.appendChild(lbl);
+      if (r.desc) {
+        var d = document.createElement('div');
+        d.className = 'role-desc';
+        d.textContent = r.desc;
+        textWrap.appendChild(d);
+      }
+
+      input.addEventListener('change', function () {
+        selectedRole = r.slug;
+        clearError();
+        document.querySelectorAll('.role-option').forEach(function (o) { o.classList.remove('selected'); });
+        label.classList.add('selected');
+      });
+
+      label.append(input, textWrap);
+      box.appendChild(label);
+    });
+  }
+
+  async function submitOnboarding() {
+    clearError();
+    if (!selectedRole) {
+      // Defensive — should be unreachable since case-type follows role.
+      stepIndex = STEPS.indexOf('step-role');
+      renderStep();
+      showError('Please choose the option that best describes you.');
+      return;
+    }
+
+    var finishBtn = document.getElementById('finish-btn');
+    finishBtn.disabled = true;
+    finishBtn.textContent = 'Setting up…';
+
+    var payload = {
+      role: selectedRole,
+      full_name: document.getElementById('full_name').value.trim() || null,
+      employer_name: document.getElementById('employer_name').value.trim() || null,
+      case_type: CASE_TYPE_ROLES[selectedRole]
+        ? (document.getElementById('case_type').value || null)
+        : null
+    };
+
+    try {
+      var resp = await LAWAPP_AUTH.fetchWithAuth('/onboarding/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      var data = await resp.json();
+      if (!resp.ok) {
+        throw new Error(data.detail || 'Onboarding failed. Please try again.');
+      }
+
+      // Render success + first free tool suggestion.
+      document.getElementById('case-title-out').textContent = data.case_title || 'your first case';
+      var tool = data.suggested_tool || {};
+      document.getElementById('tool-name').textContent = tool.name || 'Free employment rights check';
+      document.getElementById('tool-desc').textContent = tool.description || '';
+      var toolLink = document.getElementById('tool-link');
+      toolLink.href = tool.url || '/pages/intake.html';
+      document.getElementById('dashboard-link').href = data.redirect || '/pages/dashboard.html';
+
+      stepIndex = STEPS.indexOf('step-success');
+      renderStep();
+    } catch (err) {
+      finishBtn.disabled = false;
+      finishBtn.textContent = 'Finish setup';
+      showError(err.message);
+    }
+  }
+
+  // Wire navigation buttons.
+  document.querySelectorAll('[data-next]').forEach(function (b) { b.addEventListener('click', goNext); });
+  document.querySelectorAll('[data-prev]').forEach(function (b) { b.addEventListener('click', goPrev); });
+  document.querySelectorAll('[data-finish]').forEach(function (b) { b.addEventListener('click', submitOnboarding); });
+
+  async function init() {
+    buildRoleOptions();
+    try {
+      // If the user already onboarded, don't re-run the wizard — go to dashboard.
+      var statusResp = await LAWAPP_AUTH.fetchWithAuth('/onboarding/status');
+      if (statusResp.ok) {
+        var status = await statusResp.json();
+        if (status.onboarded) {
+          window.location.href = '/pages/dashboard.html';
+          return;
+        }
+        if (status.full_name) document.getElementById('full_name').value = status.full_name;
+      }
+      // Auto-fill email from the signed-in account.
+      var meResp = await LAWAPP_AUTH.fetchWithAuth('/auth/me');
+      if (meResp.ok) {
+        var me = await meResp.json();
+        document.getElementById('email').value = me.email || '';
+      }
+    } catch (e) {
+      // Non-fatal — the wizard still works without prefill.
+      console.warn('Onboarding prefill failed:', e);
+    }
+    loadingEl.style.display = 'none';
+    wizardEl.style.display = 'block';
+    renderStep();
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>

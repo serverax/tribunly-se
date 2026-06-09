@@ -1,0 +1,427 @@
+PHASE 8A — INTELLIGENCE & WASM AUDIT REPORT
+Report date: 2026-06-01
+Status: AUDIT COMPLETE — no implementation in this phase
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+This phase audits the current implementation state of:
+  A. Algorithm Brain (legal decision pipeline)
+  B. RAG / Legal Retrieval
+  C. WASM (client-side computation)
+
+Nothing was built in this phase.
+All findings are based on code inspection and test evidence.
+
+═══════════════════════════════════════════════════════════════════════════════
+A. ALGORITHM BRAIN — AUDIT
+═══════════════════════════════════════════════════════════════════════════════
+
+── A1. Pipeline stages ─────────────────────────────────────────────────────
+
+File: backend/engine/pipeline.py
+
+Stage 1: classify (classify.py)             STATUS: IMPLEMENTED
+Stage 2: retrieve (retrieve.py)             STATUS: PARTIAL (BM25 active, pgvector blocked)
+Stage 3: deidentify (deidentify.py)         STATUS: IMPLEMENTED (14 PII types stripped)
+Stage 3b: deterministic pre-assessment      STATUS: IMPLEMENTED (assess_logic.py)
+Stage 4: reason (models.py)                 STATUS: PARTIAL (stub default, Haiku optional)
+Stage 5: score (score.py)                   STATUS: IMPLEMENTED
+Stage 6: govern (govern.py)                 STATUS: IMPLEMENTED (5 gates)
+Stage 6b: audit log                         STATUS: IMPLEMENTED (assessment_audit_logs table)
+Stage 7: respond                            STATUS: IMPLEMENTED
+
+Pipeline call: assess() in pipeline.py — wires all stages.
+Evidence: tests/integration/test_phase2d_hardening.py, test_phase2e_audit_log.py
+
+── A2. Classification ──────────────────────────────────────────────────────
+
+File: backend/engine/classify.py
+
+classify() function:           EXISTS
+unfair_dismissal routing:      IMPLEMENTED — keyword-based
+unpaid_wages routing:          IMPLEMENTED — keyword-based (Phase 5B)
+out-of-scope handling:         IMPLEMENTED — returns matter_type="out_of_scope" / "ambiguous"
+missing_facts detection:       PARTIAL — missing EDT returns status="missing_edt"
+ML-based classification:       MISSING — keyword rules only (no model for ambiguous)
+discrimination/other types:    NOT SUPPORTED — returns ambiguous → not_supported
+
+Risk: keyword classifier is brittle for non-obvious queries.
+Recommended phase: 8B — add secondary ML classification for ambiguous cases.
+
+── A3. Reasoning ────────────────────────────────────────────────────────────
+
+File: backend/engine/models.py
+
+StubReasoningModel:            EXISTS — returns insufficient_grounding=True, used in tests
+ClaudeReasoningModel:          EXISTS — Anthropic Haiku; requires ANTHROPIC_API_KEY
+OpenRouterReasoningModel:      EXISTS — disabled by default (OPENROUTER_ENABLED=false)
+select_model():                EXISTS — priority: OpenRouter → Anthropic → Stub
+
+assess_logic.py:
+  build_deterministic_context(): EXISTS for unfair dismissal
+  build_deterministic_context_wages(): EXISTS for unpaid wages
+  compute_value_range(): EXISTS (Limb A/B from rules)
+
+Reasoning model is DEFAULT STUB in production without ANTHROPIC_API_KEY.
+All deterministic fields (deadline, value_range, citations) computed before model call.
+
+Risk: production without API key falls back to stub → insufficient_grounding for all responses.
+Recommended phase: 8B — document model configuration requirements, add health check.
+
+── A4. Structured Assessment Schema ─────────────────────────────────────────
+
+File: shared/schemas.py
+
+StructuredAssessment fields:   STATUS
+  claim_type                   IMPLEMENTED
+  jurisdiction                 IMPLEMENTED
+  has_viable_claim             IMPLEMENTED (yes/no/uncertain)
+  strength                     IMPLEMENTED (low/medium/high/uncertain)
+  reasoning_summary            IMPLEMENTED
+  value_range                  IMPLEMENTED (low/high/currency/basis)
+  key_weaknesses               IMPLEMENTED (must be non-empty — enforced)
+  employer_arguments           IMPLEMENTED
+  deadline                     IMPLEMENTED (source=rules enforced)
+  recommended_next_step        IMPLEMENTED (free_diagnosis_only/prepare_documents/seek_solicitor)
+  citations                    IMPLEMENTED (cite + url)
+  grounding_score              IMPLEMENTED (0.0–1.0)
+  confidence_score             IMPLEMENTED (0.0–1.0)
+  insufficient_grounding       IMPLEMENTED
+
+Evidence: shared/schemas.py, tests/integration/test_phase2d_hardening.py
+
+── A5. Governance Gate ──────────────────────────────────────────────────────
+
+File: backend/engine/govern.py
+
+5 governance checks:
+  1. Grounding check:         IMPLEMENTED — citations must support claims
+  2. Confidence check:        IMPLEMENTED — below threshold → flag
+  3. Determinism check:       IMPLEMENTED — deadline.source must = "rules"
+  4. Boundary check:          IMPLEMENTED — reserved-activity phrases blocked
+  5. Honesty/weakness check:  IMPLEMENTED — key_weaknesses must be populated
+
+Grounding threshold:  0.3 (conservative)
+Confidence threshold: 0.3 (conservative)
+
+Boundary phrases blocked: "we will file", "we will represent", "we will act",
+  "we are your solicitor", "guaranteed", "you will win", "acting as your lawyer"
+
+Evidence: tests/integration/test_phase2d_hardening.py (governance_blocks_reserved_activity)
+
+── A6. Handoff / Solicitor Trigger ─────────────────────────────────────────
+
+recommended_next_step="seek_solicitor":   IMPLEMENTED (set by assess_logic.py heuristics)
+Escalation state engine:                  IMPLEMENTED (timeline.py — Phase 4C)
+Handoff lead capture:                     IMPLEMENTED (POST /handoff/leads)
+Handoff triggers:                         IMPLEMENTED (seek_solicitor / insufficient_grounding / low_confidence)
+Human review routing:                     IMPLEMENTED (controlled_beta_ready gate)
+
+── A7. Algorithm Brain — Summary ────────────────────────────────────────────
+
+Component                   Status      Evidence
+─────────────────────────────────────────────────────────────────────────────
+classify()                  IMPLEMENTED classify.py
+retrieve()                  PARTIAL     retrieve.py (BM25 active)
+reason()                    PARTIAL     models.py (stub default)
+score()                     IMPLEMENTED score.py
+govern()                    IMPLEMENTED govern.py (5 gates)
+StructuredAssessment        IMPLEMENTED shared/schemas.py
+grounding_score             IMPLEMENTED score.py
+confidence_score            IMPLEMENTED score.py
+insufficient_grounding      IMPLEMENTED models.py + pipeline.py
+key_weaknesses              IMPLEMENTED assess_logic.py
+employer_arguments          IMPLEMENTED assess_logic.py
+recommended_next_step       IMPLEMENTED assess_logic.py + schemas.py
+out-of-scope handling       IMPLEMENTED classify.py + pipeline.py
+handoff trigger             IMPLEMENTED timeline.py + handoff_leads
+ML classification           MISSING     keyword-only currently
+Discrimination claim type   MISSING     Phase 5B scope boundary
+
+Risk: MEDIUM — production reasoning depends on ANTHROPIC_API_KEY; without it
+  all responses fall back to insufficient_grounding. This is safe but limits utility.
+
+═══════════════════════════════════════════════════════════════════════════════
+B. RAG / LEGAL RETRIEVAL — AUDIT
+═══════════════════════════════════════════════════════════════════════════════
+
+── B1. Retrieval Architecture ───────────────────────────────────────────────
+
+File: backend/engine/retrieve.py
+
+retrieve()           EXISTS — orchestrates rules + semantic/keyword retrieval
+retrieve_rules()     EXISTS — deterministic facts from rules table
+retrieve_keyword()   EXISTS — BM25 full-text search (plainto_tsquery) over
+                               legislation, case_law_chunks, acas_guidance
+retrieve_semantic()  EXISTS — pgvector cosine search; falls back to BM25 if
+                               embeddings absent (BLOCKED_BY_OPENAI_QUOTA)
+
+Hybrid retrieval: rules (always) + semantic (pgvector if available) + BM25 fallback
+RetrievalBundle: {exact_rules, authorities, insufficient_grounding}
+
+── B2. Rules Table ──────────────────────────────────────────────────────────
+
+Rules table:          EXISTS and SEEDED
+  14 unfair dismissal rules (all verified, some prospective)
+  5 unpaid wages rules (verified/case_law_verified)
+  Migration 011: verification_status + verification_notes
+  Rules verification gate: PASSES (see Phase 5C)
+
+Deterministic values from rules:
+  time_limit_months             IMPLEMENTED (ERA 1996 s.111(2))
+  qualifying_period             IMPLEMENTED (ERA 1996 s.108)
+  weeks_pay_cap_amount          IMPLEMENTED (SI 2026/310 — £751)
+  compensatory_cap_amount       IMPLEMENTED (SI 2026/310 — £123,543)
+  basic_award_formula           IMPLEMENTED (ERA 1996 s.119)
+  early_conciliation_required   IMPLEMENTED (ETA 1996 s.18A)
+  ec_max_duration_weeks         IMPLEMENTED (SI 2025/1153 — 12 weeks)
+
+Evidence: ingestion/rules/seed_unfair_dismissal.py, tests/legal_accuracy/
+
+── B3. Legal Source Tables ──────────────────────────────────────────────────
+
+Table           Status      Evidence
+────────────────────────────────────────────────────────────────────────────
+rules           SEEDED      14 UD rules, 5 UPW rules, verified
+legislation     EXISTS      ingestion/legislation/ingest.py; upsert_legislation()
+                PENDING     Corpus not bulk-ingested (legislation.gov.uk API; limited)
+case_law        EXISTS      ingestion/case_law/ingest.py; upsert_case_law_chunk()
+                BLOCKED     FCL_BULK_LICENCE_GRANTED=false (Find Case Law bulk)
+acas_guidance   EXISTS      upsert_acas_guidance() in db.py; no bulk ingest script found
+source_freshness VIEW       EXISTS (migration 001) — tracks oldest_verified per source
+
+── B4. Embedding / pgvector ─────────────────────────────────────────────────
+
+pgvector extension:     INSTALLED (pgvector/pgvector:pg16 Docker image)
+Embedding columns:      EXIST (legislation.embedding, case_law_chunks has no column per schema)
+Embeddings populated:   0 (BLOCKED_BY_OPENAI_QUOTA)
+BM25 fallback:          ACTIVE — 0 rows skipped, BM25 runs on existing text
+OpenAI quota:           QUOTA EXHAUSTED — 3 tests permanently skipped
+EMBEDDING_MODEL:        text-embedding-3-small (not yet usable)
+Embedding-blocked tests: 3 (test_phase2c_regression.py + test_phase2d_hardening.py)
+
+Impact: Semantic similarity search is non-functional.
+  BM25 keyword fallback provides cited results but lower relevance.
+  Rules retrieval is unaffected (no embeddings needed).
+
+── B5. Citation Bundle ──────────────────────────────────────────────────────
+
+Citation schema: {cite, url} — IMPLEMENTED (shared/schemas.py)
+Authority ref / source_url: IN RULES TABLE
+effective_from / effective_to: IN RULES TABLE
+last_verified_at: IN RULES TABLE + verification_status column (Phase 5C)
+Relevance score: MISSING — BM25 returns ts_rank; not exposed in bundle
+Source freshness view: EXISTS (migration 001)
+Freshness endpoint: GET /freshness — IMPLEMENTED
+
+── B6. Weak Retrieval Handling ──────────────────────────────────────────────
+
+empty rules + empty authorities → insufficient_grounding=True   IMPLEMENTED
+BM25 fallback when pgvector absent                               IMPLEMENTED
+_MIN_AUTHORITIES_FOR_GROUNDING = 0 (retrieve.py line ~34)       RISK: 0 authorities acceptable
+stale source warning                                             PARTIAL (last_verified_at exists
+                                                                  but no staleness gate in pipeline)
+conflicting sources → human review                               NOT IMPLEMENTED
+
+── B7. RAG Summary ──────────────────────────────────────────────────────────
+
+Component                     Status      Evidence
+──────────────────────────────────────────────────────────────────────────────
+Rules retrieval               IMPLEMENTED seed_unfair_dismissal.py + retrieve_rules()
+Legislation retrieval         PARTIAL     Table exists; minimal corpus ingested
+Case law retrieval            PARTIAL     Table exists; FCL licence blocked
+ACAS retrieval                PARTIAL     Table exists; no bulk ingestion script found
+BM25 keyword fallback         IMPLEMENTED retrieve_keyword() — active
+pgvector semantic             BLOCKED     BLOCKED_BY_OPENAI_QUOTA
+Citation bundle               IMPLEMENTED RetrievalBundle schema
+Freshness tracking            PARTIAL     last_verified_at exists; no staleness gate
+Weak retrieval handling       PARTIAL     insufficient_grounding=True; floor=0
+
+Risk: HIGH — legal corpus is thin (minimal legislation text, no case law text, no ACAS text
+  beyond seed data). BM25 has little to search. Retrieval returns rules only.
+  For full RAG capability, corpus must be populated (Phase 8C).
+
+═══════════════════════════════════════════════════════════════════════════════
+C. WASM — AUDIT
+═══════════════════════════════════════════════════════════════════════════════
+
+── C1. WASM Module ──────────────────────────────────────────────────────────
+
+WASM files (.wasm):               NONE — no compiled WASM exists
+Rust/Cargo project:               NONE — no Rust source for WASM
+wasm-pack / build pipeline:       NONE — no build configuration
+WASM module in client:            NONE — no fetch/instantiate calls
+
+Evidence: `find . -name "*.wasm"` returns zero results.
+
+── C2. JavaScript Fallback (Deadline) ───────────────────────────────────────
+
+File: client/public/js/deadline.js
+
+Deadline calculator:              IMPLEMENTED in JavaScript (Phase 3B)
+  addCalendarMonths(date, n)      IMPLEMENTED — mirrors Python _add_months()
+  computeDeadline(edt, months, dayA, dayB)  IMPLEMENTED
+  fetchDeadlineRules(apiBase)     IMPLEMENTED — fetches from /rules/{claim_type}
+  EC stop-clock logic             IMPLEMENTED (pause_days + floor)
+  Floor calculation               IMPLEMENTED (one month after Day B)
+  Assigned to window.LawappDeadline  YES
+
+Live deadline preview in intake:  IMPLEMENTED (intake.html — Phase 3B)
+Server-side mirror validation:    IMPLEMENTED (POST /assess validates client_deadline)
+Rule values from backend:         IMPLEMENTED — never hardcoded in JS
+JS fallback:                      IS the primary implementation (WASM not built)
+
+Evidence: client/public/js/deadline.js, tests/integration/test_phase3b_deadline.py
+
+── C3. WASM for Form Validation ─────────────────────────────────────────────
+
+WASM form validation:             MISSING
+JS form validation:               PARTIAL — intake.html has inline JS validation
+  Date format check:              IMPLEMENTED
+  EC end before start:            IMPLEMENTED
+  EDT after start date:           IMPLEMENTED
+  Missing required fields:        PARTIAL (client-side only, no dedicated module)
+
+── C4. Document Preview / Assembly ──────────────────────────────────────────
+
+WASM document preview:            MISSING
+JS document preview:              MISSING — document is fetched from server, shown in <textarea>
+Client-side assembly:             MISSING — no local template rendering
+Document preview download:        MISSING — copy-to-clipboard only
+Server-generated documents:       IMPLEMENTED (backend/engine/documents.py)
+
+Risk: Each document generation requires a server round-trip.
+  User cannot preview offline or without server connectivity.
+
+── C5. WASM / JS Summary ────────────────────────────────────────────────────
+
+Component                   Status      Evidence
+──────────────────────────────────────────────────────────────────────────────
+WASM module (.wasm)         MISSING     find . -name "*.wasm" returns 0 results
+Rust build pipeline         MISSING     No Cargo.toml in project
+Deadline calculator (JS)    IMPLEMENTED client/public/js/deadline.js
+EC stop-the-clock (JS)      IMPLEMENTED deadline.js computeDeadline()
+Rule values from server     IMPLEMENTED fetchDeadlineRules() → /rules/{type}
+Server mirror validation    IMPLEMENTED POST /assess validates client_deadline
+No hardcoded legal values   CONFIRMED   timeLimitMonths from API only
+Form validation (JS)        PARTIAL     inline in intake.html
+Document preview (WASM/JS)  MISSING     server round-trip required
+JS fallback                 N/A         JS IS the primary implementation
+
+Risk: HIGH — WASM scope from roadmap is entirely unbuilt. JavaScript fallback
+  handles deadline only. Document preview requires network round-trip.
+  No offline capability.
+
+═══════════════════════════════════════════════════════════════════════════════
+CONSOLIDATED COMPONENT TABLE
+═══════════════════════════════════════════════════════════════════════════════
+
+Component                       Status      Evidence File                  Risk       Phase
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ALGORITHM BRAIN
+classify()                      IMPLEMENTED classify.py                   LOW        Keyword-only
+retrieve() pipeline             PARTIAL     retrieve.py (BM25 active)     MEDIUM     8C
+reason() Haiku model            PARTIAL     models.py (API key req.)       MEDIUM     8B
+score() grounding/confidence    IMPLEMENTED score.py                      LOW        —
+govern() 5-gate checks          IMPLEMENTED govern.py                     LOW        —
+StructuredAssessment schema     IMPLEMENTED shared/schemas.py             LOW        —
+insufficient_grounding flag     IMPLEMENTED pipeline.py                   LOW        —
+key_weaknesses (required)       IMPLEMENTED assess_logic.py               LOW        —
+employer_arguments              IMPLEMENTED assess_logic.py               LOW        —
+recommended_next_step           IMPLEMENTED assess_logic.py               LOW        —
+out-of-scope not_supported      IMPLEMENTED classify.py + pipeline.py     LOW        —
+handoff trigger                 IMPLEMENTED timeline.py + handoff_leads   LOW        —
+ML/model classification         MISSING     —                             MEDIUM     8B
+Discrimination claim type       MISSING     —                             LOW (MVP)  Post-8F
+
+RAG / LEGAL RETRIEVAL
+Rules table (seeded, verified)  IMPLEMENTED seed_unfair_dismissal.py     LOW        —
+Rules verification gate         IMPLEMENTED check_rules_verification.py  LOW        —
+Legislation retrieval           PARTIAL     retrieve.py (BM25; sparse)    HIGH       8C
+Case law retrieval              PARTIAL     retrieve.py (FCL blocked)     HIGH       8C
+ACAS retrieval                  PARTIAL     retrieve.py (no bulk ingest)  HIGH       8C
+BM25 keyword fallback           IMPLEMENTED retrieve_keyword()            LOW        —
+pgvector/semantic retrieval     BLOCKED     OpenAI quota exhausted         HIGH       8C
+Citation bundle schema          IMPLEMENTED shared/schemas.py             LOW        —
+Source freshness tracking       PARTIAL     last_verified_at; no gate     LOW        8C
+Legal corpus population         MISSING     No bulk legislative ingest    HIGH       8C
+Staleness gate in pipeline      MISSING     —                             LOW        8C
+
+WASM
+WASM module (.wasm)             MISSING     —                              HIGH       8D
+Rust build pipeline             MISSING     —                              HIGH       8D
+Deadline calculator (JS)        IMPLEMENTED deadline.js                   LOW        —
+EC stop-the-clock (JS)          IMPLEMENTED deadline.js                   LOW        —
+Server-side mirror validation   IMPLEMENTED Phase 3B test suite           LOW        —
+No hardcoded legal values       CONFIRMED   fetchDeadlineRules() from API  LOW        —
+Form validation (JS)            PARTIAL     intake.html inline             MEDIUM     8D
+Document preview (local)        MISSING     —                              MEDIUM     8E
+Offline capability              MISSING     —                              LOW (MVP)  8D-8E
+
+═══════════════════════════════════════════════════════════════════════════════
+RECOMMENDED PHASE SEQUENCE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 8B — Algorithm Brain Backend
+  Priority: HIGH
+  Reason: Production reasoning falls back to stub without ANTHROPIC_API_KEY.
+  Scope: Harden pipeline; add real-model health check; tighten governance;
+         add ML-classification fallback for ambiguous; document model config.
+
+Phase 8C — RAG Production Retrieval
+  Priority: HIGH
+  Reason: Legal corpus is thin; pgvector blocked; ACAS/case_law minimal.
+  Scope: Bulk legislation ingestion; ACAS bulk; resolve OpenAI quota OR
+         add local embedding alternative; staleness gate in pipeline;
+         minimum authority floor > 0.
+
+Phase 8D — WASM Deadline + Validation Engine
+  Priority: MEDIUM
+  Reason: JavaScript fallback covers deadline; WASM would improve performance
+         and offline capability; form validation needs dedicated module.
+  Scope: Build WASM module (Rust + wasm-pack); integrate with intake;
+         server mirror validation for all WASM outputs.
+
+Phase 8E — WASM Document Preview + Frontend Citations
+  Priority: MEDIUM
+  Reason: Document preview requires server round-trip; no citation display.
+  Scope: Local document assembly (WASM/JS); citation display in assessment;
+         legal boundary notice integration.
+
+Phase 8F — End-to-End Intelligence Journey
+  Priority: HIGH (after 8B-8E)
+  Reason: Full journey must be proven with real data and real model.
+  Scope: End-to-end integration test; real model with real retrieval;
+         coverage of all happy + sad paths.
+
+═══════════════════════════════════════════════════════════════════════════════
+HARD DEPENDENCIES
+═══════════════════════════════════════════════════════════════════════════════
+
+  8B requires: ANTHROPIC_API_KEY (or equivalent) for real-model testing
+  8C requires: OPENAI_API_KEY (or alternative embedder) for pgvector
+               FCL_BULK_LICENCE_GRANTED=true (or Find Case Law open data)
+  8D requires: Rust toolchain + wasm-pack for WASM build
+  8E requires: 8D complete
+  8F requires: 8B + 8C + 8D + 8E complete
+
+Current blockers that CANNOT be resolved in code:
+  - OPENAI_API_KEY quota: operator must provide new key
+  - FCL bulk licence: legal/commercial agreement required
+  - DPIA/privacy legal review: human sign-off required (see Phase 6)
+
+═══════════════════════════════════════════════════════════════════════════════
+GLOBAL HARD RULES CONFIRMED
+═══════════════════════════════════════════════════════════════════════════════
+
+  - No implementation in Phase 8A (audit only)
+  - No production security gates weakened
+  - No broad git add
+  - Report staged explicitly: reports/phase8a-intelligence-wasm-audit-report.txt only
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 8A AUDIT
+═══════════════════════════════════════════════════════════════════════════════

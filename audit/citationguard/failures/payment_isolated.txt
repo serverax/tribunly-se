@@ -1,0 +1,32 @@
+
+==================================== ERRORS ====================================
+________________ ERROR collecting tests/payment/test_payment.py ________________
+ImportError while importing test module '/mnt/f/lawapp/tests/payment/test_payment.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/payment/test_payment.py:18: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+____________ ERROR collecting tests/security/test_payment_access.py ____________
+ImportError while importing test module '/mnt/f/lawapp/tests/security/test_payment_access.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/security/test_payment_access.py:17: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+=============================== warnings summary ===============================
+../../../usr/lib/python3/dist-packages/_pytest/config/__init__.py:1373
+  /usr/lib/python3/dist-packages/_pytest/config/__init__.py:1373: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/payment/test_payment.py
+ERROR tests/security/test_payment_access.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+1 warning, 2 errors in 1.06s

@@ -1,0 +1,121 @@
+--- L. CI/CD AUDIT ---
+total 37
+drwxrwxrwx 1 kalshafee kalshafee  512 Jun  4 06:48 .
+drwxrwxrwx 1 kalshafee kalshafee  512 Jun  1 10:38 ..
+-rwxrwxrwx 1 kalshafee kalshafee 1171 Jun  3 02:10 build-images.yml
+-rwxrwxrwx 1 kalshafee kalshafee 9807 Jun  2 17:31 ci.yml
+-rwxrwxrwx 1 kalshafee kalshafee 2770 Jun  2 17:31 deploy-iterlaw-ai.yml.disabled
+-rwxrwxrwx 1 kalshafee kalshafee 2682 Jun  2 17:31 deploy-staging.yml
+-rwxrwxrwx 1 kalshafee kalshafee 1796 Jun  2 17:31 docker-proof.yml
+-rwxrwxrwx 1 kalshafee kalshafee 2537 Jun  4 06:48 lawapp-ci.yml
+-rwxrwxrwx 1 kalshafee kalshafee 2744 Jun  3 14:25 lawapp-deploy-k8s.yml
+-rwxrwxrwx 1 kalshafee kalshafee 6347 Jun  4 06:48 lawapp-deploy-talos.yml
+-rwxrwxrwx 1 kalshafee kalshafee  513 Jun  2 17:31 smoke.yml
+.github/workflows/deploy-iterlaw-ai.yml.disabled:1:name: Deploy to iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:13:    name: Deploy lawapp-backend to iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:31:      - name: Validate namespace is iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:33:          kubectl get ns iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:34:          echo "NAMESPACE=iterlaw-ai" >> $GITHUB_ENV
+.github/workflows/deploy-iterlaw-ai.yml.disabled:38:          kubectl get secret lawapp-secrets -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:39:          kubectl get secret ghcr-pull-secret -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:40:          kubectl get configmap lawapp-config -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:47:        run: kubectl apply -f infra/k8s/iterlaw/configmap.yaml -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:53:            -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:56:        run: kubectl rollout status deployment/lawapp-backend -n iterlaw-ai --timeout=180s
+.github/workflows/deploy-iterlaw-ai.yml.disabled:59:        run: kubectl get pods -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml.disabled:63:          POD=$(kubectl get pod -n iterlaw-ai -l app=lawapp-backend \
+.github/workflows/deploy-iterlaw-ai.yml.disabled:65:          RESULT=$(kubectl exec -n iterlaw-ai $POD -- \
+.github/workflows/deploy-iterlaw-ai.yml.disabled:72:          POD=$(kubectl get pod -n iterlaw-ai -l app=lawapp-backend \
+.github/workflows/deploy-iterlaw-ai.yml.disabled:74:          RESULT=$(kubectl exec -n iterlaw-ai $POD -- curl -s -X POST \
+.github/workflows/deploy-iterlaw-ai.yml.disabled:83:        run: kubectl logs -n iterlaw-ai deploy/lawapp-backend --tail=50 || true
+.github/workflows/deploy-staging.yml:13:    name: Deploy to iterlaw-ai namespace
+.github/workflows/deploy-staging.yml:32:          kubectl get ns iterlaw-ai
+.github/workflows/deploy-staging.yml:36:          kubectl get secret lawapp-secrets -n iterlaw-ai
+.github/workflows/deploy-staging.yml:37:          kubectl get secret ghcr-pull-secret -n iterlaw-ai
+.github/workflows/deploy-staging.yml:38:          kubectl get configmap lawapp-config -n iterlaw-ai
+.github/workflows/deploy-staging.yml:41:        run: kubectl apply -f infra/k8s/iterlaw/configmap.yaml -n iterlaw-ai
+.github/workflows/deploy-staging.yml:57:            -n iterlaw-ai
+.github/workflows/deploy-staging.yml:59:            -n iterlaw-ai --timeout=180s
+.github/workflows/deploy-staging.yml:63:          POD=$(kubectl get pod -n iterlaw-ai -l app=lawapp-backend \
+.github/workflows/deploy-staging.yml:65:          kubectl exec -n iterlaw-ai $POD -- \
+.github/workflows/deploy-staging.yml:67:          kubectl exec -n iterlaw-ai $POD -- curl -sf -X POST \
+.github/workflows/deploy-staging.yml:76:          kubectl get pods -n iterlaw-ai
+.github/workflows/deploy-staging.yml:77:          kubectl logs -n iterlaw-ai deploy/lawapp-backend --tail=30
+.github/workflows/smoke.yml:24:        run: bash scripts/smoke-iterlaw-ai.sh
+infra/k8s/iterlaw/backend-deployment.yaml:13:  namespace: iterlaw-ai
+infra/k8s/iterlaw/backend-deployment.yaml:16:    project: iterlaw
+infra/k8s/iterlaw/backend-deployment.yaml:26:        project: iterlaw
+infra/k8s/iterlaw/backend-deployment.yaml:49:              value: "lawapp-postgres.iterlaw-ai.svc.cluster.local"
+infra/k8s/iterlaw/backend-service.yaml:8:  namespace: iterlaw-ai
+infra/k8s/iterlaw/backend-service.yaml:11:    project: iterlaw
+infra/k8s/iterlaw/configmap.yaml:7:  namespace: iterlaw-ai
+infra/k8s/iterlaw/configmap.yaml:17:  APP_BASE_URL: "https://iterlaw.ai"
+infra/k8s/iterlaw/embedding-job.yaml:6:# Apply: kubectl apply -f infra/k8s/iterlaw/embedding-job.yaml -n iterlaw-ai
+infra/k8s/iterlaw/embedding-job.yaml:7:# Watch: kubectl logs -n iterlaw-ai job/lawapp-embed-corpus -f
+infra/k8s/iterlaw/embedding-job.yaml:8:# Clean: kubectl delete job lawapp-embed-corpus -n iterlaw-ai
+infra/k8s/iterlaw/embedding-job.yaml:13:  namespace: iterlaw-ai
+infra/k8s/iterlaw/embedding-job.yaml:38:              value: "lawapp-postgres.iterlaw-ai.svc.cluster.local"
+infra/k8s/iterlaw/external-db-connection.yaml:17:  namespace: iterlaw-ai
+infra/k8s/iterlaw/ingestion-job-acas.yaml:7:  namespace: iterlaw-rag
+infra/k8s/iterlaw/ingestion-job-acas.yaml:9:    project: iterlaw
+infra/k8s/iterlaw/ingestion-job-legislation.yaml:9:  namespace: iterlaw-rag
+infra/k8s/iterlaw/ingestion-job-legislation.yaml:11:    project: iterlaw
+infra/k8s/iterlaw/ingress-staging.yaml:9:#   kubectl port-forward -n iterlaw-ai svc/legal-orchestrator 8080:80
+infra/k8s/iterlaw/ingress-staging.yaml:16:  namespace: iterlaw-ai
+infra/k8s/iterlaw/ingress-staging.yaml:18:    project: iterlaw
+infra/k8s/iterlaw/ingress-staging.yaml:28:    - host: staging.iterlaw.ai   # REPLACE with actual staging domain
+infra/k8s/iterlaw/ingress-staging.yaml:40:  #       - staging.iterlaw.ai
+infra/k8s/iterlaw/ingress-staging.yaml:41:  #     secretName: iterlaw-staging-tls
+infra/k8s/iterlaw/namespace.yaml:7:  name: iterlaw-ai
+infra/k8s/iterlaw/namespace.yaml:9:    project: iterlaw
+infra/k8s/iterlaw/namespace.yaml:15:  name: iterlaw-api
+infra/k8s/iterlaw/namespace.yaml:17:    project: iterlaw
+infra/k8s/iterlaw/namespace.yaml:23:  name: iterlaw-rag
+infra/k8s/iterlaw/namespace.yaml:25:    project: iterlaw
+infra/k8s/iterlaw/namespace.yaml:31:  name: iterlaw-monitoring
+infra/k8s/iterlaw/namespace.yaml:33:    project: iterlaw
+infra/k8s/iterlaw/namespace.yaml:39:  name: iterlaw-security
+infra/k8s/iterlaw/namespace.yaml:41:    project: iterlaw
+infra/k8s/iterlaw/networkpolicy.yaml:9:  namespace: iterlaw-ai
+infra/k8s/iterlaw/networkpolicy.yaml:21:              kubernetes.io/metadata.name: iterlaw-ai
+infra/k8s/iterlaw/networkpolicy.yaml:24:              kubernetes.io/metadata.name: iterlaw-monitoring
+infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw — Staging Postgres + pgvector in iterlaw-ai
+infra/k8s/iterlaw/postgres-staging.yaml:9:#   kubectl apply -f infra/k8s/iterlaw/postgres-staging.yaml -n iterlaw-ai
+infra/k8s/iterlaw/postgres-staging.yaml:14:  namespace: iterlaw-ai
+infra/k8s/iterlaw/postgres-staging.yaml:17:    project: iterlaw
+infra/k8s/iterlaw/postgres-staging.yaml:28:        project: iterlaw
+infra/k8s/iterlaw/postgres-staging.yaml:76:  namespace: iterlaw-ai
+infra/k8s/iterlaw/postgres-staging.yaml:79:    project: iterlaw
+infra/k8s/iterlaw/rag-deployment.yaml:11:  namespace: iterlaw-rag
+infra/k8s/iterlaw/rag-deployment.yaml:14:    project: iterlaw
+infra/k8s/iterlaw/rag-deployment.yaml:24:        project: iterlaw
+infra/k8s/iterlaw/README.md:7:Context: `aks-iterlaw-we-prod` (Azure AKS)
+infra/k8s/iterlaw/README.md:8:Namespaces: `iterlaw-ai`, `iterlaw-api`, `iterlaw-rag`, `iterlaw-monitoring`, `iterlaw-security`
+infra/k8s/iterlaw/README.md:15:| legal-orchestrator      | iterlaw-ai  | Pending   | Wrong image (rightsnow); node taint blocks scheduling |
+infra/k8s/iterlaw/README.md:16:| lawapp-backend          | iterlaw-ai  | MISSING   | Not yet deployed (manifests in this dir)  |
+infra/k8s/iterlaw/README.md:38:kubectl apply -f configmap.yaml -n iterlaw-ai
+infra/k8s/iterlaw/README.md:41:# kubectl create secret generic lawapp-secrets --from-env-file=.env -n iterlaw-ai
+infra/k8s/iterlaw/README.md:44:kubectl apply -f backend-service.yaml -n iterlaw-ai
+infra/k8s/iterlaw/README.md:47:kubectl apply -f backend-deployment.yaml -n iterlaw-ai
+infra/k8s/iterlaw/README.md:50:kubectl apply -f networkpolicy.yaml -n iterlaw-ai
+infra/k8s/iterlaw/README.md:53:kubectl apply -f ingestion-job-legislation.yaml -n iterlaw-rag
+infra/k8s/iterlaw/README.md:54:kubectl apply -f ingestion-job-acas.yaml -n iterlaw-rag
+infra/k8s/iterlaw/README.md:55:kubectl apply -f source-freshness-cronjob.yaml -n iterlaw-rag
+infra/k8s/iterlaw/README.md:58:kubectl rollout status deployment/lawapp-backend -n iterlaw-ai
+infra/k8s/iterlaw/README.md:59:kubectl logs -l app=lawapp-backend -n iterlaw-ai --tail=50
+infra/k8s/iterlaw/README.md:64:- NEVER apply to any namespace outside the `iterlaw-*` list above
+infra/k8s/iterlaw/secrets.example.yaml:5:#   -n iterlaw-ai --dry-run=client -o yaml | kubectl apply -f -
+infra/k8s/iterlaw/secrets.example.yaml:12:  namespace: iterlaw-ai
+infra/k8s/iterlaw/source-freshness-cronjob.yaml:8:  namespace: iterlaw-rag
+infra/k8s/iterlaw/source-freshness-cronjob.yaml:10:    project: iterlaw
+infra/k8s/lawapp-monitoring-cronjobs.yaml:25:            command: ["bash", "scripts/smoke-iterlaw-ai.sh"]
+scripts/check-iterlaw-ai.sh:4:NAMESPACE="iterlaw-ai"
+scripts/deploy-iterlaw-ai.sh:4:NAMESPACE="iterlaw-ai"
+scripts/deploy-iterlaw-ai.sh:29:bash "$(dirname "$0")/smoke-iterlaw-ai.sh"
+scripts/deploy-staging.sh:9:NAMESPACE="iterlaw-ai"
+scripts/deploy-staging.sh:23:kubectl apply -f infra/k8s/iterlaw/configmap.yaml -n "$NAMESPACE"
+scripts/deploy-staging.sh:35:bash scripts/smoke-iterlaw-ai.sh
+scripts/smoke-iterlaw-ai.sh:4:NAMESPACE="iterlaw-ai"
+scripts/smoke-iterlaw-ai.sh:17:echo "=== iterlaw-ai smoke tests ==="
+scripts/smoke-staging.sh:3:# Alias for smoke-iterlaw-ai.sh — kept for automation naming consistency.
+scripts/smoke-staging.sh:6:exec bash scripts/smoke-iterlaw-ai.sh

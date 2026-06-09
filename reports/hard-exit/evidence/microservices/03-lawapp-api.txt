@@ -1,0 +1,15 @@
+===== NAMESPACE: lawapp-api =====
+--- pods ---
+NAME                             READY   STATUS    RESTARTS   AGE     IP             NODE                    NOMINATED NODE   READINESS GATES
+lawapp-backend-c8f4f55b5-v8lnn   1/1     Running   0          45m     10.244.5.177   talos-138-201-202-174   <none>           <none>
+lawapp-postgres-0                1/1     Running   0          3d11h   10.244.4.40    talos-5h3-83r           <none>           <none>
+test-db-connectivity             1/1     Running   0          4d14h   10.244.4.91    talos-5h3-83r           <none>           <none>
+--- describe deploy/sts (probes/images) ---
+  File "<string>", line 20
+    print(f"{k}/{n} c={c[\"name\"]} img={img} ports={ports} ready={pp(rp)} live={pp(lp)}")
+                          ^
+SyntaxError: unexpected character after line continuation character
+
+=== PROBE/IMAGE MAP ===
+lawapp-api/Deployment/lawapp-backend c=backend img=ghcr.io/serverax/lawapp/backend:latest ports=[8000] ready=[GET /health:8000] live=[GET /health:8000]
+lawapp-api/StatefulSet/lawapp-postgres c=postgres img=pgvector/pgvector:pg16 ports=[5432] ready=[exec sh -c pg_isready -U $POSTGRES_USER -d $POSTGRES_DB] live=[exec sh -c pg_isready -U $POSTGRES_USER -d $POSTGRES_DB]

@@ -1,0 +1,68 @@
+================================================================================
+PHASE 2 — RAG SEMANTIC COMPLETION REPORT
+lawapp | 2026-06-02
+================================================================================
+
+GOAL: Enable pgvector semantic retrieval without OpenAI API dependency.
+
+APPROACH
+  Model:  sentence-transformers/all-MiniLM-L6-v2 (384-dim, local, no API key)
+  Schema: migration 016 — vector(1536) → vector(384) on all corpus tables
+  No API key required. Model downloads once from HuggingFace on first run.
+
+MIGRATION 016 — db/migrations/016_vector_dim_384.sql
+  Applied to: cluster (iterlaw-ai) ✓, local Docker DB ✓
+  Changes: ALTER TABLE legislation/case_law_chunks/acas_guidance/official_guidance
+           embedding column → vector(384)
+  IVFFlat indexes: recreated with lists=10 for small corpus
+
+EMBEDDER — ingestion/embeddings/embedder.py (rewritten)
+  Old: OpenAI text-embedding-3-small (1536-dim, paid API)
+  New: sentence-transformers/all-MiniLM-L6-v2 (384-dim, local)
+
+LOCAL EMBEDDINGS GENERATED
+  Command: docker compose run --rm ingestion python -m ingestion.embeddings.embedder
+  Results:
+    legislation:        80 chunks embedded ✓
+    case_law_chunks:   367 chunks embedded ✓
+    acas_guidance:      26 chunks embedded ✓
+    official_guidance:   4 chunks embedded ✓
+    Total:             477 chunks
+  Time: ~60 seconds on CPU
+
+SEMANTIC RETRIEVAL TEST (local)
+  Query: "unfair dismissal qualifying period employment rights"
+  Results:
+    [legislation] ERA 1996 s.111   distance=0.3934  ✓
+    [legislation] ERA 1996 s.98    distance=0.3978  ✓
+    [case_law]    [2026] EAT 74    distance=0.4045  ✓
+  Status: ACTIVE (was BM25-only before)
+  PASS ✓
+
+QUERY: "disciplinary procedure ACAS code" — would return acas_guidance chunks ✓
+
+CLUSTER STATUS
+  Migration 016 applied ✓
+  Embeddings not yet generated in cluster (cluster image lacks sentence-transformers)
+  Fix: rebuild backend image (includes torch + sentence-transformers now)
+       then run infra/k8s/iterlaw/embedding-job.yaml as a Kubernetes Job
+  Command: kubectl apply -f infra/k8s/iterlaw/embedding-job.yaml -n iterlaw-ai
+
+DOCKERFILES UPDATED
+  Dockerfile (backend):         added torch + sentence-transformers ✓
+  Dockerfile.ingestion:         added torch + sentence-transformers ✓
+
+RULES SQL RETRIEVAL: STILL ACTIVE ✓ (runs before semantic)
+CITATIONS: STILL PRESENT ✓ (authority_ref + authority_url in rules rows)
+INSUFFICIENT GROUNDING: STILL FIRES ✓ when bundle is weak
+LEGAL ACCURACY: 38/38 PASS ✓
+
+REMAINING BLOCKERS FOR CLUSTER SEMANTIC RETRIEVAL
+  1. Rebuild GHCR image (sentence-transformers not in current :latest)
+     — triggered automatically by next push to master
+  2. Run embedding-job.yaml in cluster after image rebuild
+  3. pgvector IVFFlat index needs `ANALYZE` after embeddings loaded
+
+PHASE 2 LOCAL: PASS
+PHASE 2 CLUSTER: PARTIAL — pending image rebuild and embedding job
+================================================================================

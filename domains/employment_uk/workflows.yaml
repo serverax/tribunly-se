@@ -1,0 +1,106 @@
+# employment_uk — workflow pack (which platform workflows this domain enables).
+# Loaded by ingestion/domain_loader.py; consumed by the Corpus Ingestion AIA and
+# proof scripts. Each workflow declares the DB tables/rules/sources it depends on
+# so the proof can fail-closed if a dependency is missing.
+domain: employment_uk
+workflows:
+  - workflow_id: evidence_intake
+    domain: employment_uk
+    claim_type: any
+    required_tables: [documents, extracted_facts]
+    required_rules: []
+    required_sources: []
+    validators: [pii_chokepoint, fail_closed_on_zero_facts]
+    fail_closed_triggers: [no_facts_extracted, unsupported_mime_type]
+    output_schema: extracted_facts_v1
+    status: implemented
+    last_verified_at: 2026-06-04
+
+  - workflow_id: unfair_dismissal_diagnosis
+    domain: employment_uk
+    claim_type: unfair_dismissal
+    required_tables: [legislation, rules]
+    required_rules:
+      - unfair_dismissal.time_limit_months
+      - unfair_dismissal.qualifying_period
+    required_sources: ["ERA 1996 s.94", "ERA 1996 s.98", "ERA 1996 s.108", "ERA 1996 s.111"]
+    validators: [citation_resolves_to_db_row, rules_cited_and_dated]
+    fail_closed_triggers: [insufficient_grounding, missing_rule]
+    output_schema: assessment_result_v1
+    status: implemented
+    last_verified_at: 2026-06-04
+
+  - workflow_id: constructive_dismissal_engine
+    domain: employment_uk
+    claim_type: constructive_dismissal
+    required_tables: [legislation, rules]
+    required_rules: [unfair_dismissal.time_limit_months]
+    required_sources: ["ERA 1996 s.94", "ERA 1996 s.95"]
+    validators: [citation_resolves_to_db_row, deterministic_matrix]
+    fail_closed_triggers: [insufficient_grounding, missing_statute_row]
+    output_schema: constructive_dismissal_result_v1
+    status: implemented
+    last_verified_at: 2026-06-04
+
+  - workflow_id: deadline_acas_clock
+    domain: employment_uk
+    claim_type: unfair_dismissal
+    required_tables: [legislation, acas_guidance]
+    required_rules: [unfair_dismissal.time_limit_months]
+    required_sources: ["ERA 1996 s.111", "ETA 1996 s.18A"]
+    validators: [rules_cited_and_dated]
+    fail_closed_triggers: [missing_rule]
+    output_schema: deadline_result_v1
+    status: implemented
+    last_verified_at: 2026-06-04
+
+  - workflow_id: hybrid_rag_legal_answer
+    domain: employment_uk
+    claim_type: any
+    required_tables: [legislation, acas_guidance, official_guidance]
+    required_rules: []
+    required_sources: []
+    validators: [citation_resolves_to_db_row, source_url_required, reject_fabricated_citation]
+    fail_closed_triggers: [insufficient_grounding, weak_rag]
+    output_schema: rag_answer_v1
+    status: implemented
+    last_verified_at: 2026-06-04
+
+  - workflow_id: schedule_of_loss
+    domain: employment_uk
+    claim_type: unfair_dismissal
+    required_tables: [rules]
+    required_rules:
+      - unfair_dismissal.weeks_pay_cap_amount
+      - unfair_dismissal.compensatory_cap_amount
+      - unfair_dismissal.basic_award_formula
+    required_sources: ["ERA 1996 s.119", "ERA 1996 s.124", "ERA 1996 s.227"]
+    validators: [rules_cited_and_dated]
+    fail_closed_triggers: [missing_rule, uncited_figure]
+    output_schema: schedule_of_loss_v1
+    status: implemented
+    last_verified_at: 2026-06-04
+
+  - workflow_id: document_generation
+    domain: employment_uk
+    claim_type: any
+    required_tables: [legislation, rules]
+    required_rules: []
+    required_sources: []
+    validators: [citation_resolves_to_db_row, no_solicitor_implication]
+    fail_closed_triggers: [insufficient_grounding]
+    output_schema: generated_document_v1
+    status: partial
+    last_verified_at: 2026-06-04
+
+  - workflow_id: discrimination_vento
+    domain: employment_uk
+    claim_type: discrimination
+    required_tables: [legislation]
+    required_rules: []
+    required_sources: ["Equality Act 2010"]
+    validators: [citation_resolves_to_db_row]
+    fail_closed_triggers: [domain_inactive]
+    output_schema: vento_band_result_v1
+    status: not_started
+    last_verified_at: 2026-06-04

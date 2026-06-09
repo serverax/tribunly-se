@@ -1,0 +1,16 @@
+{
+  "name": "lawapp-frontend",
+  "version": "1.0.0",
+  "description": "Static frontend for lawapp — UK Employment Claim Co-Pilot",
+  "type": "module",
+  "scripts": {
+    "lint": "node scripts/check.mjs --lint",
+    "typecheck": "node scripts/check.mjs --lint",
+    "build": "node scripts/check.mjs --assets",
+    "test": "node scripts/check.mjs",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0"
+  }
+}

@@ -1,0 +1,14 @@
+
+== Kubernetes runtime ==
+  [PASS] lawapp-ai/lawapp-brain available=1
+  [PASS] lawapp-api/lawapp-backend available=1
+  [PASS] lawapp-ai/lawapp-rules-engine available=1
+  [PASS] lawapp-rag/lawapp-rag-retrieval available=1
+  [PASS] lawapp-rag/lawapp-rag-ingestion available=1
+  [PASS] no CrashLoopBackOff pods
+  [PASS] no Pending pods
+  [PASS] brain /health = 200
+  [PASS] microservices wiring proof
+
+=== GATE RESULT: final-kubernetes-runtime-gate ===
+RESULT: PASS

@@ -1,0 +1,43 @@
+                List of relations
+ Schema |         Name          | Type  | Owner  
+--------+-----------------------+-------+--------
+ public | acas_guidance         | table | lawapp
+ public | assessment_audit_logs | table | lawapp
+ public | bills                 | table | lawapp
+ public | brain_traces          | table | lawapp
+ public | case_law_chunks       | table | lawapp
+ public | case_law_documents    | table | lawapp
+ public | case_timeline_events  | table | lawapp
+ public | cases                 | table | lawapp
+ public | document_readiness    | table | lawapp
+ public | documents             | table | lawapp
+ public | evaluation_results    | table | lawapp
+ public | evidence_items        | table | lawapp
+ public | funnel_events         | table | lawapp
+ public | guardrail_events      | table | lawapp
+ public | handoff_leads         | table | lawapp
+ public | ingestion_runs        | table | lawapp
+ public | legal_change_watch    | table | lawapp
+ public | legal_edges           | table | lawapp
+ public | legal_memory          | table | lawapp
+ public | legal_nodes           | table | lawapp
+ public | legislation           | table | lawapp
+ public | mcp_tool_calls        | table | lawapp
+ public | model_call_audit      | table | lawapp
+ public | official_guidance     | table | lawapp
+ public | public_datasets_index | table | lawapp
+ public | referrals             | table | lawapp
+ public | reminder_events       | table | lawapp
+ public | retention_runs        | table | lawapp
+ public | retrieval_audit       | table | lawapp
+ public | routing_decisions     | table | lawapp
+ public | rules                 | table | lawapp
+ public | semantic_cache        | table | lawapp
+ public | solicitor_reviews     | table | lawapp
+ public | support_sessions      | table | lawapp
+ public | user_feedback         | table | lawapp
+ public | users                 | table | lawapp
+ public | workflow_runs         | table | lawapp
+ public | workflow_steps        | table | lawapp
+(38 rows)
+

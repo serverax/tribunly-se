@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lawapp-reasoning-worker
+  namespace: lawapp-ai
+  labels:
+    app: lawapp-reasoning-worker
+    part-of: lawapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lawapp-reasoning-worker
+  template:
+    metadata:
+      labels:
+        app: lawapp-reasoning-worker
+        part-of: lawapp
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: reasoning
+          image: ghcr.io/serverax/lawapp/backend:latest
+          imagePullPolicy: Always
+          # Placeholder command — assuming the same backend image handles workers
+          command: ["python", "-m", "backend.core.pipeline"] 
+          envFrom:
+            - configMapRef:
+                name: lawapp-ai-config
+            - secretRef:
+                name: lawapp-ai-secrets
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+      imagePullSecrets:
+        - name: ghcr-pull-secret

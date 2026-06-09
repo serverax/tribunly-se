@@ -1,0 +1,20 @@
+===== NAMESPACE: lawapp-rag =====
+--- pods ---
+NAME                                    READY   STATUS    RESTARTS   AGE     IP             NODE                    NOMINATED NODE   READINESS GATES
+lawapp-crawler-86787df7b8-2jsk8         1/1     Running   0          45m     10.244.5.178   talos-138-201-202-174   <none>           <none>
+lawapp-postgres-0                       1/1     Running   0          4d15h   10.244.5.67    talos-138-201-202-174   <none>           <none>
+lawapp-rag-ingestion-77c8c7cfbb-ltcrb   1/1     Running   0          25h     10.244.5.48    talos-138-201-202-174   <none>           <none>
+lawapp-rag-retrieval-67877c778b-t5jmm   1/1     Running   0          25h     10.244.5.45    talos-138-201-202-174   <none>           <none>
+lawapp-worker-c84989df6-gt4lg           1/1     Running   0          25h     10.244.5.49    talos-138-201-202-174   <none>           <none>
+--- describe deploy/sts (probes/images) ---
+  File "<string>", line 20
+    print(f"{k}/{n} c={c[\"name\"]} img={img} ports={ports} ready={pp(rp)} live={pp(lp)}")
+                          ^
+SyntaxError: unexpected character after line continuation character
+
+=== PROBE/IMAGE MAP ===
+lawapp-rag/Deployment/lawapp-crawler c=lawapp-crawler img=ghcr.io/serverax/lawapp-crawler:b13c59d01e73e861b35498cac2b37d566609c262 ports=[8080] ready=[GET /health:8080] live=[GET /health:8080]
+lawapp-rag/Deployment/lawapp-rag-ingestion c=lawapp-rag-ingestion img=ghcr.io/serverax/lawapp-rag-ingestion:b13c59d01e73e861b35498cac2b37d566609c262 ports=[8080] ready=[GET /health:8080] live=[GET /health:8080]
+lawapp-rag/Deployment/lawapp-rag-retrieval c=lawapp-rag-retrieval img=ghcr.io/serverax/lawapp-rag-retrieval:b13c59d01e73e861b35498cac2b37d566609c262 ports=[8080] ready=[GET /health:8080] live=[GET /health:8080]
+lawapp-rag/Deployment/lawapp-worker c=lawapp-worker img=ghcr.io/serverax/lawapp-worker:b13c59d01e73e861b35498cac2b37d566609c262 ports=[] ready=[none] live=[none]
+lawapp-rag/StatefulSet/lawapp-postgres c=postgres img=pgvector/pgvector:pg16 ports=[5432] ready=[exec pg_isready -U lawapp_user -d lawapp] live=[none]

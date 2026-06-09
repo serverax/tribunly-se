@@ -1,0 +1,53 @@
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.uv/
+*.egg
+
+# Node / client
+node_modules/
+.next/
+out/
+.nuxt/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test artefacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data / uploads (never commit ingested data)
+data/
+*.sqlite
+*.db
+*.docx
+*.zip
+
+# Claude Code MCP persistent memory (never commit memory contents)
+.claude/memory/
+fastembed_cache/
+
+# disposable ops/diagnostic scripts (not product code)
+scripts/ops/

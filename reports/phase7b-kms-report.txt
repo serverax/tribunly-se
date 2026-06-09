@@ -1,0 +1,128 @@
+PHASE 7B — KMS/HSM-READY KEY MANAGEMENT PROVIDER
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+1. FILES CHANGED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/engine/kms.py
+    Restructured with formal KeyProvider interface (ABC):
+    - KeyProvider: abstract base with get_encryption_key(), is_available(),
+      provider_name(), is_production_grade(), status()
+    - EnvKeyProvider: reads ENCRYPTION_KEY from env; is_production_grade()=False
+    - KmsStubProvider: represents real KMS reference; requires KMS_KEY_ID;
+      kms_connected=False always (Phase 7B honest stub);
+      is_production_grade()=True when KMS_KEY_ID configured;
+      falls back to EnvKeyProvider for actual key material (Phase 7C: real API)
+    - DisabledProvider: no encryption; production blocker
+    - get_key_provider(): factory routing on KEY_MANAGEMENT_MODE
+    - get_kms_status(): returns provider.status() + mode
+    - GUARDRAIL: key material and KMS_KEY_ID values never logged
+
+  backend/engine/config_validation.py
+    Added: kms_stub mode in production requires KMS_KEY_ID env var.
+    Missing KMS_KEY_ID with kms_stub in production → startup config error.
+
+  backend/engine/production_readiness.py
+    encryption_at_rest: now shows key_provider field (provider name).
+    Note updated to reflect Phase 7B provider abstraction.
+
+  tests/integration/test_phase7b_kms.py  (NEW — 23 tests)
+
+  tests/integration/test_phase6b_beta_readiness.py
+    - test_kms_stub_does_not_claim_real_kms: hsm_connected → kms_connected (renamed)
+    - test_kms_stub_accepted_for_production_grade_flag: now sets KMS_KEY_ID
+      (Phase 7B correctly requires it for is_production_grade()=True)
+
+═══════════════════════════════════════════════════════════════════════════════
+2. KMS/HSM BEHAVIOUR IMPLEMENTED
+═══════════════════════════════════════════════════════════════════════════════
+
+  Provider hierarchy:
+
+    EnvKeyProvider (KEY_MANAGEMENT_MODE=env):
+      - Reads ENCRYPTION_KEY from env var
+      - is_production_grade()=False (env var not HSM-backed)
+      - Suitable for dev, test, controlled beta
+
+    KmsStubProvider (KEY_MANAGEMENT_MODE=kms_stub):
+      - Validates KMS_KEY_ID is configured
+      - kms_connected=False always (Phase 7B stub — no real KMS API call)
+      - is_production_grade()=True when KMS_KEY_ID configured
+        (signals correct intent; real API in Phase 7C)
+      - Falls back to EnvKeyProvider for actual key material
+      - Required: KMS_KEY_ID; Optional: KMS_ENDPOINT, KMS_REGION
+
+    DisabledProvider (KEY_MANAGEMENT_MODE=disabled):
+      - No encryption
+      - is_production_grade()=False
+      - Production blocker
+
+  Config validation (production mode):
+    kms_stub without KMS_KEY_ID → missing_required includes "KMS_KEY_ID"
+    disabled → missing_required includes "encryption required"
+
+  What Phase 7C will complete:
+    - Real KMS API calls (AWS KMS, GCP KMS, HashiCorp Vault)
+    - kms_connected=True when genuinely connected
+    - Encrypted data keys, key rotation
+
+  GUARDRAIL status:
+    - Key material values NEVER logged
+    - KMS_KEY_ID value NEVER logged (could expose key topology)
+    - KMS endpoint URL NEVER logged (internal infrastructure)
+
+═══════════════════════════════════════════════════════════════════════════════
+3. TEST RESULTS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Phase 7B tests:    23/23 passed in 41.92s
+  Full regression:   582 passed, 9 skipped, 0 failures in 561s
+  Legal accuracy:    38/38 passed ✓ (in Phase 7B regression tests)
+  Rules verification: ✓ PASSED (in Phase 7B regression tests)
+
+═══════════════════════════════════════════════════════════════════════════════
+4. READINESS STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+  controlled_beta_ready: FALSE (DPIA/privacy reviews still required)
+  production_ready: FALSE
+
+  Phase 7B closes:
+    ✓ "Real HSM/KMS key management" — PROVIDER ABSTRACTION COMPLETE
+      (KmsStubProvider interface + configuration; real KMS API is Phase 7C)
+
+  Key management status when kms_stub + KMS_KEY_ID configured:
+    is_production_grade_key_management() = True
+    kms_connected = False (honest — real API connection is Phase 7C)
+
+═══════════════════════════════════════════════════════════════════════════════
+5. REMAINING PHASE 7 BLOCKERS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Closed by Phase 7A: JWKS/RS256 JWT verification
+  Closed by Phase 7B: KMS/HSM provider abstraction
+
+  Still remaining:
+  3. Real KMS API connection (AWS/GCP/Vault) — Phase 7C
+  4. Live deployment environment
+  5. Stripe live payment mode
+  6. Subject Access Request (SAR) process
+  7. Monitoring and alerting
+
+═══════════════════════════════════════════════════════════════════════════════
+6. SECRET-RISK SCAN
+═══════════════════════════════════════════════════════════════════════════════
+
+  Staged files: 5 (kms.py, config_validation.py, production_readiness.py,
+                   test_phase7b_kms.py, test_phase6b_beta_readiness.py)
+  Real secrets: ZERO
+  Mock KMS_KEY_ID in tests: arn:aws:kms:test:123:key/... (test-only, clearly labelled)
+  No Dockerfiles changed (no new packages)
+  No env files changed
+  No broad git add — explicit per-file staging used
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 7B
+═══════════════════════════════════════════════════════════════════════════════

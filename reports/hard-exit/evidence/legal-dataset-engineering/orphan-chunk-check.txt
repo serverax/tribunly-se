@@ -1,0 +1,18 @@
+=== ORPHAN CHECK (T-003 chunks) — all must be 0 ===
+ null_source_id | null_chunk_hash | null_source_url 
+----------------+-----------------+-----------------
+              0 |               0 |               0
+(1 row)
+
+=== chunks whose source_id has NO matching legal_sources row (must be 0) ===
+ chunks_without_parent_source 
+------------------------------
+                            0
+(1 row)
+
+=== chunks whose source_url is NOT traceable to any legal_sources row (must be 0) ===
+ source_url_not_in_legal_sources 
+---------------------------------
+                               0
+(1 row)
+

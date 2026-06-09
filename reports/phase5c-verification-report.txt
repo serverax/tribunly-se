@@ -1,0 +1,153 @@
+PHASE 5C — LIVE LEGAL VERIFICATION AND PRODUCTION-READINESS HARDENING
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 5C adds:
+  1. verification_status + verification_notes columns to rules table
+  2. Updated seed scripts with verification status per rule row
+  3. Rules verification CI gate (scripts/check_rules_verification.py)
+  4. Updated DP report with launch/production/post-launch/implemented categories
+  5. Production readiness report (GET /admin/production-readiness)
+  6. Rules verification report (GET /admin/rules-verification)
+
+═══════════════════════════════════════════════════════════════════════════════
+UNFAIR DISMISSAL RULES — VERIFICATION STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+All UD rules were confirmed from legislation.gov.uk and primary sources
+on 2026-05-31 (see seed_unfair_dismissal.py inline documentation).
+
+  Rule key                                  Status               Authority
+  ─────────────────────────────────────────────────────────────────────────────
+  unfair_dismissal.time_limit_months        verified             ERA 1996 s.111(2) + s.207B
+  unfair_dismissal.time_limit_months        prospective          ERA 2025 s.152 (NOT IN FORCE)
+  unfair_dismissal.early_conciliation_req   verified             ETA 1996 s.18A; SI 2014/253
+  unfair_dismissal.qualifying_period        verified             ERA 1996 s.108(1); SI 2012/989
+  unfair_dismissal.qualifying_period        prospective          ERA 2025 s.25(2) (NOT IN FORCE)
+  unfair_dismissal.weeks_pay_cap_amount     verified             SI 2025/348 + SI 2026/310
+  unfair_dismissal.weeks_pay_cap_amount     verified             ERA 1996 s.227(1) + SI 2026/310
+  unfair_dismissal.compensatory_cap_amount  verified             SI 2025/348 (£118,223)
+  unfair_dismissal.compensatory_cap_amount  verified             SI 2026/310 (£123,543)
+  unfair_dismissal.compensatory_cap_amount  prospective          ERA 2025 s.25(3) (NOT IN FORCE)
+  unfair_dismissal.compensatory_cap_weeks   verified             ERA 1996 s.124(1ZA)(b)
+  unfair_dismissal.basic_award_formula      verified             ERA 1996 s.119
+  unfair_dismissal.basic_award_min_auto     verified             ERA 1996 s.120; SI 2026/310
+  unfair_dismissal.ec_max_duration_weeks    verified             SI 2025/1153
+
+  Additional statutes covered in documentation (not separate rule rows):
+  ERA 1996 s.94  — Right not to be unfairly dismissed (definitional, not numeric)
+  ERA 1996 s.95  — Circumstances of dismissal (definitional)
+  ERA 1996 s.97  — Effective date of termination (definitional)
+  ERA 1996 s.98  — General test of fairness (merits assessment, not deterministic)
+  TULRCA s.207A  — ACAS uplift (tribunal discretion 0-25%, in SoL documentation)
+
+  Gate result: VERIFIED (all production-enabled rules verified)
+
+═══════════════════════════════════════════════════════════════════════════════
+UNPAID WAGES RULES — VERIFICATION STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Rule key                                      Status              Authority
+  ─────────────────────────────────────────────────────────────────────────────
+  unlawful_deduction_wages.time_limit_months    verified            ERA 1996 s.23(2)
+  unlawful_deduction_wages.qualifying_period    verified            ERA 1996 s.13 (day-one)
+  unlawful_deduction_wages.worker_status        verified            ERA 1996 s.230(3)
+  unlawful_deduction_wages.series_deductions    case_law_verified   Bear Scotland [2015] (EAT)
+  unlawful_deduction_wages.remedy_basis         case_law_verified   ERA 1996 s.24 + Delaney [1992]
+
+  Note: case_law_verified means the citation is to a reported court/tribunal decision.
+  These are distinct from statutory rules — they cannot be directly verified on
+  legislation.gov.uk. The citations are correct and well-established authority.
+  Bear Scotland [2015] was a 2015 EAT decision (Langstaff P). Delaney v Staples
+  [1992] 1 AC 687 is a House of Lords authority — among the highest UK court authority.
+
+  Gate result: VERIFIED (all production-enabled UPW rules verified or case_law_verified)
+
+═══════════════════════════════════════════════════════════════════════════════
+RULES VERIFICATION CI GATE
+═══════════════════════════════════════════════════════════════════════════════
+
+Script: scripts/check_rules_verification.py
+Logic:
+  - Production rules (is_prospective=false) with status verified/case_law_verified → PASS
+  - Prospective rules (is_prospective=true) → EXEMPT
+  - Any production rule with verification_required or failed → FAIL (exit 1)
+
+Gate result after Phase 5C seeding: PASSED ✓
+
+═══════════════════════════════════════════════════════════════════════════════
+DATA-PROTECTION REPORT — PRIORITY CATEGORISATION
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 5C categorises DP gaps into:
+
+LAUNCH BLOCKERS (must fix before any real user data is processed):
+  - DPIA not completed (legal requirement before processing)
+  - No documented legal basis for data processing (GDPR Art.6/Art.9)
+  - No privacy notice / transparency information for users
+
+PRODUCTION BLOCKERS (must fix before production; closed beta possible):
+  - No encryption at rest for uploaded documents
+  - No encryption for cases.facts_encrypted column
+  - No encryption for handoff_leads PII (name, email)
+  - No data retention / deletion policy (Art.17 UK GDPR)
+  - User authentication not implemented
+
+POST-LAUNCH ENHANCEMENTS:
+  - Structured logging with PII audit trail
+  - Automated log scanning
+  - Full access control for admin endpoints
+  - Live solicitor referral network
+
+IMPLEMENTED:
+  - Model boundary de-identification (14 PII types stripped)
+  - boundary_log in every assess() response
+  - Upload bytes never logged or sent externally
+  - Handoff consent required at DB constraint level
+  - Extracted PII facts excluded from apply-confirmed
+
+═══════════════════════════════════════════════════════════════════════════════
+PRODUCTION READINESS ASSESSMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+Overall status: NOT_PRODUCTION_READY
+
+Claim type status:
+  unfair_dismissal: VERIFICATION_LIMITED
+    - Rules verified ✓
+    - DP/auth/encryption blockers unresolved ✗
+  unpaid_wages: VERIFICATION_LIMITED
+    - Rules verified/case_law_verified ✓
+    - DP/auth/encryption blockers unresolved ✗
+    - Case law citations distinguished from statute ✓
+
+"VERIFICATION_LIMITED" means: legal rules are verified; system is NOT
+production-ready due to DP, auth, and encryption gaps.
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  db/migrations/011_phase5c_verification.sql      — verification columns
+  scripts/check_rules_verification.py             — CI gate for rule verification
+  backend/engine/production_readiness.py          — production readiness report
+  tests/integration/test_phase5c_verification.py  — 21 integration tests
+  reports/phase5c-verification-report.txt         — this report
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  ingestion/rules/seed_unfair_dismissal.py  — VERIFICATION_STATUSES + UPDATE SQL
+  ingestion/rules/seed_unpaid_wages.py      — _UPW_VERIFICATION + UPDATE SQL
+  backend/engine/dp_report.py               — priority_breakdown categorisation
+  backend/api/main.py                       — /admin/rules-verification,
+                                              /admin/production-readiness; v1.1.0-phase5c
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 5C
+═══════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,40 @@
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                   SELECTOR
+deployment.apps/lawapp-backend   1/1     1            1           3d22h   backend      ghcr.io/serverax/lawapp/backend:latest   app=lawapp-backend
+
+NAME                                        DESIRED   CURRENT   READY   AGE     CONTAINERS   IMAGES                                    SELECTOR
+replicaset.apps/lawapp-backend-566d797955   0         0         0       3d22h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=566d797955
+replicaset.apps/lawapp-backend-56947f47c4   0         0         0       3d17h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=56947f47c4
+replicaset.apps/lawapp-backend-58b78f69f4   0         0         0       3d22h   backend      ghcr.io/serverax/lawapp/backend:8ef9170   app=lawapp-backend,pod-template-hash=58b78f69f4
+replicaset.apps/lawapp-backend-5b48c5c949   0         0         0       3d7h    backend      ghcr.io/serverax/lawapp/backend:0fec3d8   app=lawapp-backend,pod-template-hash=5b48c5c949
+replicaset.apps/lawapp-backend-5cbcbc656f   0         0         0       3d7h    backend      ghcr.io/serverax/lawapp/backend:0fec3d8   app=lawapp-backend,pod-template-hash=5cbcbc656f
+replicaset.apps/lawapp-backend-5cc98cddfd   0         0         0       2d12h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=5cc98cddfd
+replicaset.apps/lawapp-backend-5f9d6599db   0         0         0       3d21h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=5f9d6599db
+replicaset.apps/lawapp-backend-6777bf4b7c   0         0         0       3d22h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=6777bf4b7c
+replicaset.apps/lawapp-backend-68c89d8dcf   0         0         0       3d22h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=68c89d8dcf
+replicaset.apps/lawapp-backend-694f484d7    0         0         0       2d12h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=694f484d7
+replicaset.apps/lawapp-backend-69c75fbf6f   0         0         0       2d12h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=69c75fbf6f
+replicaset.apps/lawapp-backend-6c85f79cbd   1         1         0       2d      backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=6c85f79cbd
+replicaset.apps/lawapp-backend-7455fc5776   0         0         0       3d17h   backend      ghcr.io/serverax/lawapp/backend:0fec3d8   app=lawapp-backend,pod-template-hash=7455fc5776
+replicaset.apps/lawapp-backend-756445ccc    0         0         0       3d9h    backend      ghcr.io/serverax/lawapp/backend:0fec3d8   app=lawapp-backend,pod-template-hash=756445ccc
+replicaset.apps/lawapp-backend-7757c5df85   1         1         1       3d16h   backend      ghcr.io/serverax/lawapp/backend:0fec3d8   app=lawapp-backend,pod-template-hash=7757c5df85
+replicaset.apps/lawapp-backend-86dfc4c54d   0         0         0       3d22h   backend      ghcr.io/serverax/lawapp/backend:8ef9170   app=lawapp-backend,pod-template-hash=86dfc4c54d
+replicaset.apps/lawapp-backend-b679fc695    0         0         0       3d10h   backend      ghcr.io/serverax/lawapp/backend:0fec3d8   app=lawapp-backend,pod-template-hash=b679fc695
+replicaset.apps/lawapp-backend-ccd668bd7    0         0         0       2d12h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=ccd668bd7
+replicaset.apps/lawapp-backend-f79b7c6f5    0         0         0       2d12h   backend      ghcr.io/serverax/lawapp/backend:latest    app=lawapp-backend,pod-template-hash=f79b7c6f5
+
+NAME                                  READY   STATUS             RESTARTS        AGE     IP             NODE                    NOMINATED NODE   READINESS GATES
+pod/lawapp-backend-6c85f79cbd-qm9vl   0/1     CrashLoopBackOff   568 (65s ago)   2d      10.244.5.38    talos-138-201-202-174   <none>           <none>
+pod/lawapp-backend-7757c5df85-2l8kn   1/1     Running            0               3d16h   10.244.4.253   talos-5h3-83r           <none>           <none>
+pod/lawapp-postgres-0                 1/1     Running            0               3d10h   10.244.4.40    talos-5h3-83r           <none>           <none>
+pod/test-db-connectivity              1/1     Running            0               4d13h   10.244.4.91    talos-5h3-83r           <none>           <none>
+
+NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+service/lawapp-backend             ClusterIP   10.100.178.86    <none>        80/TCP     4d13h   app=lawapp-backend
+service/lawapp-postgres            ClusterIP   10.101.185.202   <none>        5432/TCP   3d10h   app=lawapp-postgres
+service/lawapp-postgres-headless   ClusterIP   None             <none>        5432/TCP   3d10h   app=lawapp-postgres
+
+NAME                                 ENDPOINTS           AGE
+endpoints/lawapp-backend             10.244.4.253:8000   4d13h
+endpoints/lawapp-postgres            10.244.4.40:5432    3d10h
+endpoints/lawapp-postgres-headless   10.244.4.40:5432    3d10h

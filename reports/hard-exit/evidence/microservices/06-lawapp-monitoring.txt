@@ -1,0 +1,27 @@
+===== NAMESPACE: lawapp-monitoring =====
+--- pods ---
+NAME                                         READY   STATUS             RESTARTS       AGE     IP            NODE            NOMINATED NODE   READINESS GATES
+lawapp-freshness-check-29680200-5vf6r        0/1     Pending            0              9h      <none>        <none>          <none>           <none>
+lawapp-health-probe-29680735-t87vh           0/1     CrashLoopBackOff   5 (2m5s ago)   16m     10.244.0.98   talos-h93-b9x   <none>           <none>
+lawapp-legal-accuracy-check-29675520-s8ft6   0/1     Completed          0              3d15h   10.244.4.17   talos-5h3-83r   <none>           <none>
+lawapp-legal-accuracy-check-29679840-s6d2t   0/1     Pending            0              15h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679240-vn4md             0/1     Pending            0              25h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679300-vhjmv             0/1     Pending            0              24h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679315-sdvp6             0/1     Pending            0              23h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679330-dqhh5             0/1     Pending            0              23h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679405-rsv5p             0/1     Pending            0              22h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679420-vd7nx             0/1     Pending            0              22h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679450-km6sm             0/1     Pending            0              21h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679465-v5vwr             0/1     Pending            0              21h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679480-8vpps             0/1     Pending            0              21h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679495-xdrzb             0/1     Pending            0              20h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679510-fd8c7             0/1     Pending            0              20h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679525-8lpfb             0/1     Pending            0              20h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679540-khd2p             0/1     Pending            0              20h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679555-v5j5j             0/1     Pending            0              19h     <none>        <none>          <none>           <none>
+lawapp-smoke-test-29679570-kxggv             0/1     Pending            0              19h     <none>        <none>          <none>           <none>
+--- describe deploy/sts (probes/images) ---
+  File "<string>", line 20
+    print(f"{k}/{n} c={c[\"name\"]} img={img} ports={ports} ready={pp(rp)} live={pp(lp)}")
+                          ^
+SyntaxError: unexpected character after line continuation character

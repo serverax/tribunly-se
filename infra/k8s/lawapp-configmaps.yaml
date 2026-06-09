@@ -1,0 +1,99 @@
+---
+# lawapp ConfigMap — shared non-secret config for lawapp-api namespace
+# DB DNS: lawapp-postgres.lawapp-api.svc.cluster.local (DB in lawapp-api namespace)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lawapp-config
+  namespace: lawapp-api
+  labels:
+    part-of: lawapp
+data:
+  POSTGRES_HOST: "lawapp-postgres.lawapp-api.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "lawapp"
+  POSTGRES_USER: "lawapp"
+  EMBEDDING_MODEL: "text-embedding-3-small"
+  EMBEDDING_DIM: "1536"
+  WORKHORSE_MODEL_ID: "claude-haiku-4-5-20251001"
+  DEPLOYMENT_MODE: "production"
+  LAWAPP_AUTH_MODE: "jwt"
+  # JWT_ISSUER / JWT_AUDIENCE are REQUIRED when LAWAPP_AUTH_MODE=jwt
+  # (backend/core/user_auth.py JWT_REQUIRED_VARS). They are NON-secret
+  # identifiers and belong here, NOT in the Secret. The signing key
+  # (JWT_SECRET) is the only secret and lives in `lawapp-secrets`.
+  JWT_ISSUER: "lawapp-issuer"
+  JWT_AUDIENCE: "lawapp-audience"
+  # ── Social sign-in (OIDC) ────────────────────────────────────────────
+  # OAuth CLIENT IDs are PUBLIC values (sent to the browser) — they are
+  # config, not secrets, and the OIDC id-token flow uses NO client secret
+  # (see backend/core/auth/providers.py). A provider with no client id is
+  # cleanly DISABLED (fail-closed 503), never a fake success. To enable a
+  # provider set its real client id below and redeploy; leaving them unset
+  # keeps social login disabled.
+  # OAUTH_GOOGLE_CLIENT_ID: "<real-google-client-id>"
+  # OAUTH_MICROSOFT_CLIENT_ID: "<real-microsoft-client-id>"
+  # OAUTH_MICROSOFT_TENANT: "<tenant-id-or-omit-for-multitenant>"
+  # OAUTH_APPLE_CLIENT_ID: "<real-apple-services-id>"
+  # OAUTH_LINKEDIN_CLIENT_ID: "<real-linkedin-client-id>"
+  KEY_MANAGEMENT_MODE: "aws_kms"
+  PAYMENT_MODE: "stripe_live"
+  LOG_LEVEL: "INFO"
+  FCL_BULK_LICENCE_GRANTED: "false"
+---
+# lawapp ConfigMap — shared config for lawapp-ai namespace
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lawapp-ai-config
+  namespace: lawapp-ai
+  labels:
+    part-of: lawapp
+data:
+  POSTGRES_HOST: "lawapp-postgres.lawapp-api.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "lawapp"
+  POSTGRES_USER: "lawapp"
+  WORKHORSE_MODEL_ID: "claude-haiku-4-5-20251001"
+  DEPLOYMENT_MODE: "production"
+  LAWAPP_AUTH_MODE: "jwt"
+  # Required for jwt-mode token verification (same contract as lawapp-api).
+  # Non-secret; must match the values used by lawapp-api so tokens minted by
+  # the backend verify in the brain. Signing key (JWT_SECRET) is in the Secret.
+  JWT_ISSUER: "lawapp-issuer"
+  JWT_AUDIENCE: "lawapp-audience"
+  LOG_LEVEL: "INFO"
+---
+# lawapp ConfigMap — shared config for lawapp-rag namespace
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lawapp-rag-config
+  namespace: lawapp-rag
+  labels:
+    part-of: lawapp
+data:
+  POSTGRES_HOST: "lawapp-postgres.lawapp-api.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "lawapp"
+  POSTGRES_USER: "lawapp"
+  EMBEDDING_MODEL: "text-embedding-3-small"
+  EMBEDDING_DIM: "1536"
+  LOG_LEVEL: "INFO"
+  FCL_BULK_LICENCE_GRANTED: "false"
+---
+# lawapp ConfigMap — shared config for lawapp-security namespace
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lawapp-config
+  namespace: lawapp-security
+  labels:
+    part-of: lawapp
+data:
+  POSTGRES_HOST: "lawapp-postgres.lawapp-api.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "lawapp"
+  POSTGRES_USER: "lawapp"
+  DEPLOYMENT_MODE: "production"
+  LOG_LEVEL: "INFO"

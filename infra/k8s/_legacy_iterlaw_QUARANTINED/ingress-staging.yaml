@@ -1,0 +1,41 @@
+---
+# IterLaw — Staging ingress (IterLaw only — no global ingress changes)
+# REVIEW BEFORE APPLY. Only apply after:
+#   1. AKS node Ready
+#   2. lawapp-backend pod Running and healthy
+#   3. Staging domain configured in DNS (or use port-forward instead)
+#
+# Default: DO NOT apply — use port-forward for first demo:
+#   kubectl port-forward -n iterlaw-ai svc/legal-orchestrator 8080:80
+#
+# Only apply this if a staging subdomain is already configured.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lawapp-staging
+  namespace: iterlaw-ai
+  labels:
+    project: iterlaw
+    tier: staging
+  annotations:
+    # Uncomment if using nginx ingress controller:
+    # kubernetes.io/ingress.class: "nginx"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # Uncomment if using cert-manager:
+    # cert-manager.io/cluster-issuer: "letsencrypt-staging"
+spec:
+  rules:
+    - host: staging.iterlaw.ai   # REPLACE with actual staging domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: legal-orchestrator
+                port:
+                  number: 80
+  # tls:
+  #   - hosts:
+  #       - staging.iterlaw.ai
+  #     secretName: iterlaw-staging-tls

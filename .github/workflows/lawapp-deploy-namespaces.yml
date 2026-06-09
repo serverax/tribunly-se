@@ -1,0 +1,72 @@
+name: lawapp deploy namespaces
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  deploy:
+    name: Deploy lawapp distributed services
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: latest
+
+      - name: Configure kubeconfig
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+          kubectl config current-context
+
+      - name: Confirm lawapp namespaces only
+        run: |
+          set -euo pipefail
+          kubectl get ns | grep lawapp
+          kubectl get ns lawapp-api
+          kubectl get ns lawapp-ai
+          kubectl get ns lawapp-rag
+          kubectl get ns lawapp-security
+          kubectl get ns lawapp-monitoring
+
+      - name: Apply lawapp manifests
+        run: |
+          set -euo pipefail
+          kubectl apply -f k8s/lawapp-api/
+          kubectl apply -f k8s/lawapp-ai/
+          kubectl apply -f k8s/lawapp-rag/
+          kubectl apply -f k8s/lawapp-security/
+          kubectl apply -f k8s/lawapp-monitoring/ || true
+
+      - name: Rollout lawapp services
+        run: |
+          set -euo pipefail
+          kubectl -n lawapp-ai rollout status deploy/lawapp-brain --timeout=180s
+          kubectl -n lawapp-ai rollout status deploy/lawapp-rules-engine --timeout=180s
+          kubectl -n lawapp-ai rollout status deploy/lawapp-llm-gateway --timeout=180s
+          kubectl -n lawapp-ai rollout status deploy/lawapp-document-service --timeout=180s
+          kubectl -n lawapp-rag rollout status deploy/lawapp-rag-retrieval --timeout=180s
+          kubectl -n lawapp-rag rollout status deploy/lawapp-rag-ingestion --timeout=180s
+          kubectl -n lawapp-rag rollout status deploy/lawapp-crawler --timeout=180s
+          kubectl -n lawapp-rag rollout status deploy/lawapp-worker --timeout=180s
+          kubectl -n lawapp-security rollout status deploy/lawapp-citation-guard --timeout=180s
+
+      - name: Final proof
+        if: always()
+        run: |
+          kubectl -n lawapp-api get deploy,pods,svc -o wide || true
+          kubectl -n lawapp-ai get deploy,ds,pods,svc -o wide || true
+          kubectl -n lawapp-rag get deploy,cronjob,jobs,pods,svc -o wide || true
+          kubectl -n lawapp-security get deploy,pods,svc -o wide || true
+          kubectl -n lawapp-monitoring get deploy,pods,svc -o wide || true
+          kubectl -n lawapp-ai get ds ollama-inference -o wide || true
+          kubectl -n lawapp-ai get pods -l app=ollama-inference -o wide || true

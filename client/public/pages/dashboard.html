@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard — lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .case-list { margin-top: 1.5rem; }
+    .case-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: box-shadow 0.2s;
+    }
+    .case-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .case-title { font-weight: 700; color: var(--primary); margin: 0; }
+    .case-meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .case-summary { font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem; }
+    .case-footer { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+  </style>
+</head>
+<body>
+
+<div class="legal-notice" role="alert">
+  <strong>Not a law firm. Not legal advice.</strong>
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <div class="nav-links">
+    <!-- Updated by auth.js -->
+  </div>
+</nav>
+
+<main class="page">
+  <div id="loading-state" style="padding: 3rem 0; text-align: center;">
+    <div class="spinner"></div>
+    <p style="margin-top:1rem; color:var(--muted);">Loading your dashboard...</p>
+  </div>
+
+  <div id="dashboard-content" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <h1 style="color:var(--primary); margin:0;">Dashboard</h1>
+        <p id="user-email" style="color:var(--muted); margin:0.25rem 0 0;"></p>
+      </div>
+      <a href="/pages/intake.html" class="btn btn-primary">Start new diagnosis</a>
+    </div>
+
+    <section>
+      <h2 style="font-size:1.25rem; margin-bottom:1rem;">Your saved cases</h2>
+      <div id="case-list" class="case-list">
+        <!-- Cases populated here -->
+      </div>
+      <div id="no-cases" style="display:none; text-align:center; padding:3rem; background:#f9f9f9; border-radius:8px; border:2px dashed var(--border);">
+        <p style="color:var(--muted); margin-bottom:1rem;">You don't have any saved cases yet.</p>
+        <a href="/pages/intake.html" class="btn btn-outline">Get your first diagnosis</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script>
+(function() {
+  if (!LAWAPP_AUTH.ensureLoggedIn()) return;
+  LAWAPP_AUTH.updateNav();
+
+  const loadingEl = document.getElementById('loading-state');
+  const contentEl = document.getElementById('dashboard-content');
+  const userEmailEl = document.getElementById('user-email');
+  const caseListEl = document.getElementById('case-list');
+  const noCasesEl = document.getElementById('no-cases');
+
+  async function init() {
+    try {
+      const userResp = await LAWAPP_AUTH.fetchWithAuth('/auth/me');
+      if (!userResp.ok) throw new Error('Failed to fetch profile');
+      const user = await userResp.json();
+      userEmailEl.textContent = user.email;
+
+      const casesResp = await LAWAPP_AUTH.fetchWithAuth('/cases');
+      if (!casesResp.ok) throw new Error('Failed to fetch cases');
+      const data = await casesResp.json();
+
+      renderCases(data.cases);
+
+      loadingEl.style.display = 'none';
+      contentEl.style.display = 'block';
+    } catch (err) {
+      console.error(err);
+      loadingEl.textContent = 'Error loading dashboard: ' + err.message;
+    }
+  }
+
+  function renderCases(cases) {
+    caseListEl.textContent = '';
+    if (!cases || cases.length === 0) {
+      noCasesEl.style.display = 'block';
+      return;
+    }
+    
+    noCasesEl.style.display = 'none';
+    cases.forEach(c => {
+      const item = document.createElement('div');
+      item.className = 'case-item';
+      
+      const header = document.createElement('div');
+      header.className = 'case-header';
+      
+      const title = document.createElement('h3');
+      title.className = 'case-title';
+      title.textContent = formatClaimType(c.claim_type);
+      
+      const badgeRow = document.createElement('div');
+      badgeRow.style.display = 'flex';
+      badgeRow.style.gap = '.5rem';
+      
+      const vBadge = document.createElement('span');
+      vBadge.className = 'badge ' + (c.assessment?.has_viable_claim || 'uncertain');
+      vBadge.textContent = getViabilityLabel(c.assessment?.has_viable_claim);
+      
+      const sBadge = document.createElement('span');
+      sBadge.className = 'badge';
+      sBadge.style.background = '#e2e8f0';
+      sBadge.style.color = '#4a5568';
+      sBadge.textContent = (c.status || 'diagnosis').toUpperCase();
+      
+      badgeRow.append(vBadge, sBadge);
+      header.append(title, badgeRow);
+      
+      const meta = document.createElement('div');
+      meta.className = 'case-meta';
+      meta.textContent = 'Saved ' + new Date(c.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+      
+      const summary = document.createElement('p');
+      summary.className = 'case-summary';
+      summary.textContent = c.assessment?.reasoning_summary || 'No summary available.';
+      
+      const footer = document.createElement('div');
+      footer.className = 'case-footer';
+      
+      const deadline = c.key_dates?.deadline_date || c.key_dates?.limitation_date;
+      if (deadline) {
+        const dlSpan = document.createElement('span');
+        dlSpan.style.fontSize = '0.85rem';
+        dlSpan.style.marginRight = 'auto';
+        dlSpan.textContent = 'Deadline: ' + formatDate(deadline);
+        footer.appendChild(dlSpan);
+      }
+      
+      const viewBtn = document.createElement('a');
+      viewBtn.href = '/pages/saved_case.html?case_id=' + c.case_id;
+      viewBtn.className = 'btn btn-outline';
+      viewBtn.style.fontSize = '0.85rem';
+      viewBtn.textContent = 'View details';
+      
+      const reopenBtn = document.createElement('a');
+      reopenBtn.href = '/pages/assessment.html';
+      reopenBtn.className = 'btn btn-primary';
+      reopenBtn.style.fontSize = '0.85rem';
+      reopenBtn.textContent = 'Reopen assessment';
+      reopenBtn.onclick = () => {
+        sessionStorage.setItem('assessment_result', JSON.stringify(c.assessment));
+        return true;
+      };
+      
+      footer.append(viewBtn, reopenBtn);
+      
+      item.append(header, meta, summary, footer);
+      caseListEl.appendChild(item);
+    });
+  }
+
+  function formatClaimType(type) {
+    if (type === 'unfair_dismissal') return 'Unfair Dismissal';
+    if (type === 'unpaid_wages') return 'Unpaid Wages';
+    return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  }
+
+  function getViabilityLabel(v) {
+    if (v === 'yes') return 'Viable';
+    if (v === 'no') return 'Unlikely';
+    return 'Uncertain';
+  }
+
+  function formatDate(s) {
+    if (!s) return '—';
+    try {
+      const dt = new Date(s.length === 10 ? s + 'T00:00:00' : s);
+      return dt.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+    } catch { return String(s); }
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>

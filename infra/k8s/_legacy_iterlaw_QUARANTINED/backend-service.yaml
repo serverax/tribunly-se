@@ -1,0 +1,20 @@
+---
+# IterLaw lawapp — backend ClusterIP service (internal only)
+# No public ingress until service health is proven internally.
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawapp-backend
+  namespace: iterlaw-ai
+  labels:
+    app: lawapp-backend
+    project: iterlaw
+spec:
+  selector:
+    app: lawapp-backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+      protocol: TCP
+  type: ClusterIP

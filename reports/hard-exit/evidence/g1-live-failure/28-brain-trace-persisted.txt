@@ -1,0 +1,4 @@
+trace endpoint status: 200
+returned trace_id: 785deae9-148b-4956-ba36-589e8fb1e3b9
+brain_traces BEFORE: 0 AFTER: 1 DELTA: 1
+latest persisted brain_traces row: ('785deae9-148b-4956-ba36-589e8fb1e3b9', 'unfair_dismissal', datetime.datetime(2026, 6, 7, 14, 23, 39, 164869, tzinfo=datetime.timezone.utc))

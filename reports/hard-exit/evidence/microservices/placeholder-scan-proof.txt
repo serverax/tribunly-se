@@ -1,0 +1,50 @@
+
+=== SA-014 placeholder / stub scan  (Sun Jun  7 15:25:50 UTC 2026) ===
+scope: /mnt/f/lawapp/services  +  /mnt/f/lawapp/backend
+
+--- TODO/FIXME/PLACEHOLDER in services ---
+(none)
+
+--- literal 'placeholder'/'mock'/'stub'/'dummy' (services) ---
+/mnt/f/lawapp/services/lawapp_document_service/app.py:67:    # NOT implemented here (no documents store wired). Controlled 501, never a fake
+/mnt/f/lawapp/services/lawapp_rag_ingestion/app.py:5:graph / embed gates — uncited or critic-rejected rows are NOT stored. No fake
+/mnt/f/lawapp/services/lawapp_rag_ingestion/app.py:55:    # critic rejection is a real, non-fake outcome — surface as 422, not stored.
+/mnt/f/lawapp/services/_common.py:4:backend/core logic (no logic duplication, no fake responses). This factory
+
+--- return {"status":"ok"} without dep check (services) ---
+(none)
+
+--- echo PASS / hardcoded PASS ---
+(none)
+
+--- hardcoded localhost / 127.0.0.1 in services ---
+(none)
+
+--- disabled / skipped dependency checks ---
+/mnt/f/lawapp/services/lawapp_crawler/app.py:15:app = create_service("lawapp-crawler", needs_db=False)
+/mnt/f/lawapp/services/lawapp_document_service/app.py:16:app = create_service("lawapp-document-service", needs_db=False)
+/mnt/f/lawapp/services/lawapp_llm_gateway/app.py:18:app = create_service("lawapp-llm-gateway", needs_db=False)
+
+--- bare pass / NotImplemented (services) ---
+(none)
+
+--- no-op worker sleep loops ---
+/mnt/f/lawapp/services/lawapp_worker/app.py:6:    while True:
+/mnt/f/lawapp/services/lawapp_worker/app.py:7:        time.sleep(int(os.getenv("WORKER_SLEEP_SECONDS", "60")))
+
+--- static success without grounding (backend brain path) ---
+(none)
+
+=== FINDINGS REQUIRING HUMAN JUDGEMENT (recorded, not auto-fixed) ===
+1. services/lawapp_worker/app.py — `while True: time.sleep(...)` NO-OP body. The deployed
+   lawapp-worker does no real task processing. Either wire it to a real queue or mark non-product.
+2. DEPLOYED lawapp-citation-guard image returns valid:true for the all-zeros fake UUID and for
+   empty citations (live test, evidence/microservices/05). The SOURCE (services/lawapp_citation_guard/app.py)
+   is CORRECT (DB-backed valid_corpus_uuids + fail-closed). => stale/divergent deployed image. REDEPLOY.
+3. brain/backend LOCAL_INFERENCE_URL -> llm-inference-service (DEAD svc, 0 endpoints). Repoint to
+   ollama-inference. (owner-authorization pending)
+4. needs_db=False on lawapp_llm_gateway / lawapp_document_service / lawapp_crawler is BY DESIGN
+   (they proxy/generate, not DB-owning) — NOT a placeholder, recorded for completeness.
+
+=== PATTERN-MATCH FINDINGS COUNT ===
+raw_grep_hits=9  (most are benign factory defaults; see human-judgement section)

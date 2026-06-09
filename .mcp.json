@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "memory": {
+      "type": "stdio",
+      "command": "mcp-server-memory",
+      "args": [],
+      "env": {
+        "MEMORY_FILE_PATH": "/mnt/f/lawapp/.claude/memory/lawapp-memory.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+2026-06-07 14:04:31,116 INFO [request_id=-] backend.core.otel telemetry configured (otel_sdk=True, otlp_endpoint=False)
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     10.244.4.1:43152 - "GET /health HTTP/1.1" 200 OK
+INFO:     10.244.4.1:34920 - "GET /health HTTP/1.1" 200 OK
+INFO:     10.244.4.1:42000 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41310 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41312 - "GET /livez HTTP/1.1" 404 Not Found

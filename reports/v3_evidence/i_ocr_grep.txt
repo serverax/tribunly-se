@@ -1,0 +1,86 @@
+--- I. OCR / UPLOAD GREP ---
+backend/api/main.py:1243:    Real OCR extraction requires a document processing library (e.g. pytesseract, AWS Textract).
+backend/api/main.py:1278:        # TODO Phase 4: replace mock_extract with real OCR engine
+backend/api/main.py:1279:        # extracted = ocr_engine.extract(upload_id, doc_type)
+backend/api/main.py:2371:        if not stripe_key or stripe_key == "placeholder":
+backend/api/main.py:2381:        if not stripe_key or stripe_key == "placeholder":
+backend/api/main.py:2398:        _os.getenv("STRIPE_SECRET_KEY") != "placeholder"
+backend/api/main.py:3280:# ── Real-model smoke test (skipped if ANTHROPIC_API_KEY is placeholder) ───────
+backend/api/main.py:3288:    SKIPS if ANTHROPIC_API_KEY is placeholder/missing.
+backend/api/main.py:3292:    api_key = os.getenv("ANTHROPIC_API_KEY", "placeholder")
+backend/api/main.py:3293:    if api_key in ("placeholder", "", "changeme"):
+backend/api/main.py:3296:            "reason":  "ANTHROPIC_API_KEY is placeholder — real model not available",
+backend/core/bundle.py:76:      - value must not start with '[Extracted' (placeholder — skip)
+backend/core/bundle.py:86:                continue  # skip placeholder values
+backend/core/classify.py:125:        if not api_key or api_key in ("placeholder", "sk-ant-placeholder"):
+backend/core/deidentify.py:40:    "raw_document", "raw_text", "upload_text", "ocr_text", "document_content",
+backend/core/documents.py:248:[Complete all placeholders above with your details before filing.]
+backend/core/documents.py:371:[Complete all placeholders above with your details before filing.]
+backend/core/document_extractor.py:6:OCR for scanned PDFs requires tesseract (noted as external dependency).
+backend/core/document_extractor.py:160:    OCR requires external tesseract installation (documented separately).
+backend/core/document_extractor.py:290:        "ocr_note": (
+backend/core/document_extractor.py:291:            "For scanned/image PDFs, install tesseract: "
+backend/core/document_extractor.py:292:            "apt-get install tesseract-ocr && pip install pytesseract"
+backend/core/dp_report.py:136:                "handling": "Mock extraction only — placeholders returned, no real OCR",
+backend/core/dp_report.py:137:                "real_ocr_pii_risk": "Phase 5B: real OCR will extract real PII — needs encryption pipeline",
+backend/core/extraction.py:4:PHASE 4A: This is a mock that returns deterministic placeholder values with
+backend/core/extraction.py:13:  - Extracted values are placeholders clearly marked for user review.
+backend/core/extraction.py:99:def mock_extract(doc_type: str) -> dict:
+backend/core/extraction.py:105:        "value":      str,    # placeholder — user must verify and correct
+backend/core/extraction.py:112:    PHASE 4A: values are placeholders. Real extraction is Phase 5.
+backend/core/extraction.py:152:            continue   # don't apply placeholder values
+backend/core/legal_graph.py:92:                placeholders = ",".join(["%s"] * len(node_ids))
+backend/core/legal_graph.py:98:                    WHERE node_id IN ({placeholders})
+backend/core/models.py:271:        if not api_key or api_key == "placeholder":
+backend/core/models.py:383:    ant_key  = os.getenv("ANTHROPIC_API_KEY", "placeholder")
+backend/core/models.py:389:    if provider == "anthropic" or (not provider and ant_key and ant_key not in ("placeholder", "")):
+backend/core/models.py:390:        configured = ant_key not in ("placeholder", "", "changeme")
+backend/core/models.py:395:            "note": "real reasoning active" if configured else "ANTHROPIC_API_KEY=placeholder — StubReasoningModel active",
+backend/core/models.py:421:        key = getattr(settings, "openrouter_api_key", "placeholder")
+backend/core/models.py:423:        if key and key != "placeholder" and mid:
+backend/core/models.py:431:    ant_key = getattr(settings, "anthropic_api_key", "placeholder")
+backend/core/models.py:433:    if ant_key and ant_key not in ("placeholder", "", "changeme") and ant_mid:
+backend/core/models.py:442:            "ANTHROPIC_API_KEY is placeholder or AI_PROVIDER not set. "
+backend/core/payment.py:75:    if not stripe_key or stripe_key in ("placeholder", "sk_test_PLACEHOLDER", "sk_live_PLACEHOLDER"):
+backend/core/payment.py:116:    if not webhook_secret or webhook_secret in ("placeholder", "whsec_PLACEHOLDER"):
+backend/core/payment.py:125:        if stripe_key and stripe_key not in ("placeholder",):
+backend/core/production_readiness.py:199:                os.getenv("ANTHROPIC_API_KEY") not in ("placeholder", "sk-ant-placeholder")
+backend/core/production_readiness.py:208:                os.getenv("ANTHROPIC_API_KEY") not in ("placeholder", "sk-ant-placeholder")
+backend/domains/employment/timeline.py:133:    user_corrected non-placeholder values (use get_confirmed_facts() from bundle.py).
+ingestion/config.py:39:    openai_api_key: str = "placeholder"
+ingestion/config.py:44:    anthropic_api_key: str = "placeholder"
+ingestion/config.py:52:    openrouter_api_key: str = "placeholder"
+client/public/pages/case_detail.html:408:    i1.type = 'text'; i1.id = 'hf2-name'; i1.required = true; i1.placeholder = 'Full name';
+client/public/pages/case_detail.html:420:    i2.type = 'email'; i2.id = 'hf2-email'; i2.required = true; i2.placeholder = 'you@example.com';
+client/public/pages/intake.html:214:            <input type="number" id="weekly_pay" name="weekly_pay" placeholder="650" min="0" step="0.01">
+client/public/pages/intake.html:219:            <input type="number" id="annual_salary" name="annual_salary" placeholder="33800" min="0" step="0.01" oninput="calcWeeklyFromSalary()">
+client/public/pages/intake.html:237:            placeholder="Describe what happened in a few sentences. Do not include your full name or employer name."></textarea>
+client/public/pages/saved_case.html:321:    i1.type = 'text'; i1.id = 'hf2-name'; i1.required = true; i1.placeholder = 'Full name';
+client/public/pages/saved_case.html:333:    i2.type = 'email'; i2.id = 'hf2-email'; i2.required = true; i2.placeholder = 'you@example.com';
+tests/document_intelligence/test_document_intelligence.py:44:        from backend.core.extraction import mock_extract
+tests/document_intelligence/test_document_intelligence.py:45:        result = mock_extract("dismissal_letter")
+tests/integration/test_phase2c_regression.py:276:        anthropic_api_key     = "placeholder"
+tests/integration/test_phase2c_regression.py:281:        f"Expected StubReasoningModel when all keys are placeholder, got {type(model)}"
+tests/integration/test_phase2d_hardening.py:291:        openrouter_api_key    = "sk-placeholder"
+tests/integration/test_phase2d_hardening.py:293:        anthropic_api_key     = "placeholder"
+tests/integration/test_phase2d_hardening.py:305:        openrouter_api_key    = "placeholder"
+tests/integration/test_phase2d_hardening.py:307:        anthropic_api_key     = "placeholder"
+tests/integration/test_phase2d_hardening.py:325:        openrouter_enabled    = True          # enabled but key is placeholder
+tests/integration/test_phase2d_hardening.py:326:        openrouter_api_key    = "placeholder"  # -> should fall through to next
+tests/integration/test_phase2d_hardening.py:328:        anthropic_api_key     = "placeholder"
+tests/integration/test_phase2d_hardening.py:332:    # Should be Stub since both external keys are placeholder
+tests/integration/test_phase2_engine.py:43:    if not key or key == "placeholder":
+tests/integration/test_phase2_real_model.py:42:    if key == "placeholder" or not key:
+tests/integration/test_phase3c_documents.py:250:    """Template must handle missing facts with placeholder text, not raise."""
+tests/integration/test_phase3e_mvp_close.py:63:    Migration 004 was a placeholder and may not have been applied to the live DB.
+tests/integration/test_phase4a_upload_ocr.py:42:        tests/integration/test_phase4a_upload_ocr.py -v -s
+tests/integration/test_phase4b_bundle.py:17:   8.  Chronology does NOT invent missing dates (shows placeholder)
+tests/integration/test_phase4b_bundle.py:23:  12.  Bundle uses confirmed corrected facts (non-placeholder)
+tests/integration/test_phase4b_bundle.py:167:    """Missing employment_start_date must show placeholder, not an invented date."""
+tests/integration/test_phase4b_bundle.py:173:        "Missing start date must show 'NOT CONFIRMED' placeholder, not an invented date"
+tests/integration/test_phase4b_bundle.py:244:            f"Unconfirmed placeholder found in {comp}"
+tests/integration/test_phase4c_timeline.py:15:  10.  Timeline excludes unconfirmed extracted facts (no placeholder values)
+tests/integration/test_phase4c_timeline.py:267:    """Unconfirmed extraction placeholders must not appear as timeline event descriptions."""
+tests/integration/test_phase4c_timeline.py:280:        "Unconfirmed placeholder text must not appear in timeline"
+tests/security/test_auth_routes.py:166:        if os.environ.get("ANTHROPIC_API_KEY") not in ("placeholder", "", None, "changeme"):
+tests/test_wasm_document_preview.js:55:  console.log("  PASS: missing_facts_flagged — placeholder used, not fabricated");

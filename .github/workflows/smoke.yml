@@ -1,0 +1,24 @@
+name: lawapp — Cluster smoke tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: Live cluster smoke tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_HETZNER }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Run smoke tests
+        run: bash scripts/smoke-iterlaw-ai.sh

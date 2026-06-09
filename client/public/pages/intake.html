@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free diagnosis — lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .wizard-panel { display: none; }
+    .wizard-panel.active { display: block; }
+    .wizard-progress { margin-bottom: 2rem; background: #eee; height: 8px; border-radius: 4px; overflow: hidden; }
+    .wizard-progress-bar { background: var(--primary); height: 100%; transition: width 0.3s; width: 0%; }
+    .wizard-steps-labels { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.8rem; color: var(--muted); }
+    .wizard-nav { display: flex; justify-content: space-between; margin-top: 2rem; gap: 1rem; }
+    .legal-footer { border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 3rem; }
+    .deadline-preview { background: #f0f4ff; border: 1px solid #c7d7f5; border-radius: 8px; padding: 1rem 1.25rem; margin-top: 1.5rem; }
+    .deadline-preview h4 { margin: 0 0 0.5rem; font-size: 0.95rem; color: var(--primary); }
+    .deadline-preview .date-value { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+    .deadline-preview .deadline-note { font-size: 0.82rem; color: var(--muted); margin-top: 0.25rem; }
+    .deadline-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+    .deadline-badge.urgent { background: #fff3cd; color: #7c5800; }
+    .deadline-badge.critical { background: #f8d7da; color: #721c24; }
+    .deadline-badge.passed { background: #dc3545; color: #fff; }
+    .deadline-badge.safe { background: #d4edda; color: #155724; }
+    .field-hint { font-size: 0.82rem; color: var(--muted); margin-top: 0.25rem; }
+    .acas-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    .acas-section h4 { margin: 0 0 0.75rem; color: var(--primary); font-size: 0.95rem; }
+    .acas-toggle { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.9rem; }
+    .acas-dates { transition: opacity 0.2s; }
+    .acas-dates.hidden { opacity: 0.4; pointer-events: none; }
+    .error-msg { color: #dc3545; font-size: 0.82rem; margin-top: 0.25rem; display: none; }
+    .error-msg.visible { display: block; }
+    input:invalid { border-color: #dc3545; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { font-weight: 600; display: block; margin-bottom: 0.35rem; font-size: 0.9rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .appeal-group { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+
+<div class="legal-notice" role="alert">
+  <strong>Not a law firm. Not legal advice.</strong> This tool provides information only.
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <div class="nav-links" id="nav-links"><a href="/">Home</a><a href="/pages/constructive_dismissal.html">Constructive dismissal</a></div>
+</nav>
+
+<main class="page-narrow" style="padding-top:1.5rem;">
+  <h1 style="color:var(--primary);margin-bottom:.5rem;" id="form-title">Free diagnosis</h1>
+  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:0.9rem;">Tell us about your situation to receive an honest assessment of your claim.</p>
+
+  <div class="wizard-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+    <div class="wizard-progress-bar" id="progress-bar"></div>
+  </div>
+  <div class="wizard-steps-labels" id="steps-labels" aria-hidden="true"></div>
+
+  <form id="intakeForm" novalidate aria-labelledby="form-title">
+
+    <!-- ─── Step 1: Claim Type ─────────────────────────────────────────── -->
+    <div class="wizard-panel active" id="step-1" data-step="1">
+      <div class="form-section">
+        <h3>What is your claim about?</h3>
+        <fieldset style="border:none;padding:0;margin:0;">
+          <legend class="visually-hidden">Claim type</legend>
+          <div class="radio-group">
+            <label><input type="radio" name="claim_type" value="unfair_dismissal" checked>
+              <strong>Unfair dismissal</strong> — I was dismissed and believe it was unfair</label>
+            <label><input type="radio" name="claim_type" value="unpaid_wages">
+              <strong>Unpaid wages</strong> — I wasn't paid what I was owed</label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="wizard-nav">
+        <div></div>
+        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ─── Step 2: Dates, ACAS, Reason ───────────────────────────────── -->
+    <div class="wizard-panel" id="step-2-ud" data-step="2">
+      <div class="form-section">
+        <h3>Key Dates &amp; Details</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edt">Dismissal date (EDT) <span aria-hidden="true" style="color:#dc3545">*</span></label>
+            <input type="date" id="edt" name="edt" required aria-required="true" aria-describedby="err-edt" oninput="updateDeadlinePreview()">
+            <p class="field-hint">Effective date of termination — the last day of your employment.</p>
+            <p class="error-msg" id="err-edt">Please enter your dismissal date.</p>
+          </div>
+          <div class="form-group">
+            <label for="service_start">Employment start date <span aria-hidden="true" style="color:#dc3545">*</span></label>
+            <input type="date" id="service_start" name="service_start" required aria-required="true" aria-describedby="err-service">
+            <p class="field-hint">When you first started working for this employer.</p>
+            <p class="error-msg" id="err-service">Please enter your employment start date.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reason">Reason given by employer</label>
+          <select id="reason" name="reason">
+            <option value="conduct">Misconduct / conduct</option>
+            <option value="capability">Capability / performance / ill health</option>
+            <option value="redundancy">Redundancy</option>
+            <option value="other">Other / some other substantial reason</option>
+          </select>
+        </div>
+
+        <!-- ACAS Early Conciliation section -->
+        <div class="acas-section">
+          <h4>ACAS Early Conciliation</h4>
+          <p class="field-hint" style="margin-bottom:0.75rem;">
+            ACAS Early Conciliation (EC) is <strong>mandatory</strong> before making an Employment Tribunal claim.
+            Contacting ACAS pauses your limitation period. You can still proceed even if you haven't started yet.
+          </p>
+
+          <div class="acas-toggle">
+            <input type="checkbox" id="acas_not_started" name="acas_not_started" onchange="toggleAcasDates()">
+            <label for="acas_not_started" style="font-weight:normal;margin-bottom:0;">I haven't contacted ACAS yet</label>
+          </div>
+
+          <div class="acas-dates" id="acas-dates-panel">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ec_day_a">ACAS Day A (contact date)</label>
+                <input type="date" id="ec_day_a" name="ec_day_a" aria-describedby="err-ec-a" oninput="validateAcasDates(); updateDeadlinePreview()">
+                <p class="field-hint">Date you first contacted ACAS / received your EC certificate reference.</p>
+                <p class="error-msg" id="err-ec-a" role="alert">Day A cannot be before your dismissal date.</p>
+              </div>
+              <div class="form-group">
+                <label for="ec_day_b">ACAS Day B (certificate date)</label>
+                <input type="date" id="ec_day_b" name="ec_day_b" aria-describedby="err-ec-b" oninput="validateAcasDates(); updateDeadlinePreview()">
+                <p class="field-hint">Date on your ACAS Early Conciliation certificate. Leave blank if not yet received.</p>
+                <p class="error-msg" id="err-ec-b" role="alert">Day B cannot be before Day A.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live deadline preview -->
+        <div class="deadline-preview" id="deadline-preview" style="display:none;" aria-live="polite" aria-atomic="true">
+          <h4>⏱ Estimated tribunal deadline</h4>
+          <div class="date-value" id="preview-date">—</div>
+          <div id="preview-badge" style="margin-top:0.4rem;"></div>
+          <p class="deadline-note" id="preview-note"></p>
+          <p class="deadline-note" style="font-size:0.78rem;color:#888;margin-top:0.5rem;">
+            Based on rules from ERA 1996 s.111(2). This is indicative only — verify with ACAS or a solicitor.
+          </p>
+        </div>
+      </div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn btn-outline" onclick="prevStep()">← Back</button>
+        <button type="button" class="btn btn-primary" onclick="validateAndNextFromStep2()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ─── Step 3: Procedure ──────────────────────────────────────────── -->
+    <div class="wizard-panel" id="step-3-ud" data-step="3">
+      <div class="form-section">
+        <h3>Dismissal Procedure</h3>
+        <p class="field-hint" style="margin-bottom:1rem;">Employers must follow a fair procedure (ACAS Code of Practice). These answers affect your assessment.</p>
+
+        <div class="form-group">
+          <label>Were you given warnings before dismissal?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="warnings_given" value="yes"> Yes — verbal or written warnings given</label>
+            <label><input type="radio" name="warnings_given" value="no"> No warnings given</label>
+            <label><input type="radio" name="warnings_given" value="final_only"> Final written warning only</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Was a fair procedure followed by your employer?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="procedure" value="true"> Yes — investigation, meeting, and right to be accompanied</label>
+            <label><input type="radio" name="procedure" value="false"> No — little or no procedure was followed</label>
+            <label><input type="radio" name="procedure" value="partial"> Partial — some procedure but with gaps</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Was there a disciplinary hearing?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="hearing" value="true"> Yes</label>
+            <label><input type="radio" name="hearing" value="false"> No</label>
+          </div>
+        </div>
+
+        <div class="form-group appeal-group">
+          <label>Were you offered an appeal?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="appeal_offered" value="true"> Yes</label>
+            <label><input type="radio" name="appeal_offered" value="false"> No</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn btn-outline" onclick="prevStep()">← Back</button>
+        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ─── Step 4: Pay & Outcome ──────────────────────────────────────── -->
+    <div class="wizard-panel" id="step-4-ud" data-step="4">
+      <div class="form-section">
+        <h3>Pay &amp; Outcome</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="weekly_pay">Gross weekly pay (£)</label>
+            <input type="number" id="weekly_pay" name="weekly_pay" placeholder="650" min="0" step="0.01">
+            <p class="field-hint">Before tax. Used to estimate compensation range.</p>
+          </div>
+          <div class="form-group">
+            <label for="annual_salary">Or gross annual salary (£)</label>
+            <input type="number" id="annual_salary" name="annual_salary" placeholder="33800" min="0" step="0.01" oninput="calcWeeklyFromSalary()">
+            <p class="field-hint">We'll calculate weekly pay if you enter this instead.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>What outcome are you seeking?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="outcome_wanted" value="compensation" checked> Compensation / financial remedy</label>
+            <label><input type="radio" name="outcome_wanted" value="reinstatement"> Reinstatement (return to job)</label>
+            <label><input type="radio" name="outcome_wanted" value="re_engagement"> Re-engagement (similar role)</label>
+            <label><input type="radio" name="outcome_wanted" value="unclear"> Not yet decided</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="brief_facts">Brief description (optional)</label>
+          <textarea id="brief_facts" name="brief_facts" rows="3" maxlength="500"
+            placeholder="Describe what happened in a few sentences. Do not include your full name or employer name."></textarea>
+          <p class="field-hint">Max 500 characters. We remove identifying details before any analysis.</p>
+        </div>
+      </div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn btn-outline" onclick="prevStep()">← Back</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Get my free diagnosis →</button>
+      </div>
+    </div>
+
+  </form>
+
+  <div id="loading" style="display:none;text-align:center;margin-top:2rem;" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <p style="color:var(--muted);">Analysing your case… This may take a moment.</p>
+  </div>
+
+</main>
+
+<footer class="legal-footer">
+  <p>lawapp is not a law firm and does not provide legal advice. All assessments are for information only.</p>
+  <p>&copy; 2026 lawapp.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script src="/js/deadline.js"></script>
+<script>
+  LAWAPP_AUTH.updateNav();
+  const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
+
+  let currentStep = 0;
+  const panels = ['step-1', 'step-2-ud', 'step-3-ud', 'step-4-ud'];
+  const labels = ['Claim type', 'Dates & ACAS', 'Procedure', 'Pay'];
+  let rulesCache = null;
+
+  // ── Wizard navigation ────────────────────────────────────────────────────
+  function updateWizard() {
+    document.querySelectorAll('.wizard-panel').forEach((p, i) => {
+      p.classList.toggle('active', i === currentStep);
+    });
+    const progress = (currentStep / (panels.length - 1)) * 100;
+    const bar = document.getElementById('progress-bar');
+    bar.style.width = progress + '%';
+    bar.closest('[role=progressbar]').setAttribute('aria-valuenow', Math.round(progress));
+
+    const labelsEl = document.getElementById('steps-labels');
+    labelsEl.replaceChildren();
+    labels.forEach((l, i) => {
+      const s = document.createElement('span');
+      s.textContent = (i + 1) + '. ' + l;
+      if (i === currentStep) { s.style.fontWeight = '700'; s.style.color = 'var(--primary)'; }
+      labelsEl.appendChild(s);
+    });
+  }
+
+  function nextStep() {
+    if (currentStep < panels.length - 1) { currentStep++; updateWizard(); window.scrollTo(0,0); }
+  }
+  function prevStep() {
+    if (currentStep > 0) { currentStep--; updateWizard(); window.scrollTo(0,0); }
+  }
+
+  // ── ACAS dates toggle ────────────────────────────────────────────────────
+  function toggleAcasDates() {
+    const notStarted = document.getElementById('acas_not_started').checked;
+    const panel = document.getElementById('acas-dates-panel');
+    panel.classList.toggle('hidden', notStarted);
+    if (notStarted) {
+      document.getElementById('ec_day_a').value = '';
+      document.getElementById('ec_day_b').value = '';
+    }
+    updateDeadlinePreview();
+  }
+
+  // ── ACAS date validation ─────────────────────────────────────────────────
+  function validateAcasDates() {
+    const edt = document.getElementById('edt').value;
+    const dayA = document.getElementById('ec_day_a').value;
+    const dayB = document.getElementById('ec_day_b').value;
+    let valid = true;
+
+    const errA = document.getElementById('err-ec-a');
+    const errB = document.getElementById('err-ec-b');
+    errA.classList.remove('visible');
+    errB.classList.remove('visible');
+
+    if (dayA && edt && dayA < edt) {
+      errA.textContent = 'Day A is before your dismissal date — check this is correct.';
+      errA.classList.add('visible');
+      // Not blocking — technically possible in rare cases
+    }
+    if (dayB && dayA && dayB < dayA) {
+      errB.textContent = 'Day B cannot be before Day A.';
+      errB.classList.add('visible');
+      valid = false;
+    }
+    return valid;
+  }
+
+  // ── Step 2 validation before advancing ──────────────────────────────────
+  function validateAndNextFromStep2() {
+    const edt = document.getElementById('edt').value;
+    const service = document.getElementById('service_start').value;
+    let ok = true;
+
+    const errEdt = document.getElementById('err-edt');
+    const errService = document.getElementById('err-service');
+    errEdt.classList.remove('visible');
+    errService.classList.remove('visible');
+
+    if (!edt) { errEdt.classList.add('visible'); ok = false; }
+    if (!service) { errService.classList.add('visible'); ok = false; }
+    if (!validateAcasDates()) ok = false;
+
+    if (ok) nextStep();
+  }
+
+  // ── Live deadline preview ────────────────────────────────────────────────
+  async function updateDeadlinePreview() {
+    const edt = document.getElementById('edt').value;
+    if (!edt) { document.getElementById('deadline-preview').style.display = 'none'; return; }
+
+    const notStarted = document.getElementById('acas_not_started').checked;
+    const dayA = notStarted ? '' : document.getElementById('ec_day_a').value;
+    const dayB = notStarted ? '' : document.getElementById('ec_day_b').value;
+
+    // Fetch rules if not cached
+    if (!rulesCache) {
+      try { rulesCache = await fetchDeadlineRules(API_BASE, 'unfair_dismissal'); } catch(e) { return; }
+    }
+    if (!rulesCache || !rulesCache.timeLimitMonths) return;
+
+    const result = computeDeadline(edt, rulesCache.timeLimitMonths, dayA, dayB);
+    if (!result || !result.limitation_date) return;
+
+    const limitDate = new Date(result.limitation_date);
+    const today = new Date();
+    const daysLeft = Math.round((limitDate - today) / (1000 * 60 * 60 * 24));
+
+    document.getElementById('preview-date').textContent = formatDate(result.limitation_date);
+
+    const badge = document.getElementById('preview-badge');
+    let badgeClass, badgeText, note;
+    if (daysLeft < 0) {
+      badgeClass = 'passed'; badgeText = 'Deadline passed';
+      note = 'The standard deadline has passed. You may still have grounds to apply for an extension in exceptional circumstances — seek legal advice urgently.';
+    } else if (daysLeft <= 7) {
+      badgeClass = 'critical'; badgeText = `${daysLeft} days — URGENT`;
+      note = 'Deadline within one week. Contact ACAS immediately if you have not done so.';
+    } else if (daysLeft <= 30) {
+      badgeClass = 'urgent'; badgeText = `${daysLeft} days — Act soon`;
+      note = 'You should contact ACAS early conciliation soon to protect your deadline.';
+    } else {
+      badgeClass = 'safe'; badgeText = `${daysLeft} days remaining`;
+      note = result.ec_applied
+        ? `ACAS pause applied: ${result.pause_days || 0} extra days added.${result.floor_applied ? ' EC floor rule applied.' : ''}`
+        : 'Contact ACAS before this date to start early conciliation.';
+    }
+
+    badge.replaceChildren();
+    const _badgeSpan = document.createElement('span');
+    _badgeSpan.className = 'deadline-badge ' + badgeClass;
+    _badgeSpan.textContent = badgeText;
+    badge.appendChild(_badgeSpan);
+    document.getElementById('preview-note').textContent = note;
+    document.getElementById('deadline-preview').style.display = 'block';
+  }
+
+  // ── Salary to weekly pay helper ──────────────────────────────────────────
+  function calcWeeklyFromSalary() {
+    const annual = parseFloat(document.getElementById('annual_salary').value);
+    if (!isNaN(annual) && annual > 0) {
+      document.getElementById('weekly_pay').value = (annual / 52).toFixed(2);
+    }
+  }
+
+  // ── Form submission ──────────────────────────────────────────────────────
+  document.getElementById('intakeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    // Resolve weekly pay
+    const weeklyPay = parseFloat(form.weekly_pay.value) ||
+      (parseFloat(form.annual_salary.value) / 52) || 0;
+
+    const notStarted = document.getElementById('acas_not_started').checked;
+
+    const facts = {
+      claim_type:             form.claim_type.value,
+      edt:                    form.edt.value,
+      service_start_date:     form.service_start.value,
+      reason_for_dismissal:   form.reason.value,
+      warnings_given:         form.warnings_given ? form.warnings_given.value : null,
+      was_procedure_followed: form.procedure ? form.procedure.value === 'true' : null,
+      had_disciplinary_hearing: form.hearing ? form.hearing.value === 'true' : null,
+      appeal_offered:         form.appeal_offered ? form.appeal_offered.value === 'true' : null,
+      weekly_pay:             weeklyPay,
+      outcome_wanted:         form.outcome_wanted ? form.outcome_wanted.value : 'compensation',
+      jurisdiction:           'EW',
+      acas_not_started:       notStarted,
+    };
+
+    // Only include ACAS dates if not skipped
+    if (!notStarted) {
+      const dayA = form.ec_day_a.value;
+      const dayB = form.ec_day_b.value;
+      if (dayA) facts.ec_day_a = dayA;
+      if (dayB) facts.ec_day_b = dayB;
+    }
+
+    // Brief facts (de-identified client-side label — server further strips)
+    const brief = form.brief_facts ? form.brief_facts.value.trim() : '';
+    if (brief) facts.brief_facts = brief;
+
+    document.getElementById('loading').style.display = 'block';
+    form.style.display = 'none';
+
+    try {
+      const resp = await fetch(`${API_BASE}/assess`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: brief || 'Assessment request', facts, jurisdiction: 'EW', use_model: true })
+      });
+      if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
+      const data = await resp.json();
+      sessionStorage.setItem('assessment_result', JSON.stringify(data));
+      sessionStorage.setItem('assessment_facts_full', JSON.stringify(facts));
+      window.location.href = '/pages/assessment.html';
+    } catch (err) {
+      alert('Something went wrong: ' + err.message + '\nPlease try again.');
+      form.style.display = 'block';
+      document.getElementById('loading').style.display = 'none';
+    }
+  });
+
+  updateWizard();
+</script>
+</body>
+</html>

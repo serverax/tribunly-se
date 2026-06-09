@@ -1,0 +1,1 @@
+./audit_gather.sh:21:grep -R "RightsNow|IterLaw|Hermes|Sakina|AIA|Agentire|OpenClaw" . -n --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv > reports/gemini-name-contamination.txt || true

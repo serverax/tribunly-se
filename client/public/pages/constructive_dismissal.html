@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constructive Dismissal Risk — lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    .cd-wrap { max-width: 820px; margin: 1.5rem auto; padding: 0 1rem; }
+    .cd-card { border: 1px solid #d6d9e0; border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; background: #fff; }
+    .cd-act { display: grid; grid-template-columns: 9rem 1fr 9rem; gap: .5rem; margin-bottom: .5rem; }
+    @media (max-width: 600px){ .cd-act{ grid-template-columns: 1fr; } }
+    .tl { color: #fff; padding: .15rem .6rem; border-radius: 999px; font-weight: 600; font-size: .85rem; }
+    .tl-high { background:#1a7f37; } .tl-medium { background:#bf8700; } .tl-low { background:#b42318; } .tl-zero{ background:#475467; }
+    .risk-high{ color:#b42318; font-weight:700; } .risk-medium{ color:#bf8700; font-weight:700; } .risk-low{ color:#1a7f37; font-weight:700; }
+    .hidden { display:none; }
+    .banner { border-left: 4px solid #bf8700; background:#fffaeb; padding:.75rem 1rem; border-radius:6px; margin:.75rem 0; }
+    .err { border-left:4px solid #b42318; background:#fef3f2; padding:.75rem 1rem; border-radius:6px; }
+    .cite a { color:#175cd3; }
+    .boundary { font-size:.85rem; color:#475467; border-top:1px solid #eaecf0; margin-top:1rem; padding-top:.75rem; }
+    button.add { margin:.25rem 0 1rem; }
+    .scores span { display:inline-block; margin-right:1.25rem; }
+  </style>
+</head>
+<body>
+  <main class="cd-wrap">
+    <h1>Constructive Dismissal — Risk Triage</h1>
+    <p class="boundary">Self-help triage only. lawapp is not a solicitor and does not guarantee any outcome.</p>
+
+    <form id="cd-form" class="cd-card" aria-label="Constructive dismissal facts">
+      <h2>Repudiatory acts (what your employer did)</h2>
+      <div id="acts"></div>
+      <button type="button" class="add" id="add-act">+ Add another act</button>
+
+      <div class="cd-act">
+        <label>Resignation date<br><input type="date" id="resignation_date" required></label>
+        <label><input type="checkbox" id="pursuing_grievance"> I was pursuing a grievance</label>
+        <label><input type="checkbox" id="letter_cites_breach"> My resignation letter cited the breach</label>
+      </div>
+      <button type="submit" id="submit">Assess my situation</button>
+    </form>
+
+    <div id="loading" class="cd-card hidden" role="status">Assessing against the legal corpus…</div>
+    <div id="error" class="cd-card err hidden" role="alert"></div>
+
+    <section id="result" class="cd-card hidden" aria-live="polite">
+      <h2>Result: <span id="r-viability" class="tl"></span></h2>
+      <div id="r-review" class="banner hidden"></div>
+      <p><strong>Breach type:</strong> <span id="r-breach"></span> ·
+         <strong>Causation established:</strong> <span id="r-causation"></span></p>
+      <p class="scores">
+        <span><strong>Grounding:</strong> <span id="r-grounding"></span></span>
+        <span><strong>Confidence:</strong> <span id="r-confidence"></span></span>
+      </p>
+      <h3>Affirmation risk</h3>
+      <p>Delay from last act to resignation: <strong id="r-delay"></strong> days —
+         <span id="r-risk"></span></p>
+      <p id="r-mitigation" class="boundary"></p>
+
+      <h3>Timeline (Kaur last-straw)</h3>
+      <div id="r-timeline"></div>
+
+      <h3>Key weaknesses</h3>
+      <ul id="r-weaknesses"></ul>
+
+      <h3>Recommended next step</h3>
+      <p id="r-action"></p>
+
+      <h3>Statutory authority (verified against the legal corpus)</h3>
+      <ul id="r-citations" class="cite"></ul>
+
+      <p class="boundary" id="r-boundary"></p>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = '';
+    const actsEl = document.getElementById('acts');
+    function addAct(date = '', event = '', kind = 'implied_mtc') {
+      const row = document.createElement('div');
+      row.className = 'cd-act';
+      row.innerHTML =
+        `<input type="date" class="a-date" value="${date}">
+         <input type="text" class="a-event" placeholder="e.g. unilateral pay cut" value="${event}">
+         <select class="a-kind">
+           <option value="express"${kind==='express'?' selected':''}>Express breach</option>
+           <option value="implied_mtc"${kind==='implied_mtc'?' selected':''}>Implied (trust &amp; confidence)</option>
+         </select>`;
+      actsEl.appendChild(row);
+    }
+    addAct();
+    document.getElementById('add-act').addEventListener('click', () => addAct());
+
+    function show(id, on=true){ document.getElementById(id).classList.toggle('hidden', !on); }
+
+    document.getElementById('cd-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      show('result', false); show('error', false); show('loading', true);
+      const acts = [...document.querySelectorAll('#acts .cd-act')].map(r => ({
+        date: r.querySelector('.a-date').value,
+        event: r.querySelector('.a-event').value,
+        breach_kind: r.querySelector('.a-kind').value,
+      })).filter(a => a.date);
+      const facts = {
+        repudiatory_acts: acts,
+        resignation_date: document.getElementById('resignation_date').value,
+        pursuing_grievance: document.getElementById('pursuing_grievance').checked,
+        resignation_letter_cites_breach: document.getElementById('letter_cites_breach').checked,
+      };
+      try {
+        const resp = await fetch(`${API_BASE}/api/workflows/constructive-dismissal`, {
+          method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({facts})
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        render(await resp.json());
+      } catch (err) {
+        show('loading', false);
+        const e2 = document.getElementById('error');
+        e2.textContent = `Could not assess: ${err.message}. Please try again.`;
+        show('error', true);
+      }
+    });
+
+    function render(r) {
+      show('loading', false);
+      const v = document.getElementById('r-viability');
+      v.textContent = (r.claim_viability || 'unknown').toUpperCase();
+      v.className = 'tl tl-' + (r.claim_viability || 'zero');
+
+      const review = document.getElementById('r-review');
+      if (r.human_review_required) {
+        review.textContent = '⚠ This case needs human/legal review before relying on it.';
+        show('r-review', true);
+      } else { show('r-review', false); }
+
+      document.getElementById('r-breach').textContent = r.breach_type || '—';
+      document.getElementById('r-causation').textContent = r.causation_established ? 'yes' : 'no';
+      document.getElementById('r-grounding').textContent = r.grounding_score;
+      document.getElementById('r-confidence').textContent = r.confidence_score;
+
+      const ar = r.affirmation_risk || {};
+      document.getElementById('r-delay').textContent = (ar.delay_days ?? '—');
+      const rk = document.getElementById('r-risk');
+      rk.textContent = (ar.risk_level || 'unknown') + ' risk';
+      rk.className = 'risk-' + (ar.risk_level || 'low');
+      document.getElementById('r-mitigation').textContent = ar.mitigation || '';
+
+      const tl = document.getElementById('r-timeline'); tl.innerHTML = '';
+      (r.repudiatory_acts || []).forEach(a => {
+        const d = document.createElement('div');
+        d.innerHTML = `<strong>${a.date}</strong> — ${a.event || '(no detail)'} ` +
+          `<em>[${a.breach_kind}]</em> ${a.weight === 'last_straw' ? '<span class="tl tl-low">LAST STRAW</span>' : ''}`;
+        tl.appendChild(d);
+      });
+
+      const w = document.getElementById('r-weaknesses'); w.innerHTML = '';
+      (r.key_weaknesses || []).forEach(x => { const li=document.createElement('li'); li.textContent=x; w.appendChild(li); });
+
+      document.getElementById('r-action').textContent = (r.recommended_action || '').replace(/_/g,' ');
+
+      const c = document.getElementById('r-citations'); c.innerHTML = '';
+      (r.citations || []).forEach(ct => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${ct.url}" target="_blank" rel="noopener">${ct.cite}</a> — ${ct.note || ''}`;
+        c.appendChild(li);
+      });
+      document.getElementById('r-boundary').textContent = r.legal_boundary || '';
+      show('result', true);
+    }
+  </script>
+</body>
+</html>

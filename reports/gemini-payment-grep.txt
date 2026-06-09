@@ -1,0 +1,547 @@
+backend/api/main.py:284:    Health check — reports DB status, auth mode, AI provider, and payment mode.
+backend/api/main.py:288:    from backend.core.payment import get_payment_mode
+backend/api/main.py:306:        "payment_mode":  get_payment_mode(),
+backend/api/main.py:488:        "letter_before_action", "et1_support_notes_wages",   # Phase 5B: unpaid wages
+backend/api/main.py:492:    payment_token: Optional[str] = None  # Phase 3D: any non-empty = paid (mock mode)
+backend/api/main.py:500:    Phase 3D: payment gating.
+backend/api/main.py:501:      - No payment_token → preview (first N lines) + payment_required=True.
+backend/api/main.py:502:      - payment_token present → full document + payment_required=False.
+backend/api/main.py:504:      - No hidden payment: the price is always shown in the UI before any charge.
+backend/api/main.py:514:    from backend.core.payment import is_paid, preview_document
+backend/api/main.py:525:        title   = "Letter Before Action — Unpaid Wages (Self-Help Draft)"
+backend/api/main.py:529:        title   = "ET1 Support Notes — Unpaid Wages (Self-Help Draft)"
+backend/api/main.py:542:    # Phase 6A: wrap payment validation — fail safely on unimplemented modes
+backend/api/main.py:544:        paid = is_paid(req.payment_token)
+backend/api/main.py:549:    delivered_content = content if paid else preview_document(content)
+backend/api/main.py:555:        "payment_required":   not paid,
+backend/api/main.py:950:    "document_incomplete", "paid_document_ready",
+backend/api/main.py:1425:    premium_token: Optional[str] = None  # Phase 4B mock: any non-empty = premium paid
+backend/api/main.py:1497:    No payment required for preview. Full bundle requires premium_token.
+backend/api/main.py:1506:    from backend.core.payment import preview_document
+backend/api/main.py:1524:        "payment_required": True,
+backend/api/main.py:1547:    from backend.core.payment import is_paid, preview_document
+backend/api/main.py:1550:        premium = is_paid(req.premium_token)
+backend/api/main.py:1575:        "payment_required": not premium,
+backend/api/main.py:1629:    "document_preview_generated", "mock_payment_completed",
+backend/api/main.py:2292:@app.post("/api/payment/create-session")
+backend/api/main.py:2294:def create_payment_session(
+backend/api/main.py:2301:    Create a payment session for document generation access.
+backend/api/main.py:2303:    PAYMENT_MODE=test_simulator: returns a test token immediately (demo only).
+backend/api/main.py:2304:    PAYMENT_MODE=stripe_test/live: redirects to Stripe checkout (requires keys).
+backend/api/main.py:2305:    PAYMENT_MODE=disabled: always returns payment_required=True.
+backend/api/main.py:2308:    GUARDRAIL: test_simulator mode is never accepted in stripe_live mode.
+backend/api/main.py:2310:    from backend.core.payment import get_payment_mode
+backend/api/main.py:2314:    mode = get_payment_mode()
+backend/api/main.py:2326:            "payment_required": True,
+backend/api/main.py:2330:    if mode in ("mock", "test_simulator"):
+backend/api/main.py:2336:            "payment_token":    test_token,
+backend/api/main.py:2337:            "checkout_url":     None,
+backend/api/main.py:2340:            "payment_required": False,
+backend/api/main.py:2343:                "DEMO MODE — No real payment has been taken. "
+backend/api/main.py:2344:                "This token is accepted in test_simulator/mock mode only. "
+backend/api/main.py:2345:                "Production requires PAYMENT_MODE=stripe_live with real Stripe keys."
+backend/api/main.py:2349:    if mode == "stripe_test":
+backend/api/main.py:2350:        stripe_key = _os.getenv("STRIPE_SECRET_KEY", "")
+backend/api/main.py:2351:        if not stripe_key or stripe_key == "placeholder":
+backend/api/main.py:2359:    if mode == "stripe_live":
+backend/api/main.py:2360:        stripe_key = _os.getenv("STRIPE_SECRET_KEY", "")
+backend/api/main.py:2361:        if not stripe_key or stripe_key == "placeholder":
+backend/api/main.py:2368:    raise HTTPException(status_code=500, detail="Unknown payment mode.")
+backend/api/main.py:2371:@app.get("/api/payment/status")
+backend/api/main.py:2372:def get_payment_status() -> dict:
+backend/api/main.py:2373:    """Return the current payment mode (no values, mode name only)."""
+backend/api/main.py:2374:    from backend.core.payment import get_payment_mode
+backend/api/main.py:2375:    mode = get_payment_mode()
+backend/api/main.py:2376:    stripe_configured = bool(
+backend/api/main.py:2382:        "stripe_configured": stripe_configured,
+backend/api/main.py:2383:        "demo_mode":         mode in ("mock", "test_simulator"),
+backend/api/main.py:2386:            "Set PAYMENT_MODE=stripe_live with real Stripe keys for production."
+backend/api/main.py:2387:            if mode in ("mock", "test_simulator") else None
+backend/api/main.py:2726:            {"name": "payment",            "allowed": True,  "consent_required": True,  "description": "Process Stripe payments"},
+backend/api/main.py:2750:    _ALLOWED_TOOLS = {"calendar", "document_storage", "notification", "legal_source_api", "payment", "case_management"}
+backend/api/main.py:2751:    _CONSENT_TOOLS = {"calendar", "document_storage", "notification", "payment", "case_management"}
+backend/api/main.py:3003:            {"name": "payment",            "allowed": True,  "consent_required": True},
+backend/api/main.py:3398:    stripe_signature: Optional[str] = None
+backend/api/main.py:3401:@app.post("/api/payment/webhook")
+backend/api/main.py:3402:def api_payment_webhook(
+backend/api/main.py:3404:    stripe_signature: Optional[str] = Header(None, alias="Stripe-Signature"),
+backend/api/main.py:3407:    Stripe webhook receiver.
+backend/api/main.py:3409:    In test_simulator/mock mode: accepts test events (no real verification).
+backend/api/main.py:3410:    In stripe_test/stripe_live mode: verifies Stripe-Signature header.
+backend/api/main.py:3412:    GUARDRAIL: Never trust payment status from frontend — only this endpoint.
+backend/api/main.py:3414:    from backend.core.payment import get_payment_mode
+backend/api/main.py:3415:    mode = get_payment_mode()
+backend/api/main.py:3417:    if mode in ("mock", "test_simulator"):
+backend/api/main.py:3424:    if mode in ("stripe_test", "stripe_live"):
+backend/api/main.py:3425:        webhook_secret = _os.getenv("STRIPE_WEBHOOK_SECRET", "")
+backend/api/main.py:3426:        if not webhook_secret or webhook_secret == "placeholder":
+backend/api/main.py:3429:                detail="STRIPE_WEBHOOK_SECRET not configured. Set it before enabling real webhooks.",
+backend/api/main.py:3431:        if not stripe_signature:
+backend/api/main.py:3434:        raise HTTPException(status_code=501, detail="Stripe webhook signature verification not yet implemented.")
+backend/api/main.py:3436:    raise HTTPException(status_code=503, detail="Webhook not supported in current payment mode.")
+backend/api/main.py:3452:    GUARDRAIL: download only permitted for documents linked to a paid case.
+backend/core/agents/registry.py:24:        "wrongful dismissal, unpaid wages, and related claims. "
+backend/core/agents/registry.py:56:        elif claim_type == "unpaid_wages":
+backend/core/agents/registry.py:59:            if not facts.get("unpaid_amount"):
+backend/core/agents/registry.py:60:                gaps.append("unpaid_amount")
+backend/core/brain.py:54:    "detect_claim_type",      # 5  — unfair_dismissal / unpaid_wages / etc.
+backend/core/brain.py:81:    "unpaid_wages": [
+backend/core/brain.py:477:                    "This service handles unfair dismissal and unpaid wages claims "
+backend/core/classify.py:13:  - Model must reply with one of: unfair_dismissal | unpaid_wages | out_of_scope
+backend/core/classify.py:35:# ── Unpaid wages / unlawful deduction keywords ────────────────────────────────
+backend/core/classify.py:37:    "unpaid wages", "unpaid salary", "wages not paid", "salary not paid",
+backend/core/classify.py:38:    "haven't been paid", "haven't paid", "hasn't paid", "have not paid",
+backend/core/classify.py:39:    "has not paid", "not paid me", "not paid my wages", "not paid my salary",
+backend/core/classify.py:40:    "wasn't paid", "wasn't paid my", "underpaid", "deduction from wages",
+backend/core/classify.py:44:    "didn't pay", "didn't receive my pay", "short paid", "wages owed",
+backend/core/classify.py:45:    "paid less than", "breach of contract pay", "holiday pay unpaid",
+backend/core/classify.py:46:    "overtime unpaid", "bonus unpaid", "commission unpaid",
+backend/core/classify.py:91:  unpaid_wages
+backend/core/classify.py:100:_VALID_ML_CATEGORIES = {"unfair_dismissal", "unpaid_wages", "out_of_scope"}
+backend/core/classify.py:121:    Returns: 'unfair_dismissal' | 'unpaid_wages' | 'out_of_scope' | None
+backend/core/classify.py:197:    # Unpaid wages (checked before UD — more specific)
+backend/core/classify.py:204:        return ClassificationResult(matter_type="unpaid_wages", intent=intent, in_scope=True)
+backend/core/classify.py:224:    if ml_result == "unpaid_wages":
+backend/core/classify.py:225:        return ClassificationResult(matter_type="unpaid_wages", intent="diagnosis", in_scope=True)
+backend/core/config_validation.py:41:VALID_PAYMENT_MODES = frozenset({"mock", "disabled", "stripe_test", "stripe_live"})
+backend/core/config_validation.py:62:    payment_mode    = os.getenv("PAYMENT_MODE", "mock").lower()
+backend/core/config_validation.py:118:        if payment_mode not in VALID_PAYMENT_MODES:
+backend/core/config_validation.py:119:            warnings.append(f"PAYMENT_MODE='{payment_mode}' invalid.")
+backend/core/config_validation.py:120:        if payment_mode == "stripe_live" and not os.getenv("STRIPE_SECRET_KEY"):
+backend/core/config_validation.py:121:            missing_required.append("STRIPE_SECRET_KEY (required for PAYMENT_MODE=stripe_live)")
+backend/core/config_validation.py:135:        "payment_mode":        payment_mode,
+backend/core/conflict_detector.py:103:    amount_fields = ["weekly_pay", "unpaid_amount"]
+backend/core/documents.py:494:# ── Phase 5B: Unpaid wages / unlawful deduction documents ────────────────────
+backend/core/documents.py:498:    Draft Letter Before Action for an unpaid wages / unlawful deduction claim.
+backend/core/documents.py:505:    unpaid_amount  = facts.get("unpaid_amount", "")
+backend/core/documents.py:514:    amount_str = f"£{float(unpaid_amount):,.2f}" if unpaid_amount else "[AMOUNT — complete before sending]"
+backend/core/documents.py:555:[Add further detail: description of wages owed, any partial payment received,
+backend/core/documents.py:570:If payment is not received within 14 days, I reserve the right to present a
+backend/core/documents.py:602:    ET1 Support Notes for an unpaid wages / unlawful deduction claim.
+backend/core/documents.py:608:    unpaid_amount  = facts.get("unpaid_amount", "")
+backend/core/documents.py:622:    amount_str = f"£{float(unpaid_amount):,.2f}" if unpaid_amount else "[AMOUNT — complete]"
+backend/core/documents.py:686:   basis of entitlement, any partial payment, employer's position.]
+backend/core/documents.py:693:   {vr.get("basis", "Repayment of gross wages unlawfully deducted (ERA 1996 s.24).")}
+backend/core/documents.py:695:   [Note: For standard deduction claims, remedy = repayment only.
+backend/core/evidence_gap.py:29:    "unpaid_amount": "amount_unpaid_or_deducted",
+backend/core/evidence_gap.py:61:    elif claim_type == "unpaid_wages":
+backend/core/evidence_gap.py:76:        "wages_due_date": "Date wages were due (when you should have been paid)",
+backend/core/evidence_gap.py:77:        "unpaid_amount": "Amount unpaid or wrongly deducted (£ gross)",
+backend/core/legal_graph.py:24:    "unpaid_wages":     "upw_claim",
+backend/core/payment.py:2:Payment validation — Phase 6A/7 (extended payment mode abstraction).
+backend/core/payment.py:6:  test_simulator   (demo):   token must be "test_<any>" — local demo only, clearly labelled
+backend/core/payment.py:7:  disabled:                  payment gate always blocks; all docs return payment_required=True
+backend/core/payment.py:8:  stripe_test:               Stripe test API validation (Phase 7 — requires STRIPE_SECRET_KEY)
+backend/core/payment.py:9:  stripe_live:               Stripe live API; requires STRIPE_SECRET_KEY
+backend/core/payment.py:11:GUARDRAIL: No hidden payment. Price shown before any charge. Users must consent.
+backend/core/payment.py:12:GUARDRAIL: stripe_live mode MUST fail safely if STRIPE_SECRET_KEY is not set.
+backend/core/payment.py:13:GUARDRAIL: test_simulator must never be used in production (validated at startup).
+backend/core/payment.py:14:GUARDRAIL: PAYMENT_MODE=disabled completely blocks paid output — useful for maintenance.
+backend/core/payment.py:24:# Document preview: maximum lines shown to unpaid users.
+backend/core/payment.py:28:_VALID_MODES = ("mock", "test_simulator", "disabled", "stripe_test", "stripe_live")
+backend/core/payment.py:31:def get_payment_mode() -> str:
+backend/core/payment.py:33:    Return the current payment mode. Reads PAYMENT_MODE at call time (not import time)
+backend/core/payment.py:42:def is_paid(token: str | None) -> bool:
+backend/core/payment.py:44:    Returns True if the token represents a valid payment for the current mode.
+backend/core/payment.py:46:    mock:        any non-empty token = paid (test/dev)
+backend/core/payment.py:47:    disabled:    always False (payment gate blocks all output)
+backend/core/payment.py:48:    stripe_test: Phase 7 stub — raises NotImplementedError (safe failure)
+backend/core/payment.py:49:    stripe_live: validates STRIPE_SECRET_KEY present, then Phase 7 stub
+backend/core/payment.py:51:    mode = get_payment_mode()
+backend/core/payment.py:54:        logger.debug("Payment mode=disabled: all paid requests blocked.")
+backend/core/payment.py:60:        logger.debug("Mock payment accepted (PAYMENT_MODE=mock, token present).")
+backend/core/payment.py:63:    if mode == "test_simulator":
+backend/core/payment.py:64:        # Test simulator: token must start with "test_" — clearly labelled demo mode
+backend/core/payment.py:68:            logger.info("Test simulator payment accepted (PAYMENT_MODE=test_simulator).")
+backend/core/payment.py:70:        logger.debug("Test simulator: token does not start with 'test_' — rejected.")
+backend/core/payment.py:73:    if mode == "stripe_test":
+backend/core/payment.py:78:            "PAYMENT_MODE=stripe_test: Stripe test validation not yet implemented (Phase 7). "
+backend/core/payment.py:82:    if mode == "stripe_live":
+backend/core/payment.py:83:        stripe_key = os.getenv("STRIPE_SECRET_KEY", "")
+backend/core/payment.py:84:        if not stripe_key:
+backend/core/payment.py:86:                "PAYMENT_MODE=stripe_live requires STRIPE_SECRET_KEY environment variable. "
+backend/core/payment.py:87:                "Set STRIPE_SECRET_KEY or use PAYMENT_MODE=stripe_test for testing."
+backend/core/payment.py:93:            "PAYMENT_MODE=stripe_live: Live Stripe validation not yet implemented (Phase 7)."
+backend/core/payment.py:102:    Truncation and payment notice are explicit — no hidden gate.
+backend/core/payment.py:110:        "Full document access requires payment.\n"
+backend/core/payment.py:112:        "any payment is taken. lawapp never charges without your consent.\n"
+backend/core/pipeline.py:81:    claim_type = classification.matter_type  # "unfair_dismissal" | "unpaid_wages"
+backend/core/pipeline.py:84:    if claim_type == "unpaid_wages":
+backend/core/pipeline.py:135:    # ── Qualifying period check (unfair dismissal only — no QP for unpaid wages)
+backend/core/pipeline.py:162:    if claim_type == "unpaid_wages":
+backend/core/production_readiness.py:11:  - Live payment integration is configured (Phase 4)
+backend/core/production_readiness.py:24:_CLAIM_TYPES = ["unfair_dismissal", "unpaid_wages"]
+backend/core/production_readiness.py:112:        "Live payment not configured (PAYMENT_ENABLED=false — mock mode only)",
+backend/core/production_readiness.py:125:    payment_enabled = os.getenv("PAYMENT_ENABLED", "false").lower() == "true"
+backend/core/production_readiness.py:126:    payment_status = {
+backend/core/production_readiness.py:127:        "live_payment":     "ENABLED" if payment_enabled else "MOCK_ONLY",
+backend/core/production_readiness.py:128:        "production_ready": payment_enabled,
+backend/core/production_readiness.py:228:        "payment_mode":          payment_status,
+backend/core/production_readiness.py:271:        "payment": {
+backend/core/production_readiness.py:273:            "live_ready":  (os.getenv("PAYMENT_MODE", "mock") == "stripe_live"
+backend/core/production_readiness.py:275:            "stripe_key":  "SET" if os.getenv("STRIPE_SECRET_KEY") else "NOT_SET",
+backend/core/production_readiness.py:276:            "note":        "mock mode for tests; stripe_live requires STRIPE_SECRET_KEY + Phase 7.",
+backend/core/router.py:49:    r"\b(i|my|me|we|our)\b.*(dismiss|sack|fired|redundan|paid|wage|salary)",
+backend/domains/employment/assess_logic.py:306:# ── Phase 5B: Unpaid wages / unlawful deduction from wages ────────────────────
+backend/domains/employment/assess_logic.py:327:    - Value range = unpaid amount, not compensation estimate
+backend/domains/employment/assess_logic.py:330:    GUARDRAIL: Value ranges come from facts (unpaid amount), never from model memory.
+backend/domains/employment/assess_logic.py:337:    unpaid_amount      = float(safe_facts.get("unpaid_amount") or 0)
+backend/domains/employment/assess_logic.py:383:    if unpaid_amount <= 0:
+backend/domains/employment/assess_logic.py:385:            "Unpaid amount not specified. Claim value cannot be assessed. "
+backend/domains/employment/assess_logic.py:392:        "Employer may claim wages were paid in full and dispute the amount owed.",
+backend/domains/employment/assess_logic.py:423:    elif unpaid_amount > 0 and not deduction_auth:
+backend/domains/employment/assess_logic.py:433:    # ── Value range (unpaid amount — no multiplier) ────────────────────────────
+backend/domains/employment/assess_logic.py:435:    rem_basis = rem_row["description"] if rem_row else "ERA 1996 s.24 — repayment of gross wages unlawfully deducted."
+backend/domains/employment/assess_logic.py:437:        "low":      round(unpaid_amount, 2) if unpaid_amount > 0 else 0,
+backend/domains/employment/assess_logic.py:438:        "high":     round(unpaid_amount, 2) if unpaid_amount > 0 else 0,
+backend/domains/employment/assess_logic.py:441:            f"Claimed gross wages: £{unpaid_amount:,.2f}. {rem_basis}"
+backend/domains/employment/assess_logic.py:442:            if unpaid_amount > 0 else
+backend/domains/employment/assess_logic.py:443:            "Unpaid amount not provided — cannot estimate."
+backend/domains/employment/assess_logic.py:455:    elif has_viable_claim == "yes" and unpaid_amount > 0:
+backend/domains/employment/assess_logic.py:471:            f"Unpaid wages deterministic assessment. "
+backend/domains/employment/assess_logic.py:472:            f"Amount: £{unpaid_amount:,.2f}. "
+client/public/js/auth.js:15:      sessionStorage.removeItem('payment_token');
+client/public/js/document_preview.js:121:      unpaid_amount:  'Amount unpaid or deducted',
+client/public/pages/assessment.html:246:    // Real logic would involve fetch('/api/payment/create-session')
+client/public/pages/assessment.html:594:    const isPaid = !!sessionStorage.getItem('payment_token');
+client/public/pages/assessment.html:614:      gate.id = 'payment-gate';
+client/public/pages/assessment.html:630:      gDesc.textContent = 'Preview is free. Activate demo access to copy and use the full draft. No real payment is taken in this demo.';
+client/public/pages/assessment.html:647:      const paidMsg = document.createElement('div');
+client/public/pages/assessment.html:648:      paidMsg.style.background = '#f0fff4';
+client/public/pages/assessment.html:649:      paidMsg.style.border = '1px solid #38a169';
+client/public/pages/assessment.html:650:      paidMsg.style.borderRadius = '8px';
+client/public/pages/assessment.html:651:      paidMsg.style.padding = '.75rem';
+client/public/pages/assessment.html:652:      paidMsg.style.marginBottom = '1rem';
+client/public/pages/assessment.html:653:      paidMsg.style.fontSize = '.875rem';
+client/public/pages/assessment.html:654:      paidMsg.style.color = '#276749';
+client/public/pages/assessment.html:655:      paidMsg.textContent = 'Full access active (demo).';
+client/public/pages/assessment.html:656:      card.appendChild(paidMsg);
+client/public/pages/assessment.html:710:    payNotice.id = 'doc-payment-notice';
+client/public/pages/assessment.html:961:        sessionStorage.setItem('payment_token', 'mock-paid-2026');
+client/public/pages/assessment.html:979:    const token = sessionStorage.getItem('payment_token');
+client/public/pages/assessment.html:989:      if (token) body.payment_token = token;
+client/public/pages/assessment.html:1006:      const payNotice = document.getElementById('doc-payment-notice');
+client/public/pages/assessment.html:1007:      if (payNotice) payNotice.style.display = data.payment_required ? 'block' : 'none';
+client/public/pages/assessment.html:1010:      if (copyRow) copyRow.style.display = data.payment_required ? 'none' : 'flex';
+client/public/pages/cancel.html:24:    <p style="margin-bottom:1.5rem;">Your payment was not completed. No charges were made. You can try again from your assessment page at any time.</p>
+client/public/pages/dashboard.html:193:    if (type === 'unpaid_wages') return 'Unpaid Wages';
+client/public/pages/intake.html:70:          <label><input type="radio" name="claim_type" value="unpaid_wages">
+client/public/pages/intake.html:71:            <strong>Unpaid wages</strong> — I wasn't paid what I was owed</label>
+client/public/pages/success.html:38:  sessionStorage.setItem('payment_token', 'mock-paid-' + Date.now());
+tests/brain/test_brain.py:26:    "unpaid_amount": 1500,
+tests/brain/test_brain.py:290:        # "haven't been paid" is in _UPW_KEYWORDS in classify.py
+tests/brain/test_brain.py:291:        result = run_brain("I haven't been paid my wages this month", _UPW_FACTS, model=STUB)
+tests/brain/test_brain.py:293:        assert result["trace"]["claim_type"] == "unpaid_wages"
+tests/conftest.py:6:PAYMENT_MODE=test_simulator enables payment tests without real Stripe.
+tests/conftest.py:28:# Payment mode: test_simulator for payment gating tests
+tests/conftest.py:29:os.environ.setdefault("PAYMENT_MODE",      "test_simulator")
+tests/e2e/lawapp-journey.spec.js:13: *   - PAYMENT_MODE=test_simulator or mock
+tests/e2e/lawapp-journey.spec.js:203:// ── Test: Document generation (test_simulator payment) ───────────────────────
+tests/e2e/lawapp-journey.spec.js:205:test('document generation with test payment token', async ({ request }) => {
+tests/e2e/lawapp-journey.spec.js:208:  const sessionR = await request.post(`${BASE}/api/payment/create-session`, {
+tests/e2e/lawapp-journey.spec.js:214:  const token = session.payment_token;
+tests/e2e/lawapp-journey.spec.js:223:      payment_token: token,
+tests/e2e/lawapp-journey.spec.js:229:  expect(doc.payment_required).toBe(false);
+tests/e2e/lawapp-journey.spec.js:234:// ── Test: No paid doc without token ──────────────────────────────────────────
+tests/e2e/lawapp-journey.spec.js:236:test('document preview only without payment token', async ({ request }) => {
+tests/e2e/lawapp-journey.spec.js:246:  expect(body.payment_required).toBe(true);
+tests/graph_rag/test_graph_rag.py:90:        result = get_claim_subgraph("unpaid_wages", "EW")
+tests/integration/test_phase3c_documents.py:91:# payment_token="mock-paid-test" → full document returned (Phase 3D mock mode)
+tests/integration/test_phase3c_documents.py:92:_POC_REQUEST = {"document_type": "particulars_of_claim", "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "mock-paid-test"}
+tests/integration/test_phase3c_documents.py:93:_SOL_REQUEST = {"document_type": "schedule_of_loss",     "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "mock-paid-test"}
+tests/integration/test_phase3c_documents.py:255:        "payment_token": "mock-paid-test",
+tests/integration/test_phase3d_paid_handoff.py:5:  1.  Unpaid document request returns preview + payment_required=True
+tests/integration/test_phase3d_paid_handoff.py:6:  2.  Paid document request returns full content + payment_required=False
+tests/integration/test_phase3d_paid_handoff.py:24:        tests/integration/test_phase3d_paid_handoff.py -v -s
+tests/integration/test_phase3d_paid_handoff.py:100:_POC_PAID   = {**_POC_UNPAID, "payment_token": "mock-paid-2026"}
+tests/integration/test_phase3d_paid_handoff.py:101:_SOL_PAID   = {"document_type": "schedule_of_loss", "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "mock-paid-2026"}
+tests/integration/test_phase3d_paid_handoff.py:104:# ── 1. Unpaid returns preview ──────────────────────────────────────────────────
+tests/integration/test_phase3d_paid_handoff.py:106:def test_unpaid_document_returns_payment_required_true():
+tests/integration/test_phase3d_paid_handoff.py:110:    assert data["payment_required"] is True, "Unpaid request must set payment_required=True"
+tests/integration/test_phase3d_paid_handoff.py:113:def test_unpaid_document_content_is_truncated():
+tests/integration/test_phase3d_paid_handoff.py:114:    resp_unpaid = client.post("/documents/generate", json=_POC_UNPAID)
+tests/integration/test_phase3d_paid_handoff.py:115:    resp_paid   = client.post("/documents/generate", json=_POC_PAID)
+tests/integration/test_phase3d_paid_handoff.py:116:    assert resp_unpaid.status_code == 200
+tests/integration/test_phase3d_paid_handoff.py:117:    assert resp_paid.status_code == 200
+tests/integration/test_phase3d_paid_handoff.py:118:    unpaid_len = len(resp_unpaid.json()["content"])
+tests/integration/test_phase3d_paid_handoff.py:119:    paid_len   = len(resp_paid.json()["content"])
+tests/integration/test_phase3d_paid_handoff.py:120:    assert unpaid_len < paid_len, \
+tests/integration/test_phase3d_paid_handoff.py:121:        f"Preview ({unpaid_len} chars) should be shorter than full doc ({paid_len} chars)"
+tests/integration/test_phase3d_paid_handoff.py:124:def test_unpaid_preview_contains_preview_notice():
+tests/integration/test_phase3d_paid_handoff.py:127:    assert "PREVIEW ENDS HERE" in content or "requires payment" in content.lower(), \
+tests/integration/test_phase3d_paid_handoff.py:128:        "Preview must include payment gate notice"
+tests/integration/test_phase3d_paid_handoff.py:133:def test_paid_document_returns_payment_required_false():
+tests/integration/test_phase3d_paid_handoff.py:136:    assert resp.json()["payment_required"] is False
+tests/integration/test_phase3d_paid_handoff.py:139:def test_paid_document_returns_full_content():
+tests/integration/test_phase3d_paid_handoff.py:147:def test_paid_sol_returns_full_content():
+tests/integration/test_phase3d_paid_handoff.py:151:    assert data["payment_required"] is False
+tests/integration/test_phase3e_mvp_close.py:35:  20. End-to-end: assess → save → preview doc → paid doc → reload → deadline → reminder
+tests/integration/test_phase3e_mvp_close.py:350:    """End-to-end: assess → preview → paid doc → save → reload → deadline → reminder → handoff."""
+tests/integration/test_phase3e_mvp_close.py:365:    # 2. Preview document (unpaid)
+tests/integration/test_phase3e_mvp_close.py:372:    assert preview_resp.json()["payment_required"] is True
+tests/integration/test_phase3e_mvp_close.py:374:           "requires payment" in preview_resp.json()["content"].lower()
+tests/integration/test_phase3e_mvp_close.py:376:    # 3. Full document (mock paid)
+tests/integration/test_phase3e_mvp_close.py:381:        "payment_token": "mvp-journey-test",
+tests/integration/test_phase3e_mvp_close.py:384:    assert full_resp.json()["payment_required"] is False
+tests/integration/test_phase3e_mvp_close.py:451:        "payment_token": "regression-test",
+tests/integration/test_phase3e_mvp_close.py:455:    assert resp.json()["payment_required"] is False
+tests/integration/test_phase4a_upload_ocr.py:407:        "payment_token": "regression-test",
+tests/integration/test_phase4b_bundle.py:7:   2.  Preview always requires payment_required=True (no token needed to preview)
+tests/integration/test_phase4b_bundle.py:11:   4.  Full bundle without premium_token → payment_required=True, content truncated
+tests/integration/test_phase4b_bundle.py:12:   5.  Full bundle with premium_token → payment_required=False, full content
+tests/integration/test_phase4b_bundle.py:111:def test_preview_payment_required_true():
+tests/integration/test_phase4b_bundle.py:114:    assert resp.json()["payment_required"] is True
+tests/integration/test_phase4b_bundle.py:125:    assert "PREVIEW ENDS HERE" in preview_ws or "requires payment" in preview_ws.lower()
+tests/integration/test_phase4b_bundle.py:130:def test_full_bundle_without_token_returns_payment_required():
+tests/integration/test_phase4b_bundle.py:134:    assert resp.json()["payment_required"] is True
+tests/integration/test_phase4b_bundle.py:143:    assert data["payment_required"] is False
+tests/integration/test_phase4b_bundle.py:354:        "payment_token": "regression-test",
+tests/integration/test_phase4c_timeline.py:392:    assert resp.json()["payment_required"] is False
+tests/integration/test_phase4c_timeline.py:411:        "payment_token": "regression-test",
+tests/integration/test_phase5b_unpaid_wages.py:2:Phase 5B — Unpaid wages / unlawful deduction integration tests.
+tests/integration/test_phase5b_unpaid_wages.py:6:   1.  Unpaid wages query classifies as unpaid_wages
+tests/integration/test_phase5b_unpaid_wages.py:11:   4.  GET /rules/unpaid_wages returns expected rules
+tests/integration/test_phase5b_unpaid_wages.py:17:   8.  Unpaid wages assessment returns structured output
+tests/integration/test_phase5b_unpaid_wages.py:19:  10.  No qualifying period applied to unpaid wages
+tests/integration/test_phase5b_unpaid_wages.py:30:  17.  Unpaid wages case can be saved and retrieved
+tests/integration/test_phase5b_unpaid_wages.py:44:        tests/integration/test_phase5b_unpaid_wages.py -v -s
+tests/integration/test_phase5b_unpaid_wages.py:65:    "unpaid_amount":  2500.0,
+tests/integration/test_phase5b_unpaid_wages.py:73:    "claim_type": "unpaid_wages",
+tests/integration/test_phase5b_unpaid_wages.py:76:    "reasoning_summary": "Employer has not paid final month's salary.",
+tests/integration/test_phase5b_unpaid_wages.py:90:    "boundary_log": {"fields_passed": ["wages_due_date", "unpaid_amount"], "fields_stripped": [], "pii_in_output": []},
+tests/integration/test_phase5b_unpaid_wages.py:102:def test_unpaid_wages_classification():
+tests/integration/test_phase5b_unpaid_wages.py:103:    result = classify("My employer hasn't paid my wages — final salary missing", {})
+tests/integration/test_phase5b_unpaid_wages.py:104:    assert result.matter_type == "unpaid_wages", \
+tests/integration/test_phase5b_unpaid_wages.py:105:        f"Expected unpaid_wages, got {result.matter_type}"
+tests/integration/test_phase5b_unpaid_wages.py:109:def test_unpaid_wages_various_queries():
+tests/integration/test_phase5b_unpaid_wages.py:111:        "I wasn't paid my final salary",
+tests/integration/test_phase5b_unpaid_wages.py:113:        "My employer underpaid me",
+tests/integration/test_phase5b_unpaid_wages.py:117:        assert r.matter_type == "unpaid_wages", f"Expected unpaid_wages for: {q}"
+tests/integration/test_phase5b_unpaid_wages.py:132:def test_unpaid_wages_rules_returned():
+tests/integration/test_phase5b_unpaid_wages.py:133:    resp = client.get("/rules/unpaid_wages")
+tests/integration/test_phase5b_unpaid_wages.py:141:def test_unpaid_wages_time_limit_is_3():
+tests/integration/test_phase5b_unpaid_wages.py:142:    resp = client.get("/rules/unpaid_wages")
+tests/integration/test_phase5b_unpaid_wages.py:148:def test_unpaid_wages_qualifying_period_is_zero():
+tests/integration/test_phase5b_unpaid_wages.py:149:    resp = client.get("/rules/unpaid_wages")
+tests/integration/test_phase5b_unpaid_wages.py:156:def test_unpaid_wages_rules_have_authority_ref():
+tests/integration/test_phase5b_unpaid_wages.py:157:    resp = client.get("/rules/unpaid_wages")
+tests/integration/test_phase5b_unpaid_wages.py:167:def test_unpaid_wages_assessment_returns_structured_output():
+tests/integration/test_phase5b_unpaid_wages.py:168:    result = assess("I haven't been paid my wages", _UPW_FACTS, model=STUB)
+tests/integration/test_phase5b_unpaid_wages.py:172:        assert result.get("claim_type") == "unpaid_wages"
+tests/integration/test_phase5b_unpaid_wages.py:175:def test_unpaid_wages_deadline_uses_wages_due_date():
+tests/integration/test_phase5b_unpaid_wages.py:177:    result = assess("My employer hasn't paid my wages", _UPW_FACTS, model=STUB)
+tests/integration/test_phase5b_unpaid_wages.py:184:def test_unpaid_wages_no_qualifying_period_applied():
+tests/integration/test_phase5b_unpaid_wages.py:185:    result = assess("I wasn't paid", _UPW_FACTS, model=STUB)
+tests/integration/test_phase5b_unpaid_wages.py:187:        "Unpaid wages must not have qualifying_check (day-one right)"
+tests/integration/test_phase5b_unpaid_wages.py:190:def test_unpaid_wages_missing_wages_date_status():
+tests/integration/test_phase5b_unpaid_wages.py:191:    result = assess("I haven't been paid", {"jurisdiction": "EW", "unpaid_amount": 500}, model=STUB)
+tests/integration/test_phase5b_unpaid_wages.py:196:def test_unpaid_wages_self_employed_no_viable():
+tests/integration/test_phase5b_unpaid_wages.py:198:    result = assess("I haven't been paid as a contractor", facts, model=STUB)
+tests/integration/test_phase5b_unpaid_wages.py:211:        "payment_token": "test-paid",
+tests/integration/test_phase5b_unpaid_wages.py:224:        "payment_token": "test-paid",
+tests/integration/test_phase5b_unpaid_wages.py:236:            "payment_token": "test-paid",
+tests/integration/test_phase5b_unpaid_wages.py:249:            "payment_token": "test-paid",
+tests/integration/test_phase5b_unpaid_wages.py:262:        "payment_token": "test-paid",
+tests/integration/test_phase5b_unpaid_wages.py:265:    assert "2,500" in content or "2500" in content, "Letter must include unpaid amount"
+tests/integration/test_phase5b_unpaid_wages.py:273:        "payment_token": "test-paid",
+tests/integration/test_phase5b_unpaid_wages.py:283:def test_unpaid_wages_case_saved_and_retrieved():
+tests/integration/test_phase5b_unpaid_wages.py:285:        "claim_type": "unpaid_wages",
+tests/integration/test_phase5b_unpaid_wages.py:296:    assert data["claim_type"] == "unpaid_wages"
+tests/integration/test_phase5b_unpaid_wages.py:303:    result = assess("I wasn't paid my salary", _UPW_FACTS, model=STUB)
+tests/integration/test_phase5b_unpaid_wages.py:317:    result = assess("Unpaid wages", pii_facts, model=STUB)
+tests/integration/test_phase5c_verification.py:29:  18.  Unpaid wages assessment still works
+tests/integration/test_phase5c_verification.py:98:    from ingestion.rules.seed_unpaid_wages import seed as seed_upw
+tests/integration/test_phase5c_verification.py:128:def test_unpaid_wages_rules_have_verification_status():
+tests/integration/test_phase5c_verification.py:129:    rules = _get_rules("unpaid_wages")
+tests/integration/test_phase5c_verification.py:147:    rules = _get_rules("unpaid_wages")
+tests/integration/test_phase5c_verification.py:321:def test_unpaid_wages_assessment_regression():
+tests/integration/test_phase5c_verification.py:322:    result = assess("My employer hasn't paid my wages", {
+tests/integration/test_phase5c_verification.py:324:        "unpaid_amount": 2500.0,
+tests/integration/test_phase6a_deployment.py:2:Phase 6A — Deployment readiness, auth, and payment mode tests.
+tests/integration/test_phase6a_deployment.py:18:   9.  Payment mode 'mock' allows paid document access
+tests/integration/test_phase6a_deployment.py:19:  10.  Payment mode 'disabled' blocks all paid output
+tests/integration/test_phase6a_deployment.py:20:  11.  Payment mode 'stripe_live' fails safely without STRIPE_SECRET_KEY
+tests/integration/test_phase6a_deployment.py:21:  12.  Payment mode 'stripe_test' fails safely (not yet implemented)
+tests/integration/test_phase6a_deployment.py:28:  17.  /admin/production-readiness includes payment mode status
+tests/integration/test_phase6a_deployment.py:227:def test_payment_mock_allows_paid_access():
+tests/integration/test_phase6a_deployment.py:232:        "payment_token": "mock-test-token",
+tests/integration/test_phase6a_deployment.py:235:    assert resp.json()["payment_required"] is False
+tests/integration/test_phase6a_deployment.py:238:def test_payment_disabled_blocks_paid_output():
+tests/integration/test_phase6a_deployment.py:244:            "payment_token": "any-token",
+tests/integration/test_phase6a_deployment.py:247:        assert resp.json()["payment_required"] is True, \
+tests/integration/test_phase6a_deployment.py:248:            "PAYMENT_MODE=disabled must block all paid output"
+tests/integration/test_phase6a_deployment.py:253:def test_payment_stripe_live_fails_safely_without_key():
+tests/integration/test_phase6a_deployment.py:254:    os.environ["PAYMENT_MODE"] = "stripe_live"
+tests/integration/test_phase6a_deployment.py:260:            "payment_token": "some-token",
+tests/integration/test_phase6a_deployment.py:262:        # Must not silently accept payment — should 500 (ValueError) or 402
+tests/integration/test_phase6a_deployment.py:264:            f"stripe_live without key must fail safely, got {resp.status_code}"
+tests/integration/test_phase6a_deployment.py:269:def test_payment_stripe_test_fails_safely():
+tests/integration/test_phase6a_deployment.py:270:    os.environ["PAYMENT_MODE"] = "stripe_test"
+tests/integration/test_phase6a_deployment.py:275:            "payment_token": "some-token",
+tests/integration/test_phase6a_deployment.py:279:            f"stripe_test not implemented yet, must fail gracefully: {resp.status_code}"
+tests/integration/test_phase6a_deployment.py:289:        "payment_token": "mock-token",
+tests/integration/test_phase6a_deployment.py:300:    assert resp.json()["payment_required"] is False
+tests/integration/test_phase6a_deployment.py:320:def test_production_readiness_includes_payment_status():
+tests/integration/test_phase6a_deployment.py:323:    assert "payment" in data
+tests/integration/test_phase6a_deployment.py:324:    assert "mode" in data["payment"]
+tests/integration/test_phase6b_beta_readiness.py:372:def test_payment_gate_still_works():
+tests/integration/test_phase6b_beta_readiness.py:376:        "payment_token": "test-paid",
+tests/integration/test_phase6b_beta_readiness.py:379:    assert resp.json()["payment_required"] is False
+tests/integration/test_phase6_production.py:285:    result = assess("My employer hasn't paid my wages", {
+tests/integration/test_phase6_production.py:286:        "wages_due_date": "2026-03-31", "unpaid_amount": 2500.0,
+tests/integration/test_phase8b_algorithm_brain.py:7:   2.  Unpaid wages classification works (keyword)
+tests/integration/test_phase8b_algorithm_brain.py:14:   7.  Ambiguous query + model returns unpaid_wages → in_scope
+tests/integration/test_phase8b_algorithm_brain.py:103:def test_unpaid_wages_classification():
+tests/integration/test_phase8b_algorithm_brain.py:104:    result = classify("My employer hasn't paid my wages for last month")
+tests/integration/test_phase8b_algorithm_brain.py:105:    assert result.matter_type == "unpaid_wages"
+tests/integration/test_phase8b_algorithm_brain.py:141:def test_ml_classification_unpaid_wages():
+tests/integration/test_phase8b_algorithm_brain.py:142:    """ML model returns unpaid_wages → in_scope."""
+tests/integration/test_phase8b_algorithm_brain.py:144:               return_value="unpaid_wages"):
+tests/integration/test_phase8b_algorithm_brain.py:146:        assert result.matter_type == "unpaid_wages"
+tests/legal_accuracy/fixtures.py:195:# ── Unpaid wages fact patterns (Phase 5B) ─────────────────────────────────────
+tests/legal_accuracy/fixtures.py:199:    # UPW1: Clear unpaid final salary
+tests/legal_accuracy/fixtures.py:202:        "description": "Clear unpaid final salary — last month not paid",
+tests/legal_accuracy/fixtures.py:203:        "query": "My employer hasn't paid my wages — final salary of £2,500 is missing",
+tests/legal_accuracy/fixtures.py:206:            "unpaid_amount":  2500.0,
+tests/legal_accuracy/fixtures.py:212:            "claim_type":    "unpaid_wages",
+tests/legal_accuracy/fixtures.py:220:    # UPW2: Repeated underpayments (series of deductions)
+tests/legal_accuracy/fixtures.py:223:        "description": "Repeated underpayments — series of monthly deductions",
+tests/legal_accuracy/fixtures.py:227:            "unpaid_amount":           600.0,
+tests/legal_accuracy/fixtures.py:234:            "claim_type":        "unpaid_wages",
+tests/legal_accuracy/fixtures.py:249:            "unpaid_amount":       500.0,
+tests/legal_accuracy/fixtures.py:255:            "claim_type":        "unpaid_wages",
+tests/legal_accuracy/fixtures.py:267:        "query": "My employer hasn't paid my wages",
+tests/legal_accuracy/fixtures.py:269:            "unpaid_amount": 1000.0,
+tests/legal_accuracy/fixtures.py:285:            "unpaid_amount":  1500.0,
+tests/legal_accuracy/fixtures.py:290:            "claim_type":              "unpaid_wages",
+tests/legal_accuracy/fixtures.py:302:        "query": "I'm a contractor and my client hasn't paid me",
+tests/legal_accuracy/fixtures.py:305:            "unpaid_amount":  3000.0,
+tests/legal_accuracy/fixtures.py:310:            "claim_type":       "unpaid_wages",
+tests/legal_accuracy/fixtures.py:321:        "description": "Insufficient facts — no unpaid amount specified",
+tests/legal_accuracy/fixtures.py:322:        "query": "Employer hasn't paid me correctly",
+tests/legal_accuracy/fixtures.py:329:            "claim_type":       "unpaid_wages",
+tests/legal_accuracy/fixtures.py:332:            "weaknesses_present": True,   # "unpaid amount not specified" weakness
+tests/legal_accuracy/fixtures.py:343:            "unpaid_amount":           800.0,
+tests/legal_accuracy/fixtures.py:349:            "claim_type":       "unpaid_wages",
+tests/legal_accuracy/test_legal_accuracy.py:299:# ── Phase 5B: Unpaid wages legal accuracy ─────────────────────────────────────
+tests/legal_accuracy/test_legal_accuracy.py:302:    return assess(fp.get("query", "Unpaid wages claim"), fp["facts"], model=STUB)
+tests/legal_accuracy/test_legal_accuracy.py:321:    """UPW1: Unpaid wages has no qualifying period — must not apply QP check."""
+tests/legal_accuracy/test_legal_accuracy.py:326:        "Unpaid wages must not have qualifying_check — it is a day-one right"
+tests/legal_accuracy/test_legal_accuracy.py:380:    """UPW7: No unpaid_amount → weakness flagged in assessment."""
+tests/legal_accuracy/test_legal_accuracy.py:386:            "UPW7: Missing unpaid amount must appear as key weakness"
+tests/payment/test_payment.py:5:  - test_simulator mode: returns test token, no real charge
+tests/payment/test_payment.py:9:  - unpaid user gets preview only
+tests/payment/test_payment.py:10:  - paid user gets full document
+tests/payment/test_payment.py:12:  - payment status endpoint
+tests/payment/test_payment.py:28:    def test_get_payment_mode_test_simulator(self):
+tests/payment/test_payment.py:29:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator"}):
+tests/payment/test_payment.py:31:            from backend.core import payment as pm
+tests/payment/test_payment.py:33:            assert pm.get_payment_mode() == "test_simulator"
+tests/payment/test_payment.py:35:    def test_get_payment_mode_mock(self):
+tests/payment/test_payment.py:37:            from backend.core.payment import get_payment_mode
+tests/payment/test_payment.py:38:            assert get_payment_mode() == "mock"
+tests/payment/test_payment.py:40:    def test_get_payment_mode_disabled(self):
+tests/payment/test_payment.py:42:            from backend.core.payment import get_payment_mode
+tests/payment/test_payment.py:43:            assert get_payment_mode() == "disabled"
+tests/payment/test_payment.py:47:            from backend.core.payment import get_payment_mode
+tests/payment/test_payment.py:48:            assert get_payment_mode() == "mock"
+tests/payment/test_payment.py:52:    def test_mock_none_token_is_not_paid(self):
+tests/payment/test_payment.py:54:            from backend.core.payment import is_paid
+tests/payment/test_payment.py:55:            assert is_paid(None) is False
+tests/payment/test_payment.py:57:    def test_mock_empty_token_is_not_paid(self):
+tests/payment/test_payment.py:59:            from backend.core.payment import is_paid
+tests/payment/test_payment.py:60:            assert is_paid("") is False
+tests/payment/test_payment.py:62:    def test_mock_any_token_is_paid(self):
+tests/payment/test_payment.py:64:            from backend.core.payment import is_paid
+tests/payment/test_payment.py:65:            assert is_paid("anything") is True
+tests/payment/test_payment.py:66:            assert is_paid("xyz") is True
+tests/payment/test_payment.py:70:            from backend.core.payment import is_paid
+tests/payment/test_payment.py:71:            assert is_paid("any_token") is False
+tests/payment/test_payment.py:72:            assert is_paid(None) is False
+tests/payment/test_payment.py:74:    def test_test_simulator_requires_test_prefix(self):
+tests/payment/test_payment.py:75:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator"}):
+tests/payment/test_payment.py:76:            from backend.core.payment import is_paid
+tests/payment/test_payment.py:77:            assert is_paid("test_abc123") is True
+tests/payment/test_payment.py:78:            assert is_paid("real_token") is False
+tests/payment/test_payment.py:79:            assert is_paid(None) is False
+tests/payment/test_payment.py:81:    def test_test_simulator_test_prefix_paid(self):
+tests/payment/test_payment.py:82:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator"}):
+tests/payment/test_payment.py:83:            from backend.core.payment import is_paid
+tests/payment/test_payment.py:84:            assert is_paid("test_12345678901234") is True
+tests/payment/test_payment.py:86:    def test_test_simulator_no_prefix_rejected(self):
+tests/payment/test_payment.py:87:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator"}):
+tests/payment/test_payment.py:88:            from backend.core.payment import is_paid
+tests/payment/test_payment.py:89:            assert is_paid("mock_token") is False
+tests/payment/test_payment.py:94:        from backend.core.payment import preview_document, PREVIEW_MAX_LINES
+tests/payment/test_payment.py:101:    def test_preview_includes_payment_notice(self):
+tests/payment/test_payment.py:102:        from backend.core.payment import preview_document
+tests/payment/test_payment.py:104:        assert "PREVIEW ENDS HERE" in result or "payment" in result.lower()
+tests/payment/test_payment.py:106:    def test_full_document_not_truncated_when_paid(self):
+tests/payment/test_payment.py:107:        from backend.core.payment import preview_document
+tests/payment/test_payment.py:114:    def test_create_session_test_simulator_returns_token(self, client):
+tests/payment/test_payment.py:115:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator",
+tests/payment/test_payment.py:117:            r = client.post("/api/payment/create-session", json={
+tests/payment/test_payment.py:123:        assert data["payment_token"].startswith("test_")
+tests/payment/test_payment.py:127:        r = client.post("/api/payment/create-session", json={
+tests/payment/test_payment.py:132:    def test_payment_status_endpoint(self, client):
+tests/payment/test_payment.py:133:        r = client.get("/api/payment/status")
+tests/payment/test_payment.py:142:            r = client.post("/api/payment/create-session", json={
+tests/payment/test_payment.py:147:        assert data["payment_required"] is True
+tests/payment/test_payment.py:151:    """Test that /documents/generate enforces payment gating."""
+tests/payment/test_payment.py:154:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator",
+tests/payment/test_payment.py:163:        # No token = preview + payment_required=True
+tests/payment/test_payment.py:164:        assert data.get("payment_required") is True or "PREVIEW" in data.get("content", "")
+tests/payment/test_payment.py:167:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator",
+tests/payment/test_payment.py:173:                "payment_token": "test_abc123",
+tests/payment/test_payment.py:177:        assert data.get("payment_required") is False
+tests/rag/test_rag.py:30:        rules = retrieve_rules("unpaid_wages", "EW", "2025-10-01")
+tests/retrieval/test_retrieval.py:46:        rules = retrieve_rules("unpaid_wages", "EW", date(2026, 1, 1))
+tests/retrieval/test_retrieval.py:127:            "My employer hasn't paid my wages",
+tests/retrieval/test_retrieval.py:128:            "unpaid_wages",
+tests/security/test_auth_routes.py:157:    def test_health_reports_payment_mode(self, client):
+tests/security/test_auth_routes.py:160:        assert "payment_mode" in data
+tests/security/test_auth_routes.py:161:        assert data["payment_mode"] in ("mock", "test_simulator", "disabled", "stripe_test", "stripe_live")
+tests/security/test_payment_access.py:2:Payment access control tests — lawapp document payment gating.
+tests/security/test_payment_access.py:5:  - unpaid user gets preview only (payment_required=True)
+tests/security/test_payment_access.py:6:  - paid user (test token) gets full document
+tests/security/test_payment_access.py:7:  - payment status cannot be set from frontend body
+tests/security/test_payment_access.py:8:  - test_simulator token requires test_ prefix
+tests/security/test_payment_access.py:10:  - payment webhook endpoint exists and behaves correctly
+tests/security/test_payment_access.py:11:  - document generation checks server-side payment, not client claim
+tests/security/test_payment_access.py:27:    def test_no_token_returns_payment_required(self, client):
+tests/security/test_payment_access.py:28:        """Without payment token, document must be preview + payment_required=True."""
+tests/security/test_payment_access.py:29:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator",
+tests/security/test_payment_access.py:37:        assert r.json()["payment_required"] is True
+tests/security/test_payment_access.py:40:        """Valid test_ prefixed token allows full document in test_simulator mode."""
+tests/security/test_payment_access.py:41:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator",
+tests/security/test_payment_access.py:47:                "payment_token": "test_validtoken123",
+tests/security/test_payment_access.py:51:        assert data["payment_required"] is False
+tests/security/test_payment_access.py:55:        """A non-test_ prefixed token must not bypass payment in test_simulator mode."""
+tests/security/test_payment_access.py:56:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator",
+tests/security/test_payment_access.py:62:                "payment_token": "real_looking_fake_token",
+tests/security/test_payment_access.py:67:        assert data["payment_required"] is True
+tests/security/test_payment_access.py:77:                "payment_token": "test_anything",
+tests/security/test_payment_access.py:80:        assert r.json()["payment_required"] is True
+tests/security/test_payment_access.py:84:    def test_payment_status_comes_from_server_not_body(self, client):
+tests/security/test_payment_access.py:85:        """Frontend cannot inject payment_required=False in response."""
+tests/security/test_payment_access.py:86:        # The server computes payment_required from the token, not from request body
+tests/security/test_payment_access.py:87:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator",
+tests/security/test_payment_access.py:94:                # no payment_token
+tests/security/test_payment_access.py:96:        # Server must compute payment_required independently
+tests/security/test_payment_access.py:97:        assert r.json()["payment_required"] is True
+tests/security/test_payment_access.py:101:    def test_webhook_endpoint_exists(self, client):
+tests/security/test_payment_access.py:102:        """POST /api/payment/webhook must return 200 in test mode."""
+tests/security/test_payment_access.py:103:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator"}):
+tests/security/test_payment_access.py:104:            r = client.post("/api/payment/webhook", json={})
+tests/security/test_payment_access.py:107:    def test_webhook_returns_mode_in_test(self, client):
+tests/security/test_payment_access.py:108:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator"}):
+tests/security/test_payment_access.py:109:            r = client.post("/api/payment/webhook", json={})
+tests/security/test_payment_access.py:112:        assert data.get("mode") == "test_simulator"
+tests/security/test_payment_access.py:114:    def test_webhook_stripe_mode_requires_secret(self, client):
+tests/security/test_payment_access.py:116:            "PAYMENT_MODE": "stripe_test",
+tests/security/test_payment_access.py:119:            r = client.post("/api/payment/webhook", json={})
+tests/security/test_payment_access.py:126:        r = client.post("/api/payment/create-session", json={
+tests/security/test_payment_access.py:132:        with patch.dict(os.environ, {"PAYMENT_MODE": "test_simulator",
+tests/security/test_payment_access.py:134:            r = client.post("/api/payment/create-session", json={
+tests/security/test_payment_access.py:143:    def test_payment_status_endpoint_exists(self, client):
+tests/security/test_payment_access.py:144:        r = client.get("/api/payment/status")

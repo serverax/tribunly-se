@@ -1,0 +1,135 @@
+PHASE 3E — MVP CLOSE: DEADLINE TRACKER, SAVED-CASE RETURN, LEGAL-BOUNDARY SWEEP
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 3E closes the Phase 3 MVP by adding:
+  1. Deterministic deadline urgency tracker (no LLM involvement)
+  2. Saved-case return flow (/pages/saved_case.html + /cases/{id}/deadline)
+  3. Reminder creation and listing (reminder_events table)
+  4. Legal-boundary sweep — tested across all user-facing pages
+  5. End-to-end MVP journey proof test
+
+═══════════════════════════════════════════════════════════════════════════════
+DEADLINE URGENCY (backend/engine/reminders.py)
+═══════════════════════════════════════════════════════════════════════════════
+
+compute_urgency(limitation_date_str, today_str=None) → dict
+
+Thresholds (deterministic, no model):
+  delta < 0        → "expired"       (deadline has passed)
+  0 <= delta <= 7  → "due_within_7"  (act immediately)
+  8 <= delta <= 14 → "due_within_14" (act soon)
+  15 <= delta <= 30 → "due_within_30" (take action)
+  > 30             → "safe"
+
+Returns: urgency, urgency_label, days_remaining, limitation_date, as_of, is_urgent
+
+GUARDRAIL: urgency computed from stored limitation_date only.
+The LLM never computes, recalls, or estimates deadline information.
+
+═══════════════════════════════════════════════════════════════════════════════
+NEW ENDPOINTS (backend/api/main.py)
+═══════════════════════════════════════════════════════════════════════════════
+
+GET  /cases/{case_id}/deadline[?as_of=YYYY-MM-DD]
+  Returns deadline info + urgency state from stored key_dates.
+  as_of: optional reference date override for testing.
+
+POST /cases/{case_id}/reminders
+  Creates a reminder_events record (in_app channel, pending status).
+  Validates reminder_type against allowed set.
+  Phase 3E: local only; no email/SMS.
+
+GET  /cases/{case_id}/reminders
+  Lists reminder events for a case, ordered by created_at DESC.
+
+═══════════════════════════════════════════════════════════════════════════════
+SAVED-CASE RETURN FLOW (client/public/pages/saved_case.html)
+═══════════════════════════════════════════════════════════════════════════════
+
+Navigation: /pages/saved_case.html?case_id=UUID
+
+Page behaviour:
+  - Extracts case_id from URL params
+  - Fetches /cases/{case_id} and /cases/{case_id}/deadline in parallel
+  - Renders: viability, deadline with urgency badge, weaknesses, resume links
+  - Shows handoff section if seek_solicitor / insufficient_grounding / low
+  - If case not found: clear error, no fabrication
+  - Full legal notice present at top and bottom
+
+═══════════════════════════════════════════════════════════════════════════════
+LEGAL-BOUNDARY SWEEP RESULTS
+═══════════════════════════════════════════════════════════════════════════════
+
+All user-facing pages tested for required and prohibited phrases:
+
+Required (at least one of):
+  ✓ "not a law firm"
+  ✓ "not legal advice"
+
+Prohibited (must not appear):
+  ✓ "we will file" — not present on any page
+  ✓ "we will represent" — not present on any page
+  ✓ "guaranteed outcome" — not present on any page
+  ✓ "as your solicitor" — not present on any page
+  ✓ "acting as your solicitor" — not present on any page
+
+Pages checked:
+  ✓ GET /              (index.html)
+  ✓ GET /pages/intake.html
+  ✓ GET /pages/assessment.html
+  ✓ GET /pages/saved_case.html
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/engine/reminders.py              — urgency computation
+  client/public/pages/saved_case.html      — saved-case return flow page
+  tests/integration/test_phase3e_mvp_close.py — tests (33 tests)
+  reports/phase3e-mvp-close-report.txt     — this report
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/api/main.py
+    - GET /cases/{id}/deadline + as_of param
+    - POST /cases/{id}/reminders
+    - GET /cases/{id}/reminders
+    - Version bumped: 0.6.0-phase3e
+
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 3 MVP COMPLETENESS
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 3 MVP is COMPLETE for unfair dismissal, England & Wales. All phases:
+
+  Phase 3A ✓  Static client, intake form, assessment results display
+  Phase 3B ✓  Deterministic deadline tracker, rules API, client-side JS calc
+  Phase 3C ✓  Template-anchored PoC and SoL document generation
+  Phase 3D ✓  Payment gating (mock), case saving, handoff lead capture
+  Phase 3E ✓  Deadline urgency tracker, saved-case return, boundary sweep
+
+Full journey supported:
+  land → intake → assess → see deadline + weaknesses →
+  generate preview doc → mock-pay → access full doc →
+  save case → reload saved case → urgency state →
+  create reminder → trigger handoff → capture handoff lead
+
+Carry-forward to Phase 4:
+  - Live Stripe payment (PAYMENT_ENABLED=true)
+  - User authentication (user_id on cases)
+  - facts_encrypted at rest (AES-256-GCM)
+  - Email/SMS reminder delivery
+  - Live solicitor referral network
+  - Discrimination / redundancy pay claim types
+  - 3 skipped tests: BLOCKED_BY_OPENAI_QUOTA (pgvector embeddings)
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 3E
+═══════════════════════════════════════════════════════════════════════════════

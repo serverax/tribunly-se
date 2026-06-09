@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lawapp-backup-proof
+  namespace: lawapp-rag
+spec:
+  template:
+    spec:
+      containers:
+      - name: backup
+        image: postgres:16
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          set -e
+          echo "Starting backup proof..."
+          export PGPASSWORD=$POSTGRES_PASSWORD
+          pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/backup.sql
+          echo "Backup created: $(ls -lh /tmp/backup.sql)"
+          echo "Verifying backup content..."
+          grep "CREATE TABLE public.cases" /tmp/backup.sql
+          echo "BACKUP PROOF: PASS"
+        envFrom:
+        - secretRef:
+            name: lawapp-secrets
+      restartPolicy: Never

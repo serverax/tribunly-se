@@ -1,0 +1,14 @@
+{
+  "id": "session-1780576376407",
+  "startedAt": "2026-06-04T12:32:56.407Z",
+  "cwd": "F:\\lawapp",
+  "context": {},
+  "metrics": {
+    "edits": 0,
+    "commands": 0,
+    "tasks": 0,
+    "errors": 0
+  },
+  "endedAt": "2026-06-04T12:42:10.516Z",
+  "duration": 554111
+}

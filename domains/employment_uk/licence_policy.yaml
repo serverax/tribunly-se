@@ -1,0 +1,65 @@
+# employment_uk — source licence policy (enforced by the Corpus Ingestion AIA).
+# Loaded by ingestion/domain_loader.py. Find Case Law bulk ingestion is
+# fail-closed and stays empty unless FCL_BULK_LICENCE_GRANTED=true.
+domain: employment_uk
+
+sources:
+  - source_id: legislation_gov_uk
+    source_name: legislation.gov.uk
+    source_type: primary_legislation
+    licence_type: open_government_licence
+    licence_status: GRANTED
+    bulk_allowed: true
+    computational_analysis_allowed: true
+    requires_owner_approval: false
+    gate_env_var: null
+    last_verified_at: 2026-06-04
+    notes: OGL v3.0 — primary legislation, free to reuse and analyse.
+
+  - source_id: acas
+    source_name: ACAS public guidance
+    source_type: official_guidance
+    licence_type: acas_public_guidance
+    licence_status: GRANTED
+    bulk_allowed: true
+    computational_analysis_allowed: true
+    requires_owner_approval: false
+    gate_env_var: null
+    last_verified_at: 2026-06-04
+    notes: Public guidance; cite source URL.
+
+  - source_id: govuk
+    source_name: GOV.UK guidance
+    source_type: official_guidance
+    licence_type: open_government_licence
+    licence_status: GRANTED
+    bulk_allowed: true
+    computational_analysis_allowed: true
+    requires_owner_approval: false
+    gate_env_var: null
+    last_verified_at: 2026-06-04
+    notes: OGL v3.0.
+
+  - source_id: find_case_law
+    source_name: Find Case Law (National Archives)
+    source_type: case_law
+    licence_type: open_justice_licence
+    licence_status: BLOCKED_BY_OWNER
+    bulk_allowed: false
+    computational_analysis_allowed: false
+    requires_owner_approval: true
+    gate_env_var: FCL_BULK_LICENCE_GRANTED
+    last_verified_at: 2026-06-04
+    notes: >
+      Bulk ingestion and computational analysis require additional National
+      Archives permission. Fail-closed: case_law tables stay empty (no fake or
+      placeholder rows) unless FCL_BULK_LICENCE_GRANTED=true and a licence basis
+      is recorded in legal_sources.
+
+forbidden_sources:
+  - solicitor_blogs
+  - wikipedia
+  - forums
+  - ai_generated_summaries
+  - unlicensed_paid_datasets
+  - unofficial_case_summaries

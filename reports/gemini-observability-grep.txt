@@ -1,0 +1,668 @@
+backend/api/main.py:21:import logging
+backend/api/main.py:47:logger = logging.getLogger(__name__)
+backend/api/main.py:126:        logger.critical("STARTUP ABORTED: %s", exc)
+backend/api/main.py:213:                raise HTTPException(status_code=400, detail="Email already registered")
+backend/api/main.py:227:        logger.error("Registration failed: %s", exc)
+backend/api/main.py:281:@app.get("/health")
+backend/api/main.py:282:def health() -> dict:
+backend/api/main.py:422:    in every response for audit.
+backend/api/main.py:445:            logger.warning(
+backend/api/main.py:533:        logger.error(
+backend/api/main.py:630:        logger.error("Case save failed: %s", exc)
+backend/api/main.py:720:                    logger.warning("Failed to decrypt facts for case %s: %s", case_id, exc)
+backend/api/main.py:784:    from backend.core.encryption import is_configured as _enc_ready
+backend/api/main.py:814:            logger.info(
+backend/api/main.py:820:            logger.error("Handoff lead envelope encryption failed: %s — failing closed.", type(exc).__name__)
+backend/api/main.py:823:    elif _enc_ready():
+backend/api/main.py:834:            logger.info("Handoff lead PII encrypted (env key). Plaintext not stored.")
+backend/api/main.py:836:            logger.error("Handoff lead env-key encryption failed — storing plaintext: %s", exc)
+backend/api/main.py:889:        logger.error("Handoff lead capture failed: %s", exc)
+backend/api/main.py:950:    "document_incomplete", "paid_document_ready",
+backend/api/main.py:1013:        logger.error("Reminder creation failed: %s", exc)
+backend/api/main.py:1060:# Local upload directory — Phase 4A only, NOT production-ready.
+backend/api/main.py:1092:    Phase 4A storage: local filesystem (/tmp). NOT production-ready.
+backend/api/main.py:1116:    from backend.core.encryption import is_configured as _enc_ready, encrypt_bytes as _enc_b
+backend/api/main.py:1118:    if _enc_ready():
+backend/api/main.py:1123:            logger.error("Upload file encryption failed — storing plaintext: %s", exc)
+backend/api/main.py:1125:    # Store to local filesystem (NOT production-ready — no HSM key management)
+backend/api/main.py:1131:    logger.info(
+backend/api/main.py:1156:                    f"local:{storage_path}",   # NOT production-ready
+backend/api/main.py:1175:                "No encryption at rest. Not production-ready."
+backend/api/main.py:1184:        logger.error("Upload failed: %s", exc)
+backend/api/main.py:1488:        logger.warning("Bundle metadata save failed (non-fatal): %s", exc)
+backend/api/main.py:1517:            logger.error("Bundle safety check failed for %s: %s", name, check["violations"])
+backend/api/main.py:1565:            logger.error("Bundle safety check failed for %s: %s", name, check["violations"])
+backend/api/main.py:1674:        logger.error("Funnel event record failed: %s", exc)
+backend/api/main.py:1782:                "production_ready":   r.get("verification_status") in ("verified", "case_law_verified")
+backend/api/main.py:1793:    health_check: bool = False,
+backend/api/main.py:1797:    Phase 7C: ?health_check=true performs live KMS health check (DescribeKey for aws_kms).
+backend/api/main.py:1825:    return generate_production_readiness_report(rules, run_kms_health_check=health_check)
+backend/api/main.py:1999:        logger.error("Timeline event creation failed: %s", exc)
+backend/api/main.py:2066:        logger.error("Timeline event update failed: %s", exc)
+backend/api/main.py:2167:            raise HTTPException(status_code=404, detail="Case not found or already deleted")
+backend/api/main.py:2179:        logger.error("Case deletion failed: %s", exc)
+backend/api/main.py:2190:    trigger_reason and consent_given retained for audit trail.
+backend/api/main.py:2213:            raise HTTPException(status_code=404, detail="Lead not found or already deleted")
+backend/api/main.py:2218:            "note":    "PII cleared. Consent record retained for audit. Art.17 UK GDPR.",
+backend/api/main.py:2225:        logger.error("Handoff lead deletion failed: %s", exc)
+backend/api/main.py:2761:            "audit_logged": False,
+backend/api/main.py:2784:        "audit_logged": True,
+backend/api/main.py:3093:            logger.warning("document_facts save failed: %s", exc)
+backend/api/main.py:3491:        "download_ready": storage_ref is not None,
+backend/core/agents/registry.py:10:import logging
+backend/core/agents/registry.py:15:logger = logging.getLogger(__name__)
+backend/core/agents/registry.py:121:            logger.warning("DeadlineAgent error: %s", exc)
+backend/core/agents/registry.py:354:            logger.debug("POC generation skipped: %s", exc)
+backend/core/agents/registry.py:368:                logger.debug("SoL generation skipped: %s", exc)
+backend/core/brain.py:25:  18. Store decision trace and audit log
+backend/core/brain.py:37:import logging
+backend/core/brain.py:43:logger = logging.getLogger(__name__)
+backend/core/brain.py:67:    "store_audit_log",        # 18 — immutable brain_traces + evaluation_results
+backend/core/brain.py:154:def _run_safety_checks(assessment: dict, trace_id: str, user_id: Optional[str]) -> dict:
+backend/core/brain.py:227:    _write_safety_checks(trace_id, user_id, checks, failures)
+backend/core/brain.py:238:    trace_id: str,
+backend/core/brain.py:261:                            trace_id, user_id, check_name, passed,
+backend/core/brain.py:266:                            trace_id,
+backend/core/brain.py:279:        logger.debug("safety_boundary_checks write skipped: %s", exc)
+backend/core/brain.py:287:    def __init__(self, trace_id: str, started_at: str):
+backend/core/brain.py:288:        self.trace_id        = trace_id
+backend/core/brain.py:310:        self.audit_id: Optional[str]           = None
+backend/core/brain.py:324:            "trace_id":            self.trace_id,
+backend/core/brain.py:345:            "audit_id":            self.audit_id,
+backend/core/brain.py:376:        - "trace":          BrainTrace.to_dict() — full 19-step audit
+backend/core/brain.py:389:    trace_id   = str(uuid.uuid4())
+backend/core/brain.py:391:    trace      = BrainTrace(trace_id=trace_id, started_at=started_at)
+backend/core/brain.py:450:            logger.debug("Urgency calculation skipped: %s", exc)
+backend/core/brain.py:469:                     "apply_safety_policy", "save_case_memory", "store_audit_log",
+backend/core/brain.py:496:        logger.debug("Evidence gap detection skipped: %s", exc)
+backend/core/brain.py:542:        logger.warning("Rules engine error: %s", exc)
+backend/core/brain.py:562:        logger.warning("Retrieval error: %s", exc)
+backend/core/brain.py:578:            logger.debug("Citation verification skipped: %s", exc)
+backend/core/brain.py:592:            trace_id     = trace_id,
+backend/core/brain.py:596:        logger.debug("Context compression skipped: %s", exc)
+backend/core/brain.py:607:        logger.error("Pipeline error in brain: %s", exc)
+backend/core/brain.py:622:        logger.debug("Evaluation skipped: %s", exc)
+backend/core/brain.py:631:    safety_result = _run_safety_checks(assessment, trace_id, user_id)
+backend/core/brain.py:649:        trace.record_step("store_audit_log",  "skipped", {"reason": "blocked_by_safety"})
+backend/core/brain.py:679:                key         = f"brain_trace_{trace_id}",
+backend/core/brain.py:690:            logger.debug("Memory save skipped: %s", exc)
+backend/core/brain.py:701:    # ── Step 18: Store decision trace and audit log ───────────────────────────
+backend/core/brain.py:702:    audit_id = None
+backend/core/brain.py:704:        audit_id = _write_brain_audit(
+backend/core/brain.py:705:            trace_id           = trace_id,
+backend/core/brain.py:722:        logger.debug("Brain audit write skipped: %s", exc)
+backend/core/brain.py:723:    trace.audit_id = audit_id
+backend/core/brain.py:724:    trace.record_step("store_audit_log", "ok", {"audit_id": audit_id})
+backend/core/brain.py:750:# ── Brain audit writer ────────────────────────────────────────────────────────
+backend/core/brain.py:752:def _write_brain_audit(
+backend/core/brain.py:753:    trace_id:           str,
+backend/core/brain.py:770:    Write brain trace to brain_traces table. Returns trace_id on success.
+backend/core/brain.py:781:                    trace_id, user_id, case_id, claim_type,
+backend/core/brain.py:793:                ON CONFLICT (trace_id) DO NOTHING
+backend/core/brain.py:794:                RETURNING trace_id
+backend/core/brain.py:797:                    trace_id,
+backend/core/brain.py:816:            return trace_id
+backend/core/bundle.py:24:import logging
+backend/core/bundle.py:27:logger = logging.getLogger(__name__)
+backend/core/bundle.py:424:  [ ] Medical evidence — only include if disability/health is directly
+backend/core/citation_verifier.py:14:import logging
+backend/core/citation_verifier.py:18:logger = logging.getLogger(__name__)
+backend/core/citation_verifier.py:88:        logger.debug("Legislation DB check failed: %s", exc)
+backend/core/citation_verifier.py:108:        logger.debug("Case law DB check failed: %s", exc)
+backend/core/citation_verifier.py:206:            logger.warning(
+backend/core/classify.py:26:import logging
+backend/core/classify.py:33:logger = logging.getLogger(__name__)
+backend/core/classify.py:126:            logger.debug(
+backend/core/classify.py:153:                logger.info(
+backend/core/classify.py:160:        logger.warning("_classify_with_model: unrecognised model response. Returning None.")
+backend/core/classify.py:164:        logger.warning(
+backend/core/classify.py:220:        logger.warning("classify: _classify_with_model raised unexpectedly. Conservative fallback.")
+backend/core/config_validation.py:16:import logging
+backend/core/config_validation.py:19:logger = logging.getLogger(__name__)
+backend/core/config_validation.py:126:            logger.critical("STARTUP FAILED: Missing required production vars: %s", missing_required)
+backend/core/config_validation.py:128:            logger.warning("Missing production vars (OK in %s mode): %s", deployment_mode, missing_required)
+backend/core/conflict_detector.py:18:import logging
+backend/core/conflict_detector.py:21:logger = logging.getLogger(__name__)
+backend/core/context_compressor.py:9:GUARDRAIL: Compression ratio is recorded for every call (audit trail).
+backend/core/context_compressor.py:22:import logging
+backend/core/context_compressor.py:25:logger = logging.getLogger(__name__)
+backend/core/context_compressor.py:36:    trace_id: str | None = None,
+backend/core/context_compressor.py:44:        trace_id:     brain trace ID for audit logging (optional)
+backend/core/context_compressor.py:146:    _log_compression(trace_id, stats)
+backend/core/context_compressor.py:148:    logger.debug(
+backend/core/context_compressor.py:164:def _log_compression(trace_id: str | None, stats: dict) -> None:
+backend/core/context_compressor.py:165:    """Write compression metrics to context_compression_log. Fails silently."""
+backend/core/context_compressor.py:174:                        trace_id, original_tokens, compressed_tokens,
+backend/core/context_compressor.py:179:                        trace_id,
+backend/core/context_compressor.py:191:        logger.debug("context_compression_log write skipped: %s", exc)
+backend/core/deidentify.py:23:import logging
+backend/core/deidentify.py:26:logger = logging.getLogger(__name__)
+backend/core/deidentify.py:63:    "health_safety_involved",
+backend/core/deidentify.py:104:        logger.error("PII fields found in de-identified output: %s — stripping", pii_in_output)
+backend/core/deidentify.py:110:    logger.info(
+backend/core/documents.py:16:import logging
+backend/core/documents.py:21:logger = logging.getLogger(__name__)
+backend/core/documents.py:78:        logger.error("Document safety check FAILED — violations: %s", violations)
+backend/core/documents.py:284:   [Note: If dismissal was related to health and safety, whistleblowing, trade
+backend/core/document_extractor.py:18:import logging
+backend/core/document_extractor.py:22:logger = logging.getLogger(__name__)
+backend/core/document_extractor.py:175:        logger.warning("pypdf not installed. PDF text extraction unavailable. "
+backend/core/document_extractor.py:179:        logger.warning("PDF extraction failed: %s", exc)
+backend/core/document_extractor.py:194:        logger.warning("python-docx not installed. DOCX extraction unavailable. "
+backend/core/document_extractor.py:198:        logger.warning("DOCX extraction failed: %s", exc)
+backend/core/dp_report.py:10:Each item also has production_ready: True | False
+backend/core/dp_report.py:12:IMPORTANT: Several items are NOT production-ready in Phase 5A.
+backend/core/dp_report.py:63:            "structured_logging": "NOT_IMPLEMENTED",
+backend/core/dp_report.py:65:                "Upload handler explicitly avoids logging file_bytes. "
+backend/core/dp_report.py:85:            "production_ready":           True,
+backend/core/dp_report.py:123:                "audit log retention limits, and automated deletion schedules."
+backend/core/dp_report.py:133:                "production_ready": True,
+backend/core/dp_report.py:138:                "production_ready": False,
+backend/core/dp_report.py:144:                "production_ready": False,
+backend/core/dp_report.py:149:                "production_ready": False,
+backend/core/dp_report.py:156:            "health_data": {
+backend/core/dp_report.py:158:                "case_summary_risk": "handoff_leads.case_summary may contain health data if user includes it",
+backend/core/dp_report.py:180:        # implemented:            already in place
+backend/core/dp_report.py:195:                "Structured logging with PII audit trail",
+backend/core/dp_report.py:197:                "Full access control and audit log for admin endpoints",
+backend/core/dp_report.py:211:            "production_ready": False,
+backend/core/dp_report.py:223:            "ready_for_limited_beta": False,
+backend/core/dp_report.py:224:            "ready_for_production": False,
+backend/core/encryption.py:7:Phase 6 limitations (not production-ready for key management):
+backend/core/encryption.py:24:import logging
+backend/core/encryption.py:28:logger = logging.getLogger(__name__)
+backend/core/envelope_encryption.py:23:  EncryptedKeyBundle already tracks: encryption_version, provider_key_id.
+backend/core/envelope_encryption.py:37:import logging
+backend/core/envelope_encryption.py:40:logger = logging.getLogger(__name__)
+backend/core/envelope_encryption.py:60:        logger.warning("envelope_encrypt_str: generate_data_key failed. Failing closed.")
+backend/core/envelope_encryption.py:67:        logger.warning("envelope_encrypt_str: Fernet encrypt failed. Failing closed.")
+backend/core/envelope_encryption.py:90:        logger.warning("envelope_decrypt_str: malformed bundle_json. Failing closed.")
+backend/core/envelope_encryption.py:100:        logger.warning("envelope_decrypt_str: KMS decrypt_data_key failed. Failing closed.")
+backend/core/envelope_encryption.py:106:        logger.warning("envelope_decrypt_str: Fernet decrypt failed. Failing closed.")
+backend/core/envelope_encryption.py:119:        logger.warning("_backward_compat_decrypt_str: no encryption key available. Failing closed.")
+backend/core/envelope_encryption.py:125:        logger.warning("_backward_compat_decrypt_str: decryption failed. Failing closed.")
+backend/core/envelope_encryption.py:145:        logger.warning("envelope_encrypt_bytes: generate_data_key failed. Failing closed.")
+backend/core/envelope_encryption.py:151:        logger.warning("envelope_encrypt_bytes: Fernet encrypt failed. Failing closed.")
+backend/core/envelope_encryption.py:168:        logger.warning("envelope_decrypt_bytes: malformed bundle_json. Failing closed.")
+backend/core/envelope_encryption.py:176:        logger.warning("envelope_decrypt_bytes: KMS decrypt_data_key failed. Failing closed.")
+backend/core/envelope_encryption.py:182:        logger.warning("envelope_decrypt_bytes: Fernet decrypt failed. Failing closed.")
+backend/core/envelope_encryption.py:197:        logger.warning("_backward_compat_decrypt_bytes: decryption failed. Failing closed.")
+backend/core/envelope_encryption.py:240:        logger.warning("_parse_bundle: failed to parse EncryptedKeyBundle JSON. Failing closed.")
+backend/core/evaluator.py:24:import logging
+backend/core/evaluator.py:28:logger = logging.getLogger(__name__)
+backend/core/extraction.py:21:import logging
+backend/core/extraction.py:23:logger = logging.getLogger(__name__)
+backend/core/extraction.py:127:            logger.info(
+backend/core/kms.py:39:import logging
+backend/core/kms.py:45:logger = logging.getLogger(__name__)
+backend/core/kms.py:110:    def health_check(self) -> bool:
+backend/core/kms.py:131:        logger.warning("%s.generate_data_key(): not supported by this provider.", self.provider_name())
+backend/core/kms.py:144:        logger.warning("%s.decrypt_data_key(): not supported by this provider.", self.provider_name())
+backend/core/kms.py:151:    def status(self, run_health_check: bool = False) -> dict:
+backend/core/kms.py:154:        if run_health_check:
+backend/core/kms.py:155:            connected = self.health_check()
+backend/core/kms.py:184:            logger.error("ENCRYPTION_KEY is malformed. (value not logged)")
+backend/core/kms.py:197:        logger.debug("EnvKeyProvider.generate_data_key(): using env key (dev mode, value not logged).")
+backend/core/kms.py:203:            logger.warning("EnvKeyProvider.decrypt_data_key(): bundle provider mismatch.")
+backend/core/kms.py:219:    def status(self, run_health_check: bool = False) -> dict:
+backend/core/kms.py:220:        base = super().status(run_health_check)
+backend/core/kms.py:236:        logger.warning("KmsStubProvider: using env key (stub — value not logged).")
+backend/core/kms.py:252:    def status(self, run_health_check: bool = False) -> dict:
+backend/core/kms.py:253:        base = super().status(run_health_check)
+backend/core/kms.py:310:            logger.error("AwsKmsProvider.generate_data_key(): AWS_KMS_KEY_ARN not set.")
+backend/core/kms.py:327:            logger.debug("AwsKmsProvider.generate_data_key(): data key generated. (values not logged)")
+backend/core/kms.py:332:            logger.warning("AwsKmsProvider.generate_data_key(): failed. Failing closed.")
+backend/core/kms.py:344:            logger.error("AwsKmsProvider.decrypt_data_key(): bundle has no CiphertextBlob.")
+backend/core/kms.py:352:            logger.debug("AwsKmsProvider.decrypt_data_key(): decryption succeeded. (value not logged)")
+backend/core/kms.py:357:            logger.warning("AwsKmsProvider.decrypt_data_key(): failed. Failing closed.")
+backend/core/kms.py:373:    def health_check(self) -> bool:
+backend/core/kms.py:380:            logger.debug("AwsKmsProvider.health_check(): reachable. (ARN not logged)")
+backend/core/kms.py:383:            logger.warning("AwsKmsProvider.health_check(): failed. (ARN not logged)")
+backend/core/kms.py:395:    def status(self, run_health_check: bool = False) -> dict:
+backend/core/kms.py:396:        base = super().status(run_health_check=run_health_check)
+backend/core/kms.py:398:        if run_health_check:
+backend/core/kms.py:399:            connected = self.health_check()
+backend/core/kms.py:421:        logger.warning("DisabledProvider: encryption OFF. (dev only)")
+backend/core/kms.py:433:    def status(self, run_health_check: bool = False) -> dict:
+backend/core/kms.py:434:        base = super().status(run_health_check)
+backend/core/kms.py:465:def get_kms_status(run_health_check: bool = False) -> dict:
+backend/core/kms.py:467:    status   = provider.status(run_health_check=run_health_check)
+backend/core/legal_graph.py:16:import logging
+backend/core/legal_graph.py:19:logger = logging.getLogger(__name__)
+backend/core/legal_graph.py:73:        logger.debug("Legal graph query skipped: %s", exc)
+backend/core/legal_graph.py:121:        logger.debug("get_concept_context skipped: %s", exc)
+backend/core/mcp_connectors.py:9:GUARDRAIL: All calls are audited with trace_id and user_id.
+backend/core/mcp_connectors.py:28:import logging
+backend/core/mcp_connectors.py:31:logger = logging.getLogger(__name__)
+backend/core/mcp_connectors.py:60:    trace_id: Optional[str] = None,
+backend/core/mcp_connectors.py:68:    GUARDRAIL: Every call is written to mcp_tool_calls audit table.
+backend/core/mcp_connectors.py:75:        _audit(tool_name, action, allowed=False, consent=False,
+backend/core/mcp_connectors.py:77:               trace_id=trace_id, user_id=user_id, case_id=case_id)
+backend/core/mcp_connectors.py:78:        logger.warning("MCP: prohibited tool blocked: %s", tool_name)
+backend/core/mcp_connectors.py:86:        _audit(tool_name, action, allowed=False, consent=False,
+backend/core/mcp_connectors.py:88:               trace_id=trace_id, user_id=user_id, case_id=case_id)
+backend/core/mcp_connectors.py:89:        logger.warning("MCP: unknown tool blocked: %s", tool_name)
+backend/core/mcp_connectors.py:99:        _audit(tool_name, action, allowed=True, consent=True,
+backend/core/mcp_connectors.py:101:               trace_id=trace_id, user_id=user_id, case_id=case_id)
+backend/core/mcp_connectors.py:104:        logger.error("MCP tool error %s/%s: %s", tool_name, action, exc)
+backend/core/mcp_connectors.py:105:        _audit(tool_name, action, allowed=True, consent=True,
+backend/core/mcp_connectors.py:107:               trace_id=trace_id, user_id=user_id, case_id=case_id)
+backend/core/mcp_connectors.py:268:def _audit(
+backend/core/mcp_connectors.py:274:    trace_id: Optional[str] = None,
+backend/core/mcp_connectors.py:278:    """Write MCP tool call to audit log. Fails silently."""
+backend/core/mcp_connectors.py:288:                        (trace_id, user_id, case_id, tool_name, action,
+backend/core/mcp_connectors.py:293:                        trace_id,
+backend/core/mcp_connectors.py:307:        logger.debug("MCP audit write failed (non-fatal): %s", exc)
+backend/core/memory.py:23:import logging
+backend/core/memory.py:26:logger = logging.getLogger(__name__)
+backend/core/memory.py:62:            logger.warning("Memory encryption failed: %s. Storing unencrypted.", exc)
+backend/core/models.py:21:import logging
+backend/core/models.py:30:logger = logging.getLogger(__name__)
+backend/core/models.py:39:        safe_facts: dict,           # de-identified facts (PII already stripped)
+backend/core/models.py:42:        boundary_log: dict,         # de-identification audit record
+backend/core/models.py:83:        logger.info("StubReasoningModel.reason called — no external API call made")
+backend/core/models.py:216:            # NOT logging prompt text to avoid any edge-case PII in the log itself
+backend/core/models.py:341:            logger.warning("OpenRouter unavailable: %s — returning MODEL_UNAVAILABLE", exc)
+backend/core/models.py:379:    Used by /health endpoint to report provider mode transparently.
+backend/core/models.py:416:        logger.info("Model provider: DISABLED (AI_PROVIDER=disabled)")
+backend/core/models.py:424:            logger.info("Model provider: OpenRouter (%s)", mid)
+backend/core/models.py:428:                logger.warning("OpenRouter init failed: %s — trying Anthropic", exc)
+backend/core/models.py:434:        logger.info("Model provider: Anthropic (%s)", ant_mid)
+backend/core/models.py:438:            logger.warning("Anthropic init failed: %s — using stub", exc)
+backend/core/models.py:440:        logger.info(
+backend/core/payment.py:19:import logging
+backend/core/payment.py:22:logger = logging.getLogger(__name__)
+backend/core/payment.py:54:        logger.debug("Payment mode=disabled: all paid requests blocked.")
+backend/core/payment.py:60:        logger.debug("Mock payment accepted (PAYMENT_MODE=mock, token present).")
+backend/core/payment.py:68:            logger.info("Test simulator payment accepted (PAYMENT_MODE=test_simulator).")
+backend/core/payment.py:70:        logger.debug("Test simulator: token does not start with 'test_' — rejected.")
+backend/core/pipeline.py:26:import logging
+backend/core/pipeline.py:48:from ingestion.db import get_connection, insert_audit_log, _safe_fact_hash
+backend/core/pipeline.py:50:logger = logging.getLogger(__name__)
+backend/core/pipeline.py:76:    logger.info("Classification: %s", classification.model_dump())
+backend/core/pipeline.py:111:    logger.info(
+backend/core/pipeline.py:156:    logger.info("De-identification boundary: %s", boundary_log)
+backend/core/pipeline.py:224:    logger.info(
+backend/core/pipeline.py:231:    logger.info("Governance: passes=%s reason=%s", gov_result.passes, gov_result.failure_reason)
+backend/core/pipeline.py:235:    _write_audit_log(
+backend/core/pipeline.py:293:def _write_audit_log(
+backend/core/pipeline.py:302:    Write one immutable audit row after every governance decision.
+backend/core/pipeline.py:339:                insert_audit_log(cur, payload)
+backend/core/pipeline.py:341:            logger.debug("Audit log written (grounding=%.2f passes=%s)",
+backend/core/pipeline.py:346:        # Never crash the user-facing response due to audit failure
+backend/core/pipeline.py:347:        logger.error("Audit log write failed (non-fatal): %s", exc)
+backend/core/production_readiness.py:19:import logging
+backend/core/production_readiness.py:22:logger = logging.getLogger(__name__)
+backend/core/production_readiness.py:35:    run_kms_health_check: bool = False,
+backend/core/production_readiness.py:90:            "production_ready":  False,   # blocked by DP/auth regardless
+backend/core/production_readiness.py:128:        "production_ready": payment_enabled,
+backend/core/production_readiness.py:173:            "production_ready": False,
+backend/core/production_readiness.py:273:            "live_ready":  (os.getenv("PAYMENT_MODE", "mock") == "stripe_live"
+backend/core/production_readiness.py:293:        ).get_kms_status(run_health_check=run_kms_health_check),
+backend/core/production_readiness.py:302:            "db_schema_ready":      True,   # encryption_key_metadata jsonb (migration 013)
+backend/core/production_readiness.py:329:    """Compute controlled_beta_ready and production_ready with explicit blockers."""
+backend/core/production_readiness.py:331:    from backend.core.user_auth import is_auth_controlled_beta_ready, is_auth_production_ready
+backend/core/production_readiness.py:335:    auth_cb     = is_auth_controlled_beta_ready()
+backend/core/production_readiness.py:336:    auth_prod   = is_auth_production_ready()
+backend/core/production_readiness.py:360:    cb_ready   = len(cb_blockers) == 0
+backend/core/production_readiness.py:361:    prod_ready = False   # always False until all prod blockers resolved
+backend/core/production_readiness.py:367:        "controlled_beta_ready":     cb_ready,
+backend/core/production_readiness.py:370:        "production_ready":          prod_ready,
+backend/core/production_readiness.py:372:        "ready_for_limited_beta":    cb_ready,   # alias
+backend/core/production_readiness.py:373:        "ready_for_production":      prod_ready,
+backend/core/production_readiness.py:451:        "Verify controlled_beta_ready=true",
+backend/core/retrieve.py:23:import logging
+backend/core/retrieve.py:33:logger = logging.getLogger(__name__)
+backend/core/retrieve.py:193:        logger.info(
+backend/core/semantic_cache.py:27:import logging
+backend/core/semantic_cache.py:30:logger = logging.getLogger(__name__)
+backend/core/semantic_cache.py:81:        logger.debug("Source version check failed: %s", exc)
+backend/core/semantic_cache.py:137:        logger.debug("Cache lookup failed: %s", exc)
+backend/core/semantic_cache.py:188:        logger.debug("Cache store failed: %s", exc)
+backend/core/user_auth.py:42:import logging
+backend/core/user_auth.py:51:logger = logging.getLogger(__name__)
+backend/core/user_auth.py:89:        logger.debug("JWKS fetched (%d keys). (URL not logged)", len(keys))
+backend/core/user_auth.py:94:        logger.warning("JWKS fetch failed. Failing closed. (URL not logged)")
+backend/core/user_auth.py:173:        logger.warning("Failed to construct RSA public key from JWK. (key details not logged)")
+backend/core/user_auth.py:206:        logger.warning("RS256/JWKS verification failed (details suppressed for security).")
+backend/core/user_auth.py:213:    logger.debug("RS256/JWKS verification successful. (sub value not logged)")
+backend/core/user_auth.py:273:        logger.warning("JWT/HS256 verification failed (details suppressed for security).")
+backend/core/user_auth.py:280:    logger.debug("JWT/HS256 verification successful. (sub value not logged)")
+backend/core/user_auth.py:316:def is_auth_production_ready() -> dict:
+backend/core/user_auth.py:318:    Check if auth config is production-ready.
+backend/core/user_auth.py:319:    Phase 7A: RS256+JWKS is production-ready. HS256-only is not.
+backend/core/user_auth.py:338:            # RS256+JWKS with full config IS production-ready (no stub blocker)
+backend/core/user_auth.py:350:    return {"ready": len(blockers) == 0, "blockers": blockers}
+backend/core/user_auth.py:353:def is_auth_controlled_beta_ready() -> dict:
+backend/core/user_auth.py:365:    return {"ready": len(blockers) == 0, "blockers": blockers}
+backend/core/user_auth.py:440:            logger.warning("Case ownership check failed — identity mismatch (IDs not logged).")
+backend/domains/employment/assess_logic.py:20:import logging
+backend/domains/employment/assess_logic.py:30:logger = logging.getLogger(__name__)
+backend/domains/employment/assess_logic.py:126:                f"Day-one exceptions (discrimination, whistleblowing, health & safety) "
+backend/domains/employment/compliance.py:20:import logging
+backend/domains/employment/compliance.py:23:logger = logging.getLogger(__name__)
+backend/domains/employment/compliance.py:33:        logger.warning("compliance-signoff.json not found at %s", _SIGNOFF_PATH)
+backend/domains/employment/compliance.py:45:        logger.error("Failed to read compliance-signoff.json: %s", exc)
+backend/domains/employment/compliance.py:141:    return {"ready": len(blockers) == 0, "blockers": blockers}
+backend/domains/employment/compliance.py:164:    return {"ready": len(blockers) == 0, "blockers": blockers}
+backend/domains/employment/compliance.py:175:        "controlled_beta_ready":          cb["ready"],
+backend/domains/employment/compliance.py:177:        "production_compliance_ready":    prod["ready"],
+backend/domains/employment/deadline.py:124:    Day-one exceptions (discrimination, whistleblowing, health & safety, TU) are
+backend/domains/employment/timeline.py:22:import logging
+backend/domains/employment/timeline.py:28:logger = logging.getLogger(__name__)
+backend/domains/employment/timeline.py:132:    GUARDRAIL: confirmed_facts must already be filtered to user_confirmed/
+infra/k8s/iterlaw/backend-deployment.yaml:68:              path: /health
+infra/k8s/iterlaw/backend-deployment.yaml:73:          livenessProbe:
+infra/k8s/iterlaw/backend-deployment.yaml:75:              path: /health
+infra/k8s/iterlaw/backend-service.yaml:3:# No public ingress until service health is proven internally.
+infra/k8s/iterlaw/configmap.yaml:12:  PAYMENT_MODE: "mock"              # change to "stripe_test" or "stripe_live" when ready
+infra/k8s/iterlaw/ingress-staging.yaml:5:#   2. lawapp-backend pod Running and healthy
+infra/k8s/iterlaw/ingress-staging.yaml:11:# Only apply this if a staging subdomain is already configured.
+infra/k8s/iterlaw/namespace.yaml:2:# IterLaw namespaces — all five already exist in cluster.
+infra/k8s/iterlaw/namespace.yaml:3:# This file documents them for IaC parity. Do not re-apply if already present.
+infra/k8s/iterlaw/networkpolicy.yaml:4:# No public ingress until health is proven.
+infra/k8s/iterlaw/postgres-staging.yaml:54:              command: ["pg_isready", "-U", "lawapp", "-d", "lawapp"]
+infra/k8s/iterlaw/README.md:34:# 1. Namespaces (already exist — skip if present)
+infra/k8s/iterlaw/README.md:65:- NEVER create public ingress until internal `/health` passes
+infra/k8s/iterlaw/README.md:67:- NEVER set `controlled_beta_ready=true` or `production_ready=true`
+infra/k8s/lawapp-ai-brain.yaml:4:# Routes all legal requests through classification → retrieval → reasoning → governance → audit.
+infra/k8s/lawapp-ai-brain.yaml:57:            path: /health
+infra/k8s/lawapp-ai-brain.yaml:62:        livenessProbe:
+infra/k8s/lawapp-ai-brain.yaml:64:            path: /health
+infra/k8s/lawapp-backend.yaml:54:              path: /health
+infra/k8s/lawapp-backend.yaml:59:          livenessProbe:
+infra/k8s/lawapp-backend.yaml:61:              path: /health
+infra/k8s/lawapp-brain-deployment.yaml:12:# 3. lawapp-postgres is running and healthy in lawapp-rag namespace
+infra/k8s/lawapp-brain-deployment.yaml:72:              path: /health
+infra/k8s/lawapp-brain-deployment.yaml:77:          livenessProbe:
+infra/k8s/lawapp-brain-deployment.yaml:79:              path: /health
+infra/k8s/lawapp-k8s-deploy.sh:137:curl http://localhost:8080/health
+infra/k8s/lawapp-k8s-deploy.sh:143:curl http://localhost:8081/health
+infra/k8s/lawapp-monitoring.yaml:65:  name: lawapp-health-probe
+infra/k8s/lawapp-monitoring.yaml:68:    app: lawapp-health-probe
+infra/k8s/lawapp-monitoring.yaml:87:              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://lawapp-backend.lawapp-api.svc.cluster.local:8000/health)
+infra/k8s/lawapp-postgres-sts.yaml:88:            command: ["sh", "-c", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+infra/k8s/lawapp-postgres-sts.yaml:92:        livenessProbe:
+infra/k8s/lawapp-postgres-sts.yaml:94:            command: ["sh", "-c", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+tests/brain/test_brain.py:45:            "trace_id", "started_at", "jurisdiction", "claim_type",
+tests/brain/test_brain.py:52:    def test_trace_id_preserved(self):
+tests/brain/test_brain.py:54:        assert trace.to_dict()["trace_id"] == "my-trace-id"
+tests/brain/test_brain.py:97:            "store_audit_log",
+tests/brain/test_brain.py:116:        assert idx["save_case_memory"]      < idx["store_audit_log"]
+tests/brain/test_brain.py:117:        assert idx["store_audit_log"]       < idx["return_answer"]
+tests/brain/test_brain.py:127:    def test_save_memory_before_audit_log(self):
+tests/brain/test_brain.py:129:        assert idx["save_case_memory"] < idx["store_audit_log"]
+tests/brain/test_brain.py:133:                      "write_audit_trail", "calculate_deterministic"]
+tests/brain/test_brain.py:166:        assert result["trace"]["trace_id"]
+tests/brain/test_brain.py:279:    def test_brain_store_audit_log_step_recorded(self):
+tests/brain/test_brain.py:282:        assert "store_audit_log" in step_names
+tests/e2e/lawapp-journey.spec.js:47:test('backend health check', async ({ request }) => {
+tests/e2e/lawapp-journey.spec.js:48:  const r = await request.get(`${BASE}/health`);
+tests/e2e/lawapp-journey.spec.js:196:    'save_case_memory', 'store_audit_log', 'return_answer',
+tests/e2e/lawapp-journey.spec.js:302:  // Already proven in 'intake page loads with ACAS fields' test
+tests/integration/test_api_smoke.py:61:        c.get("/health")
+tests/integration/test_api_smoke.py:71:def test_health(client):
+tests/integration/test_api_smoke.py:72:    r = client.get("/health")
+tests/integration/test_phase2e_audit_log.py:2:Phase 2E — Assessment audit log integration tests.
+tests/integration/test_phase2e_audit_log.py:5:  1. A passing governed assessment writes exactly one audit row
+tests/integration/test_phase2e_audit_log.py:6:  2. An insufficient_grounding assessment also writes one audit row
+tests/integration/test_phase2e_audit_log.py:9:  5. governance_result in audit matches what the pipeline returned
+tests/integration/test_phase2e_audit_log.py:10:  6. boundary_log in audit proves de-id ran
+tests/integration/test_phase2e_audit_log.py:16:        tests/integration/test_phase2e_audit_log.py -v -s
+tests/integration/test_phase2e_audit_log.py:51:def _count_audit_rows() -> int:
+tests/integration/test_phase2e_audit_log.py:55:            cur.execute("SELECT count(*) FROM assessment_audit_logs")
+tests/integration/test_phase2e_audit_log.py:61:def _latest_audit_row() -> dict:
+tests/integration/test_phase2e_audit_log.py:70:                FROM assessment_audit_logs
+tests/integration/test_phase2e_audit_log.py:86:# ── Test 1: Passing assessment writes audit row ───────────────────────────────
+tests/integration/test_phase2e_audit_log.py:88:def test_passing_assessment_writes_audit_row():
+tests/integration/test_phase2e_audit_log.py:89:    """A governed assessment (pass or fail) must write exactly one audit row."""
+tests/integration/test_phase2e_audit_log.py:90:    before = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:92:    after  = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:95:        f"Expected one new audit row, got {after - before}. " \
+tests/integration/test_phase2e_audit_log.py:98:    row = _latest_audit_row()
+tests/integration/test_phase2e_audit_log.py:107:# ── Test 2: Insufficient grounding also writes audit row ──────────────────────
+tests/integration/test_phase2e_audit_log.py:109:def test_insufficient_grounding_writes_audit_row():
+tests/integration/test_phase2e_audit_log.py:110:    """insufficient_grounding result must also create an audit row."""
+tests/integration/test_phase2e_audit_log.py:111:    before = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:113:    # No EDT → missing_edt path, may not reach audit. Use facts that reach governance.
+tests/integration/test_phase2e_audit_log.py:115:    after  = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:119:    row = _latest_audit_row()
+tests/integration/test_phase2e_audit_log.py:125:# ── Test 3: No personal data in audit row ─────────────────────────────────────
+tests/integration/test_phase2e_audit_log.py:127:def test_audit_row_contains_no_personal_data():
+tests/integration/test_phase2e_audit_log.py:129:    The audit row must not contain any personal or case-identifying data.
+tests/integration/test_phase2e_audit_log.py:130:    PII is stripped by deidentify() before the audit hash; only the hash is stored.
+tests/integration/test_phase2e_audit_log.py:132:    before = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:134:    after  = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:137:    row = _latest_audit_row()
+tests/integration/test_phase2e_audit_log.py:138:    audit_json = json.dumps(row, default=str).lower()
+tests/integration/test_phase2e_audit_log.py:140:    # PII VALUES must never appear in the audit row (names, emails, IDs, addresses)
+tests/integration/test_phase2e_audit_log.py:150:        assert value not in audit_json, \
+tests/integration/test_phase2e_audit_log.py:151:            f"PII value '{value}' found in audit row JSON — must never be stored"
+tests/integration/test_phase2e_audit_log.py:163:    print(f"\nAudit row PII check: PASS — no PII values in audit, "
+tests/integration/test_phase2e_audit_log.py:187:# ── Test 5: governance_result in audit matches pipeline response ───────────────
+tests/integration/test_phase2e_audit_log.py:189:def test_audit_governance_result_matches_pipeline():
+tests/integration/test_phase2e_audit_log.py:190:    """The governance_result stored in the audit must match what the pipeline returned."""
+tests/integration/test_phase2e_audit_log.py:191:    before = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:193:    after  = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:196:    row = _latest_audit_row()
+tests/integration/test_phase2e_audit_log.py:204:# ── Test 6: boundary_log in audit proves de-id ran ────────────────────────────
+tests/integration/test_phase2e_audit_log.py:206:def test_audit_boundary_log_proves_deidentification():
+tests/integration/test_phase2e_audit_log.py:207:    """boundary_log in the audit row must show pii_in_output=[] proving de-id ran."""
+tests/integration/test_phase2e_audit_log.py:208:    before = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:210:    after  = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:213:    row = _latest_audit_row()
+tests/integration/test_phase2e_audit_log.py:218:    assert pii_out == [], f"PII found in audit boundary_log: {pii_out}"
+tests/integration/test_phase2e_audit_log.py:226:def test_audit_rules_used_safe():
+tests/integration/test_phase2e_audit_log.py:227:    """rules_used in audit must contain only rule_key and authority_ref, not monetary values."""
+tests/integration/test_phase2e_audit_log.py:228:    before = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:230:    after  = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:233:    row = _latest_audit_row()
+tests/integration/test_phase2e_audit_log.py:239:        # Must NOT store value_numeric or description in audit
+tests/integration/test_phase2e_audit_log.py:240:        assert "value_numeric" not in rule, "Monetary value stored in audit rules_used"
+tests/integration/test_phase2e_audit_log.py:241:        assert "description" not in rule, "Description stored in audit rules_used"
+tests/integration/test_phase2e_audit_log.py:244:# ── Test 8: Out-of-scope does not write audit row (no governance ran) ─────────
+tests/integration/test_phase2e_audit_log.py:246:def test_out_of_scope_no_audit_row():
+tests/integration/test_phase2e_audit_log.py:249:    No audit row should be written for them.
+tests/integration/test_phase2e_audit_log.py:251:    before = _count_audit_rows()
+tests/integration/test_phase2e_audit_log.py:253:    after  = _count_audit_rows()
+tests/integration/test_phase2_engine.py:327:    them stripped. The ACTUAL PAYLOAD is printed for audit.
+tests/integration/test_phase2_engine.py:349:    print("\n=== DE-IDENTIFICATION BOUNDARY PAYLOAD (for audit) ===")
+tests/integration/test_phase3b_deadline.py:220:def test_health_still_ok():
+tests/integration/test_phase3b_deadline.py:222:    resp = client.get("/health")
+tests/integration/test_phase3c_documents.py:19: 15.  /documents/generate appears in live Docker (health check)
+tests/integration/test_phase3c_documents.py:326:def test_health_still_ok():
+tests/integration/test_phase3c_documents.py:327:    resp = client.get("/health")
+tests/integration/test_phase3d_paid_handoff.py:41:    """Apply migration 007 (handoff_leads) if not already present."""
+tests/integration/test_phase3d_paid_handoff.py:320:def test_health_still_ok():
+tests/integration/test_phase3d_paid_handoff.py:321:    resp = client.get("/health")
+tests/integration/test_phase3e_mvp_close.py:62:    Apply the reminder_events table from migration 004 if not already present.
+tests/integration/test_phase3e_mvp_close.py:473:def test_health_regression():
+tests/integration/test_phase3e_mvp_close.py:474:    resp = client.get("/health")
+tests/integration/test_phase4a_upload_ocr.py:73:    """Apply migration 008 (documents table columns) if not already present."""
+tests/integration/test_phase4a_upload_ocr.py:426:def test_health_regression():
+tests/integration/test_phase4a_upload_ocr.py:427:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase4b_bundle.py:373:def test_health_regression():
+tests/integration/test_phase4b_bundle.py:374:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase4c_timeline.py:58:    """Apply migration 009 (case_timeline_events) if not already present."""
+tests/integration/test_phase4c_timeline.py:422:def test_health_regression():
+tests/integration/test_phase4c_timeline.py:423:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase5a_hardening.py:22:  13.  DP report is not production-ready
+tests/integration/test_phase5a_hardening.py:90:    """Apply migration 010 (funnel_events) if not already present."""
+tests/integration/test_phase5a_hardening.py:261:def test_dp_report_not_production_ready():
+tests/integration/test_phase5a_hardening.py:264:    assert data.get("summary", {}).get("production_ready") is False
+tests/integration/test_phase5a_hardening.py:446:def test_health_regression():
+tests/integration/test_phase5a_hardening.py:447:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase5b_unpaid_wages.py:353:def test_health_regression():
+tests/integration/test_phase5b_unpaid_wages.py:354:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase5c_verification.py:256:def test_production_readiness_not_production_ready():
+tests/integration/test_phase5c_verification.py:260:    assert data["ready_for_production"] is False
+tests/integration/test_phase5c_verification.py:349:def test_health_regression():
+tests/integration/test_phase5c_verification.py:350:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase6a_deployment.py:327:def test_production_readiness_remains_not_ready():
+tests/integration/test_phase6a_deployment.py:331:    assert data["ready_for_production"] is False
+tests/integration/test_phase6a_deployment.py:386:def test_health_regression():
+tests/integration/test_phase6a_deployment.py:387:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase6b_beta_readiness.py:29:  16.  Report includes controlled_beta_ready
+tests/integration/test_phase6b_beta_readiness.py:31:  18.  Report includes production_ready (separate)
+tests/integration/test_phase6b_beta_readiness.py:120:    from backend.core.user_auth import is_auth_production_ready
+tests/integration/test_phase6b_beta_readiness.py:122:    result = is_auth_production_ready()
+tests/integration/test_phase6b_beta_readiness.py:123:    assert not result["ready"]
+tests/integration/test_phase6b_beta_readiness.py:128:    from backend.core.user_auth import is_auth_production_ready
+tests/integration/test_phase6b_beta_readiness.py:131:        result = is_auth_production_ready()
+tests/integration/test_phase6b_beta_readiness.py:132:        assert not result["ready"]
+tests/integration/test_phase6b_beta_readiness.py:139:    from backend.core.user_auth import is_auth_production_ready
+tests/integration/test_phase6b_beta_readiness.py:145:        result = is_auth_production_ready()
+tests/integration/test_phase6b_beta_readiness.py:146:        assert not result["ready"]
+tests/integration/test_phase6b_beta_readiness.py:155:    from backend.core.user_auth import is_auth_controlled_beta_ready
+tests/integration/test_phase6b_beta_readiness.py:157:    result = is_auth_controlled_beta_ready()
+tests/integration/test_phase6b_beta_readiness.py:158:    assert result["ready"], f"Mock auth should be acceptable for beta: {result['blockers']}"
+tests/integration/test_phase6b_beta_readiness.py:205:    assert "controlled_beta_ready" in data
+tests/integration/test_phase6b_beta_readiness.py:251:    assert not result["ready"]
+tests/integration/test_phase6b_beta_readiness.py:262:    assert not result["ready"]
+tests/integration/test_phase6b_beta_readiness.py:283:    assert cb_result["ready"] is True, f"Controlled beta should be ready: {cb_result['blockers']}"
+tests/integration/test_phase6b_beta_readiness.py:284:    assert prod_result["ready"] is True, f"Production should be ready: {prod_result['blockers']}"
+tests/integration/test_phase6b_beta_readiness.py:289:def test_report_includes_controlled_beta_ready():
+tests/integration/test_phase6b_beta_readiness.py:292:    assert "controlled_beta_ready" in data, "Report must include controlled_beta_ready"
+tests/integration/test_phase6b_beta_readiness.py:301:def test_report_has_production_ready_separate_from_beta():
+tests/integration/test_phase6b_beta_readiness.py:304:    assert "production_ready" in data
+tests/integration/test_phase6b_beta_readiness.py:305:    assert "controlled_beta_ready" in data
+tests/integration/test_phase6b_beta_readiness.py:307:    assert isinstance(data["production_ready"], bool)
+tests/integration/test_phase6b_beta_readiness.py:308:    assert isinstance(data["controlled_beta_ready"], bool)
+tests/integration/test_phase6b_beta_readiness.py:323:    assert "controlled_beta_ready" in data["compliance"]
+tests/integration/test_phase6b_beta_readiness.py:395:def test_health_regression():
+tests/integration/test_phase6b_beta_readiness.py:396:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase6c_jwt.py:21:  14.  production mode confirms jwt is production-ready when configured
+tests/integration/test_phase6c_jwt.py:29:  18.  controlled_beta_ready remains false (DPIA blockers)
+tests/integration/test_phase6c_jwt.py:30:  19.  production_ready remains false
+tests/integration/test_phase6c_jwt.py:36:  23.  health check
+tests/integration/test_phase6c_jwt.py:273:    Phase 7A update: HS256-only (JWT_SECRET, no JWT_JWKS_URL) is NOT production-ready.
+tests/integration/test_phase6c_jwt.py:274:    RS256+JWKS (JWT_JWKS_URL) IS production-ready.
+tests/integration/test_phase6c_jwt.py:277:    from backend.core.user_auth import is_auth_production_ready
+tests/integration/test_phase6c_jwt.py:279:    # HS256-only (current fixture) → NOT production-ready (Phase 7A)
+tests/integration/test_phase6c_jwt.py:280:    result_hs256 = is_auth_production_ready()
+tests/integration/test_phase6c_jwt.py:281:    assert result_hs256["ready"] is False, \
+tests/integration/test_phase6c_jwt.py:282:        "HS256-only must not be production-ready after Phase 7A (requires RS256+JWKS)"
+tests/integration/test_phase6c_jwt.py:285:    # RS256+JWKS (add JWT_JWKS_URL) → IS production-ready
+tests/integration/test_phase6c_jwt.py:288:        result_rs256 = is_auth_production_ready()
+tests/integration/test_phase6c_jwt.py:289:        assert result_rs256["ready"] is True, \
+tests/integration/test_phase6c_jwt.py:290:            f"RS256+JWKS with full config must be production-ready: {result_rs256['blockers']}"
+tests/integration/test_phase6c_jwt.py:320:def test_controlled_beta_ready_remains_false():
+tests/integration/test_phase6c_jwt.py:325:    assert data.get("controlled_beta_ready") is False, \
+tests/integration/test_phase6c_jwt.py:326:        "controlled_beta_ready must remain False until DPIA/privacy are genuinely reviewed"
+tests/integration/test_phase6c_jwt.py:329:def test_production_ready_remains_false():
+tests/integration/test_phase6c_jwt.py:331:    assert resp.json()["production_ready"] is False
+tests/integration/test_phase6c_jwt.py:361:def test_health_regression():
+tests/integration/test_phase6c_jwt.py:362:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase6d_compliance.py:6:   1.  Current state: controlled_beta_ready=false (reviewed=false)
+tests/integration/test_phase6d_compliance.py:11:   6.  DPIA reviewed + privacy_notice reviewed + full evidence → beta-ready
+tests/integration/test_phase6d_compliance.py:26:  15.  controlled_beta_ready remains false (DPIA not reviewed in current signoff)
+tests/integration/test_phase6d_compliance.py:84:    assert not result["ready"], "Current state must be blocked (DPIA/privacy not reviewed)"
+tests/integration/test_phase6d_compliance.py:108:    assert not result["ready"], "Boolean-only sign-off must be blocked"
+tests/integration/test_phase6d_compliance.py:115:    """MECHANISM TEST: reviewed=true WITH evidence → controlled_beta_ready=true."""
+tests/integration/test_phase6d_compliance.py:138:    assert result["ready"] is True, \
+tests/integration/test_phase6d_compliance.py:156:    assert not result["ready"]
+tests/integration/test_phase6d_compliance.py:173:    assert not result["ready"]
+tests/integration/test_phase6d_compliance.py:178:    """Both DPIA and privacy with full evidence → beta ready."""
+tests/integration/test_phase6d_compliance.py:191:    assert result["ready"] is True
+tests/integration/test_phase6d_compliance.py:209:    assert not result["ready"]
+tests/integration/test_phase6d_compliance.py:227:    assert not result["ready"]
+tests/integration/test_phase6d_compliance.py:289:def test_controlled_beta_ready_remains_false_current_state():
+tests/integration/test_phase6d_compliance.py:292:    assert data["controlled_beta_ready"] is False, \
+tests/integration/test_phase6d_compliance.py:328:def test_health_regression():
+tests/integration/test_phase6d_compliance.py:329:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase6e_prelaunch.py:22:  13.  controlled_beta_ready remains false (human review not done)
+tests/integration/test_phase6e_prelaunch.py:185:def test_controlled_beta_ready_still_false():
+tests/integration/test_phase6e_prelaunch.py:188:    assert data["controlled_beta_ready"] is False, \
+tests/integration/test_phase6e_prelaunch.py:189:        "controlled_beta_ready must be false — no human sign-offs have occurred"
+tests/integration/test_phase6e_prelaunch.py:243:def test_health_regression():
+tests/integration/test_phase6e_prelaunch.py:244:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase6_production.py:250:def test_production_readiness_still_not_production_ready():
+tests/integration/test_phase6_production.py:255:    assert data["ready_for_production"] is False
+tests/integration/test_phase6_production.py:263:    assert enc.get("production_ready") is False
+tests/integration/test_phase6_production.py:297:def test_health_regression():
+tests/integration/test_phase6_production.py:298:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase7a_jwks.py:24:  15.  RS256+full config is production-ready per is_auth_production_ready()
+tests/integration/test_phase7a_jwks.py:25:  16.  HS256-only is not production-ready (non-production-grade key)
+tests/integration/test_phase7a_jwks.py:30:  19.  controlled_beta_ready remains false (DPIA/privacy blockers)
+tests/integration/test_phase7a_jwks.py:31:  20.  production_ready remains false
+tests/integration/test_phase7a_jwks.py:350:def test_rs256_jwks_full_config_is_production_ready():
+tests/integration/test_phase7a_jwks.py:351:    """RS256 + JWT_JWKS_URL + JWT_ISSUER + JWT_AUDIENCE → production-ready."""
+tests/integration/test_phase7a_jwks.py:352:    from backend.core.user_auth import is_auth_production_ready
+tests/integration/test_phase7a_jwks.py:353:    # Env fixture already sets all these
+tests/integration/test_phase7a_jwks.py:354:    result = is_auth_production_ready()
+tests/integration/test_phase7a_jwks.py:355:    assert result["ready"] is True, \
+tests/integration/test_phase7a_jwks.py:356:        f"RS256+JWKS with full config must be production-ready: {result['blockers']}"
+tests/integration/test_phase7a_jwks.py:360:def test_hs256_only_is_not_production_ready():
+tests/integration/test_phase7a_jwks.py:361:    """HS256 (JWT_SECRET only) must NOT be flagged as production-ready."""
+tests/integration/test_phase7a_jwks.py:362:    from backend.core.user_auth import is_auth_production_ready
+tests/integration/test_phase7a_jwks.py:366:        result = is_auth_production_ready()
+tests/integration/test_phase7a_jwks.py:367:        assert not result["ready"], "HS256-only must not be production-ready"
+tests/integration/test_phase7a_jwks.py:394:def test_controlled_beta_ready_still_false():
+tests/integration/test_phase7a_jwks.py:396:    assert resp.json()["controlled_beta_ready"] is False
+tests/integration/test_phase7a_jwks.py:399:def test_production_ready_still_false():
+tests/integration/test_phase7a_jwks.py:401:    assert resp.json()["production_ready"] is False
+tests/integration/test_phase7a_jwks.py:429:def test_health_regression():
+tests/integration/test_phase7a_jwks.py:430:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase7b_kms.py:2:Phase 7B — KMS/HSM-ready key management provider tests.
+tests/integration/test_phase7b_kms.py:33:  20.  production_ready remains false
+tests/integration/test_phase7b_kms.py:306:def test_production_ready_still_false():
+tests/integration/test_phase7b_kms.py:308:    assert resp.json()["production_ready"] is False
+tests/integration/test_phase7b_kms.py:329:def test_health_regression():
+tests/integration/test_phase7b_kms.py:330:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase7c_aws_kms.py:28:  15.  health_check=false (default) → kms_connected=NOT_CHECKED
+tests/integration/test_phase7c_aws_kms.py:29:  16.  health_check=true with mock success → kms_connected=True
+tests/integration/test_phase7c_aws_kms.py:30:  17.  health_check=true with mock failure → kms_connected=False
+tests/integration/test_phase7c_aws_kms.py:33:  No logging of sensitive values:
+tests/integration/test_phase7c_aws_kms.py:34:  19.  No ARN value in logs during health check
+tests/integration/test_phase7c_aws_kms.py:121:def test_health_check_passes_when_kms_reachable(mock_boto3_client):
+tests/integration/test_phase7c_aws_kms.py:122:    """Mock successful DescribeKey → health_check=True → kms_connected=True."""
+tests/integration/test_phase7c_aws_kms.py:133:        result = provider.health_check()
+tests/integration/test_phase7c_aws_kms.py:137:        # Verify ARN value not logged (we can't check boto3 call args without logging,
+tests/integration/test_phase7c_aws_kms.py:146:def test_health_check_fails_closed_on_error(mock_boto3_client):
+tests/integration/test_phase7c_aws_kms.py:147:    """Mock DescribeKey failure → health_check=False (fails closed)."""
+tests/integration/test_phase7c_aws_kms.py:157:        result = provider.health_check()
+tests/integration/test_phase7c_aws_kms.py:163:def test_health_check_fails_without_arn():
+tests/integration/test_phase7c_aws_kms.py:164:    """No ARN → health_check=False without calling boto3."""
+tests/integration/test_phase7c_aws_kms.py:167:    assert AwsKmsProvider().health_check() is False
+tests/integration/test_phase7c_aws_kms.py:284:    """Without ?health_check=true, kms_connected shows NOT_CHECKED."""
+tests/integration/test_phase7c_aws_kms.py:290:        f"kms_connected should not be True without health_check: {km.get('kms_connected')}"
+tests/integration/test_phase7c_aws_kms.py:294:def test_production_readiness_health_check_true_shows_connected(mock_boto3_client):
+tests/integration/test_phase7c_aws_kms.py:295:    """With ?health_check=true and mock success → kms_connected=True."""
+tests/integration/test_phase7c_aws_kms.py:302:        resp = client.get("/admin/production-readiness?health_check=true", headers=_ADMIN_HDR)
+tests/integration/test_phase7c_aws_kms.py:312:def test_production_readiness_health_check_failure_shows_disconnected(mock_boto3_client):
+tests/integration/test_phase7c_aws_kms.py:313:    """Mock health check failure → kms_connected=False."""
+tests/integration/test_phase7c_aws_kms.py:320:        resp = client.get("/admin/production-readiness?health_check=true", headers=_ADMIN_HDR)
+tests/integration/test_phase7c_aws_kms.py:338:def test_no_arn_in_logs_during_health_check(mock_boto3_client, caplog):
+tests/integration/test_phase7c_aws_kms.py:348:            AwsKmsProvider().health_check()
+tests/integration/test_phase7c_aws_kms.py:412:def test_health_regression():
+tests/integration/test_phase7c_aws_kms.py:413:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase7d_envelope_encryption.py:40:  21.  production_ready still false
+tests/integration/test_phase7d_envelope_encryption.py:445:def test_production_ready_still_false():
+tests/integration/test_phase7d_envelope_encryption.py:447:    assert resp.json()["production_ready"] is False
+tests/integration/test_phase7d_envelope_encryption.py:466:def test_health_regression():
+tests/integration/test_phase7d_envelope_encryption.py:467:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase7e_envelope_integration.py:33:  20.  db_schema_ready=True
+tests/integration/test_phase7e_envelope_integration.py:34:  21.  production_ready still false
+tests/integration/test_phase7e_envelope_integration.py:450:def test_key_rotation_db_schema_ready():
+tests/integration/test_phase7e_envelope_integration.py:453:    assert kr.get("db_schema_ready") is True
+tests/integration/test_phase7e_envelope_integration.py:456:def test_production_ready_still_false():
+tests/integration/test_phase7e_envelope_integration.py:458:    assert resp.json()["production_ready"] is False
+tests/integration/test_phase7e_envelope_integration.py:488:def test_health_regression():
+tests/integration/test_phase7e_envelope_integration.py:489:    assert client.get("/health").json()["status"] == "ok"
+tests/integration/test_phase8b_algorithm_brain.py:359:def test_health_check():
+tests/integration/test_phase8b_algorithm_brain.py:360:    assert client.get("/health").json()["status"] == "ok"
+tests/mcp/test_mcp.py:82:    def test_mcp_audit_has_trace_id(self):
+tests/mcp/test_mcp.py:89:            WHERE table_name = 'mcp_tool_calls' AND column_name = 'trace_id';
+tests/mcp/test_mcp.py:137:    def test_mcp_audit_written_on_call(self):
+tests/mcp/test_mcp.py:147:                  trace_id="test-mcp-audit")
+tests/rate_limiting/test_rate_limiting.py:47:    def test_health_endpoint_no_rate_limit(self, client):
+tests/rate_limiting/test_rate_limiting.py:50:            r = client.get("/health")
+tests/security/test_auth_routes.py:142:    def test_health_reports_ai_provider(self, client):
+tests/security/test_auth_routes.py:143:        r = client.get("/health")
+tests/security/test_auth_routes.py:151:    def test_health_reports_auth_mode(self, client):
+tests/security/test_auth_routes.py:152:        r = client.get("/health")
+tests/security/test_auth_routes.py:157:    def test_health_reports_payment_mode(self, client):
+tests/security/test_auth_routes.py:158:        r = client.get("/health")
+tests/security/test_auth_routes.py:163:    def test_health_ai_active_false_without_real_key(self, client):
+tests/security/test_auth_routes.py:168:        r = client.get("/health")
+tests/test_govern.py:137:    # "no" claim — governance doesn't require weaknesses (it's already the honest answer)

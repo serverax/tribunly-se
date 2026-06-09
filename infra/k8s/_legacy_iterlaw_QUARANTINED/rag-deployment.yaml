@@ -1,0 +1,53 @@
+---
+# IterLaw RAG worker — BM25 + pgvector retrieval service
+# Status: DRAFT — do not apply until node is Ready and image is built.
+# Currently RAG is embedded in the backend process (backend/engine/retrieve.py).
+# This deployment is for a dedicated RAG worker if splitting is desired.
+# For MVP, the backend handles retrieval inline — this is optional.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lawapp-rag
+  namespace: iterlaw-rag
+  labels:
+    app: lawapp-rag
+    project: iterlaw
+spec:
+  replicas: 0   # start at 0 — not needed until RAG is split from backend
+  selector:
+    matchLabels:
+      app: lawapp-rag
+  template:
+    metadata:
+      labels:
+        app: lawapp-rag
+        project: iterlaw
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: rag
+          image: ghcr.io/serverax/lawapp/backend:${GIT_SHA}
+          imagePullPolicy: Always
+          command: ["python", "-m", "ingestion.embeddings.embedder"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          envFrom:
+            - configMapRef:
+                name: lawapp-config
+                optional: true
+            - secretRef:
+                name: lawapp-secrets
+                optional: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

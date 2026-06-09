@@ -1,0 +1,46 @@
+
+==================================== ERRORS ====================================
+______________ ERROR collecting tests/test_assess_orchestrator.py ______________
+ImportError while importing test module '/mnt/f/lawapp/tests/test_assess_orchestrator.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_assess_orchestrator.py:9: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+_______________ ERROR collecting tests/test_reasoning_routes.py ________________
+ImportError while importing test module '/mnt/f/lawapp/tests/test_reasoning_routes.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_reasoning_routes.py:11: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+______________ ERROR collecting tests/test_streaming_inference.py ______________
+ImportError while importing test module '/mnt/f/lawapp/tests/test_streaming_inference.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_streaming_inference.py:12: in <module>
+    from backend.core.models import LocalInferenceReasoningModel
+backend/core/models.py:26: in <module>
+    from shared.schemas import (
+shared/schemas.py:14: in <module>
+    from pydantic import BaseModel, Field
+E   ModuleNotFoundError: No module named 'pydantic'
+=============================== warnings summary ===============================
+../../../usr/lib/python3/dist-packages/_pytest/config/__init__.py:1373
+  /usr/lib/python3/dist-packages/_pytest/config/__init__.py:1373: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/test_assess_orchestrator.py
+ERROR tests/test_reasoning_routes.py
+ERROR tests/test_streaming_inference.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!
+1 warning, 3 errors in 2.20s

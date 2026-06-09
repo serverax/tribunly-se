@@ -1,0 +1,9 @@
+
+== End-to-end product + G10 provenance ==
+  [PASS] authenticated Brain answer returned
+  [PASS] G10 spine tables (legal_sources + corpus_chunks) exist
+  [PASS] corpus_chunks populated (count=890)
+  [PASS] zero orphan chunks (no null chunk_hash/source_url)
+
+=== GATE RESULT: final-end-to-end-product-gate ===
+RESULT: PASS

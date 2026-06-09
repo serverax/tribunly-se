@@ -1,0 +1,150 @@
+PHASE 6D — COMPLIANCE EVIDENCE STRUCTURE AND DPO/LEGAL REVIEW GATE
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+1. GIT
+═══════════════════════════════════════════════════════════════════════════════
+
+Branch:      master
+Commit hash: [set after push]
+Push result: [set after push]
+
+═══════════════════════════════════════════════════════════════════════════════
+2. FILES CHANGED
+═══════════════════════════════════════════════════════════════════════════════
+
+  docs/compliance-signoff.json
+    Added: review_scope, evidence_reference fields to both dpia and privacy_notice.
+    _guidance section explains how to sign off correctly.
+    All review flags remain false — no fake review.
+
+  docs/dpia-review-checklist.md  (NEW)
+    20-item checklist for DPO to verify before setting reviewed_by_dpo=true.
+    Covers: data flows, legal basis, risks, encryption, subject rights, ICO.
+    Instructions for recording sign-off in compliance-signoff.json.
+
+  docs/privacy-review-checklist.md  (NEW)
+    15-item checklist for legal counsel to verify before legally_reviewed=true.
+    Covers: legal basis, controller identity, retention periods, subject rights,
+            third-party processing, plain English test, pre-publication checks.
+
+  backend/engine/compliance.py
+    Phase 6D: Evidence quality gate added.
+    _evidence_ok(): reviewer_name AND review_date required alongside boolean flags.
+    check_controlled_beta(): blocks if evidence fields missing even when flag=true.
+    check_production(): same evidence gate for approval and publication.
+    required_evidence(): returns what is needed for each threshold.
+    get_compliance_status(): now includes required_evidence and checklists paths.
+
+  backend/engine/production_readiness.py
+    Minor comment clarifying required_evidence is embedded in compliance section.
+
+  tests/integration/test_phase6d_compliance.py  (NEW)
+    20 new tests (see section 6).
+
+  tests/integration/test_phase6b_beta_readiness.py
+    Updated test_signed_compliance_changes_readiness to include reviewer_name
+    and review_date — previously used boolean-only signoff which is now blocked
+    by Phase 6D evidence gate (correct behaviour).
+
+═══════════════════════════════════════════════════════════════════════════════
+3. EVIDENCE GATE PROOF
+═══════════════════════════════════════════════════════════════════════════════
+
+  Reviewed=true WITHOUT evidence → BLOCKED:
+    test_reviewed_true_without_evidence_still_blocked PASSED
+    "A boolean flag alone is not sufficient — add reviewer_name and review_date"
+
+  reviewer_name missing → BLOCKED:
+    test_missing_reviewer_name_blocks PASSED
+
+  review_date missing → BLOCKED:
+    test_missing_review_date_blocks PASSED
+
+  MECHANISM TEST — reviewed=true WITH full evidence → UNBLOCKED:
+    test_reviewed_true_with_evidence_unblocks PASSED
+    test_full_evidence_both_sections_unblocks_beta PASSED
+    These tests prove the mechanism works WITHOUT faking review in actual signoff.
+
+  Production requires approved=true (not just reviewed_by_dpo):
+    test_production_requires_approved_not_just_reviewed PASSED
+
+  Production requires published=true:
+    test_production_requires_published_privacy_notice PASSED
+
+═══════════════════════════════════════════════════════════════════════════════
+4. SIGNOFF STRUCTURE PROOF
+═══════════════════════════════════════════════════════════════════════════════
+
+  compliance-signoff.json has review_scope field:   PASS
+  compliance-signoff.json has evidence_reference:   PASS
+  Checklists referenced in status:                  PASS
+  required_evidence in compliance endpoint:         PASS
+  reviewer_name/review_date in required_fields:     PASS
+  Checklist paths correct:                          PASS
+
+═══════════════════════════════════════════════════════════════════════════════
+5. WHAT PHASE 6D DOES NOT FAKE
+═══════════════════════════════════════════════════════════════════════════════
+
+  - reviewed_by_dpo remains false in docs/compliance-signoff.json
+  - legally_reviewed remains false in docs/compliance-signoff.json
+  - controlled_beta_ready remains false (confirmed by test)
+  - No DPO or legal sign-off has been performed
+  - The mechanism is proven to work correctly when genuine sign-off occurs
+  - The checklists document exactly what must be verified before signing
+
+═══════════════════════════════════════════════════════════════════════════════
+6. TEST RESULTS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Phase 6D tests:    20/20 passed in 43.56s
+  Full regression:   513 passed, 9 skipped, 0 failures in 424s
+  Legal accuracy:    38/38 passed ✓ PASSED
+  Rules verification: ✓ PASSED
+
+═══════════════════════════════════════════════════════════════════════════════
+7. READINESS STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+  controlled_beta_ready: FALSE (verified by test_controlled_beta_ready_remains_false_current_state)
+
+  Current blockers:
+    1. DPIA not reviewed by DPO — requires actual DPO review + docs/dpia-review-checklist.md
+    2. Privacy notice not legally reviewed — requires legal review + docs/privacy-review-checklist.md
+    3. JWKS/RS256 not implemented — Phase 7
+    4. No real HSM/KMS — Phase 7
+    5. No live deployment environment — Phase 7
+
+  production_ready: FALSE
+
+  What Phase 6D provides:
+    - Clear checklists for what DPO and legal must verify
+    - Evidence gate preventing boolean-only sign-off
+    - Mechanism proven to work: when genuine sign-off occurs, system unlocks correctly
+
+═══════════════════════════════════════════════════════════════════════════════
+8. SAFETY CHECK
+═══════════════════════════════════════════════════════════════════════════════
+
+  git diff --cached --name-only (7 files):
+    backend/engine/compliance.py
+    backend/engine/production_readiness.py
+    docs/compliance-signoff.json
+    docs/dpia-review-checklist.md
+    docs/privacy-review-checklist.md
+    tests/integration/test_phase6b_beta_readiness.py
+    tests/integration/test_phase6d_compliance.py
+    reports/phase6d-compliance-report.txt
+
+  Secret-risk scan: ZERO matches (no real secrets in staged diff)
+
+  No secrets printed: compliance-signoff.json contains only null values and
+    descriptive notes — no credentials, keys, or personal data.
+
+  No broad git add: explicit per-file staging used.
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 6D
+═══════════════════════════════════════════════════════════════════════════════

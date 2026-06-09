@@ -1,0 +1,24 @@
+===== K8S MANIFEST INVENTORY =====
+Generated: Sun Jun  7 15:21:43 UTC 2026
+
+--- manifest dirs ---
+/mnt/f/lawapp/k8s
+/mnt/f/lawapp/infra/k8s
+
+--- yaml manifests referencing lawapp services + images ---
+
+--- MANIFEST FILES (active) ---
+k8s/lawapp-ai/{lawapp-brain,lawapp-document-service,lawapp-llm-gateway,lawapp-rules-engine,ollama-inference}.yaml
+k8s/lawapp-rag/{lawapp-crawler,lawapp-rag-ingestion,lawapp-rag-retrieval,lawapp-worker}.yaml
+k8s/lawapp-security/lawapp-citation-guard.yaml
+infra/k8s/{lawapp-ai-brain,lawapp-brain-deployment,lawapp-backend,lawapp-postgres-sts,lawapp-reasoning-worker,lawapp-ingress,llm-inference-fabric}.yaml
+infra/k8s/inference/ollama-inference-daemonset.yaml
+infra/k8s/_legacy_iterlaw_QUARANTINED/** (quarantined legacy — not deployed)
+
+--- FINDINGS ---
+[FAIL] infra/k8s/llm-inference-fabric.yaml Service 'llm-inference-service' selector = {app: ollama-inference};
+       ollama DaemonSet pods carry label {app.kubernetes.io/name: ollama-inference}. SELECTOR MISMATCH -> 0 endpoints (DEAD SERVICE).
+       Working Service 'ollama-inference' uses correct selector {app.kubernetes.io/name: ollama-inference} -> 3 endpoints.
+[FAIL] brain LOCAL_INFERENCE_URL points at the DEAD llm-inference-service; should point at ollama-inference (owner-authorization pending to repoint).
+[NOTE] lawapp-reasoning-worker Deployment present, replicas 0/0, no ports/probes (SCALED-0, no entrypoint) — documented, not a failure.
+[NOTE] iterlaw-* namespaces contain a parallel/older lawapp-backend (InvalidImageName on one replica) + lawapp-embed-corpus (InvalidImageName). OUT OF SA-014 scope (different product namespace) but recorded.

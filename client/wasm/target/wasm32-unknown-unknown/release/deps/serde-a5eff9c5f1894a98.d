@@ -1,0 +1,14 @@
+/mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/deps/serde-a5eff9c5f1894a98.d: /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/build/serde-7d7a11c85ff269e2/out/private.rs
+
+/mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/deps/libserde-a5eff9c5f1894a98.rlib: /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/build/serde-7d7a11c85ff269e2/out/private.rs
+
+/mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/deps/libserde-a5eff9c5f1894a98.rmeta: /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/build/serde-7d7a11c85ff269e2/out/private.rs
+
+/home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/build/serde-7d7a11c85ff269e2/out/private.rs:
+
+# env-dep:OUT_DIR=/mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/build/serde-7d7a11c85ff269e2/out

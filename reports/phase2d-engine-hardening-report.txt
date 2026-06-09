@@ -1,0 +1,123 @@
+PHASE 2D ENGINE HARDENING REPORT
+=================================
+Date:    2026-06-01
+Status:  PASS
+Commit:  (see git log)
+
+SUMMARY
+-------
+Phase 2D adds employer_arguments, DB migration placeholders for Phases 3-6,
+a comprehensive hardening test suite (22 new tests), and confirms the full
+150-test suite passes against a clean, single-series rules table.
+
+TEST RESULTS
+------------
+Total:   150 passed, 3 skipped
+Prior:   130 passed, 3 skipped (Phase 2C baseline)
+New:     +20 tests (Phase 2D hardening) + employer_arguments schema change
+
+Skipped tests (BLOCKED, unchanged from Phase 2B/2C):
+  - test_semantic_retrieval_returns_legislation   BLOCKED_BY_OPENAI_QUOTA
+  - test_five_realistic_fact_patterns_with_citations   BLOCKED_BY_OPENAI_QUOTA
+  - test_deidentification_boundary_payload_for_real_model   BLOCKED_BY_OPENAI_QUOTA
+
+All 3 skips require corpus embeddings which need a funded OpenAI API key.
+No test was modified to make a skip appear as a pass.
+
+PHASE 2D WORK COMPLETED
+------------------------
+
+1. employer_arguments field
+   - Added to StructuredAssessment schema (shared/schemas.py)
+   - Generated deterministically from facts + reason in assess_logic.py
+   - Examples: conduct band-of-reasonable-responses, redundancy consultation,
+     qualifying period threshold, mitigation failure, procedure reasonableness
+   - Injected into pipeline deterministic upgrade path
+   - Covered by test_employer_arguments_populated_conduct,
+     test_employer_arguments_always_includes_mitigation
+
+2. Phase 2D hardening tests (22 new tests in test_phase2d_hardening.py)
+   - QP pass (3yr conduct no procedure)
+   - QP fail (14mo shows employer argument re threshold)
+   - Procedural weakness detection
+   - Value range low/high verified against rules (Limb A + Limb B)
+   - Limb B caps low earner correctly
+   - Deadline authority traces to ERA 1996 s.111(2) in rules row
+   - Deadline in pipeline carries source=rules + correct date
+   - OOS refusal: consumer, immigration, tenancy (no legal assessment returned)
+   - Weak facts: no EDT, no service date - honest uncertainty
+   - Employer args: conduct, redundancy, mitigation
+   - No PII in stub boundary (claimant_name, employer_name, email, NI stripped)
+   - OpenRouter disabled by default
+   - No-key fallback returns Stub (never crashes)
+   - Engine works without OpenRouter key (even when OPENROUTER_ENABLED=true)
+   - All citations have cite + url
+   - Governance blocks reserved-activity regardless of model
+
+3. DB migration placeholders (003-006)
+   - 003_phase2c_audit.sql: assessment_audit_logs (immutable governance record)
+   - 004_phase3_tables.sql: document_readiness, support_sessions,
+                             solicitor_reviews, reminder_events
+   - 005_phase4_evidence.sql: evidence_items
+   - 006_phase5_feedback.sql: user_feedback
+
+4. Feature roadmap (docs/10_FEATURE_ROADMAP.md)
+   - Full task list by phase (2C through 6)
+   - employer_arguments spec
+   - Coaching flow guardrails (paralegal_coach only, no legal advice)
+   - Solicitor review trigger conditions
+   - Pricing model (no forced subscription)
+   - Retention loop (legal urgency, not generic engagement)
+   - Evidence intelligence design
+   - Accuracy regression suite plan
+   - General guardrails (never "AI lawyer", never conduct litigation)
+
+REMAINING BLOCKERS
+------------------
+
+1. BLOCKED_BY_OPENAI_QUOTA
+   Corpus embeddings (legislation 80 chunks, case_law 367 chunks, ACAS 14 chunks)
+   not populated. Semantic retrieval inactive. BM25 fallback active.
+   Three tests correctly skip.
+   Action: fund the OpenAI API key account; re-run embedder; tests will pass.
+
+2. FCL BULK INGESTION BLOCKED
+   Find Case Law computational-analysis licence application submitted 2026-05-31.
+   Awaiting grant from TNA. Bulk EAT/ET ingestion gated in code
+   (FCL_BULK_LICENCE_GRANTED=false).
+   5 per-document EAT decisions ingested under OJS licence.
+
+3. OPENROUTER: WIRED, DEFAULT OFF
+   OPENROUTER_ENABLED=false by default.
+   No key set.
+   Engine falls back to Anthropic → Stub cleanly.
+   Tests confirm: no crash when key absent.
+
+4. SOURCE VERIFIER RE-RUN PENDING
+   verify_sources.py hit 429 rate limit during last session.
+   Figures believed correct from prior fetches (£751, £123,543).
+   Will re-run when legislation.gov.uk rate window clears.
+
+5. AUDIT LOG NOT YET WIRED TO DB
+   assessment_audit_logs schema is in migration 003 (not applied to live DB yet).
+   Pipeline does not yet insert audit rows.
+   Phase 2C acceptance criteria 2C-5 remains PARTIAL.
+   Action: apply migration 003, wire pipeline to insert audit row after governance.
+
+GUARDRAIL COMPLIANCE
+--------------------
+- No personal data sent to any external model (boundary_log proves it)
+- All 3 skipped tests are embeddings/model-blocked, not legal-accuracy blocked
+- Governance gate passed on all 150 passing tests
+- Deterministic deadline engine reads from rules table only
+- All citations trace to a cited source (BM25 corpus or rules row)
+- OpenRouter disabled by default; no automatic external model call
+- FCL bulk ingestion gated in code
+
+RECOMMENDATION
+--------------
+Do not start Phase 3 (MVP dashboard/UI) yet.
+Close the two active Phase 2 items first:
+  a) Apply migration 003 and wire audit log insertion to the pipeline
+  b) Resolve OpenAI quota to unblock the 3 skipped embedding tests
+Then the full Phase 2 engine is confirmed complete and Phase 3 can start.

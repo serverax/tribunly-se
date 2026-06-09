@@ -1,0 +1,96 @@
+# employment_uk — official legal source manifest (drives Corpus Ingestion AIA).
+# Official/authorised sources ONLY. The ingestion AIA loads this file; the
+# source list must NOT live only in Python.
+domain: employment_uk
+country_code: GB
+jurisdiction: EW
+
+legislation:
+  - act_title: Employment Rights Act 1996
+    leg_type: ukpga
+    year: 1996
+    chapter: "18"
+    base_url: https://www.legislation.gov.uk/ukpga/1996/18
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections:
+      # core unfair dismissal + remedies + week's pay
+      ["94","95","97","98","108","111","119","120","122","123","124","126","207B","227",
+      # written statement / wages / deductions
+       "1","13","23",
+      # whistleblowing / protected disclosure (s.43A-s.43L) + detriment
+       "43A","43B","43C","43D","43E","43F","43G","43H","43J","43K","43L","47B",
+      # automatically-unfair dismissal grounds
+       "99","100","103A","104",
+      # remedies (reinstatement / re-engagement / compensation)
+       "112","113","114","115","118",
+      # week's pay calculation (s.221-s.229)
+       "221","222","223","224","225","226","228","229"]
+      # NOTE: s.127 (special award) was repealed by the Employment Relations Act 1999 -
+      # intentionally NOT ingested (would 404). Recorded in source/fcl reports.
+
+  - act_title: Employment Tribunals Act 1996
+    leg_type: ukpga
+    year: 1996
+    chapter: "17"
+    base_url: https://www.legislation.gov.uk/ukpga/1996/17
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["18A"]
+
+  - act_title: Trade Union and Labour Relations (Consolidation) Act 1992
+    leg_type: ukpga
+    year: 1992
+    chapter: "52"
+    base_url: https://www.legislation.gov.uk/ukpga/1992/52
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["207A"]
+
+  - act_title: Equality Act 2010
+    leg_type: ukpga
+    year: 2010
+    chapter: "15"
+    base_url: https://www.legislation.gov.uk/ukpga/2010/15
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    active: false   # future-ready; discrimination workflow not active yet
+    sections: ["4","13","15","19","20","21","26","27","39","123"]
+
+# Statutory Instruments — annual Employment Rights (Increase of Limits) Orders.
+# These set the week's-pay cap, max compensatory award and min basic award. The
+# values live in the cited `rules` table (effective-dated); the Order text is
+# stored in `legislation` (leg_type=uksi). Ingested by ingestion.rules.seed_limits_orders.
+# SI numbers confirmed via legislation.gov.uk title resolution (2026-06-05).
+statutory_instruments:
+  series: Employment Rights (Increase of Limits) Order
+  leg_type: uksi
+  parser_type: clml_xml
+  licence_type: open_government_licence
+  orders:
+    - { year: 2021, si_no: "208", url: https://www.legislation.gov.uk/uksi/2021/208 }
+    - { year: 2022, si_no: "182", url: https://www.legislation.gov.uk/uksi/2022/182 }
+    - { year: 2023, si_no: "318", url: https://www.legislation.gov.uk/uksi/2023/318 }
+    - { year: 2024, si_no: "213", url: https://www.legislation.gov.uk/uksi/2024/213 }
+    - { year: 2025, si_no: "348", url: https://www.legislation.gov.uk/uksi/2025/348 }
+    - { year: 2026, si_no: "310", url: https://www.legislation.gov.uk/uksi/2026/310 }  # current
+
+guidance:
+  - source_name: ACAS Code of Practice on Disciplinary and Grievance Procedures
+    source_type: acas
+    base_url: https://www.acas.org.uk
+    licence_type: acas_public_guidance
+    table: acas_guidance
+  - source_name: GOV.UK employment guidance
+    source_type: govuk
+    base_url: https://www.gov.uk
+    licence_type: open_government_licence
+    table: official_guidance
+
+case_law:
+  source_type: find_case_law
+  base_url: https://caselaw.nationalarchives.gov.uk
+  licence_type: open_justice_licence
+  bulk_allowed: false                      # licence-gated; see licence_policy.yaml
+  computational_analysis_allowed: false
+  table: case_law_documents

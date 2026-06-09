@@ -1,0 +1,32 @@
+
+==================================== ERRORS ====================================
+________________ ERROR collecting tests/test_case_ownership.py _________________
+ImportError while importing test module '/mnt/f/lawapp/tests/test_case_ownership.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_case_ownership.py:10: in <module>
+    from fastapi import HTTPException
+E   ModuleNotFoundError: No module named 'fastapi'
+_____________ ERROR collecting tests/security/test_auth_routes.py ______________
+ImportError while importing test module '/mnt/f/lawapp/tests/security/test_auth_routes.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/security/test_auth_routes.py:15: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+=============================== warnings summary ===============================
+../../../usr/lib/python3/dist-packages/_pytest/config/__init__.py:1373
+  /usr/lib/python3/dist-packages/_pytest/config/__init__.py:1373: PytestConfigWarning: Unknown config option: asyncio_mode
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/test_case_ownership.py
+ERROR tests/security/test_auth_routes.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+1 warning, 2 errors in 0.57s

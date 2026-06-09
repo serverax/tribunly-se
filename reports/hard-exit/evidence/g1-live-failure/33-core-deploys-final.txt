@@ -1,0 +1,8 @@
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+lawapp-brain   1/1     1            1           3d11h
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+lawapp-backend   1/1     1            1           3d23h
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+lawapp-rules-engine   1/1     1            1           25h
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+lawapp-crawler   1/1     1            1           25h

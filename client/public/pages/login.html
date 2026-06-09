@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
+  <script src="/js/a11y.js"></script>
+</head>
+<body>
+
+<div class="legal-notice" role="note">
+  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="nav-links" id="navlinks">
+    <a href="/">Home</a>
+    <a href="/pages/register.html">Sign up</a>
+  </div>
+</nav>
+
+<main class="page-narrow" style="padding-top:3rem;">
+  <div class="form-section">
+    <h1 style="color:var(--primary);margin-bottom:1.25rem;">Login</h1>
+
+    <div id="notice" class="form-ok" style="display:none;"></div>
+
+    <div class="auth-tabs" role="tablist" aria-label="Login method">
+      <button type="button" class="auth-tab" id="tab-password" role="tab" aria-selected="true" aria-controls="panel-password">Password</button>
+      <button type="button" class="auth-tab" id="tab-magic" role="tab" aria-selected="false" aria-controls="panel-magic">Magic link</button>
+    </div>
+
+    <!-- Email + password -->
+    <form id="loginForm" class="auth-panel" role="tabpanel" aria-labelledby="tab-password" novalidate>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="current-password" required>
+      </div>
+      <div id="login-error" class="form-section" style="display:none;background:var(--warn-bg);border-color:var(--warn-bd);padding:1rem;margin-bottom:1rem;">
+        <p id="login-error-text" style="color:var(--warn);font-size:.9rem;margin:0;"></p>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Login</button>
+    </form>
+
+    <!-- Email magic link -->
+    <form id="magicForm" class="auth-panel" role="tabpanel" aria-labelledby="tab-magic" novalidate hidden>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.1rem;">
+        Enter your email and we'll send you a secure link to sign in — no password needed.
+      </p>
+      <div class="form-group">
+        <label for="magic-email">Email address</label>
+        <input type="email" id="magic-email" autocomplete="email" required>
+      </div>
+      <div id="magic-error" class="form-section" style="display:none;background:var(--warn-bg);border-color:var(--warn-bd);padding:1rem;margin-bottom:1rem;">
+        <p id="magic-error-text" style="color:var(--warn);font-size:.9rem;margin:0;"></p>
+      </div>
+      <div id="magic-ok" class="form-ok" style="display:none;"></div>
+      <button type="submit" class="btn btn-secondary" style="width:100%;">Send me a magic link</button>
+    </form>
+
+    <p style="margin-top:1.5rem;font-size:.9rem;text-align:center;">
+      Don't have an account? <a href="/pages/register.html">Sign up here</a>.
+    </p>
+  </div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+
+  // Where to go after a successful login. Defaults to the dashboard; a tool page
+  // can pass ?next=/pages/deadline.html to return the user to their work.
+  function nextUrl() {
+    var n = params.get("next");
+    // Only allow same-origin relative paths (no open redirect).
+    if (n && n.charAt(0) === "/" && n.indexOf("//") !== 0) return n;
+    return "/pages/dashboard.html";
+  }
+
+  var notice = document.getElementById("notice");
+  function showNotice(msg) { notice.textContent = msg; notice.style.display = "block"; }
+  if (params.get("registered")) showNotice("Account created. Please log in.");
+  if (params.get("gate")) showNotice("Please log in to unlock and save your full result.");
+
+  // ── Tab switching ──────────────────────────────────────────────────────────
+  var tabPwd = document.getElementById("tab-password");
+  var tabMagic = document.getElementById("tab-magic");
+  var panelPwd = document.getElementById("loginForm");
+  var panelMagic = document.getElementById("magicForm");
+  function selectTab(which) {
+    var pwd = which === "password";
+    tabPwd.setAttribute("aria-selected", pwd ? "true" : "false");
+    tabMagic.setAttribute("aria-selected", pwd ? "false" : "true");
+    panelPwd.hidden = !pwd;
+    panelMagic.hidden = pwd;
+  }
+  tabPwd.addEventListener("click", function () { selectTab("password"); });
+  tabMagic.addEventListener("click", function () { selectTab("magic"); });
+
+  // ── Magic-link consume path: arrive with ?token=... ─────────────────────────
+  var token = params.get("token");
+  if (token) {
+    selectTab("magic");
+    showNotice("Signing you in…");
+    LAWAPP_API.consumeMagicLink(token)
+      .then(function () { window.location.href = nextUrl(); })
+      .catch(function (err) {
+        notice.style.display = "none";
+        var box = document.getElementById("magic-error");
+        document.getElementById("magic-error-text").textContent =
+          (err && err.message) || "That sign-in link is invalid or has expired.";
+        box.style.display = "block";
+      });
+  }
+
+  // ── Password login ──────────────────────────────────────────────────────────
+  var loginErr = document.getElementById("login-error");
+  var loginErrText = document.getElementById("login-error-text");
+  panelPwd.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    loginErr.style.display = "none";
+    var email = document.getElementById("email").value.trim();
+    var password = document.getElementById("password").value;
+    if (!email || !password) {
+      loginErrText.textContent = "Email and password are required.";
+      loginErr.style.display = "block";
+      return;
+    }
+    var btn = panelPwd.querySelector("button[type=submit]");
+    btn.disabled = true; btn.textContent = "Logging in…";
+    try {
+      await LAWAPP_API.login(email, password);
+      window.location.href = nextUrl();
+    } catch (err) {
+      loginErrText.textContent = (err && err.message) || "Login failed. Check your details and try again.";
+      loginErr.style.display = "block";
+      btn.disabled = false; btn.textContent = "Login";
+    }
+  });
+
+  // ── Magic-link request ──────────────────────────────────────────────────────
+  var magicErr = document.getElementById("magic-error");
+  var magicErrText = document.getElementById("magic-error-text");
+  var magicOk = document.getElementById("magic-ok");
+  panelMagic.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    magicErr.style.display = "none"; magicOk.style.display = "none";
+    var email = document.getElementById("magic-email").value.trim();
+    if (!email) {
+      magicErrText.textContent = "Please enter your email address.";
+      magicErr.style.display = "block";
+      return;
+    }
+    var btn = panelMagic.querySelector("button[type=submit]");
+    btn.disabled = true; btn.textContent = "Sending…";
+    try {
+      await LAWAPP_API.requestMagicLink(email);
+      magicOk.textContent = "If that email is registered, a sign-in link is on its way. Check your inbox.";
+      magicOk.style.display = "block";
+    } catch (err) {
+      magicErrText.textContent = (err && err.message) || "Could not send a magic link. Please try again.";
+      magicErr.style.display = "block";
+    } finally {
+      btn.disabled = false; btn.textContent = "Send me a magic link";
+    }
+  });
+})();
+</script>
+<script>
+  (function () {
+    var t = document.querySelector('.nav-toggle'), n = document.getElementById('navlinks');
+    if (!t || !n) return;
+    t.addEventListener('click', function () {
+      var open = n.classList.toggle('open');
+      t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      t.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    n.addEventListener('click', function (e) { if (e.target.closest('a')) { n.classList.remove('open'); t.setAttribute('aria-expanded','false'); } });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+=== corpus_chunks created by T-003 (source_id in 9,10,11,12,13,14,15,16,17) ===
+ t003_chunks 
+-------------
+         798
+(1 row)
+
+=== per-source breakdown ===
+          source_id          | chunks 
+-----------------------------+--------
+ era-1996                    |    435
+ equality-act-2010           |    235
+ eta-1996                    |     88
+ acas-disciplinary-grievance |     12
+ govuk-holiday-entitlement   |      9
+ govuk-et-make-a-claim       |      7
+ acas-dismissals             |      6
+ acas-early-conciliation     |      4
+ govuk-redundancy            |      2
+(9 rows)
+
+=== sample of 5 rows ===
+ source_id |                    source_url                    | chunk_hash_12 |                                    body_head                                     
+-----------+--------------------------------------------------+---------------+----------------------------------------------------------------------------------
+         9 | http://www.legislation.gov.uk/ukpga/1996/18/sect | 8a848a4eed75  | Statement of initial employment particulars. 1 1 Where a worker begins employmen
+         9 | http://www.legislation.gov.uk/ukpga/1996/18/sect | e976731c7877  | Statement of initial particulars: supplementary. 2 1 If, in the case of a statem
+         9 | http://www.legislation.gov.uk/ukpga/1996/18/sect | 1bc8eb4b42c4  | Note about disciplinary procedures and pensions. 3 1 A statement under section 1
+         9 | http://www.legislation.gov.uk/ukpga/1996/18/sect | 7ae34685a21b  | Statement of changes. 4 1 If, after the material date, there is a change in any 
+         9 | http://www.legislation.gov.uk/ukpga/1996/18/sect | f4d90e7cbf71  | Exclusion from rights to statements. 5 1 Sections 1 to 4 apply to a worker who a
+(5 rows)
+

@@ -1,0 +1,34 @@
+=== T-004 SOURCE-ID RETURN PROOF ===
+Date: Sun Jun  7 15:14:02 UTC 2026
+Proves: every retrieved chunk carries source_id -> legal_sources(id), source_url,
+        authority_ref, chunk_hash; and chunk->parent linkage has 0 orphans.
+
+=== Chunk -> parent legal_sources linkage integrity (must be 0 orphans) ===
+ total_chunks | with_source_id | null_source_id | orphan_source_id | missing_url | missing_hash 
+--------------+----------------+----------------+------------------+-------------+--------------
+          890 |            890 |              0 |                0 |           0 |            0
+(1 row)
+
+=== The 10 retrieved chunks (both queries) with full provenance back to legal_sources ===
+               chunk_id               | source_id |             parent_source             |                               authority_ref                                |                        source_url                        |  chunk_hash_prefix  
+--------------------------------------+-----------+---------------------------------------+----------------------------------------------------------------------------+----------------------------------------------------------+---------------------
+ 4f547231-b754-469e-b6d3-a303bee6ef0a |         9 | Employment Rights Act 1996            | Employment Rights Act 1996 s.108                                           | http://www.legislation.gov.uk/ukpga/1996/18/section/108  | de5f5dfcec658b6b...
+ 3e743683-98f2-4e89-8633-528630562617 |         9 | Employment Rights Act 1996            | Employment Rights Act 1996 s.111                                           | http://www.legislation.gov.uk/ukpga/1996/18/section/111  | 17be4bac49e5dace...
+ aff7b175-def6-4e85-8beb-0f81752943dd |         9 | Employment Rights Act 1996            | Employment Rights Act 1996 s.27BH                                          | http://www.legislation.gov.uk/ukpga/1996/18/section/27BH | 32444227916f0103...
+ 0485065e-8242-4ee1-8149-28af4aff1904 |         9 | Employment Rights Act 1996            | Employment Rights Act 1996 s.51                                            | http://www.legislation.gov.uk/ukpga/1996/18/section/51   | e91fdf35189573e7...
+ 759941bf-975b-4c93-be78-c6b2c8566153 |         9 | Employment Rights Act 1996            | Employment Rights Act 1996 s.54                                            | http://www.legislation.gov.uk/ukpga/1996/18/section/54   | ca97b29cba074c31...
+ 6257bb83-42d2-4a9c-a177-f4910a4f0656 |         9 | Employment Rights Act 1996            | Employment Rights Act 1996 s.57B                                           | http://www.legislation.gov.uk/ukpga/1996/18/section/57B  | f040a6af32a9c917...
+ 3047cb44-64aa-41a0-9005-2b7159e792f3 |         9 | Employment Rights Act 1996            | Employment Rights Act 1996 s.63                                            | http://www.legislation.gov.uk/ukpga/1996/18/section/63   | 3c6755f3a956585f...
+ a43554a3-9bb7-4b67-b751-20a27794e455 |         9 | Employment Rights Act 1996            | Employment Rights Act 1996 s.98                                            | http://www.legislation.gov.uk/ukpga/1996/18/section/98   | 1df53108403372f9...
+ 116098db-0e57-4c6f-9d1d-a3eb9010112c |        10 | Equality Act 2010                     | Equality Act 2010 s.129                                                    | http://www.legislation.gov.uk/ukpga/2010/15/section/129  | 21c4587747921a41...
+ e8f5e622-3a93-4dd4-9b5e-f6a56141fc7f |        12 | What dismissal is - Dismissals - Acas | What dismissal is - Dismissals - Acas (https://www.acas.org.uk/dismissals) | https://www.acas.org.uk/dismissals                       | 4f9617ce4dabd07b...
+(10 rows)
+
+=== Distinct parent sources backing the retrieved chunks (real UK authorities) ===
+ id |              source_name              |  source_type  |                       base_url                        | licence_status 
+----+---------------------------------------+---------------+-------------------------------------------------------+----------------
+  9 | Employment Rights Act 1996            | legislation   | https://www.legislation.gov.uk/ukpga/1996/18/data.xml | active
+ 10 | Equality Act 2010                     | legislation   | https://www.legislation.gov.uk/ukpga/2010/15/data.xml | active
+ 12 | What dismissal is - Dismissals - Acas | acas_guidance | https://www.acas.org.uk/dismissals                    | review
+(3 rows)
+

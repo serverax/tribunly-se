@@ -1,0 +1,87 @@
+---
+# IterLaw — Staging Postgres + pgvector in iterlaw-ai
+# FOR STAGING DEMO ONLY. Data is ephemeral (no PVC — lost on pod restart).
+# Add a PersistentVolumeClaim below the volume section for persistence.
+#
+# REVIEW BEFORE APPLY. Apply only after AKS node is Ready.
+#
+# To apply:
+#   kubectl apply -f infra/k8s/iterlaw/postgres-staging.yaml -n iterlaw-ai
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lawapp-postgres
+  namespace: iterlaw-ai
+  labels:
+    app: lawapp-postgres
+    project: iterlaw
+    tier: staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lawapp-postgres
+  template:
+    metadata:
+      labels:
+        app: lawapp-postgres
+        project: iterlaw
+        tier: staging
+    spec:
+      securityContext:
+        runAsNonRoot: false   # postgres image requires root internally
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: postgres
+          image: pgvector/pgvector:pg16
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: lawapp
+            - name: POSTGRES_USER
+              value: lawapp
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: lawapp-secrets
+                  key: POSTGRES_PASSWORD
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "lawapp", "-d", "lawapp"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-data
+          emptyDir: {}   # ephemeral — replace with PVC for persistence
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawapp-postgres
+  namespace: iterlaw-ai
+  labels:
+    app: lawapp-postgres
+    project: iterlaw
+spec:
+  selector:
+    app: lawapp-postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

@@ -1,0 +1,34 @@
+client/public/js/auth.js:4:      return localStorage.getItem('lawapp_token');
+client/public/js/auth.js:7:      localStorage.setItem('lawapp_token', token);
+client/public/js/auth.js:10:      localStorage.removeItem('lawapp_token');
+client/public/js/auth.js:11:      localStorage.removeItem('lawapp_user');
+client/public/js/auth.js:12:      sessionStorage.removeItem('assessment_result');
+client/public/js/auth.js:13:      sessionStorage.removeItem('assessment_facts');
+client/public/js/auth.js:14:      sessionStorage.removeItem('assessment_facts_full');
+client/public/js/auth.js:15:      sessionStorage.removeItem('payment_token');
+client/public/js/auth.js:27:      const resp = await fetch(url, { ...options, headers });
+client/public/js/auth.js:47:      const resp = await fetch(url, opts);
+client/public/js/deadline.js:166:    const resp = await fetch(`${apiBase}/rules/${claimType}`);
+client/public/pages/assessment.html:51:  const raw = sessionStorage.getItem('assessment_result');
+client/public/pages/assessment.html:58:          sessionStorage.setItem('assessment_result', JSON.stringify(caseData.assessment));
+client/public/pages/assessment.html:246:    // Real logic would involve fetch('/api/payment/create-session')
+client/public/pages/assessment.html:301:        const resp = await fetch('/cases', {
+client/public/pages/assessment.html:594:    const isPaid = !!sessionStorage.getItem('payment_token');
+client/public/pages/assessment.html:961:        sessionStorage.setItem('payment_token', 'mock-paid-2026');
+client/public/pages/assessment.html:977:    const factsRaw = sessionStorage.getItem('assessment_facts_full');
+client/public/pages/assessment.html:979:    const token = sessionStorage.getItem('payment_token');
+client/public/pages/assessment.html:991:      const resp = await fetch(`${API_BASE}/documents/generate`, {
+client/public/pages/assessment.html:1045:        const resp = await fetch(`${API_BASE}/handoff/leads`, {
+client/public/pages/case_detail.html:179:       sessionStorage.setItem('assessment_result', JSON.stringify(a));
+client/public/pages/dashboard.html:180:        sessionStorage.setItem('assessment_result', JSON.stringify(c.assessment));
+client/public/pages/intake.html:284:    labelsEl.innerHTML = '';
+client/public/pages/intake.html:397:    badge.innerHTML = `<span class="deadline-badge ${badgeClass}">${badgeText}</span>`;
+client/public/pages/intake.html:452:      const resp = await fetch(`${API_BASE}/assess`, {
+client/public/pages/intake.html:459:      sessionStorage.setItem('assessment_result', JSON.stringify(data));
+client/public/pages/intake.html:460:      sessionStorage.setItem('assessment_facts_full', JSON.stringify(facts));
+client/public/pages/login.html:77:      const resp = await fetch('/auth/token', {
+client/public/pages/register.html:93:      const resp = await fetch('/auth/register', {
+client/public/pages/register.html:106:      const loginResp = await fetch('/auth/token', {
+client/public/pages/saved_case.html:160:       sessionStorage.setItem('assessment_result', JSON.stringify(a));
+client/public/pages/success.html:38:  sessionStorage.setItem('payment_token', 'mock-paid-' + Date.now());
+client/public/wasm/lawapp_wasm.js:333:        module_or_path = fetch(module_or_path);

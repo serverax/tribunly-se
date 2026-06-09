@@ -1,0 +1,153 @@
+PHASE 3D — PAID-PATH ENFORCEMENT, CASE SAVING, HANDOFF CAPTURE
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 3D adds:
+  1. Payment gating on document generation (mock mode — no Stripe)
+  2. Basic case persistence (POST/GET /cases)
+  3. Handoff lead capture (POST /handoff/leads)
+  4. Updated assessment UI: payment gate, handoff form, copy gate
+
+═══════════════════════════════════════════════════════════════════════════════
+PAYMENT GATING (MOCK MODE)
+═══════════════════════════════════════════════════════════════════════════════
+
+PAYMENT_ENABLED=false (default in Phase 3D):
+  - Any non-empty payment_token = paid (mock)
+  - No Stripe integration — Phase 4
+
+Document gate behaviour:
+  - No token → preview (first 28 lines) + payment_required=True + gate notice
+  - Token present → full document + payment_required=False
+
+Preview notice (verbatim in every preview):
+  "PREVIEW ENDS HERE / Full document access requires payment. /
+   There are no hidden charges — the full price is shown before any payment
+   is taken. lawapp never charges without your consent."
+
+UI: "Activate full access (demo)" button sets payment_token in sessionStorage.
+The copy-to-clipboard button is suppressed when payment_required=True.
+
+GUARDRAIL: No hidden payment. Price must be shown before any charge. (Phase 4)
+
+═══════════════════════════════════════════════════════════════════════════════
+CASE SAVING
+═══════════════════════════════════════════════════════════════════════════════
+
+Uses existing `cases` table from migration 001. Fields stored:
+  - claim_type, jurisdiction
+  - assessment (jsonb) — structured pipeline output; no PII (de-id'd by pipeline)
+  - key_dates (jsonb) — {edt, deadline_date}
+  - status = 'diagnosis'
+  - user_id = NULL — authentication is Phase 4
+  - facts_encrypted = NULL — encryption at rest is Phase 5
+
+GUARDRAIL: Raw user facts never stored. Only structured assessment output stored.
+NOTE: Phase 3D is local/test-only. facts_encrypted = NULL is not production-ready.
+
+Endpoints:
+  POST /cases  → 201 {case_id, created_at}
+  GET  /cases/{case_id} → case record
+
+═══════════════════════════════════════════════════════════════════════════════
+HANDOFF LEAD CAPTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+New table: handoff_leads (migration 007)
+  - id, case_id (optional FK), trigger_reason, name, email, phone (opt),
+    case_summary (opt), consent_given (must be true), created_at
+  - DB constraint: consent_given = true enforced at DB level
+
+Trigger conditions (any of):
+  - recommended_next_step = "seek_solicitor"
+  - insufficient_grounding = true
+  - strength = "low"
+
+Endpoint: POST /handoff/leads → 201 {lead_id, status, created_at, message}
+
+Validation:
+  - consent_given=false → 422
+  - invalid trigger_reason → 422
+  - missing name or email → 422
+
+Response message includes:
+  "lawapp is not a solicitor and does not provide regulated legal advice."
+  "This is free to you — no charges apply for this referral."
+
+Phase 3D: stored locally. No live referral sent. Phase 6 integration.
+
+GUARDRAIL: No solicitor-client relationship created. No representation implied.
+GUARDRAIL: Referral is free to the user — stated explicitly in API response.
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  db/migrations/007_phase3d_paid_handoff.sql   — handoff_leads table
+  backend/engine/payment.py                    — mock payment validation + preview
+  tests/integration/test_phase3d_paid_handoff.py — 22 integration tests
+  reports/phase3d-paid-path-report.txt         — this report
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/api/main.py
+    - DocumentRequest: adds payment_token field
+    - generate_document: payment gate (is_paid / preview_document)
+    - SaveCaseRequest + POST /cases + GET /cases/{id}
+    - HandoffLeadRequest + POST /handoff/leads
+    - Version bumped: 0.5.0-phase3d
+
+  client/public/pages/assessment.html
+    - renderDocumentSection: payment gate UI, mock payment button, copy gate
+    - renderHandoffSection: handoff form (name/email/phone/summary/consent)
+    - wireDocumentSection: payment token management
+    - wireHandoffForm: POST /handoff/leads on submit
+    - Preview notice shown when payment_required=True
+    - Copy button shown only when payment_required=False
+
+═══════════════════════════════════════════════════════════════════════════════
+TESTS (test_phase3d_paid_handoff.py) — 22 tests
+═══════════════════════════════════════════════════════════════════════════════
+
+  test_unpaid_document_returns_payment_required_true
+  test_unpaid_document_content_is_truncated
+  test_unpaid_preview_contains_preview_notice
+  test_paid_document_returns_payment_required_false
+  test_paid_document_returns_full_content
+  test_paid_sol_returns_full_content
+  test_preview_contains_legal_boundary_notice
+  test_case_save_returns_case_id
+  test_case_save_and_retrieve
+  test_case_retrieve_404_unknown_id
+  test_handoff_seek_solicitor_captured
+  test_handoff_insufficient_grounding_captured
+  test_handoff_message_states_not_a_solicitor
+  test_handoff_without_consent_returns_422
+  test_handoff_invalid_trigger_reason_returns_422
+  test_handoff_missing_name_returns_422
+  test_phase3c_document_generation_still_works
+  test_phase3c_safety_check_still_blocks_bad_phrases
+  test_rules_api_still_returns_time_limit
+  test_deadline_mismatch_detection_still_works
+  test_static_routes_still_serve
+  test_health_still_ok
+
+═══════════════════════════════════════════════════════════════════════════════
+CARRY-FORWARD
+═══════════════════════════════════════════════════════════════════════════════
+
+  - Live Stripe payment integration (Phase 4)
+  - User authentication / user_id on cases (Phase 4)
+  - facts_encrypted at rest (Phase 5)
+  - Live solicitor referral network integration (Phase 6)
+  - 3 skipped tests remain: BLOCKED_BY_OPENAI_QUOTA (unchanged)
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 3D
+═══════════════════════════════════════════════════════════════════════════════

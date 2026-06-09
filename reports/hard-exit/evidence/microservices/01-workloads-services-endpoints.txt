@@ -1,0 +1,89 @@
+=== DEPLOY/STS/DS/JOB (lawapp-* namespaces) ===
+NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS                IMAGES                                                                              SELECTOR
+deployment.apps/lawapp-brain              1/1     1            1           3d11h   brain                     ghcr.io/serverax/lawapp/backend:latest                                              app=lawapp-brain
+deployment.apps/lawapp-document-service   1/1     1            1           25h     lawapp-document-service   ghcr.io/serverax/lawapp-document-service:b13c59d01e73e861b35498cac2b37d566609c262   app=lawapp-document-service
+deployment.apps/lawapp-llm-gateway        1/1     1            1           25h     lawapp-llm-gateway        ghcr.io/serverax/lawapp-llm-gateway:b13c59d01e73e861b35498cac2b37d566609c262        app=lawapp-llm-gateway
+deployment.apps/lawapp-reasoning-worker   0/0     0            0           3d8h    reasoning                 ghcr.io/serverax/lawapp/backend:latest                                              app=lawapp-reasoning-worker
+deployment.apps/lawapp-rules-engine       1/1     1            1           25h     lawapp-rules-engine       ghcr.io/serverax/lawapp-rules-engine:b13c59d01e73e861b35498cac2b37d566609c262       app=lawapp-rules-engine
+
+NAME                              DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE   CONTAINERS   IMAGES                 SELECTOR
+daemonset.apps/ollama-inference   3         3         3       3            3           <none>          42h   ollama       ollama/ollama:latest   app.kubernetes.io/name=ollama-inference
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                   SELECTOR
+deployment.apps/lawapp-backend   1/1     1            1           3d23h   backend      ghcr.io/serverax/lawapp/backend:latest   app=lawapp-backend
+
+NAME                               READY   AGE     CONTAINERS   IMAGES
+statefulset.apps/lawapp-postgres   1/1     3d11h   postgres     pgvector/pgvector:pg16
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS             IMAGES                                                                           SELECTOR
+deployment.apps/lawapp-crawler         1/1     1            1           25h   lawapp-crawler         ghcr.io/serverax/lawapp-crawler:b13c59d01e73e861b35498cac2b37d566609c262         app=lawapp-crawler
+deployment.apps/lawapp-rag-ingestion   1/1     1            1           25h   lawapp-rag-ingestion   ghcr.io/serverax/lawapp-rag-ingestion:b13c59d01e73e861b35498cac2b37d566609c262   app=lawapp-rag-ingestion
+deployment.apps/lawapp-rag-retrieval   1/1     1            1           25h   lawapp-rag-retrieval   ghcr.io/serverax/lawapp-rag-retrieval:b13c59d01e73e861b35498cac2b37d566609c262   app=lawapp-rag-retrieval
+deployment.apps/lawapp-worker          1/1     1            1           25h   lawapp-worker          ghcr.io/serverax/lawapp-worker:b13c59d01e73e861b35498cac2b37d566609c262          app=lawapp-worker
+
+NAME                               READY   AGE     CONTAINERS   IMAGES
+statefulset.apps/lawapp-postgres   1/1     4d15h   postgres     pgvector/pgvector:pg16
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS              IMAGES                                                                            SELECTOR
+deployment.apps/lawapp-citation-guard   1/1     1            1           25h   lawapp-citation-guard   ghcr.io/serverax/lawapp-citation-guard:b13c59d01e73e861b35498cac2b37d566609c262   app=lawapp-citation-guard
+NAME                          SCHEDULE       TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE     CONTAINERS       IMAGES                                    SELECTOR
+lawapp-freshness-check        0 6 * * *      <none>     False     1        9h              3d8h    freshness        ghcr.io/serverax/lawapp/backend:latest    <none>
+lawapp-health-probe           */5 * * * *    <none>     False     1        18m             3d8h    probe            curlimages/curl:latest                    <none>
+lawapp-legal-accuracy-check   0 0 * * *      <none>     False     1        15h             4d12h   accuracy-check   ghcr.io/serverax/lawapp/backend:0fec3d8   <none>
+lawapp-smoke-test             */15 * * * *   <none>     False     90       13m             4d12h   smoke-test       ghcr.io/serverax/lawapp/backend:0fec3d8   <none>
+
+=== SERVICES ===
+--- lawapp-ai ---
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE     SELECTOR
+lawapp-brain              ClusterIP   10.100.65.21     <none>        8000/TCP    3d11h   app=lawapp-brain
+lawapp-document-service   ClusterIP   10.108.33.205    <none>        8080/TCP    25h     app=lawapp-document-service
+lawapp-llm-gateway        ClusterIP   10.110.150.199   <none>        8080/TCP    25h     app=lawapp-llm-gateway
+lawapp-rules-engine       ClusterIP   10.104.122.237   <none>        8080/TCP    25h     app=lawapp-rules-engine
+llm-inference-service     ClusterIP   10.99.72.225     <none>        11434/TCP   32h     app=ollama-inference
+ollama-inference          ClusterIP   10.106.18.97     <none>        11434/TCP   42h     app.kubernetes.io/name=ollama-inference
+--- lawapp-api ---
+NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+lawapp-backend             ClusterIP   10.100.178.86    <none>        80/TCP     4d14h   app=lawapp-backend
+lawapp-postgres            ClusterIP   10.101.185.202   <none>        5432/TCP   3d11h   app=lawapp-postgres
+lawapp-postgres-headless   ClusterIP   None             <none>        5432/TCP   3d11h   app=lawapp-postgres
+--- lawapp-rag ---
+NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+lawapp-crawler             ClusterIP   10.100.71.76     <none>        8080/TCP   25h     app=lawapp-crawler
+lawapp-postgres            ClusterIP   10.104.219.40    <none>        5432/TCP   4d15h   app=lawapp-postgres
+lawapp-postgres-headless   ClusterIP   None             <none>        5432/TCP   4d15h   app=lawapp-postgres
+lawapp-rag-ingestion       ClusterIP   10.102.71.106    <none>        8080/TCP   25h     app=lawapp-rag-ingestion
+lawapp-rag-retrieval       ClusterIP   10.111.222.123   <none>        8080/TCP   25h     app=lawapp-rag-retrieval
+--- lawapp-security ---
+NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+lawapp-citation-guard   ClusterIP   10.110.153.91   <none>        8080/TCP   25h   app=lawapp-citation-guard
+--- lawapp-monitoring ---
+No resources found in lawapp-monitoring namespace.
+
+=== ENDPOINTS ===
+--- lawapp-ai ---
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                      ENDPOINTS                                                AGE
+lawapp-brain              10.244.4.241:8000                                        3d11h
+lawapp-document-service   10.244.0.55:8080                                         25h
+lawapp-llm-gateway        10.244.5.44:8080                                         25h
+lawapp-rules-engine       10.244.4.240:8080                                        25h
+llm-inference-service     <none>                                                   32h
+ollama-inference          10.244.0.170:11434,10.244.4.38:11434,10.244.5.55:11434   42h
+--- lawapp-api ---
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                       ENDPOINTS           AGE
+lawapp-backend             10.244.5.177:8000   4d14h
+lawapp-postgres            10.244.4.40:5432    3d11h
+lawapp-postgres-headless   10.244.4.40:5432    3d11h
+--- lawapp-rag ---
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                       ENDPOINTS           AGE
+lawapp-crawler             10.244.5.178:8080   25h
+lawapp-postgres            10.244.5.67:5432    4d15h
+lawapp-postgres-headless   10.244.5.67:5432    4d15h
+lawapp-rag-ingestion       10.244.5.48:8080    25h
+lawapp-rag-retrieval       10.244.5.45:8080    25h
+--- lawapp-security ---
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                    ENDPOINTS          AGE
+lawapp-citation-guard   10.244.5.50:8080   25h
+--- lawapp-monitoring ---
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+No resources found in lawapp-monitoring namespace.

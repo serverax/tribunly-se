@@ -1,0 +1,22 @@
+BEGIN
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+COMMIT
+=== legal_sources after ===
+ legal_sources_total 
+---------------------
+                  17
+(1 row)
+
+=== corpus_chunks insert summary (from psql load) ===
+INSERT 0 1 lines (successful new chunk inserts): 798
+INSERT 0 0 lines (skipped via ON CONFLICT):       0
+BEGIN/COMMIT present: 1 / 1
+ERROR lines: 0

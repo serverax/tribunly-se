@@ -1,0 +1,19 @@
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                   SELECTOR
+deployment.apps/lawapp-backend   1/1     1            1           3d22h   backend      ghcr.io/serverax/lawapp/backend:latest   app=lawapp-backend
+
+NAME                                  READY   STATUS             RESTARTS          AGE     IP             NODE                    NOMINATED NODE   READINESS GATES
+pod/lawapp-backend-6c85f79cbd-qm9vl   0/1     CrashLoopBackOff   570 (3m59s ago)   2d1h    10.244.5.38    talos-138-201-202-174   <none>           <none>
+pod/lawapp-backend-7757c5df85-2l8kn   1/1     Running            0                 3d16h   10.244.4.253   talos-5h3-83r           <none>           <none>
+pod/lawapp-postgres-0                 1/1     Running            0                 3d10h   10.244.4.40    talos-5h3-83r           <none>           <none>
+pod/test-db-connectivity              1/1     Running            0                 4d13h   10.244.4.91    talos-5h3-83r           <none>           <none>
+
+NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+service/lawapp-backend             ClusterIP   10.100.178.86    <none>        80/TCP     4d13h   app=lawapp-backend
+service/lawapp-postgres            ClusterIP   10.101.185.202   <none>        5432/TCP   3d10h   app=lawapp-postgres
+service/lawapp-postgres-headless   ClusterIP   None             <none>        5432/TCP   3d10h   app=lawapp-postgres
+
+NAME                                 ENDPOINTS           AGE
+endpoints/lawapp-backend             10.244.4.253:8000   4d13h
+endpoints/lawapp-postgres            10.244.4.40:5432    3d10h
+endpoints/lawapp-postgres-headless   10.244.4.40:5432    3d10h

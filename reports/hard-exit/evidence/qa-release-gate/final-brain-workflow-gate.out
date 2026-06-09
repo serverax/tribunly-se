@@ -1,0 +1,10 @@
+
+== Brain workflow ==
+  [PASS] brain DB connected
+  [PASS] AI provider = local ollama
+  [PASS] brain trace created (trace_id present)
+  [PASS] brain trace persisted (brain_traces 1 -> 2)
+  [PASS] CitationGuard stage present in trace
+
+=== GATE RESULT: final-brain-workflow-gate ===
+RESULT: PASS

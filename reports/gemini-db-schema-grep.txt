@@ -1,0 +1,744 @@
+db/migrations/001_initial.sql:2:-- Employment Claim Co-Pilot — PostgreSQL 16 + pgvector
+db/migrations/001_initial.sql:6:CREATE EXTENSION IF NOT EXISTS vector;
+db/migrations/001_initial.sql:7:CREATE EXTENSION IF NOT EXISTS pgcrypto;
+db/migrations/001_initial.sql:12:CREATE TABLE IF NOT EXISTS legislation (
+db/migrations/001_initial.sql:23:    embedding        vector(1536),                      -- dim = EMBEDDING_DIM
+db/migrations/001_initial.sql:35:CREATE INDEX IF NOT EXISTS legislation_embedding_idx
+db/migrations/001_initial.sql:36:    ON legislation USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+db/migrations/001_initial.sql:37:CREATE INDEX IF NOT EXISTS legislation_act_section_idx
+db/migrations/001_initial.sql:39:CREATE INDEX IF NOT EXISTS legislation_jurisdiction_idx
+db/migrations/001_initial.sql:41:CREATE INDEX IF NOT EXISTS legislation_in_force_idx
+db/migrations/001_initial.sql:46:CREATE TABLE IF NOT EXISTS case_law (
+db/migrations/001_initial.sql:58:    embedding        vector(1536),
+db/migrations/001_initial.sql:69:CREATE INDEX IF NOT EXISTS case_law_embedding_idx
+db/migrations/001_initial.sql:70:    ON case_law USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+db/migrations/001_initial.sql:71:CREATE INDEX IF NOT EXISTS case_law_court_date_idx
+db/migrations/001_initial.sql:73:CREATE INDEX IF NOT EXISTS case_law_hash_idx
+db/migrations/001_initial.sql:76:-- 2.3 acas_guidance (ACAS Code of Practice + guidance, static documents)
+db/migrations/001_initial.sql:77:CREATE TABLE IF NOT EXISTS acas_guidance (
+db/migrations/001_initial.sql:84:    embedding        vector(1536),
+db/migrations/001_initial.sql:91:CREATE INDEX IF NOT EXISTS acas_embedding_idx
+db/migrations/001_initial.sql:92:    ON acas_guidance USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+db/migrations/001_initial.sql:94:-- 2.4 rules — DETERMINISTIC legal facts (time limits, caps, thresholds)
+db/migrations/001_initial.sql:96:CREATE TABLE IF NOT EXISTS rules (
+db/migrations/001_initial.sql:115:CREATE INDEX IF NOT EXISTS rules_claim_type_idx  ON rules (claim_type, jurisdiction);
+db/migrations/001_initial.sql:116:CREATE INDEX IF NOT EXISTS rules_key_idx         ON rules (rule_key);
+db/migrations/001_initial.sql:117:CREATE INDEX IF NOT EXISTS rules_effective_idx   ON rules (effective_from, effective_to);
+db/migrations/001_initial.sql:121:CREATE TABLE IF NOT EXISTS users (
+db/migrations/001_initial.sql:128:-- cases.facts_encrypted holds special-category data (Art.9) — encrypted at rest.
+db/migrations/001_initial.sql:129:CREATE TABLE IF NOT EXISTS cases (
+db/migrations/001_initial.sql:131:    user_id          uuid        REFERENCES users(id) ON DELETE CASCADE,
+db/migrations/001_initial.sql:143:CREATE INDEX IF NOT EXISTS cases_user_idx ON cases (user_id);
+db/migrations/001_initial.sql:145:CREATE TABLE IF NOT EXISTS documents (
+db/migrations/001_initial.sql:147:    case_id          uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/001_initial.sql:155:CREATE INDEX IF NOT EXISTS documents_case_idx ON documents (case_id);
+db/migrations/001_initial.sql:157:CREATE TABLE IF NOT EXISTS referrals (
+db/migrations/001_initial.sql:159:    case_id          uuid        REFERENCES cases(id),
+db/migrations/001_initial.sql:178:    SELECT 'rules',        count(*), min(last_verified_at) FROM rules;
+db/migrations/002_case_law_split.sql:1:-- Migration 002: split case_law into case_law_documents (one row per decision)
+db/migrations/002_case_law_split.sql:2:-- and case_law_chunks (one row per chunk, FK to documents).
+db/migrations/002_case_law_split.sql:13:CREATE TABLE IF NOT EXISTS case_law_documents (
+db/migrations/002_case_law_split.sql:31:CREATE INDEX IF NOT EXISTS cl_doc_court_date_idx  ON case_law_documents (court_code, decision_date);
+db/migrations/002_case_law_split.sql:32:CREATE INDEX IF NOT EXISTS cl_doc_hash_idx        ON case_law_documents (content_hash);
+db/migrations/002_case_law_split.sql:33:CREATE INDEX IF NOT EXISTS cl_doc_citation_idx    ON case_law_documents (neutral_citation);
+db/migrations/002_case_law_split.sql:36:CREATE TABLE IF NOT EXISTS case_law_chunks (
+db/migrations/002_case_law_split.sql:38:    document_id uuid    NOT NULL REFERENCES case_law_documents(id) ON DELETE CASCADE,
+db/migrations/002_case_law_split.sql:41:    embedding   vector(1536),
+db/migrations/002_case_law_split.sql:46:CREATE INDEX IF NOT EXISTS cl_chunk_embedding_idx
+db/migrations/002_case_law_split.sql:47:    ON case_law_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+db/migrations/002_case_law_split.sql:48:CREATE INDEX IF NOT EXISTS cl_chunk_doc_idx ON case_law_chunks (document_id);
+db/migrations/002_case_law_split.sql:57:    SELECT 'case_law',     count(*), min(last_verified_at) FROM case_law_documents
+db/migrations/002_case_law_split.sql:61:    SELECT 'rules',        count(*), min(last_verified_at) FROM rules;
+db/migrations/003_phase2c_audit.sql:5:CREATE TABLE IF NOT EXISTS assessment_audit_logs (
+db/migrations/003_phase2c_audit.sql:7:    case_id             uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/003_phase2c_audit.sql:9:    rules_used          jsonb,                   -- rules rows consumed (key, value, authority)
+db/migrations/003_phase2c_audit.sql:10:    retrieval_bundle    jsonb,                   -- BM25/pgvector authorities returned
+db/migrations/003_phase2c_audit.sql:21:CREATE INDEX IF NOT EXISTS aal_case_idx ON assessment_audit_logs (case_id);
+db/migrations/003_phase2c_audit.sql:22:CREATE INDEX IF NOT EXISTS aal_created_idx ON assessment_audit_logs (created_at);
+db/migrations/004_phase3_tables.sql:5:CREATE TABLE IF NOT EXISTS document_readiness (
+db/migrations/004_phase3_tables.sql:7:    case_id             uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/004_phase3_tables.sql:22:CREATE TABLE IF NOT EXISTS support_sessions (
+db/migrations/004_phase3_tables.sql:24:    case_id             uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/004_phase3_tables.sql:36:CREATE TABLE IF NOT EXISTS solicitor_reviews (
+db/migrations/004_phase3_tables.sql:38:    case_id             uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/004_phase3_tables.sql:54:CREATE TABLE IF NOT EXISTS reminder_events (
+db/migrations/004_phase3_tables.sql:56:    case_id             uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/004_phase3_tables.sql:67:CREATE INDEX IF NOT EXISTS dr_case_idx ON document_readiness (case_id);
+db/migrations/004_phase3_tables.sql:68:CREATE INDEX IF NOT EXISTS ss_case_idx ON support_sessions (case_id);
+db/migrations/004_phase3_tables.sql:69:CREATE INDEX IF NOT EXISTS sr_case_idx ON solicitor_reviews (case_id);
+db/migrations/004_phase3_tables.sql:70:CREATE INDEX IF NOT EXISTS re_case_idx ON reminder_events (case_id);
+db/migrations/004_phase3_tables.sql:71:CREATE INDEX IF NOT EXISTS re_due_idx  ON reminder_events (due_at) WHERE status = 'pending';
+db/migrations/005_phase4_evidence.sql:4:CREATE TABLE IF NOT EXISTS evidence_items (
+db/migrations/005_phase4_evidence.sql:6:    case_id              uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/005_phase4_evidence.sql:7:    document_id          uuid        REFERENCES documents(id) ON DELETE SET NULL,
+db/migrations/005_phase4_evidence.sql:20:CREATE INDEX IF NOT EXISTS ei_case_idx ON evidence_items (case_id);
+db/migrations/005_phase4_evidence.sql:21:CREATE INDEX IF NOT EXISTS ei_confirmed_idx ON evidence_items (case_id, user_confirmed);
+db/migrations/006_phase5_feedback.sql:4:CREATE TABLE IF NOT EXISTS user_feedback (
+db/migrations/006_phase5_feedback.sql:6:    case_id     uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/006_phase5_feedback.sql:14:CREATE INDEX IF NOT EXISTS uf_case_idx ON user_feedback (case_id);
+db/migrations/007_phase3d_paid_handoff.sql:2:-- Stores contact information voluntarily submitted by users requesting solicitor referral.
+db/migrations/007_phase3d_paid_handoff.sql:6:CREATE TABLE IF NOT EXISTS handoff_leads (
+db/migrations/007_phase3d_paid_handoff.sql:8:    case_id         uuid        REFERENCES cases(id) ON DELETE SET NULL,
+db/migrations/007_phase3d_paid_handoff.sql:19:CREATE INDEX IF NOT EXISTS handoff_leads_created_idx ON handoff_leads (created_at);
+db/migrations/007_phase3d_paid_handoff.sql:20:CREATE INDEX IF NOT EXISTS handoff_leads_trigger_idx ON handoff_leads (trigger_reason);
+db/migrations/008_phase4a_uploads.sql:2:-- Augments the existing `documents` table with upload/extraction metadata.
+db/migrations/008_phase4a_uploads.sql:6:ALTER TABLE documents ADD COLUMN IF NOT EXISTS original_filename  text;
+db/migrations/008_phase4a_uploads.sql:7:ALTER TABLE documents ADD COLUMN IF NOT EXISTS content_type       text;
+db/migrations/008_phase4a_uploads.sql:8:ALTER TABLE documents ADD COLUMN IF NOT EXISTS file_size_bytes    bigint;
+db/migrations/008_phase4a_uploads.sql:9:ALTER TABLE documents ADD COLUMN IF NOT EXISTS extraction_status  text DEFAULT 'pending';
+db/migrations/008_phase4a_uploads.sql:12:CREATE INDEX IF NOT EXISTS documents_upload_idx
+db/migrations/008_phase4a_uploads.sql:13:    ON documents (case_id, is_user_upload)
+db/migrations/009_phase4c_timeline.sql:3:-- System-generated events (from key_dates, documents, etc.) are computed
+db/migrations/009_phase4c_timeline.sql:6:CREATE TABLE IF NOT EXISTS case_timeline_events (
+db/migrations/009_phase4c_timeline.sql:8:    case_id     uuid        REFERENCES cases(id) ON DELETE CASCADE,
+db/migrations/009_phase4c_timeline.sql:17:    -- user_entered | rules_engine | confirmed_extraction | system_generated
+db/migrations/009_phase4c_timeline.sql:23:CREATE INDEX IF NOT EXISTS cte_case_idx  ON case_timeline_events (case_id);
+db/migrations/009_phase4c_timeline.sql:24:CREATE INDEX IF NOT EXISTS cte_date_idx  ON case_timeline_events (event_date);
+db/migrations/010_phase5a_funnel.sql:5:CREATE TABLE IF NOT EXISTS funnel_events (
+db/migrations/010_phase5a_funnel.sql:7:    case_id     uuid        REFERENCES cases(id) ON DELETE SET NULL,
+db/migrations/010_phase5a_funnel.sql:13:CREATE INDEX IF NOT EXISTS fe_case_idx  ON funnel_events (case_id);
+db/migrations/010_phase5a_funnel.sql:14:CREATE INDEX IF NOT EXISTS fe_event_idx ON funnel_events (event_name);
+db/migrations/011_phase5c_verification.sql:1:-- Migration 011: Phase 5C — rules verification status columns
+db/migrations/011_phase5c_verification.sql:2:-- Adds verification_status and verification_notes to the rules table.
+db/migrations/011_phase5c_verification.sql:10:ALTER TABLE rules ADD COLUMN IF NOT EXISTS verification_status text DEFAULT 'verification_required';
+db/migrations/011_phase5c_verification.sql:11:ALTER TABLE rules ADD COLUMN IF NOT EXISTS verification_notes  text;
+db/migrations/011_phase5c_verification.sql:13:-- Retrospectively mark all prospective rules
+db/migrations/011_phase5c_verification.sql:14:UPDATE rules SET verification_status = 'prospective'
+db/migrations/011_phase5c_verification.sql:17:CREATE INDEX IF NOT EXISTS rules_verification_idx ON rules (verification_status, is_prospective);
+db/migrations/012_phase6_encryption_retention.sql:6:-- ── Soft delete on cases ──────────────────────────────────────────────────────
+db/migrations/012_phase6_encryption_retention.sql:7:ALTER TABLE cases ADD COLUMN IF NOT EXISTS deleted_at timestamptz;
+db/migrations/012_phase6_encryption_retention.sql:8:ALTER TABLE cases ADD COLUMN IF NOT EXISTS encryption_version text DEFAULT 'none';
+db/migrations/012_phase6_encryption_retention.sql:11:CREATE INDEX IF NOT EXISTS cases_deleted_idx ON cases (deleted_at)
+db/migrations/012_phase6_encryption_retention.sql:15:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS deleted_at timestamptz;
+db/migrations/012_phase6_encryption_retention.sql:16:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS name_encrypted  text;
+db/migrations/012_phase6_encryption_retention.sql:17:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS email_encrypted text;
+db/migrations/012_phase6_encryption_retention.sql:18:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS phone_encrypted text;
+db/migrations/012_phase6_encryption_retention.sql:19:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS pii_encrypted   boolean NOT NULL DEFAULT false;
+db/migrations/012_phase6_encryption_retention.sql:21:CREATE INDEX IF NOT EXISTS hl_deleted_idx ON handoff_leads (deleted_at)
+db/migrations/012_phase6_encryption_retention.sql:25:CREATE TABLE IF NOT EXISTS retention_runs (
+db/migrations/013_phase7d_envelope_encryption.sql:8:ALTER TABLE cases ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb;
+db/migrations/013_phase7d_envelope_encryption.sql:9:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb;
+db/migrations/013_phase7d_envelope_encryption.sql:12:CREATE INDEX IF NOT EXISTS cases_enc_meta_idx
+db/migrations/013_phase7d_envelope_encryption.sql:13:    ON cases (id) WHERE encryption_key_metadata IS NULL;
+db/migrations/013_phase7d_envelope_encryption.sql:14:CREATE INDEX IF NOT EXISTS handoff_enc_meta_idx
+db/migrations/013_phase7d_envelope_encryption.sql:17:COMMENT ON COLUMN cases.encryption_key_metadata IS
+db/migrations/014_legal_corpus_expansion.sql:8:CREATE TABLE IF NOT EXISTS official_guidance (
+db/migrations/014_legal_corpus_expansion.sql:23:    embedding        vector(1536),
+db/migrations/014_legal_corpus_expansion.sql:30:CREATE INDEX IF NOT EXISTS official_guidance_type_idx
+db/migrations/014_legal_corpus_expansion.sql:32:CREATE INDEX IF NOT EXISTS official_guidance_embedding_idx
+db/migrations/014_legal_corpus_expansion.sql:33:    ON official_guidance USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+db/migrations/014_legal_corpus_expansion.sql:38:CREATE TABLE IF NOT EXISTS bills (
+db/migrations/014_legal_corpus_expansion.sql:58:CREATE INDEX IF NOT EXISTS bills_stage_idx ON bills (stage, is_in_force);
+db/migrations/014_legal_corpus_expansion.sql:61:-- Track specific legal changes affecting rules or thresholds.
+db/migrations/014_legal_corpus_expansion.sql:62:-- Links a bill or statutory instrument to affected rules.
+db/migrations/014_legal_corpus_expansion.sql:63:CREATE TABLE IF NOT EXISTS legal_change_watch (
+db/migrations/014_legal_corpus_expansion.sql:66:    affected_rule_key text,                  -- links to rules.rule_key if known
+db/migrations/014_legal_corpus_expansion.sql:77:CREATE INDEX IF NOT EXISTS lcw_rule_key_idx ON legal_change_watch (affected_rule_key);
+db/migrations/014_legal_corpus_expansion.sql:78:CREATE INDEX IF NOT EXISTS lcw_in_force_idx ON legal_change_watch (is_in_force, expected_in_force);
+db/migrations/014_legal_corpus_expansion.sql:82:CREATE TABLE IF NOT EXISTS public_datasets_index (
+db/migrations/014_legal_corpus_expansion.sql:100:CREATE TABLE IF NOT EXISTS ingestion_runs (
+db/migrations/014_legal_corpus_expansion.sql:113:CREATE INDEX IF NOT EXISTS ir_source_idx ON ingestion_runs (source, run_at);
+db/migrations/014_legal_corpus_expansion.sql:122:    UNION ALL SELECT 'rules',          count(*), min(last_verified_at) FROM rules;
+db/migrations/015_aia_workflow_tables.sql:7:CREATE TABLE IF NOT EXISTS workflow_runs (
+db/migrations/015_aia_workflow_tables.sql:9:    case_id             uuid        REFERENCES cases(id) ON DELETE SET NULL,
+db/migrations/015_aia_workflow_tables.sql:25:CREATE INDEX IF NOT EXISTS wf_runs_case_idx     ON workflow_runs (case_id);
+db/migrations/015_aia_workflow_tables.sql:26:CREATE INDEX IF NOT EXISTS wf_runs_status_idx   ON workflow_runs (status, started_at);
+db/migrations/015_aia_workflow_tables.sql:27:CREATE INDEX IF NOT EXISTS wf_runs_type_idx     ON workflow_runs (claim_type, jurisdiction);
+db/migrations/015_aia_workflow_tables.sql:30:CREATE TABLE IF NOT EXISTS workflow_steps (
+db/migrations/015_aia_workflow_tables.sql:46:CREATE INDEX IF NOT EXISTS wf_steps_run_idx  ON workflow_steps (run_id, step_order);
+db/migrations/015_aia_workflow_tables.sql:47:CREATE INDEX IF NOT EXISTS wf_steps_name_idx ON workflow_steps (step_name, status);
+db/migrations/015_aia_workflow_tables.sql:50:CREATE TABLE IF NOT EXISTS model_call_audit (
+db/migrations/015_aia_workflow_tables.sql:72:CREATE INDEX IF NOT EXISTS mca_run_idx  ON model_call_audit (run_id);
+db/migrations/015_aia_workflow_tables.sql:73:CREATE INDEX IF NOT EXISTS mca_time_idx ON model_call_audit (created_at);
+db/migrations/015_aia_workflow_tables.sql:76:CREATE TABLE IF NOT EXISTS guardrail_events (
+db/migrations/015_aia_workflow_tables.sql:88:CREATE INDEX IF NOT EXISTS ge_run_idx      ON guardrail_events (run_id);
+db/migrations/015_aia_workflow_tables.sql:89:CREATE INDEX IF NOT EXISTS ge_decision_idx ON guardrail_events (decision, gate_name);
+db/migrations/015_aia_workflow_tables.sql:92:CREATE TABLE IF NOT EXISTS retrieval_audit (
+db/migrations/015_aia_workflow_tables.sql:95:    retrieval_type      text        NOT NULL,   -- rules | bm25 | pgvector | hybrid
+db/migrations/015_aia_workflow_tables.sql:97:    rules_count         int         NOT NULL DEFAULT 0,
+db/migrations/015_aia_workflow_tables.sql:107:CREATE INDEX IF NOT EXISTS ra_run_idx ON retrieval_audit (run_id);
+db/migrations/016_vector_dim_384.sql:1:-- Migration 016: Change embedding vector dimension from 1536 to 384
+db/migrations/016_vector_dim_384.sql:4:-- This enables pgvector semantic retrieval without any external API dependency.
+db/migrations/016_vector_dim_384.sql:9:-- Drop IVFFlat indexes (reference the old vector type)
+db/migrations/016_vector_dim_384.sql:15:-- Alter embedding columns to vector(384)
+db/migrations/016_vector_dim_384.sql:16:ALTER TABLE legislation        ALTER COLUMN embedding TYPE vector(384);
+db/migrations/016_vector_dim_384.sql:17:ALTER TABLE case_law_chunks    ALTER COLUMN embedding TYPE vector(384);
+db/migrations/016_vector_dim_384.sql:18:ALTER TABLE acas_guidance      ALTER COLUMN embedding TYPE vector(384);
+db/migrations/016_vector_dim_384.sql:19:ALTER TABLE official_guidance  ALTER COLUMN embedding TYPE vector(384);
+db/migrations/016_vector_dim_384.sql:21:-- Recreate IVFFlat indexes for vector(384)
+db/migrations/016_vector_dim_384.sql:23:CREATE INDEX IF NOT EXISTS legislation_embedding_idx
+db/migrations/016_vector_dim_384.sql:24:    ON legislation USING ivfflat (embedding vector_cosine_ops) WITH (lists = 10);
+db/migrations/016_vector_dim_384.sql:26:CREATE INDEX IF NOT EXISTS cl_chunk_embedding_idx
+db/migrations/016_vector_dim_384.sql:27:    ON case_law_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists = 10);
+db/migrations/016_vector_dim_384.sql:29:CREATE INDEX IF NOT EXISTS acas_embedding_idx
+db/migrations/016_vector_dim_384.sql:30:    ON acas_guidance USING ivfflat (embedding vector_cosine_ops) WITH (lists = 10);
+db/migrations/016_vector_dim_384.sql:32:CREATE INDEX IF NOT EXISTS official_guidance_embedding_idx
+db/migrations/016_vector_dim_384.sql:33:    ON official_guidance USING ivfflat (embedding vector_cosine_ops) WITH (lists = 10);
+db/migrations/017_auth_columns.sql:2:-- Adds password_hash to users table for Phase 11 auth.
+db/migrations/017_auth_columns.sql:4:ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash text;
+db/migrations/018_brain_architecture.sql:10:CREATE TABLE IF NOT EXISTS brain_traces (
+db/migrations/018_brain_architecture.sql:17:    rules_count     INTEGER    NOT NULL DEFAULT 0,
+db/migrations/018_brain_architecture.sql:27:CREATE INDEX IF NOT EXISTS brain_traces_user_idx   ON brain_traces (user_id);
+db/migrations/018_brain_architecture.sql:28:CREATE INDEX IF NOT EXISTS brain_traces_case_idx   ON brain_traces (case_id);
+db/migrations/018_brain_architecture.sql:29:CREATE INDEX IF NOT EXISTS brain_traces_status_idx ON brain_traces (final_status);
+db/migrations/018_brain_architecture.sql:39:CREATE TABLE IF NOT EXISTS legal_memory (
+db/migrations/018_brain_architecture.sql:52:CREATE INDEX IF NOT EXISTS legal_memory_user_case_idx ON legal_memory (user_id, case_id);
+db/migrations/018_brain_architecture.sql:53:CREATE INDEX IF NOT EXISTS legal_memory_type_idx      ON legal_memory (memory_type);
+db/migrations/018_brain_architecture.sql:59:CREATE TABLE IF NOT EXISTS semantic_cache (
+db/migrations/018_brain_architecture.sql:72:CREATE INDEX IF NOT EXISTS semantic_cache_jurisdiction_idx ON semantic_cache (jurisdiction, source_version);
+db/migrations/018_brain_architecture.sql:74:-- ── legal_nodes ──────────────────────────────────────────────────────────────
+db/migrations/018_brain_architecture.sql:78:CREATE TABLE IF NOT EXISTS legal_nodes (
+db/migrations/018_brain_architecture.sql:92:CREATE INDEX IF NOT EXISTS legal_nodes_type_idx ON legal_nodes (node_type);
+db/migrations/018_brain_architecture.sql:93:CREATE INDEX IF NOT EXISTS legal_nodes_j_idx    ON legal_nodes (jurisdiction);
+db/migrations/018_brain_architecture.sql:95:-- ── legal_edges ──────────────────────────────────────────────────────────────
+db/migrations/018_brain_architecture.sql:99:CREATE TABLE IF NOT EXISTS legal_edges (
+db/migrations/018_brain_architecture.sql:101:    from_node_id       TEXT        NOT NULL REFERENCES legal_nodes (node_id),
+db/migrations/018_brain_architecture.sql:102:    to_node_id         TEXT        NOT NULL REFERENCES legal_nodes (node_id),
+db/migrations/018_brain_architecture.sql:110:CREATE INDEX IF NOT EXISTS legal_edges_from_idx ON legal_edges (from_node_id);
+db/migrations/018_brain_architecture.sql:111:CREATE INDEX IF NOT EXISTS legal_edges_to_idx   ON legal_edges (to_node_id);
+db/migrations/018_brain_architecture.sql:112:CREATE INDEX IF NOT EXISTS legal_edges_rel_idx  ON legal_edges (relationship_type);
+db/migrations/018_brain_architecture.sql:117:CREATE TABLE IF NOT EXISTS routing_decisions (
+db/migrations/018_brain_architecture.sql:132:CREATE INDEX IF NOT EXISTS routing_decisions_trace_idx ON routing_decisions (trace_id);
+db/migrations/018_brain_architecture.sql:133:CREATE INDEX IF NOT EXISTS routing_decisions_path_idx  ON routing_decisions (selected_path);
+db/migrations/018_brain_architecture.sql:138:CREATE TABLE IF NOT EXISTS evaluation_results (
+db/migrations/018_brain_architecture.sql:151:CREATE INDEX IF NOT EXISTS eval_results_trace_idx ON evaluation_results (trace_id);
+db/migrations/018_brain_architecture.sql:152:CREATE INDEX IF NOT EXISTS eval_results_passed_idx ON evaluation_results (passed);
+db/migrations/018_brain_architecture.sql:157:CREATE TABLE IF NOT EXISTS mcp_tool_calls (
+db/migrations/018_brain_architecture.sql:170:CREATE INDEX IF NOT EXISTS mcp_tool_calls_trace_idx ON mcp_tool_calls (trace_id);
+db/migrations/018_brain_architecture.sql:171:CREATE INDEX IF NOT EXISTS mcp_tool_calls_tool_idx  ON mcp_tool_calls (tool_name);
+db/migrations/018_brain_architecture.sql:175:INSERT INTO legal_nodes (node_id, node_type, label, description, jurisdiction, authority_level, source_ref, source_url)
+db/migrations/018_brain_architecture.sql:195:INSERT INTO legal_edges (from_node_id, to_node_id, relationship_type, notes)
+db/migrations/019_brain_phase1_schema.sql:8:ALTER TABLE brain_traces
+db/migrations/019_brain_phase1_schema.sql:20:CREATE TABLE IF NOT EXISTS safety_boundary_checks (
+db/migrations/019_brain_phase1_schema.sql:32:CREATE INDEX IF NOT EXISTS safety_checks_trace_idx  ON safety_boundary_checks (trace_id);
+db/migrations/019_brain_phase1_schema.sql:33:CREATE INDEX IF NOT EXISTS safety_checks_passed_idx ON safety_boundary_checks (passed, blocked);
+db/migrations/019_brain_phase1_schema.sql:36:-- Stores facts extracted from uploaded documents.
+db/migrations/019_brain_phase1_schema.sql:40:CREATE TABLE IF NOT EXISTS document_facts (
+db/migrations/019_brain_phase1_schema.sql:58:CREATE INDEX IF NOT EXISTS doc_facts_upload_idx  ON document_facts (upload_id);
+db/migrations/019_brain_phase1_schema.sql:59:CREATE INDEX IF NOT EXISTS doc_facts_case_idx    ON document_facts (case_id);
+db/migrations/019_brain_phase1_schema.sql:60:CREATE INDEX IF NOT EXISTS doc_facts_status_idx  ON document_facts (status);
+db/migrations/019_brain_phase1_schema.sql:67:CREATE TABLE IF NOT EXISTS wasm_calculations (
+db/migrations/019_brain_phase1_schema.sql:78:    rules_version       TEXT,
+db/migrations/019_brain_phase1_schema.sql:82:CREATE INDEX IF NOT EXISTS wasm_calc_type_idx ON wasm_calculations (calculation_type);
+db/migrations/019_brain_phase1_schema.sql:83:CREATE INDEX IF NOT EXISTS wasm_calc_hash_idx ON wasm_calculations (input_hash);
+db/migrations/019_brain_phase1_schema.sql:89:CREATE TABLE IF NOT EXISTS api_route_registry (
+db/migrations/019_brain_phase1_schema.sql:111:    ('/api/documents/upload',       'documents_upload',     false, 'Document upload'),
+db/migrations/019_brain_phase1_schema.sql:112:    ('/api/documents/facts',        'documents_facts',      false, 'Extracted document facts'),
+db/migrations/019_phase1_brain_safety.sql:15:CREATE TABLE IF NOT EXISTS safety_boundary_checks (
+db/migrations/019_phase1_brain_safety.sql:27:CREATE INDEX IF NOT EXISTS safety_boundary_trace_idx ON safety_boundary_checks (trace_id);
+db/migrations/019_phase1_brain_safety.sql:28:CREATE INDEX IF NOT EXISTS safety_boundary_passed_idx ON safety_boundary_checks (passed);
+db/migrations/019_phase1_brain_safety.sql:29:CREATE INDEX IF NOT EXISTS safety_boundary_blocked_idx ON safety_boundary_checks (blocked);
+db/migrations/019_phase1_brain_safety.sql:35:CREATE TABLE IF NOT EXISTS context_compression_log (
+db/migrations/019_phase1_brain_safety.sql:41:    rules_preserved     INTEGER     NOT NULL DEFAULT 0,
+db/migrations/019_phase1_brain_safety.sql:46:CREATE INDEX IF NOT EXISTS context_compression_trace_idx ON context_compression_log (trace_id);
+db/migrations/019_phase1_brain_safety.sql:58:        ALTER TABLE brain_traces ADD COLUMN missing_facts JSONB NOT NULL DEFAULT '[]';
+db/migrations/019_phase1_brain_safety.sql:65:        ALTER TABLE brain_traces ADD COLUMN rag_sources JSONB NOT NULL DEFAULT '[]';
+db/migrations/019_phase1_brain_safety.sql:72:        ALTER TABLE brain_traces ADD COLUMN safety_passed BOOLEAN;
+db/migrations/019_phase1_brain_safety.sql:79:        ALTER TABLE brain_traces ADD COLUMN memory_saved BOOLEAN NOT NULL DEFAULT false;
+backend/api/main.py:4:Exposes the assessment pipeline: classify → retrieve (rules + BM25 keyword
+backend/api/main.py:10:- /rules/{claim_type} now returns last_verified_at for transparency
+backend/api/main.py:96:# ── Case ownership dependency — used by all /cases/{case_id}/* sub-endpoints ──
+backend/api/main.py:211:            cur.execute("SELECT id FROM users WHERE email = %s", (req.email,))
+backend/api/main.py:217:                "INSERT INTO users (email, password_hash) VALUES (%s, %s) RETURNING id",
+backend/api/main.py:239:            cur.execute("SELECT id, password_hash FROM users WHERE email = %s", (req.email,))
+backend/api/main.py:265:                "SELECT id, email, created_at, subscription_status FROM users WHERE id = %s::uuid",
+backend/api/main.py:340:@app.get("/rules/{claim_type}")
+backend/api/main.py:341:def get_rules(claim_type: str, jurisdiction: str = "EW") -> dict:
+backend/api/main.py:343:    Return current rules for a claim type.
+backend/api/main.py:350:    GUARDRAIL: values come from the rules table, never from the model.
+backend/api/main.py:360:                FROM rules
+backend/api/main.py:376:        "rules": [
+backend/api/main.py:415:    Retrieval: structured rules (always) + BM25 keyword fallback (active while
+backend/api/main.py:424:    BLOCKED_BY_OPENAI_QUOTA: semantic (pgvector) retrieval is inactive.
+backend/api/main.py:473:      1. rules table (deterministic values — deadlines, caps, thresholds)
+backend/api/main.py:474:      2. legislation (BM25 active; pgvector when embeddings available)
+backend/api/main.py:480:    GUARDRAIL: deadlines and caps always from rules table, never from LLM.
+backend/api/main.py:495:@app.post("/documents/generate")
+backend/api/main.py:509:    from backend.core.documents import (
+backend/api/main.py:523:        from backend.core.documents import generate_letter_before_action
+backend/api/main.py:527:        from backend.core.documents import generate_et1_support_notes_wages
+backend/api/main.py:573:@app.post("/cases", status_code=201)
+backend/api/main.py:609:                INSERT INTO cases (
+backend/api/main.py:636:@app.get("/cases")
+backend/api/main.py:637:def list_cases(
+backend/api/main.py:641:    """List all saved cases for the current authenticated user."""
+backend/api/main.py:654:                FROM cases WHERE user_id = %s::uuid AND deleted_at IS NULL
+backend/api/main.py:661:            "cases": [
+backend/api/main.py:678:@app.get("/cases/{case_id}")
+backend/api/main.py:702:                FROM cases WHERE id = %s AND deleted_at IS NULL
+backend/api/main.py:897:@app.get("/cases/{case_id}/deadline")
+backend/api/main.py:915:                "SELECT key_dates, claim_type FROM cases WHERE id = %s",
+backend/api/main.py:962:@app.post("/cases/{case_id}/reminders", status_code=201)
+backend/api/main.py:981:            cur.execute("SELECT id FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:1019:@app.get("/cases/{case_id}/reminders")
+backend/api/main.py:1025:            cur.execute("SELECT id FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:1078:@app.post("/cases/{case_id}/uploads", status_code=201)
+backend/api/main.py:1140:            cur.execute("SELECT id FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:1147:                INSERT INTO documents (
+backend/api/main.py:1190:@app.get("/cases/{case_id}/uploads")
+backend/api/main.py:1196:            cur.execute("SELECT id FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:1203:                FROM documents
+backend/api/main.py:1231:@app.post("/cases/{case_id}/uploads/{upload_id}/extract")
+backend/api/main.py:1250:                "SELECT doc_type, extraction_status FROM documents "
+backend/api/main.py:1264:                UPDATE documents
+backend/api/main.py:1298:@app.patch("/cases/{case_id}/uploads/{upload_id}/facts")
+backend/api/main.py:1316:                "SELECT extracted_facts FROM documents "
+backend/api/main.py:1340:                "UPDATE documents SET extracted_facts = %s::jsonb, extraction_status = 'reviewed' "
+backend/api/main.py:1359:@app.post("/cases/{case_id}/uploads/{upload_id}/apply-confirmed")
+backend/api/main.py:1376:                "SELECT extracted_facts FROM documents "
+backend/api/main.py:1387:            cur.execute("SELECT key_dates FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:1402:                "UPDATE cases SET key_dates = %s::jsonb WHERE id = %s",
+backend/api/main.py:1434:                "SELECT assessment, key_dates FROM cases WHERE id = %s",
+backend/api/main.py:1447:                FROM documents
+backend/api/main.py:1471:    """Record generated bundle component metadata in the documents table."""
+backend/api/main.py:1478:                    INSERT INTO documents (case_id, doc_type, storage_ref, is_user_upload,
+backend/api/main.py:1493:@app.post("/cases/{case_id}/bundle/preview")
+backend/api/main.py:1505:    from backend.core.documents import safety_check
+backend/api/main.py:1531:@app.post("/cases/{case_id}/bundle/generate")
+backend/api/main.py:1537:    Saves bundle component metadata to the documents table.
+backend/api/main.py:1546:    from backend.core.documents import safety_check
+backend/api/main.py:1587:@app.get("/cases/{case_id}/bundle")
+backend/api/main.py:1593:            cur.execute("SELECT id FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:1599:                FROM documents
+backend/api/main.py:1680:@app.get("/cases/{case_id}/funnel")
+backend/api/main.py:1686:            cur.execute("SELECT id FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:1714:@app.get("/admin/rules-verification")
+backend/api/main.py:1715:def get_rules_verification(_key: str = Depends(_require_admin_key)) -> dict:
+backend/api/main.py:1719:    Shows verification_status for every rule in the rules table.
+backend/api/main.py:1720:    Production-enabled rules (is_prospective=false) must have status
+backend/api/main.py:1724:    A qualified solicitor must review rules before production deployment.
+backend/api/main.py:1732:                WHERE table_name='rules' AND column_name='verification_status'
+backend/api/main.py:1741:                    FROM rules ORDER BY claim_type, rule_key, effective_from
+backend/api/main.py:1750:                    FROM rules ORDER BY claim_type, rule_key, effective_from
+backend/api/main.py:1755:            rules = [dict(zip(cols, r)) for r in cur.fetchall()]
+backend/api/main.py:1759:    from scripts.check_rules_verification import check_verification
+backend/api/main.py:1762:        for r in rules
+backend/api/main.py:1770:        "rules": [
+backend/api/main.py:1785:            for r in rules
+backend/api/main.py:1806:                WHERE table_name='rules' AND column_name='verification_status'
+backend/api/main.py:1813:                    FROM rules
+backend/api/main.py:1817:                cur.execute("SELECT rule_key, claim_type, is_prospective FROM rules")
+backend/api/main.py:1820:            rules = [dict(zip(cols, r)) for r in cur.fetchall()]
+backend/api/main.py:1825:    return generate_production_readiness_report(rules, run_kms_health_check=health_check)
+backend/api/main.py:1848:    "user_entered", "rules_engine", "confirmed_extraction", "system_generated",
+backend/api/main.py:1858:            cur.execute("SELECT assessment, key_dates FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:1868:                "FROM documents WHERE case_id = %s AND is_user_upload = true ORDER BY created_at",
+backend/api/main.py:1879:                "SELECT id, doc_type FROM documents "
+backend/api/main.py:1913:@app.get("/cases/{case_id}/timeline")
+backend/api/main.py:1949:@app.post("/cases/{case_id}/timeline/events", status_code=201)
+backend/api/main.py:1955:    GUARDRAIL: Source 'rules_engine' is reserved for system use only.
+backend/api/main.py:1963:    if req.source == "rules_engine":
+backend/api/main.py:1965:                            detail="source 'rules_engine' is reserved for system use.")
+backend/api/main.py:1970:            cur.execute("SELECT id FROM cases WHERE id = %s", (case_id,))
+backend/api/main.py:2012:@app.patch("/cases/{case_id}/timeline/events/{event_id}")
+backend/api/main.py:2072:@app.get("/cases/{case_id}/escalation")
+backend/api/main.py:2150:@app.delete("/cases/{case_id}", status_code=200)
+backend/api/main.py:2154:    Sets deleted_at; case no longer returned by GET /cases/{id}.
+backend/api/main.py:2161:                "UPDATE cases SET deleted_at = now() WHERE id = %s AND deleted_at IS NULL "
+backend/api/main.py:2422:    """Debug: run hybrid retrieval (BM25 + pgvector + SQL rules) and return citations."""
+backend/api/main.py:2430:    rules = d.get("exact_rules", [])
+backend/api/main.py:2434:        "keyword_results": len([a for a in authorities if a.get("source_type", "") != "pgvector"]),
+backend/api/main.py:2435:        "vector_results": len([a for a in authorities if a.get("source_type", "") == "pgvector"]),
+backend/api/main.py:2437:        "rules_found": len(rules),
+backend/api/main.py:2457:                FROM legal_nodes n
+backend/api/main.py:2458:                JOIN legal_edges e ON n.node_id = e.to_node_id
+backend/api/main.py:2469:                    "SELECT n.node_id, n.node_type, n.label FROM legal_nodes n "
+backend/api/main.py:2470:                    "JOIN legal_edges e ON n.node_id = e.to_node_id "
+backend/api/main.py:2482:                "FROM legal_edges e "
+backend/api/main.py:2483:                "JOIN legal_nodes n ON e.from_node_id = n.node_id "
+backend/api/main.py:2515:                FROM legal_nodes
+backend/api/main.py:2530:                FROM legal_edges e
+backend/api/main.py:2531:                JOIN legal_nodes n ON e.to_node_id = n.node_id
+backend/api/main.py:2540:                "SELECT DISTINCT e.from_node_id FROM legal_edges e "
+backend/api/main.py:2723:            {"name": "document_storage",   "allowed": True,  "consent_required": True,  "description": "Store and retrieve uploaded documents"},
+backend/api/main.py:2860:        "cross_user_blocked_by": "_require_case_owner dependency on all /cases/{case_id}/* endpoints",
+backend/api/main.py:2878:                "SELECT count(*) FROM cases WHERE created_at < now() - interval '%s days' "
+backend/api/main.py:2882:            old_cases = cur.fetchone()[0]
+backend/api/main.py:2893:        "old_cases_count":         old_cases,
+backend/api/main.py:2917:    """Canonical: Hybrid RAG search (SQL rules + BM25 + pgvector)."""
+backend/api/main.py:2927:                                 if a.get("source_type", "") != "pgvector"]),
+backend/api/main.py:2928:        "vector_results":  len([a for a in d.get("authorities", [])
+backend/api/main.py:2929:                                 if a.get("source_type", "") == "pgvector"]),
+backend/api/main.py:2931:        "rules_found":     len(d.get("exact_rules", [])),
+backend/api/main.py:3032:# ── /api/documents/upload and /api/documents/facts ───────────────────────────
+backend/api/main.py:3039:@app.post("/api/documents/upload")
+backend/api/main.py:3040:async def api_documents_upload(
+backend/api/main.py:3108:            "Review via /api/documents/facts and confirm before use. "
+backend/api/main.py:3120:@app.post("/api/documents/facts")
+backend/api/main.py:3121:def api_documents_facts(
+backend/api/main.py:3195:    WASM Deadline endpoint: validates that WASM/JS arithmetic matches server rules engine.
+backend/api/main.py:3246:        "fallback_used":    True,    # Server uses Python rules engine (same arithmetic)
+backend/api/main.py:3329:@app.get("/api/rules/{claim_type}")
+backend/api/main.py:3330:def api_get_rules(claim_type: str, jurisdiction: str = "EW") -> dict:
+backend/api/main.py:3331:    """Alias for /rules/{claim_type} under the /api prefix."""
+backend/api/main.py:3332:    return get_rules(claim_type, jurisdiction=jurisdiction)
+backend/api/main.py:3352:    Deadline is always computed from the rules table — never estimated.
+backend/api/main.py:3366:        from backend.core.retrieve import retrieve_rules
+backend/api/main.py:3367:        rules = retrieve_rules(claim_type, jurisdiction, edt)
+backend/api/main.py:3368:        tl_rule = next((r for r in rules if "time_limit_months" in r.get("rule_key", "")), None)
+backend/api/main.py:3387:            "source":          "rules",
+backend/api/main.py:3439:@app.get("/api/documents/{document_id}/download")
+backend/api/main.py:3451:    GUARDRAIL: ownership verified — user can only download their own documents.
+backend/api/main.py:3452:    GUARDRAIL: download only permitted for documents linked to a paid case.
+backend/api/main.py:3464:                FROM documents d
+backend/api/main.py:3465:                JOIN cases c ON c.id = d.case_id
+backend/api/main.py:3492:        "note":           "Document content is stored as text in the case record. Use /documents/generate to regenerate.",
+backend/api/main.py:3496:@app.get("/api/cases/{case_id}/documents")
+backend/api/main.py:3498:def api_list_case_documents(
+backend/api/main.py:3504:    """List all documents for a case. Ownership enforced."""
+backend/api/main.py:3515:                FROM documents
+backend/api/main.py:3527:        "documents": [
+backend/core/agents/base.py:56:        "sign_documents",
+backend/core/agents/registry.py:27:    allowed_tools = ["retrieve_rules", "hybrid_search", "citation_verify", "deadline_calculate"]
+backend/core/agents/registry.py:36:        if bundle and hasattr(bundle, "exact_rules") and bundle.exact_rules:
+backend/core/agents/registry.py:37:            for r in bundle.exact_rules:
+backend/core/agents/registry.py:80:    allowed_tools = ["retrieve_rules", "deadline_calculate", "calendar"]
+backend/core/agents/registry.py:99:            from backend.core.retrieve import retrieve_rules
+backend/core/agents/registry.py:101:            rules = retrieve_rules(claim_type, jurisdiction, edt)
+backend/core/agents/registry.py:103:                (r for r in rules if "time_limit_months" in r.get("rule_key", "")), None
+backend/core/agents/registry.py:118:                    "source": "rules_engine",
+backend/core/agents/registry.py:193:    description = "Calculates statutory awards, caps, and remedy estimates from rules table only."
+backend/core/agents/registry.py:194:    allowed_tools = ["retrieve_rules", "compensation_calculate"]
+backend/core/agents/registry.py:199:        if bundle and hasattr(bundle, "exact_rules"):
+backend/core/agents/registry.py:201:                (r for r in bundle.exact_rules if "compensatory_cap_amount" in r.get("rule_key", "")),
+backend/core/agents/registry.py:205:                (r for r in bundle.exact_rules if "weeks_pay_cap_amount" in r.get("rule_key", "")),
+backend/core/agents/registry.py:213:                    "source": "rules_engine",
+backend/core/agents/registry.py:220:                    "source": "rules_engine",
+backend/core/agents/registry.py:317:    Generates self-help legal documents (Particulars of Claim, Schedule of Loss).
+backend/core/agents/registry.py:344:            from backend.core.documents import generate_particulars_of_claim
+backend/core/agents/registry.py:359:                from backend.core.documents import generate_schedule_of_loss
+backend/core/brain.py:17:  10. Run deterministic rules engine
+backend/core/brain.py:59:    "run_rules_engine",       # 10 — fetch deterministic rules from DB
+backend/core/brain.py:60:    "retrieve_legal_evidence",# 11 — hybrid retrieval (SQL + BM25 + pgvector)
+backend/core/brain.py:202:    # Check 3: Deadline must come from rules engine (never model estimate)
+backend/core/brain.py:206:        c3_pass = dl_source in ("rules", "rules_engine") or not deadline_info
+backend/core/brain.py:210:        "check": "deadline_from_rules",
+backend/core/brain.py:216:        failures.append("deadline_not_from_rules_engine")
+backend/core/brain.py:299:        self.rules_count:  int            = 0
+backend/core/brain.py:334:            "rules_applied":       self.rules_count,
+backend/core/brain.py:438:            from backend.core.retrieve import retrieve_rules
+backend/core/brain.py:439:            rules = retrieve_rules(claim_type, j, edt)
+backend/core/brain.py:441:                (r["value_numeric"] for r in rules
+backend/core/brain.py:467:                     "run_rules_engine", "retrieve_legal_evidence", "verify_citations",
+backend/core/brain.py:536:    # ── Step 10: Run deterministic rules engine ────────────────────────────────
+backend/core/brain.py:537:    rules_list: list[dict] = []
+backend/core/brain.py:539:        from backend.core.retrieve import retrieve_rules
+backend/core/brain.py:540:        rules_list = retrieve_rules(claim_type, j, edt)
+backend/core/brain.py:543:    trace.rules_count = len(rules_list)
+backend/core/brain.py:544:    trace.record_step("run_rules_engine", "ok", {
+backend/core/brain.py:545:        "rules_found": len(rules_list),
+backend/core/brain.py:590:            exact_rules  = getattr(bundle, "exact_rules", rules_list),
+backend/core/brain.py:712:            rules_count        = len(rules_list),
+backend/core/brain.py:760:    rules_count:        int,
+backend/core/brain.py:782:                    agents_used, rules_count, sources_count,
+backend/core/brain.py:802:                    rules_count,
+backend/core/bundle.py:19:  - Platform does not file, submit, or represent users in tribunal.
+backend/core/bundle.py:95:        warnings.append("EDT (dismissal date) not recorded — essential for all bundle documents.")
+backend/core/bundle.py:97:        warnings.append("Tribunal deadline not stored — check /cases/{id}/deadline.")
+backend/core/bundle.py:101:        warnings.append("No confirmed dismissal date from uploaded documents.")
+backend/core/bundle.py:155:        upload_list = "\n   No documents uploaded yet."
+backend/core/bundle.py:161:            f"Basis: {vr.get('basis','from statutory rules')}. "
+backend/core/bundle.py:230:   Uploaded documents associated with this case:{upload_list}
+backend/core/bundle.py:232:   [Reference documents by exhibit number (e.g. "Exhibit A — dismissal letter").]
+backend/core/bundle.py:288:        events.append((deadline, "ET claim limitation date (from rules — ERA 1996 s.111(2))", "rules-derived"))
+backend/core/bundle.py:331:uploaded documents or your intake form. Do NOT invent or estimate dates.
+backend/core/bundle.py:332:Add only dates you can verify from documents in your possession.
+backend/core/bundle.py:370:        upload_lines = "  [ ] No documents uploaded yet."
+backend/core/bundle.py:466:            f"Basis: {vr.get('basis','from statutory rules')}."
+backend/core/bundle.py:549:   Check every field against your actual documents before submitting ET1.
+backend/core/citation_verifier.py:93:    """Check case_law_documents for the cited neutral citation."""
+backend/core/citation_verifier.py:100:                    "SELECT 1 FROM case_law_documents "
+backend/core/classify.py:7:  Stage A: keyword rules — cheap, instant, no model call.
+backend/core/classify.py:8:  Stage B: ML/workhorse model — for ambiguous cases only.
+backend/core/classify.py:10:Stage B rules:
+backend/core/classify.py:177:    Stage A: keyword rules (fast, no model call).
+backend/core/classify.py:185:    # ── Stage A: keyword rules ─────────────────────────────────────────────────
+backend/core/classify.py:215:    # ── Stage B: ML model for ambiguous cases ──────────────────────────────────
+backend/core/conflict_detector.py:8:  - generated documents
+backend/core/context_compressor.py:12:  1. Rule deduplication — deduplicate rules with identical rule_key (keep first)
+backend/core/context_compressor.py:28:_MAX_RULES_PER_KEY = 1            # deduplicate rules with same rule_key
+backend/core/context_compressor.py:34:    exact_rules: list[dict],
+backend/core/context_compressor.py:42:        exact_rules:  list of rule dicts from the rules table
+backend/core/context_compressor.py:48:          "rules":            deduplicated rule list (all rule_keys preserved),
+backend/core/context_compressor.py:53:            "rules_in":        int,
+backend/core/context_compressor.py:54:            "rules_out":       int,
+backend/core/context_compressor.py:64:    rules_in = len(exact_rules)
+backend/core/context_compressor.py:69:    deduped_rules: list[dict] = []
+backend/core/context_compressor.py:70:    for rule in exact_rules:
+backend/core/context_compressor.py:74:            deduped_rules.append(rule)
+backend/core/context_compressor.py:105:    if deduped_rules:
+backend/core/context_compressor.py:107:        for r in deduped_rules:
+backend/core/context_compressor.py:127:        " ".join(str(r) for r in exact_rules) +
+backend/core/context_compressor.py:135:        "rules_in":            rules_in,
+backend/core/context_compressor.py:136:        "rules_out":           len(deduped_rules),
+backend/core/context_compressor.py:149:        "Context compressed: rules %d→%d, auths %d→%d, tokens %d→%d (%.2fx)",
+backend/core/context_compressor.py:150:        rules_in, len(deduped_rules),
+backend/core/context_compressor.py:156:        "rules":        deduped_rules,
+backend/core/context_compressor.py:175:                        citations_preserved, rules_preserved, compression_ratio
+backend/core/context_compressor.py:183:                        stats["rules_out"],
+backend/core/documents.py:45:# Regex patterns for phrases that must NEVER appear in generated documents.
+backend/core/documents.py:335:    assessment value_range (computed by assess_logic.py from live rules).
+backend/core/documents.py:349:    basis = value_range.get("basis", "Source: ERA 1996 statutory rules.")
+backend/core/documents.py:400:   Estimated basic award (from rules):     see Section D below.
+backend/core/documents.py:446:   [These are estimates derived from statutory rules and the information
+backend/core/documents.py:494:# ── Phase 5B: Unpaid wages / unlawful deduction documents ────────────────────
+backend/core/documents.py:573:My ET claim deadline is: {_fmt_date(deadline_date) if deadline_date else "[check /cases/{id}/deadline]"}
+backend/core/documents.py:579:[List documents you have: payslips, contract, bank statements, etc.]
+backend/core/document_extractor.py:4:Extracts structured facts from uploaded documents.
+backend/core/dp_report.py:91:            "cases_assessment":   "Stored in PostgreSQL plaintext jsonb",
+backend/core/dp_report.py:92:            "cases_facts":        "facts_encrypted column is NULL — encryption not yet applied",
+backend/core/dp_report.py:93:            "uploaded_documents": "Local filesystem, no encryption",
+backend/core/dp_report.py:96:                "Phase 5B: implement AES-256-GCM for cases.facts_encrypted, "
+backend/core/dp_report.py:107:            "extracted_facts_table": "documents.extracted_facts may contain PII from confirmed OCR",
+backend/core/dp_report.py:119:            "deletion_endpoint": "None — no DELETE /cases/{id} or data erasure",
+backend/core/dp_report.py:135:            "uploaded_documents": {
+backend/core/dp_report.py:177:        # launch_blocker:         must fix before ANY real users (closed beta)
+backend/core/dp_report.py:185:                "No privacy notice / transparency information for users",
+backend/core/dp_report.py:188:                "No encryption at rest for uploaded documents (AES-256-GCM required)",
+backend/core/dp_report.py:189:                "No encryption for cases.facts_encrypted column (NULL — unfilled)",
+backend/core/dp_report.py:217:                "No privacy notice for users (launch blocker)",
+backend/core/dp_report.py:218:                "No encryption at rest for uploaded documents (production blocker)",
+backend/core/dp_report.py:219:                "No encryption for cases.facts_encrypted (production blocker)",
+backend/core/evaluator.py:111:        dl_ok = dl_source in ("rules", "rules_engine")
+backend/core/evaluator.py:114:            failures.append(f"deadline_not_from_rules:source={dl_source}")
+backend/core/evidence_gap.py:88:        "documents_available": "Documents available (dismissal letter, contract, payslips, emails)",
+backend/core/govern.py:11:3. Determinism: deadline.source == "rules" (assert).
+backend/core/govern.py:13:5. Honesty: key_weaknesses populated for non-trivial cases; weak/no-claim stated plainly.
+backend/core/govern.py:69:    # Check 3: determinism — deadline must come from rules, not generation
+backend/core/govern.py:71:        if assessment.deadline.source != "rules":
+backend/core/govern.py:76:                    f"must be 'rules'. Model generated or recalled a deadline."
+backend/core/govern.py:99:    # Check 5: honesty — key_weaknesses required for non-trivial cases
+backend/core/legal_graph.py:4:Queries the legal_nodes and legal_edges tables populated by migration 018
+backend/core/legal_graph.py:97:                    FROM legal_nodes
+backend/core/legal_graph.py:128:    """BFS traversal of legal_nodes/legal_edges up to max_depth hops."""
+backend/core/legal_graph.py:145:                FROM legal_nodes
+backend/core/legal_graph.py:164:                FROM legal_edges
+backend/core/legal_graph.py:255:    sources = ["hybrid"]     # hybrid (SQL rules + BM25 + pgvector) is always active
+backend/core/mcp_connectors.py:8:GUARDRAIL: No connector may file claims, represent users, or send emails.
+backend/core/mcp_connectors.py:14:  - rules_lookup:       retrieve effective-dated rules from DB
+backend/core/mcp_connectors.py:15:  - document_generate:  generate self-help draft documents
+backend/core/mcp_connectors.py:37:    "rules_lookup",
+backend/core/mcp_connectors.py:116:    if tool_name == "rules_lookup":
+backend/core/mcp_connectors.py:117:        return _rules_lookup(params)
+backend/core/mcp_connectors.py:163:def _rules_lookup(params: dict) -> dict:
+backend/core/mcp_connectors.py:164:    """Retrieve effective-dated rules for a claim type."""
+backend/core/mcp_connectors.py:169:    from backend.core.retrieve import retrieve_rules
+backend/core/mcp_connectors.py:172:    date_obj = _dt.date.today()  # default to today for current rules
+backend/core/mcp_connectors.py:179:    rules = retrieve_rules(claim_type, jurisdiction, date_obj)
+backend/core/mcp_connectors.py:181:        "source": "rules_db",
+backend/core/mcp_connectors.py:184:        "rules": rules,
+backend/core/mcp_connectors.py:185:        "count": len(rules),
+backend/core/mcp_connectors.py:197:        from backend.core.documents import generate_particulars_of_claim
+backend/core/mcp_connectors.py:200:        from backend.core.documents import generate_schedule_of_loss
+backend/core/mcp_connectors.py:203:        from backend.core.documents import generate_letter_before_action
+backend/core/mcp_connectors.py:252:                SELECT 'rules', COUNT(*), MAX(updated_at)
+backend/core/mcp_connectors.py:253:                FROM rules;
+backend/core/memory.py:17:  - evidence_checklist: documents needed/uploaded
+backend/core/memory.py:97:               Never returns records from other users or cases.
+backend/core/models.py:41:        deadline_info: dict,        # pre-computed from rules — model must not alter
+backend/core/models.py:49:        The deadline values in deadline_info come from the rules table and are
+backend/core/models.py:89:            source="rules",
+backend/core/models.py:93:        # Extract cap from rules bundle if available
+backend/core/models.py:95:            (r for r in bundle.exact_rules
+backend/core/models.py:103:            basis="from rules — model reasoning not yet configured",
+backend/core/models.py:152:these are provided in deadline_info and rules and must be used verbatim.
+backend/core/models.py:163:{json.dumps(bundle.exact_rules, indent=2, default=str)}
+backend/core/models.py:168:DEADLINE (pre-computed from rules — use verbatim, source must remain "rules"):
+backend/core/models.py:183:  "deadline": {{"limitation_date": "YYYY-MM-DD", "source": "rules", "authority": "..."}},
+backend/core/models.py:184:  "recommended_next_step": "free_diagnosis_only|prepare_documents|seek_solicitor",
+backend/core/models.py:234:        # Enforce deadline.source = "rules" — governance gate also checks this,
+backend/core/models.py:237:            data["deadline"]["source"] = "rules"
+backend/core/models.py:255:      - retrieved authority bundle (rules + BM25)
+backend/core/models.py:303:            f"RETRIEVED RULES (verbatim — do not alter):\n{json.dumps(bundle.exact_rules, indent=2, default=str)}\n\n"
+backend/core/models.py:305:            f"DEADLINE (pre-computed from rules — source must remain 'rules'):\n"
+backend/core/models.py:352:                    source="rules",
+backend/core/models.py:368:            data["deadline"]["source"] = "rules"  # defensive enforcement
+backend/core/payment.py:24:# Document preview: maximum lines shown to unpaid users.
+backend/core/pipeline.py:112:        "Retrieval: %d rules, %d authorities, insufficient_grounding=%s",
+backend/core/pipeline.py:113:        len(bundle.exact_rules), len(bundle.authorities), bundle.insufficient_grounding,
+backend/core/pipeline.py:116:    if bundle.insufficient_grounding and not bundle.exact_rules:
+backend/core/pipeline.py:118:            "No rules or authority retrieved for this query."
+backend/core/pipeline.py:123:        (r for r in bundle.exact_rules if r["rule_key"] == tl_rule_key),
+backend/core/pipeline.py:139:            (r for r in bundle.exact_rules if r["rule_key"] == "unfair_dismissal.qualifying_period"),
+backend/core/pipeline.py:160:    # key weaknesses from facts, citations from rules + BM25.
+backend/core/pipeline.py:166:            bundle_rules=bundle.exact_rules,
+backend/core/pipeline.py:174:            bundle_rules=bundle.exact_rules,
+backend/core/pipeline.py:216:                source="rules",
+backend/core/pipeline.py:309:            "case_id":            None,  # wired in Phase 3 when cases table is integrated
+backend/core/pipeline.py:311:            "rules_used": [
+backend/core/pipeline.py:313:                for r in bundle.exact_rules
+backend/core/pipeline.py:316:                "rules_count":       len(bundle.exact_rules),
+backend/core/production_readiness.py:27:def _check_rules_verification(rules: list[dict]) -> dict:
+backend/core/production_readiness.py:28:    """Check verification status for all non-prospective rules."""
+backend/core/production_readiness.py:29:    from scripts.check_rules_verification import check_verification
+backend/core/production_readiness.py:30:    return check_verification(rules)
+backend/core/production_readiness.py:34:    rules: list[dict],
+backend/core/production_readiness.py:41:        rules: list of rule dicts from the rules table
+backend/core/production_readiness.py:50:    # ── Legal rules verification ───────────────────────────────────────────────
+backend/core/production_readiness.py:51:    from scripts.check_rules_verification import check_verification
+backend/core/production_readiness.py:52:    ver_result = check_verification(rules)
+backend/core/production_readiness.py:55:    rules_by_claim: dict[str, dict] = {}
+backend/core/production_readiness.py:57:        ct_rules = [r for r in rules if r.get("claim_type") == ct and not r.get("is_prospective")]
+backend/core/production_readiness.py:58:        ct_result = check_verification(ct_rules)
+backend/core/production_readiness.py:59:        rules_by_claim[ct] = {
+backend/core/production_readiness.py:60:            "total_production_rules": len(ct_rules),
+backend/core/production_readiness.py:65:            "rules_gate_passed":     ct_result["passed"],
+backend/core/production_readiness.py:75:        rd = rules_by_claim.get(ct, {})
+backend/core/production_readiness.py:76:        rules_ok = rd.get("rules_gate_passed", False)
+backend/core/production_readiness.py:78:        if not rules_ok:
+backend/core/production_readiness.py:79:            blockers.append("Legal rules not fully verified")
+backend/core/production_readiness.py:87:            "status":            "VERIFICATION_LIMITED" if rules_ok else "BLOCKED",
+backend/core/production_readiness.py:88:            "rules_verified":    rules_ok,
+backend/core/production_readiness.py:181:            "endpoints": ["DELETE /cases/{id}", "DELETE /handoff/leads/{id}"],
+backend/core/production_readiness.py:218:        "legal_rules_verification": {
+backend/core/production_readiness.py:222:            "by_claim_type": rules_by_claim,
+backend/core/prompts/citation_locked.py:15:1. Use ONLY the legal sources I supply below. Do not invent statutes, regulations, cases, or guidance pages.
+backend/core/prompts/citation_locked.py:37:    chunks plus strict citation rules.
+backend/core/retrieval/trust_scorer.py:14:# 100: Primary legislation / statutory rules
+backend/core/retrieval/trust_scorer.py:19:    "rules":             100,
+backend/core/retrieve.py:5:  - exact_rules: deterministic values from the `rules` table (deadlines, caps,
+backend/core/retrieve.py:15:GUARDRAIL (prospective rows): the rules query explicitly filters
+backend/core/retrieve.py:36:# With embeddings absent, this is 0 — the rules bundle alone is enough to
+backend/core/retrieve.py:41:def retrieve_rules(
+backend/core/retrieve.py:47:    Fetch all current-in-force rules for the claim type and jurisdiction
+backend/core/retrieve.py:64:                FROM rules
+backend/core/retrieve.py:108:                       ts_rank(to_tsvector('english', body_text),
+backend/core/retrieve.py:114:                  AND to_tsvector('english', body_text) @@ plainto_tsquery('english', %s)
+backend/core/retrieve.py:130:                       ts_rank(to_tsvector('english', c.body_text),
+backend/core/retrieve.py:133:                JOIN case_law_documents d ON c.document_id = d.id
+backend/core/retrieve.py:134:                WHERE to_tsvector('english', c.body_text) @@ plainto_tsquery('english', %s)
+backend/core/retrieve.py:150:                       ts_rank(to_tsvector('english', body_text),
+backend/core/retrieve.py:153:                WHERE to_tsvector('english', body_text) @@ plainto_tsquery('english', %s)
+backend/core/retrieve.py:174:    Primary retrieval: pgvector cosine search when embeddings exist;
+backend/core/retrieve.py:218:                    embedding <=> %s::vector AS distance
+backend/core/retrieve.py:224:                ORDER BY embedding <=> %s::vector
+backend/core/retrieve.py:239:                    c.embedding <=> %s::vector AS distance
+backend/core/retrieve.py:241:                JOIN case_law_documents d ON c.document_id = d.id
+backend/core/retrieve.py:244:                ORDER BY c.embedding <=> %s::vector
+backend/core/retrieve.py:259:                    embedding <=> %s::vector AS distance
+backend/core/retrieve.py:262:                ORDER BY embedding <=> %s::vector
+backend/core/retrieve.py:287:    rules = retrieve_rules(claim_type, jurisdiction, edt)
+backend/core/retrieve.py:291:    # With embeddings absent, rules-only is sufficient for rules-leg demonstration.
+backend/core/retrieve.py:293:    has_rules = len(rules) > 0
+backend/core/retrieve.py:295:    insufficient = not has_rules and not has_authorities
+backend/core/retrieve.py:312:        exact_rules=rules,
+backend/core/router.py:6:  - rules_engine_only: deterministic deadline/eligibility
+backend/core/router.py:7:  - rag_plus_rules: citation-backed legal questions (no LLM)
+backend/core/router.py:9:  - human_review_required: high-risk, complex, or urgent cases
+backend/core/router.py:30:    r"what (is|are) the rules for",
+backend/core/router.py:102:    use_rules_engine: bool
+backend/core/router.py:115:            "use_rules_engine": self.use_rules_engine,
+backend/core/router.py:146:            use_rules_engine=False,
+backend/core/router.py:153:    # ── Path 2: Deadline-only — rules engine ─────────────────────────────────
+backend/core/router.py:156:            path="rules_engine_only",
+backend/core/router.py:161:            use_rules_engine=True,
+backend/core/router.py:177:            use_rules_engine=True,
+backend/core/router.py:193:            use_rules_engine=True,
+backend/core/router.py:200:    # ── Default: RAG + rules, no personal LLM ────────────────────────────────
+backend/core/router.py:202:        path="rag_plus_rules",
+backend/core/router.py:207:        use_rules_engine=True,
+backend/core/score.py:62:    - If rules were retrieved: +0.2 (deterministic authority is strong grounding)
+backend/core/score.py:70:    rules_count = len(bundle.exact_rules)
+backend/core/score.py:72:    if citation_count == 0 and rules_count == 0:
+backend/core/score.py:76:    if rules_count > 0:
+backend/core/score.py:77:        score += 0.3   # rules are strong, deterministic grounding
+backend/core/score.py:101:    if bundle.exact_rules:
+backend/core/user_auth.py:410:            "INSERT INTO users (id) VALUES (%s::uuid) ON CONFLICT (id) DO NOTHING",
+backend/core/user_auth.py:432:                "SELECT user_id FROM cases WHERE id = %s AND deleted_at IS NULL",
+backend/domains/employment/assess_logic.py:6:citations from retrieved rules + BM25 authorities.
+backend/domains/employment/assess_logic.py:14:- Value ranges come from the rules table, never from model memory.
+backend/domains/employment/assess_logic.py:15:- Qualifying period check is hard-coded from rules, not model judgment.
+backend/domains/employment/assess_logic.py:32:# Canonical rule_keys — must match the single series in the rules table
+backend/domains/employment/assess_logic.py:41:def _rule(rules: list[dict], key: str) -> Optional[dict]:
+backend/domains/employment/assess_logic.py:42:    return next((r for r in rules if r["rule_key"] == key), None)
+backend/domains/employment/assess_logic.py:45:def compute_value_range(rules: list[dict], safe_facts: dict) -> dict:
+backend/domains/employment/assess_logic.py:47:    Compute the compensation value range deterministically from rules.
+backend/domains/employment/assess_logic.py:49:    Limb A: statutory compensatory cap (from rules).
+backend/domains/employment/assess_logic.py:55:    cap_row  = _rule(rules, _CAP_KEY)
+backend/domains/employment/assess_logic.py:56:    wpc_row  = _rule(rules, _WPC_KEY)
+backend/domains/employment/assess_logic.py:90:    bundle_rules: list[dict],
+backend/domains/employment/assess_logic.py:114:    qp_row   = _rule(bundle_rules, _QP_KEY)
+backend/domains/employment/assess_logic.py:193:    ec_row = _rule(bundle_rules, _EC_KEY)
+backend/domains/employment/assess_logic.py:205:        row = _rule(bundle_rules, rk)
+backend/domains/employment/assess_logic.py:269:        next_step = "prepare_documents"
+backend/domains/employment/assess_logic.py:286:    value_range = compute_value_range(bundle_rules, safe_facts)
+backend/domains/employment/assess_logic.py:318:    bundle_rules:      list[dict],
+backend/domains/employment/assess_logic.py:331:    GUARDRAIL: Citations must map to rules table authority_ref.
+backend/domains/employment/assess_logic.py:399:    # ── Citations from rules ───────────────────────────────────────────────────
+backend/domains/employment/assess_logic.py:400:    for rule in bundle_rules:
+backend/domains/employment/assess_logic.py:434:    rem_row = _rule(bundle_rules, _UPW_REM_KEY)
+backend/domains/employment/assess_logic.py:456:        recommended_next_step = "prepare_documents"
+backend/domains/employment/deadline.py:5:`rules` table. The LLM never sees raw date arithmetic and never generates or
+backend/domains/employment/deadline.py:6:recalls a deadline. The `source` field in the returned dict is always "rules".
+backend/domains/employment/deadline.py:24:is NEVER returned by the rules query. This module uses whatever time_limit_months
+backend/domains/employment/deadline.py:25:is passed in. The caller is responsible for querying rules with is_prospective=false.
+backend/domains/employment/deadline.py:58:            "source": "rules",
+backend/domains/employment/deadline.py:75:            "source": "rules",
+backend/domains/employment/deadline.py:98:        "source": "rules",
+backend/domains/employment/deadline.py:125:    separate rules not handled here — they have qualifying_period=0.
+backend/domains/employment/reminders.py:14:GUARDRAIL: urgency state is computed by code from rules-derived dates only.
+backend/domains/employment/timeline.py:39:    "user_entered", "rules_engine", "confirmed_extraction", "system_generated",
+backend/domains/employment/timeline.py:73:        "No immediate action required. Continue preparing your case documents."
+backend/domains/employment/timeline.py:197:    # ET deadline — always rules_engine source
+backend/domains/employment/timeline.py:203:                         source="rules_engine"))
+backend/domains/employment/timeline.py:217:    # Generated documents (bundle / core)
+backend/domains/employment/timeline.py:271:            "lawapp is not a solicitor. Dates must be verified against your documents. "
+ingestion/case_law/akn_parser.py:2:Akoma Ntoso / LegalDocML XML parser for Find Case Law documents.
+ingestion/case_law/ingest.py:77:    console.print(f"Ingesting {len(SAMPLE_EAT_DOCS)} sample documents.")
+ingestion/case_law/ingest.py:108:    console.print(f"\nDone. {success}/{len(SAMPLE_EAT_DOCS)} documents ingested. Errors: {len(errors)}")
+ingestion/case_law/ingest.py:165:    """Store a parsed decision into case_law_documents (one row) + case_law_chunks (one per chunk)."""
+ingestion/db.py:77:    Insert or update a case_law_documents row (one per decision).
+ingestion/db.py:85:        INSERT INTO case_law_documents (
+ingestion/db.py:114:    cur.execute("SELECT id FROM case_law_documents WHERE document_uri = %s", (document_uri,))
+ingestion/db.py:117:        raise RuntimeError(f"case_law_documents row not found for {document_uri}")
+ingestion/db.py:159:        INSERT INTO rules (
+ingestion/db.py:195:            case_id, fact_snapshot_hash, rules_used, retrieval_bundle,
+ingestion/db.py:199:            %(case_id)s, %(fact_snapshot_hash)s, %(rules_used)s::jsonb,
+ingestion/db.py:208:            "rules_used":         json.dumps(payload.get("rules_used", [])),
+ingestion/embeddings/embedder.py:5:Schema: vector(384) — see migration 016_vector_dim_384.sql
+ingestion/rules/seed.py:2:Phase 1 — `rules` table seeder for unfair dismissal (England, Wales, Scotland).
+ingestion/rules/seed.py:9:into the `rules` table; the application reads them by effective date.
+ingestion/rules/seed.py:26:    python -m ingestion.rules.seed            # seed all rules
+ingestion/rules/seed.py:27:    python -m ingestion.rules.seed --check    # verify against live API, don't write
+ingestion/rules/seed.py:53:# Format: dict matching the `rules` table schema.
+ingestion/rules/seed.py:187:    # Prior year figure (for back-dated cases with EDT in 2025-04-06 to 2026-04-05)
+ingestion/rules/seed.py:399:    """Seed all rules rows. dry_run=True prints without writing."""
+ingestion/rules/seed.py:445:    parser = argparse.ArgumentParser(description="Seed the rules table for unfair dismissal")
+ingestion/rules/seed.py:447:                        help="Print rules without writing to DB")
+ingestion/rules/seed_unfair_dismissal.py:2:Phase 1 — Unfair Dismissal rules seed (verified 2026-05-31).
+ingestion/rules/seed_unfair_dismissal.py:25:    docker compose run --rm ingestion python -m ingestion.rules.seed_unfair_dismissal
+ingestion/rules/seed_unfair_dismissal.py:27:Guardrail 3: these values enter the rules table from cited primary sources only.
+ingestion/rules/seed_unfair_dismissal.py:40:# If a key is not in this set, it has no business in the rules table.
+ingestion/rules/seed_unfair_dismissal.py:437:INSERT INTO rules (
+ingestion/rules/seed_unfair_dismissal.py:493:UPDATE rules
+ingestion/rules/seed_unfair_dismissal.py:524:                WHERE table_name='rules' AND column_name='verification_status'
+ingestion/rules/seed_unpaid_wages.py:2:Unpaid wages / unlawful deduction from wages — rules seeder.
+ingestion/rules/seed_unpaid_wages.py:5:Populates the rules table with cited, effective-dated deterministic facts.
+ingestion/rules/seed_unpaid_wages.py:15:    docker compose run --rm ingestion python -m ingestion.rules.seed_unpaid_wages
+ingestion/rules/seed_unpaid_wages.py:168:UPDATE rules
+ingestion/rules/seed_unpaid_wages.py:191:                WHERE table_name='rules' AND column_name='verification_status'
+ingestion/rules/seed_unpaid_wages.py:201:        logger.info("Seeded %d unpaid wages rules.", len(ROWS))
+ingestion/rules/seed_unpaid_wages.py:202:        print(f"✓ Seeded {len(ROWS)} unpaid wages rules.")
+ingestion/rules/verify_sources.py:2:Source verification for the rules table.
+ingestion/rules/verify_sources.py:4:This script fetches the authority_url for each non-prospective rules row
+ingestion/rules/verify_sources.py:11:    docker compose run --rm ingestion python -m ingestion.rules.verify_sources
+ingestion/rules/verify_sources.py:105:                FROM rules
+ingestion/rules/verify_sources.py:140:        print("FAILURES detected — review before treating Phase 1 rules as live.")
+infra/k8s/iterlaw/external-db-connection.yaml:2:# IterLaw — external PostgreSQL + pgvector connection
+infra/k8s/iterlaw/external-db-connection.yaml:5:# (e.g. Azure Database for PostgreSQL Flexible Server with pgvector extension).
+infra/k8s/iterlaw/external-db-connection.yaml:9:# Option B: Deploy in-cluster Postgres (see postgres-pgvector.yaml if needed).
+infra/k8s/iterlaw/external-db-connection.yaml:11:# This ConfigMap documents the connection intent only.
+infra/k8s/iterlaw/external-db-connection.yaml:25:    pgvector must be enabled: CREATE EXTENSION IF NOT EXISTS vector;
+infra/k8s/iterlaw/ingress-staging.yaml:27:  rules:
+infra/k8s/iterlaw/namespace.yaml:3:# This file documents them for IaC parity. Do not re-apply if already present.
+infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw — Staging Postgres + pgvector in iterlaw-ai
+infra/k8s/iterlaw/postgres-staging.yaml:37:          image: pgvector/pgvector:pg16
+infra/k8s/iterlaw/rag-deployment.yaml:2:# IterLaw RAG worker — BM25 + pgvector retrieval service
+infra/k8s/iterlaw/README.md:28:7. Run rules verification gate: `python scripts/check_rules_verification.py`
+infra/k8s/iterlaw/secrets.example.yaml:15:  # PostgreSQL connection string (pgvector enabled)
+infra/k8s/iterlaw/secrets.example.yaml:25:  # OpenAI API key for pgvector embeddings (optional; BM25 active without it)
+infra/k8s/lawapp-backup-job.yaml:21:          grep "CREATE TABLE public.cases" /tmp/backup.sql
+infra/k8s/lawapp-backup-restore-proof.yaml:25:          ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+infra/k8s/lawapp-backup-restore-proof.yaml:26:          echo "Restored rules count: $ROW_COUNT"
+infra/k8s/lawapp-ingress.yaml:16:  rules:
+infra/k8s/lawapp-postgres-sts.yaml:63:        image: pgvector/pgvector:pg16

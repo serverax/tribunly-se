@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your diagnosis — lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
+  <script src="/js/a11y.js"></script>
+</head>
+<body>
+
+<div class="legal-notice" role="alert">
+  <strong>Not a law firm. Not legal advice.</strong>
+  This is information and assessment only. For regulated legal advice, consult a qualified solicitor.
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="nav-links" id="navlinks">
+    <a href="/pages/intake.html">Start again</a>
+    <a href="/">Home</a>
+  </div>
+</nav>
+
+<main class="page-narrow" style="padding-top:1.5rem;" id="app">
+  <div id="loading-state" style="text-align:center;padding:3rem 0;">
+    <div class="spinner"></div>
+    <p style="color:var(--muted);">Loading your assessment…</p>
+  </div>
+  <div id="error-state" style="display:none;">
+    <div class="form-section" style="background:#fff8f8;border-color:var(--warn);">
+      <h2 style="color:var(--warn);">No assessment found</h2>
+      <p>Your session may have expired. Please <a href="/pages/intake.html">complete the intake form again</a>.</p>
+    </div>
+  </div>
+  <div id="result-container" style="display:none;"></div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script>
+(function() {
+  LAWAPP_AUTH.updateNav();
+  const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
+
+  const params = new URLSearchParams(window.location.search);
+  const caseId = params.get('case_id');
+  const raw = sessionStorage.getItem('assessment_result');
+  // Backend trace id, captured from the x-trace-id response header at intake.
+  const traceId = sessionStorage.getItem('assessment_trace_id') || '';
+
+  Promise.resolve(LAWAPP_AUTH.isLoggedIn()).then(isLoggedIn => {
+    if (caseId && isLoggedIn) {
+      LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}`)
+        .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+        .then(caseData => {
+          if (caseData.assessment) {
+            sessionStorage.setItem('assessment_result', JSON.stringify(caseData.assessment));
+            renderAssessment(caseData.assessment);
+            appendDiagnostics();
+          } else {
+            throw new Error('No assessment in case record');
+          }
+        })
+        .catch(() => {
+          document.getElementById('loading-state').style.display = 'none';
+          document.getElementById('error-state').style.display = 'block';
+        });
+      return;
+    }
+
+    if (!raw) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('error-state').style.display = 'block';
+      return;
+    }
+
+    let data;
+    try { data = JSON.parse(raw); } catch(e) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('error-state').style.display = 'block';
+      return;
+    }
+
+    renderAssessment(data);
+    appendDiagnostics();
+  });
+
+  // Surface the backend trace id on every status path (ok, not_supported,
+  // insufficient_grounding, missing_edt) so support/audit can correlate the
+  // exact request in server logs and the brain_traces table. Honest debug
+  // surface — shows nothing if no trace id was captured.
+  function appendDiagnostics() {
+    if (!traceId) return;
+    if (document.getElementById('diagnostics-trace')) return;
+    const container = document.getElementById('result-container');
+    if (!container) return;
+    const details = document.createElement('details');
+    details.id = 'diagnostics-trace';
+    details.style.marginTop = '1.25rem';
+    details.style.fontSize = '.82rem';
+    details.style.color = 'var(--muted)';
+    const summary = document.createElement('summary');
+    summary.style.cursor = 'pointer';
+    summary.textContent = 'Diagnostics';
+    const p = document.createElement('p');
+    p.style.marginTop = '.6rem';
+    const strong = document.createElement('strong');
+    strong.textContent = 'Trace ID: ';
+    const code = document.createElement('code');
+    code.id = 'trace-id-value';
+    code.textContent = traceId;
+    p.append(strong, code);
+    const note = document.createElement('p');
+    note.style.fontSize = '.78rem';
+    note.style.opacity = '.8';
+    note.textContent = 'Quote this trace ID if you contact support. It links this assessment to the exact server request and audit log.';
+    details.append(summary, p, note);
+    container.style.display = 'block';
+    container.appendChild(details);
+  }
+
+  function renderAssessment(d) {
+    document.getElementById('loading-state').style.display = 'none';
+    const container = document.getElementById('result-container');
+    container.style.display = 'block';
+
+    if (d.status === 'not_supported') {
+      container.textContent = '';
+      const div = document.createElement('div');
+      div.className = 'form-section';
+      div.style.background = '#fff8f8';
+      div.style.borderColor = 'var(--warn)';
+      
+      const h2 = document.createElement('h2');
+      h2.style.color = 'var(--warn)';
+      h2.textContent = 'Outside our scope';
+      
+      const p = document.createElement('p');
+      p.textContent = 'lawapp currently only handles unfair dismissal claims in England and Wales.';
+      
+      const a = document.createElement('a');
+      a.href = '/';
+      a.className = 'btn btn-outline';
+      a.style.marginTop = '1rem';
+      a.textContent = 'Return home';
+      
+      div.append(h2, p, a);
+      container.appendChild(div);
+      return;
+    }
+
+    if (d.status === 'missing_edt') {
+      container.textContent = '';
+      const div = document.createElement('div');
+      div.className = 'form-section';
+      div.style.background = '#fff8f8';
+      div.style.borderColor = 'var(--warn)';
+      
+      const h2 = document.createElement('h2');
+      h2.style.color = 'var(--warn)';
+      h2.textContent = 'Missing dismissal date';
+      
+      const p = document.createElement('p');
+      p.textContent = 'We need the date your employment ended to compute your deadline and assess your claim.';
+      
+      const a = document.createElement('a');
+      a.href = '/pages/intake.html';
+      a.className = 'btn btn-primary';
+      a.style.marginTop = '1rem';
+      a.textContent = 'Go back and add date';
+      
+      div.append(h2, p, a);
+      container.appendChild(div);
+      return;
+    }
+
+    if (d.insufficient_grounding || d.status === 'insufficient_grounding') {
+      container.textContent = '';
+      const card = document.createElement('div');
+      card.className = 'assessment-card';
+      
+      const header = document.createElement('div');
+      header.className = 'assessment-header';
+      const h2 = document.createElement('h2');
+      h2.textContent = 'Assessment: Insufficient information';
+      const badge = document.createElement('span');
+      badge.className = 'badge uncertain';
+      badge.textContent = 'Uncertain';
+      header.append(h2, badge);
+      
+      const p = document.createElement('p');
+      p.style.marginTop = '.75rem';
+      p.textContent = 'We do not have enough information to assess your case with confidence. This is an honest answer — not a refusal.';
+      
+      const ul = document.createElement('ul');
+      ul.style.margin = '1rem 0';
+      ul.style.paddingLeft = '1.25rem';
+      ul.style.fontSize = '.95rem';
+      ul.style.lineHeight = '2';
+      ['Provide your employment start and dismissal dates', 'Include the reason given for dismissal', 'Tell us whether a disciplinary process was followed'].forEach(txt => {
+        const li = document.createElement('li');
+        li.textContent = txt;
+        ul.appendChild(li);
+      });
+      
+      const a = document.createElement('a');
+      a.href = '/pages/intake.html';
+      a.className = 'btn btn-primary';
+      a.textContent = 'Complete the intake form';
+      
+      card.append(header, p, ul, a);
+      container.appendChild(card);
+      
+      container.appendChild(renderHandoffSection(d));
+      container.appendChild(renderBoundaryLog(d.boundary_log));
+      
+      wireHandoffForm(d);
+      return;
+    }
+
+    const viability = d.has_viable_claim || 'uncertain';
+    const strength  = d.strength || 'uncertain';
+
+    container.textContent = '';
+    const h1 = document.createElement('h1');
+    h1.style.color = 'var(--primary)';
+    h1.style.marginBottom = '1.5rem';
+    h1.textContent = 'Your diagnosis';
+    container.appendChild(h1);
+
+    container.appendChild(renderViabilityCard(viability, strength, d.reasoning_summary));
+    container.appendChild(renderTribunalChecklist(d.tribunal_elements));
+    container.appendChild(renderSaveSection(d));
+    container.appendChild(renderDeadlineCard(d.deadline_info || d.deadline));
+    container.appendChild(renderWeaknessSection(d.key_weaknesses));
+    container.appendChild(renderEmployerSection(d.employer_arguments));
+    container.appendChild(renderValueRange(d.value_range));
+    container.appendChild(renderNextStep(d.recommended_next_step));
+    container.appendChild(renderDocumentSection(d));
+    container.appendChild(renderHandoffSection(d));
+    container.appendChild(renderCitations(d.citations));
+    container.appendChild(renderBoundaryLog(d.boundary_log));
+
+    const footerNav = document.createElement('div');
+    footerNav.style.margin = '2rem 0';
+    footerNav.style.display = 'flex';
+    footerNav.style.gap = '1rem';
+    footerNav.style.flexWrap = 'wrap';
+    
+    const newBtn = document.createElement('a');
+    newBtn.href = '/pages/intake.html';
+    newBtn.className = 'btn btn-outline';
+    newBtn.textContent = 'Start a new diagnosis';
+    
+    const homeBtn = document.createElement('a');
+    homeBtn.href = '/';
+    homeBtn.className = 'btn btn-outline';
+    homeBtn.textContent = 'Home';
+    
+    footerNav.append(newBtn, homeBtn);
+    container.appendChild(footerNav);
+
+    const disclaimer = document.createElement('p');
+    disclaimer.style.fontSize = '.8rem';
+    disclaimer.style.color = 'var(--muted)';
+    disclaimer.style.marginTop = '1rem';
+    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. All legal points are cited to statutory or tribunal authority. Outputs are not guaranteed and should not be relied upon as a substitute for legal advice.';
+    container.appendChild(disclaimer);
+
+    wireSaveButton(d);
+    wireDocumentSection(d);
+    wireHandoffForm(d);
+  }
+
+  // ── Stripe Integration (Go-Live Ready) ──────────────────────────────────
+  async function redirectToStripe() {
+    const STRIPE_PUBLIC_KEY = ''; // OWNER ACTION REQUIRED
+    if (!STRIPE_PUBLIC_KEY) {
+      alert('GO-LIVE BLOCKER - OWNER ACTION REQUIRED: Stripe Public Key missing.');
+      return;
+    }
+    // Real checkout uses POST /api/payments/create-session.
+    console.log('Redirecting to Stripe...');
+  }
+
+  // ── Render functions ────────────────────────────────────────────────────────
+
+  function isCachedLoggedIn() {
+    return !!(LAWAPP_AUTH._meCache && LAWAPP_AUTH._meCache.isAuthenticated);
+  }
+
+  function renderSaveSection(d) {
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    card.id = 'save-section';
+    card.style.background = '#f0f4ff';
+    card.style.borderColor = 'var(--primary)';
+    
+    if (isCachedLoggedIn()) {
+      const h3 = document.createElement('h3');
+      h3.textContent = 'Save this diagnosis';
+      const p = document.createElement('p');
+      p.style.fontSize = '.875rem';
+      p.textContent = 'Save this assessment to your dashboard to track your deadline and generate documents later.';
+      const btn = document.createElement('button');
+      btn.id = 'btn-save-case';
+      btn.className = 'btn btn-primary';
+      btn.textContent = 'Save to my account';
+      card.append(h3, p, btn);
+    } else {
+      const h3 = document.createElement('h3');
+      h3.textContent = 'Save your results';
+      const p = document.createElement('p');
+      p.style.fontSize = '.875rem';
+      p.textContent = 'Create a free account to save this diagnosis, track your deadline, and generate documents.';
+      const btn = document.createElement('a');
+      btn.href = '/pages/register.html';
+      btn.className = 'btn btn-primary';
+      btn.textContent = 'Sign up to save case';
+      card.append(h3, p, btn);
+    }
+    return card;
+  }
+
+  function wireSaveButton(assessment) {
+    const btn = document.getElementById('btn-save-case');
+    if (!btn) return;
+    
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+      
+      const payload = {
+        claim_type: assessment.claim_type || 'unfair_dismissal',
+        jurisdiction: 'EW',
+        assessment: assessment,
+        key_dates: assessment.deadline_info || assessment.deadline || {},
+      };
+      
+      try {
+        const resp = await fetch('/cases', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        if (!resp.ok) throw new Error('Failed to save case');
+        
+        const section = document.getElementById('save-section');
+        section.textContent = '';
+        const msg = document.createElement('p');
+        msg.style.color = 'green';
+        msg.style.fontWeight = '600';
+        msg.textContent = '✓ Case saved to your dashboard.';
+        const viewBtn = document.createElement('a');
+        viewBtn.href = '/pages/dashboard.html';
+        viewBtn.className = 'btn btn-outline';
+        viewBtn.style.marginLeft = '1rem';
+        viewBtn.textContent = 'Go to dashboard';
+        section.append(msg, viewBtn);
+        
+      } catch (err) {
+        alert('Error saving case: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Save to my account';
+      }
+    });
+  }
+
+  function renderViabilityCard(viability, strength, summary) {
+    const labels = {yes: 'Viable claim', no: 'Unlikely viable', uncertain: 'Uncertain'};
+    const strengthLabels = {high: 'Strong', medium: 'Moderate', low: 'Weak', uncertain: 'Uncertain'};
+    
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    
+    const header = document.createElement('div');
+    header.className = 'assessment-header';
+    const h2 = document.createElement('h2');
+    h2.textContent = 'Claim viability';
+    
+    const badgeRow = document.createElement('div');
+    badgeRow.style.display = 'flex';
+    badgeRow.style.gap = '.5rem';
+    badgeRow.style.alignItems = 'center';
+    
+    const b1 = document.createElement('span');
+    b1.className = `badge ${viability}`;
+    b1.textContent = labels[viability] || viability;
+    
+    const b2 = document.createElement('span');
+    b2.className = `badge ${strength}`;
+    b2.textContent = strengthLabels[strength] || strength;
+    
+    badgeRow.append(b1, b2);
+    header.append(h2, badgeRow);
+    card.appendChild(header);
+    
+    if (summary) {
+      const p = document.createElement('p');
+      p.style.marginTop = '.75rem';
+      p.style.lineHeight = '1.7';
+      p.textContent = summary;
+      card.appendChild(p);
+    }
+    return card;
+  }
+
+  function renderTribunalChecklist(elements) {
+    if (!elements || elements.length === 0) return document.createDocumentFragment();
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    const h3 = document.createElement('h3');
+    h3.textContent = 'Tribunal element checklist';
+    const p = document.createElement('p');
+    p.style.fontSize = '.875rem';
+    p.style.color = 'var(--muted)';
+    p.style.margin = '.5rem 0 .75rem';
+    p.textContent = 'For a claim to be viable at tribunal, these elements are usually assessed. Your diagnosis addresses each of these themes.';
+    const ul = document.createElement('ul');
+    ul.style.listStyle = 'none';
+    ul.style.padding = '0';
+    elements.forEach(e => {
+      const li = document.createElement('li');
+      li.style.padding = '.5rem 0';
+      li.style.borderBottom = '1px solid var(--border)';
+      li.style.display = 'flex';
+      li.style.gap = '.75rem';
+      li.style.alignItems = 'flex-start';
+      const icon = document.createElement('span');
+      icon.textContent = '📋';
+      const text = document.createElement('span');
+      text.style.fontSize = '.9rem';
+      text.textContent = e;
+      li.append(icon, text);
+      ul.appendChild(li);
+    });
+    card.append(h3, p, ul);
+    return card;
+  }
+
+  function renderDeadlineCard(dl) {
+    if (!dl) return document.createDocumentFragment();
+    const dt = dl.limitation_date || dl.date;
+    const authority = dl.authority || '';
+    const isUrgent = dt && daysUntil(dt) <= 30;
+    
+    const card = document.createElement('div');
+    card.className = `deadline-card ${isUrgent ? 'urgent' : ''}`;
+    
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.justifyContent = 'space-between';
+    row.style.alignItems = 'flex-start';
+    row.style.flexWrap = 'wrap';
+    row.style.gap = '.5rem';
+    
+    const col1 = document.createElement('div');
+    const label = document.createElement('div');
+    label.className = 'deadline-label';
+    label.textContent = 'Tribunal deadline';
+    const dateVal = document.createElement('div');
+    dateVal.className = 'deadline-date';
+    dateVal.textContent = formatDate(dt);
+    col1.append(label, dateVal);
+    
+    if (isUrgent) {
+      const warn = document.createElement('div');
+      warn.style.marginTop = '.5rem';
+      warn.style.fontWeight = '700';
+      warn.textContent = '⚠ Fewer than 30 days remain';
+      col1.appendChild(warn);
+    }
+    
+    const col2 = document.createElement('div');
+    col2.style.fontSize = '.85rem';
+    col2.style.opacity = '.85';
+    col2.style.textAlign = 'right';
+    if (dl.source === 'rules') {
+      const s = document.createElement('span');
+      s.title = 'Computed deterministically from statute';
+      s.textContent = 'Statute-derived';
+      col2.appendChild(s);
+    }
+    if (authority) {
+      col2.appendChild(document.createElement('br'));
+      const small = document.createElement('small');
+      small.textContent = authority;
+      col2.appendChild(small);
+    }
+    
+    row.append(col1, col2);
+    
+    const p = document.createElement('p');
+    p.style.marginTop = '.75rem';
+    p.style.fontSize = '.875rem';
+    p.style.opacity = '.9';
+    p.textContent = 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
+
+    card.append(row, p, renderRuleDecision(dl));
+    return card;
+  }
+
+  // Surface the underlying RULE DECISION behind the deadline. Every line is a real
+  // field returned by the backend deadline computation (backend.domains.employment
+  // .deadline.compute_limitation_date / /api/deadline/calculate); a field is shown
+  // only when present, so nothing is invented in the UI.
+  function renderRuleDecision(dl) {
+    if (!dl) return document.createDocumentFragment();
+    const rows = [];
+    if (dl.source) rows.push(['Source', dl.source === 'rules' ? 'Rules table (deterministic, not a model)' : dl.source]);
+    if (dl.time_limit_months != null) rows.push(['Statutory time limit', `${dl.time_limit_months} months`]);
+    if (dl.authority) rows.push(['Authority', dl.authority]);
+    if (dl.base_limit) rows.push(['Base limit (before ACAS)', dl.base_limit]);
+    if (dl.ec_applied === true) {
+      if (dl.pause_days != null) rows.push(['ACAS EC stop-clock', `+${dl.pause_days} days`]);
+      if (dl.ec_floor) rows.push(['EC floor (1 month after cert.)', dl.ec_floor]);
+      if (dl.floor_applied === true) rows.push(['Floor applied', 'yes — floor date is later than the adjusted limit']);
+    } else if (dl.ec_applied === false) {
+      rows.push(['ACAS EC stop-clock', 'not applied (no EC dates supplied)']);
+    }
+    const traceId = dl.trace_id || dl.request_id;
+    if (traceId) rows.push(['Trace id', traceId]);
+    if (rows.length === 0) return document.createDocumentFragment();
+
+    const details = document.createElement('details');
+    details.className = 'rule-decision';
+    details.style.marginTop = '.85rem';
+    details.style.fontSize = '.85rem';
+    const summary = document.createElement('summary');
+    summary.style.cursor = 'pointer';
+    summary.style.fontWeight = '600';
+    summary.textContent = 'How this deadline was decided';
+    details.appendChild(summary);
+
+    const dl_ = document.createElement('dl');
+    dl_.style.margin = '.6rem 0 0';
+    dl_.style.display = 'grid';
+    dl_.style.gridTemplateColumns = 'auto 1fr';
+    dl_.style.gap = '.25rem .75rem';
+    rows.forEach(([k, v]) => {
+      const dt = document.createElement('dt');
+      dt.style.opacity = '.8';
+      dt.textContent = k;
+      const dd = document.createElement('dd');
+      dd.style.margin = '0';
+      dd.style.fontWeight = '600';
+      dd.textContent = String(v);
+      dl_.append(dt, dd);
+    });
+    if (dl.notes) {
+      const note = document.createElement('p');
+      note.style.gridColumn = '1 / -1';
+      note.style.margin = '.5rem 0 0';
+      note.style.opacity = '.8';
+      note.style.fontWeight = '400';
+      note.textContent = dl.notes;
+      dl_.appendChild(note);
+    }
+    details.appendChild(dl_);
+    return details;
+  }
+
+  function renderWeaknessSection(weaknesses) {
+    if (!weaknesses || weaknesses.length === 0) return document.createDocumentFragment();
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    const h3 = document.createElement('h3');
+    h3.textContent = 'Key weaknesses in your case';
+    const p = document.createElement('p');
+    p.style.fontSize = '.875rem';
+    p.style.color = 'var(--muted)';
+    p.style.margin = '.5rem 0 .75rem';
+    p.textContent = 'These are the issues most likely to reduce your prospects or compensation.';
+    const ul = document.createElement('ul');
+    ul.className = 'weakness-list';
+    weaknesses.forEach(w => {
+      const li = document.createElement('li');
+      li.textContent = w;
+      ul.appendChild(li);
+    });
+    card.append(h3, p, ul);
+    return card;
+  }
+
+  function renderEmployerSection(args) {
+    if (!args || args.length === 0) return document.createDocumentFragment();
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    const h3 = document.createElement('h3');
+    h3.textContent = 'What the employer may argue';
+    const p = document.createElement('p');
+    p.style.fontSize = '.875rem';
+    p.style.color = 'var(--muted)';
+    p.style.margin = '.5rem 0 .75rem';
+    p.textContent = 'Prepare to address these arguments at tribunal.';
+    const ul = document.createElement('ul');
+    ul.className = 'employer-list';
+    args.forEach(a => {
+      const li = document.createElement('li');
+      li.textContent = a;
+      ul.appendChild(li);
+    });
+    card.append(h3, p, ul);
+    return card;
+  }
+
+  function renderValueRange(vr) {
+    if (!vr) return document.createDocumentFragment();
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    const h3 = document.createElement('h3');
+    h3.textContent = 'Estimated compensation range';
+    const p = document.createElement('p');
+    p.style.fontSize = '.875rem';
+    p.style.color = 'var(--muted)';
+    p.style.margin = '.5rem 0 .75rem';
+    p.textContent = vr.basis || '';
+    
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.gap = '2rem';
+    row.style.flexWrap = 'wrap';
+    row.style.marginTop = '.5rem';
+    
+    const colLow = document.createElement('div');
+    const l1 = document.createElement('div');
+    l1.style.fontSize = '.8rem';
+    l1.style.color = 'var(--muted)';
+    l1.textContent = 'Low estimate';
+    const l2 = document.createElement('div');
+    l2.style.fontSize = '1.4rem';
+    l2.style.fontWeight = '700';
+    l2.style.color = 'var(--primary)';
+    l2.textContent = formatMoney(vr.low, vr.currency);
+    colLow.append(l1, l2);
+    
+    const colHigh = document.createElement('div');
+    const h1 = document.createElement('div');
+    h1.style.fontSize = '.8rem';
+    h1.style.color = 'var(--muted)';
+    h1.textContent = 'High estimate';
+    const h2 = document.createElement('div');
+    h2.style.fontSize = '1.4rem';
+    h2.style.fontWeight = '700';
+    h2.style.color = 'var(--primary)';
+    h2.textContent = formatMoney(vr.high, vr.currency);
+    colHigh.append(h1, h2);
+    
+    row.append(colLow, colHigh);
+    
+    const pNote = document.createElement('p');
+    pNote.style.fontSize = '.8rem';
+    pNote.style.color = 'var(--muted)';
+    pNote.style.marginTop = '.75rem';
+    pNote.textContent = 'Estimates from statutory rules only. Actual awards depend on tribunal findings.';
+    
+    card.append(h3, p, row, pNote);
+    return card;
+  }
+
+  function renderNextStep(step) {
+    const map = {
+      'free_diagnosis_only': {label: 'Diagnosis only — seek solicitor', desc: 'Based on the information available, we recommend speaking with a qualified employment solicitor before proceeding.'},
+      'prepare_documents':   {label: 'Prepare your claim documents', desc: 'Your case appears viable. The next step is to start ACAS Early Conciliation and prepare your ET1 particulars.'},
+      'seek_solicitor':      {label: 'Seek a solicitor', desc: 'This case has complexity that warrants regulated legal advice from a qualified solicitor before you take further steps.'},
+    };
+    if (!step || !map[step]) return document.createDocumentFragment();
+    const s = map[step];
+    
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    card.style.borderColor = 'var(--primary)';
+    card.style.background = '#f0f4ff';
+    const h3 = document.createElement('h3');
+    h3.style.color = 'var(--primary)';
+    h3.textContent = 'Recommended next step';
+    const p1 = document.createElement('p');
+    p1.style.fontWeight = '600';
+    p1.style.margin = '.5rem 0 .25rem';
+    p1.textContent = s.label;
+    const p2 = document.createElement('p');
+    p2.style.fontSize = '.9rem';
+    p2.textContent = s.desc;
+    card.append(h3, p1, p2);
+    return card;
+  }
+
+  function renderDocumentSection(d) {
+    if (d.status !== 'ok' || !d.deadline_info) return document.createDocumentFragment();
+    // Payment status is evaluated server-side.
+    
+    const card = document.createElement('div');
+    card.id = 'doc-section';
+    card.className = 'assessment-card';
+    card.style.borderColor = 'var(--accent)';
+    
+    const h3 = document.createElement('h3');
+    h3.textContent = 'Self-help draft documents';
+    
+    const pIntro = document.createElement('p');
+    pIntro.style.fontSize = '.875rem';
+    pIntro.style.color = 'var(--muted)';
+    pIntro.style.margin = '.5rem 0 .75rem';
+    pIntro.textContent = 'Generate a draft Particulars of Claim or Schedule of Loss based on your assessment. These are self-help drafts — not legal advice. Review and verify before use. lawapp does not file or represent you.';
+    
+    card.append(h3, pIntro);
+
+    const gate = document.createElement('div');
+    gate.id = 'payment-gate';
+    gate.style.background = '#f0f4ff';
+    gate.style.border = '1px solid var(--primary)';
+    gate.style.borderRadius = '8px';
+    gate.style.padding = '1rem';
+    gate.style.marginBottom = '1rem';
+    
+    const gTitle = document.createElement('p');
+    gTitle.style.fontWeight = '600';
+    gTitle.style.color = 'var(--primary)';
+    gTitle.style.margin = '0 0 .5rem';
+    gTitle.textContent = 'Full documents access';
+    
+    const gDesc = document.createElement('p');
+    gDesc.style.fontSize = '.875rem';
+    gDesc.style.margin = '0 0 .75rem';
+    gDesc.textContent = 'Preview is free. Pay a fixed fee to unlock full draft access. Save your case first to proceed.';
+    
+    const payBtn = document.createElement('button');
+    payBtn.id = 'btn-stripe-pay';
+    payBtn.className = 'btn btn-primary';
+    payBtn.style.fontSize = '.875rem';
+    payBtn.textContent = 'Unlock Full Documents (£29.99)';
+    
+    const gNote = document.createElement('p');
+    gNote.style.fontSize = '.75rem';
+    gNote.style.color = 'var(--muted)';
+    gNote.style.margin = '.5rem 0 0';
+    gNote.textContent = 'Secure checkout via Stripe. lawapp never charges without your explicit consent.';
+    
+    gate.append(gTitle, gDesc, payBtn, gNote);
+    card.appendChild(gate);
+
+    const btnRow = document.createElement('div');
+    btnRow.style.display = 'flex';
+    btnRow.style.gap = '.75rem';
+    btnRow.style.flexWrap = 'wrap';
+    btnRow.style.marginBottom = '1rem';
+    
+    const pocBtn = document.createElement('button');
+    pocBtn.id = 'btn-poc';
+    pocBtn.className = 'btn btn-primary';
+    pocBtn.textContent = 'Draft Particulars of Claim';
+    
+    const solBtn = document.createElement('button');
+    solBtn.id = 'btn-sol';
+    solBtn.className = 'btn btn-outline';
+    solBtn.textContent = 'Draft Schedule of Loss';
+    
+    btnRow.append(pocBtn, solBtn);
+    
+    const loading = document.createElement('div');
+    loading.id = 'doc-loading';
+    loading.style.display = 'none';
+    loading.style.padding = '.5rem 0';
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    spinner.style.width = '24px';
+    spinner.style.height = '24px';
+    spinner.style.borderWidth = '3px';
+    spinner.style.display = 'inline-block';
+    spinner.style.verticalAlign = 'middle';
+    spinner.style.marginRight = '.5rem';
+    const lText = document.createElement('span');
+    lText.style.color = 'var(--muted)';
+    lText.style.fontSize = '.9rem';
+    lText.textContent = 'Generating draft…';
+    loading.append(spinner, lText);
+    
+    const err = document.createElement('div');
+    err.id = 'doc-error';
+    err.style.display = 'none';
+    err.style.color = 'var(--warn)';
+    err.style.fontSize = '.9rem';
+    
+    const output = document.createElement('div');
+    output.id = 'doc-output';
+    output.style.display = 'none';
+    const outTitle = document.createElement('h4');
+    outTitle.id = 'doc-title';
+    outTitle.style.marginBottom = '.75rem';
+    outTitle.style.color = 'var(--primary)';
+    
+    const payNotice = document.createElement('div');
+    payNotice.id = 'doc-payment-notice';
+    payNotice.style.display = 'none';
+    payNotice.className = 'legal-notice';
+    payNotice.style.marginBottom = '1rem';
+    payNotice.style.fontSize = '.8rem';
+    payNotice.style.background = '#fff8e6';
+    payNotice.style.borderColor = '#e6a817';
+    payNotice.textContent = 'Preview only. Activate full access above to copy and use the complete document.';
+    
+    const boundaryNotice = document.createElement('div');
+    boundaryNotice.className = 'legal-notice';
+    boundaryNotice.style.marginBottom = '1rem';
+    boundaryNotice.style.fontSize = '.8rem';
+    const strong = document.createElement('strong');
+    strong.textContent = 'Self-help draft — NOT legal advice. ';
+    boundaryNotice.append(strong, document.createTextNode('Review carefully. lawapp does not file or represent you.'));
+    
+    const textarea = document.createElement('textarea');
+    textarea.id = 'doc-content';
+    textarea.readOnly = true;
+    textarea.style.width = '100%';
+    textarea.style.minHeight = '500px';
+    textarea.style.fontFamily = 'monospace';
+    textarea.style.fontSize = '.8rem';
+    textarea.style.lineHeight = '1.6';
+    textarea.style.border = '1px solid var(--border)';
+    textarea.style.borderRadius = '6px';
+    textarea.style.padding = '1rem';
+    textarea.style.background = '#fafafa';
+    textarea.style.resize = 'vertical';
+    textarea.style.whiteSpace = 'pre';
+    
+    const copyRow = document.createElement('div');
+    copyRow.id = 'doc-copy-row';
+    copyRow.style.marginTop = '.75rem';
+    copyRow.style.display = 'none';
+    copyRow.style.gap = '.75rem';
+    copyRow.style.flexWrap = 'wrap';
+    const copyBtn = document.createElement('button');
+    copyBtn.onclick = copyDoc;
+    copyBtn.className = 'btn btn-outline';
+    copyBtn.style.fontSize = '.875rem';
+    copyBtn.textContent = 'Copy to clipboard';
+    const copyConfirm = document.createElement('span');
+    copyConfirm.id = 'copy-confirm';
+    copyConfirm.style.display = 'none';
+    copyConfirm.style.color = 'green';
+    copyConfirm.style.fontSize = '.875rem';
+    copyConfirm.style.alignSelf = 'center';
+    copyConfirm.textContent = 'Copied.';
+    copyRow.append(copyBtn, copyConfirm);
+    
+    output.append(outTitle, payNotice, boundaryNotice, textarea, copyRow);
+    card.append(btnRow, loading, err, output);
+    
+    return card;
+  }
+
+  function renderHandoffSection(d) {
+    const needsHandoff = d.recommended_next_step === 'seek_solicitor'
+      || d.insufficient_grounding
+      || d.strength === 'low';
+    if (!needsHandoff) return document.createDocumentFragment();
+    
+    const card = document.createElement('div');
+    card.id = 'handoff-section';
+    card.className = 'assessment-card';
+    card.style.borderColor = 'var(--accent)';
+    card.style.background = '#f8f0ff';
+    
+    const h3 = document.createElement('h3');
+    h3.style.color = 'var(--accent)';
+    h3.textContent = 'Get help from a qualified solicitor';
+    
+    const pIntro = document.createElement('p');
+    pIntro.style.fontSize = '.875rem';
+    pIntro.style.margin = '.5rem 0 .75rem';
+    pIntro.textContent = 'Based on your assessment, your case may benefit from regulated legal advice. Submit your details below and lawapp will connect you with a qualified employment solicitor. This referral is free to you.';
+    
+    const pDisclaimer = document.createElement('p');
+    pDisclaimer.style.fontSize = '.8rem';
+    pDisclaimer.style.color = 'var(--muted)';
+    pDisclaimer.style.marginBottom = '1rem';
+    pDisclaimer.textContent = 'lawapp is not a solicitor. This is a referral lead — we do not provide legal advice, file claims, or represent you. No solicitor-client relationship is created by submitting.';
+    
+    const formContainer = document.createElement('div');
+    formContainer.id = 'handoff-form-container';
+    
+    const form = document.createElement('form');
+    form.id = 'handoff-form';
+    form.noValidate = true;
+    
+    function createField(id, labelText, type = 'text', required = false, isTextarea = false) {
+      const group = document.createElement('div');
+      group.className = 'form-group';
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.textContent = labelText + (required ? ' ' : '');
+      if (required) {
+        const star = document.createElement('span');
+        star.style.color = 'var(--warn)';
+        star.textContent = '*';
+        label.appendChild(star);
+      }
+      const input = document.createElement(isTextarea ? 'textarea' : 'input');
+      input.id = id;
+      if (!isTextarea) input.type = type;
+      if (required) input.required = true;
+      if (isTextarea) {
+        input.rows = 3;
+        input.style.width = '100%';
+        input.style.padding = '.5rem';
+        input.style.border = '1px solid var(--border)';
+        input.style.borderRadius = '6px';
+        input.style.fontSize = '.9rem';
+      }
+      group.append(label, input);
+      return group;
+    }
+    
+    const consentGroup = document.createElement('div');
+    consentGroup.className = 'form-group';
+    const cLabel = document.createElement('label');
+    cLabel.style.display = 'flex';
+    cLabel.style.gap = '.5rem';
+    cLabel.style.alignItems = 'flex-start';
+    cLabel.style.cursor = 'pointer';
+    const cInput = document.createElement('input');
+    cInput.type = 'checkbox';
+    cInput.id = 'hf-consent';
+    cInput.style.marginTop = '3px';
+    cInput.style.flexShrink = '0';
+    const cText = document.createElement('span');
+    cText.style.fontSize = '.875rem';
+    cText.textContent = 'I consent to lawapp sharing my contact details with a qualified employment solicitor for the purpose of a free initial consultation. I understand lawapp is not a solicitor and this is an introduction only.';
+    cLabel.append(cInput, cText);
+    consentGroup.appendChild(cLabel);
+    
+    const err = document.createElement('div');
+    err.id = 'hf-error';
+    err.style.display = 'none';
+    err.style.color = 'var(--warn)';
+    err.style.fontSize = '.875rem';
+    err.style.marginBottom = '.75rem';
+    
+    const submitBtn = document.createElement('button');
+    submitBtn.type = 'submit';
+    submitBtn.className = 'btn btn-primary';
+    submitBtn.id = 'hf-submit';
+    submitBtn.textContent = 'Request free solicitor introduction';
+    
+    form.append(
+      createField('hf-name', 'Your name', 'text', true),
+      createField('hf-email', 'Email address', 'email', true),
+      createField('hf-phone', 'Phone number (optional)', 'tel'),
+      createField('hf-summary', 'Brief summary of your situation (optional)', 'text', false, true),
+      consentGroup,
+      err,
+      submitBtn
+    );
+    formContainer.appendChild(form);
+    
+    const successMsg = document.createElement('div');
+    successMsg.id = 'handoff-success';
+    successMsg.style.display = 'none';
+    successMsg.style.background = '#f0fff4';
+    successMsg.style.border = '1px solid #38a169';
+    successMsg.style.borderRadius = '8px';
+    successMsg.style.padding = '1rem';
+    successMsg.style.fontSize = '.9rem';
+    successMsg.style.color = '#276749';
+    const strong = document.createElement('strong');
+    strong.textContent = 'Received.';
+    successMsg.append(strong, document.createTextNode(' Your details have been recorded. lawapp will match you with a qualified employment solicitor. This is free to you.'));
+    
+    card.append(h3, pIntro, pDisclaimer, formContainer, successMsg);
+    return card;
+  }
+
+  function renderCitations(citations) {
+    if (!citations || citations.length === 0) return document.createDocumentFragment();
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    const h3 = document.createElement('h3');
+    h3.textContent = 'Legal authority';
+    const p = document.createElement('p');
+    p.style.fontSize = '.875rem';
+    p.style.color = 'var(--muted)';
+    p.style.margin = '.5rem 0 .75rem';
+    p.textContent = 'Every legal point in this assessment is grounded in one of the following authorities.';
+    const ul = document.createElement('ul');
+    ul.className = 'citation-list';
+    citations.forEach(c => {
+      const li = document.createElement('li');
+      if (c.url) {
+        const a = document.createElement('a');
+        a.href = c.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = c.cite;
+        li.appendChild(a);
+      } else {
+        li.textContent = c.cite;
+      }
+      ul.appendChild(li);
+    });
+    card.append(h3, p, ul);
+    return card;
+  }
+
+  function renderBoundaryLog(bl) {
+    if (!bl) return document.createDocumentFragment();
+    const details = document.createElement('details');
+    details.style.marginTop = '1.5rem';
+    details.style.fontSize = '.85rem';
+    details.style.color = 'var(--muted)';
+    const summary = document.createElement('summary');
+    summary.style.cursor = 'pointer';
+    summary.textContent = 'Data protection log';
+    const div = document.createElement('div');
+    div.style.marginTop = '.75rem';
+    div.style.padding = '.75rem';
+    div.style.background = '#f5f5f5';
+    div.style.borderRadius = '6px';
+    
+    const p1 = document.createElement('p');
+    const s1 = document.createElement('strong');
+    s1.textContent = 'Fields passed to analysis: ';
+    p1.append(s1, document.createTextNode((bl.fields_passed||[]).join(', ') || 'none'));
+    
+    const p2 = document.createElement('p');
+    const s2 = document.createElement('strong');
+    s2.textContent = 'Fields stripped: ';
+    p2.append(s2, document.createTextNode((bl.fields_stripped||[]).join(', ') || 'none'));
+    
+    const p3 = document.createElement('p');
+    const s3 = document.createElement('strong');
+    s3.textContent = 'PII in output: ';
+    p3.append(s3, document.createTextNode((bl.pii_in_output||[]).length === 0 ? 'None' : (bl.pii_in_output||[]).join(', ')));
+    
+    div.append(p1, p2, p3);
+    details.append(summary, div);
+    return details;
+  }
+
+  // ── Document generation wiring ─────────────────────────────────────────────
+
+  function wireDocumentSection(assessment) {
+    const stripePayBtn = document.getElementById('btn-stripe-pay');
+    if (stripePayBtn) {
+      stripePayBtn.addEventListener('click', async function() {
+        const params = new URLSearchParams(window.location.search);
+        const caseId = params.get('case_id');
+        if (!caseId) {
+            alert("Please save your case to your account first before paying to unlock documents.");
+            return;
+        }
+        stripePayBtn.disabled = true;
+        stripePayBtn.textContent = 'Redirecting to checkout...';
+        try {
+            const resp = await fetch(`${API_BASE}/api/payments/create-session`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ case_id: caseId, package_id: "full_documents" })
+            });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+            window.location.href = data.session_url || data.checkout_url;
+        } catch(e) {
+            alert("Payment init failed: " + e.message);
+            stripePayBtn.disabled = false;
+            stripePayBtn.textContent = 'Unlock Full Documents (£29.99)';
+        }
+      });
+    }
+
+    document.getElementById('btn-poc')?.addEventListener('click', () => generateDoc('particulars_of_claim', assessment));
+    document.getElementById('btn-sol')?.addEventListener('click', () => generateDoc('schedule_of_loss', assessment));
+  }
+
+  async function generateDoc(docType, assessment) {
+    const factsRaw = sessionStorage.getItem('assessment_facts_full');
+    const facts = factsRaw ? JSON.parse(factsRaw) : {};
+    
+    const params = new URLSearchParams(window.location.search);
+    const caseId = params.get('case_id');
+
+    document.getElementById('doc-loading').style.display = 'block';
+    document.getElementById('doc-error').style.display = 'none';
+    document.getElementById('doc-output').style.display = 'none';
+    document.getElementById('btn-poc').disabled = true;
+    document.getElementById('btn-sol').disabled = true;
+
+    try {
+      const body = {document_type: docType, assessment, facts};
+      if (caseId) body.case_id = caseId;
+
+      const resp = await fetch(`${API_BASE}/documents/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...LAWAPP_AUTH.getAuthHeaders()
+        },
+        body: JSON.stringify(body),
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+
+      document.getElementById('doc-title').textContent = data.title || 'Draft document';
+      document.getElementById('doc-content').value = data.content || '';
+      document.getElementById('doc-output').style.display = 'block';
+
+      const payNotice = document.getElementById('doc-payment-notice');
+      if (payNotice) payNotice.style.display = data.payment_required ? 'block' : 'none';
+
+      const copyRow = document.getElementById('doc-copy-row');
+      if (copyRow) copyRow.style.display = data.payment_required ? 'none' : 'flex';
+    } catch (err) {
+      document.getElementById('doc-error').textContent = `Document generation failed. Please try again. (${err.message})`;
+      document.getElementById('doc-error').style.display = 'block';
+    } finally {
+      document.getElementById('doc-loading').style.display = 'none';
+      document.getElementById('btn-poc').disabled = false;
+      document.getElementById('btn-sol').disabled = false;
+    }
+  }
+
+  // ── Handoff form wiring ────────────────────────────────────────────────────
+
+  function wireHandoffForm(assessment) {
+    const form = document.getElementById('handoff-form');
+    if (!form) return;
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name    = document.getElementById('hf-name').value.trim();
+      const email   = document.getElementById('hf-email').value.trim();
+      const phone   = document.getElementById('hf-phone').value.trim();
+      const summary = document.getElementById('hf-summary').value.trim();
+      const consent = document.getElementById('hf-consent').checked;
+      const errEl   = document.getElementById('hf-error');
+
+      if (!name || !email) { errEl.textContent = 'Name and email are required.'; errEl.style.display='block'; return; }
+      if (!consent)         { errEl.textContent = 'You must consent to proceed.'; errEl.style.display='block'; return; }
+      errEl.style.display = 'none';
+
+      const triggerReason = (assessment.recommended_next_step === 'seek_solicitor')
+        ? 'seek_solicitor'
+        : (assessment.insufficient_grounding ? 'insufficient_grounding' : 'low_confidence');
+
+      document.getElementById('hf-submit').disabled = true;
+      try {
+        const resp = await fetch(`${API_BASE}/handoff/leads`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...LAWAPP_AUTH.getAuthHeaders()
+          },
+          body: JSON.stringify({
+            trigger_reason: triggerReason, name, email,
+            phone: phone || undefined,
+            case_summary: summary || undefined,
+            consent_given: true,
+          }),
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        document.getElementById('handoff-form-container').style.display = 'none';
+        document.getElementById('handoff-success').style.display = 'block';
+      } catch(err) {
+        errEl.textContent = `Submission failed. Please try again. (${err.message})`;
+        errEl.style.display = 'block';
+        document.getElementById('hf-submit').disabled = false;
+      }
+    });
+  }
+
+  // ── Utilities ──────────────────────────────────────────────────────────────
+
+  function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+
+  function formatDate(d) {
+    if (!d) return 'Unknown';
+    try {
+      const dt = new Date(d + (d.length === 10 ? 'T00:00:00' : ''));
+      return dt.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+    } catch { return String(d); }
+  }
+
+  function daysUntil(d) {
+    try { return Math.round((new Date(d + 'T00:00:00') - Date.now()) / 86400000); }
+    catch { return 999; }
+  }
+
+  function formatMoney(n, currency) {
+    if (n == null) return '—';
+    const sym = currency === 'GBP' ? '£' : (currency || '');
+    return sym + Number(n).toLocaleString('en-GB', {maximumFractionDigits:0});
+  }
+
+})();
+
+function copyDoc() {
+  const el = document.getElementById('doc-content');
+  if (!el) return;
+  navigator.clipboard.writeText(el.value).then(() => {
+    const c = document.getElementById('copy-confirm');
+    if (c) { c.style.display = 'inline'; setTimeout(() => { c.style.display='none'; }, 2000); }
+  }).catch(() => { el.select(); document.execCommand('copy'); });
+}
+</script>
+<script>
+  (function () {
+    var t = document.querySelector('.nav-toggle'), n = document.getElementById('navlinks');
+    if (!t || !n) return;
+    t.addEventListener('click', function () {
+      var open = n.classList.toggle('open');
+      t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      t.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    n.addEventListener('click', function (e) { if (e.target.closest('a')) { n.classList.remove('open'); t.setAttribute('aria-expanded','false'); } });
+  })();
+</script>
+
+</body>
+</html>

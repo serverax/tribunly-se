@@ -1,0 +1,42 @@
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS             IMAGES                                                                           SELECTOR
+deployment.apps/lawapp-crawler         1/1     1            1           24h   lawapp-crawler         ghcr.io/serverax/lawapp-crawler:b13c59d01e73e861b35498cac2b37d566609c262         app=lawapp-crawler
+deployment.apps/lawapp-rag-ingestion   1/1     1            1           24h   lawapp-rag-ingestion   ghcr.io/serverax/lawapp-rag-ingestion:b13c59d01e73e861b35498cac2b37d566609c262   app=lawapp-rag-ingestion
+deployment.apps/lawapp-rag-retrieval   1/1     1            1           24h   lawapp-rag-retrieval   ghcr.io/serverax/lawapp-rag-retrieval:b13c59d01e73e861b35498cac2b37d566609c262   app=lawapp-rag-retrieval
+deployment.apps/lawapp-worker          1/1     1            1           24h   lawapp-worker          ghcr.io/serverax/lawapp-worker:b13c59d01e73e861b35498cac2b37d566609c262          app=lawapp-worker
+
+NAME                                        READY   STATUS    RESTARTS   AGE     IP            NODE                    NOMINATED NODE   READINESS GATES
+pod/lawapp-backup-proof-26bvp               0/1     Error     0          3d7h    10.244.4.67   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-proof-29vkd               0/1     Error     0          3d7h    10.244.5.76   talos-138-201-202-174   <none>           <none>
+pod/lawapp-backup-proof-7cmpm               0/1     Error     0          3d7h    10.244.4.69   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-proof-btnzg               0/1     Error     0          3d7h    10.244.5.80   talos-138-201-202-174   <none>           <none>
+pod/lawapp-backup-proof-gh5f8               0/1     Error     0          3d7h    10.244.4.74   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-proof-hmnj5               0/1     Error     0          3d7h    10.244.4.71   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-proof-svl76               0/1     Error     0          3d7h    10.244.4.78   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-restore-proof-6b2sq       0/1     Error     0          3d7h    10.244.4.75   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-restore-proof-bts4m       0/1     Error     0          3d7h    10.244.4.70   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-restore-proof-frvqx       0/1     Error     0          3d7h    10.244.4.63   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-restore-proof-fv259       0/1     Error     0          3d7h    10.244.4.72   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-restore-proof-hm9rz       0/1     Error     0          3d7h    10.244.4.68   talos-5h3-83r           <none>           <none>
+pod/lawapp-backup-restore-proof-hw87c       0/1     Error     0          3d7h    10.244.5.81   talos-138-201-202-174   <none>           <none>
+pod/lawapp-backup-restore-proof-m4vz5       0/1     Error     0          3d7h    10.244.5.83   talos-138-201-202-174   <none>           <none>
+pod/lawapp-crawler-6658f7998c-nmr2r         0/1     Pending   0          24h     <none>        <none>                  <none>           <none>
+pod/lawapp-crawler-78dff9d96-6wsb5          1/1     Running   0          24h     10.244.0.72   talos-h93-b9x           <none>           <none>
+pod/lawapp-postgres-0                       1/1     Running   0          4d14h   10.244.5.67   talos-138-201-202-174   <none>           <none>
+pod/lawapp-rag-ingestion-77c8c7cfbb-ltcrb   1/1     Running   0          24h     10.244.5.48   talos-138-201-202-174   <none>           <none>
+pod/lawapp-rag-retrieval-67877c778b-t5jmm   1/1     Running   0          24h     10.244.5.45   talos-138-201-202-174   <none>           <none>
+pod/lawapp-worker-c84989df6-gt4lg           1/1     Running   0          24h     10.244.5.49   talos-138-201-202-174   <none>           <none>
+
+NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+service/lawapp-crawler             ClusterIP   10.100.71.76     <none>        8080/TCP   24h     app=lawapp-crawler
+service/lawapp-postgres            ClusterIP   10.104.219.40    <none>        5432/TCP   4d14h   app=lawapp-postgres
+service/lawapp-postgres-headless   ClusterIP   None             <none>        5432/TCP   4d14h   app=lawapp-postgres
+service/lawapp-rag-ingestion       ClusterIP   10.102.71.106    <none>        8080/TCP   24h     app=lawapp-rag-ingestion
+service/lawapp-rag-retrieval       ClusterIP   10.111.222.123   <none>        8080/TCP   24h     app=lawapp-rag-retrieval
+
+NAME                                 ENDPOINTS          AGE
+endpoints/lawapp-crawler             10.244.0.72:8080   24h
+endpoints/lawapp-postgres            10.244.5.67:5432   4d14h
+endpoints/lawapp-postgres-headless   10.244.5.67:5432   4d14h
+endpoints/lawapp-rag-ingestion       10.244.5.48:8080   24h
+endpoints/lawapp-rag-retrieval       10.244.5.45:8080   24h

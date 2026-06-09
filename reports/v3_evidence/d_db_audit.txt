@@ -1,0 +1,103 @@
+--- D. DATABASE AUDIT ---
+                 List of relations
+ Schema |          Name           | Type  | Owner  
+--------+-------------------------+-------+--------
+ public | acas_guidance           | table | lawapp
+ public | api_route_registry      | table | lawapp
+ public | assessment_audit_logs   | table | lawapp
+ public | bills                   | table | lawapp
+ public | brain_traces            | table | lawapp
+ public | case_law_chunks         | table | lawapp
+ public | case_law_documents      | table | lawapp
+ public | case_timeline_events    | table | lawapp
+ public | cases                   | table | lawapp
+ public | context_compression_log | table | lawapp
+ public | document_facts          | table | lawapp
+ public | document_readiness      | table | lawapp
+ public | documents               | table | lawapp
+ public | evaluation_results      | table | lawapp
+ public | evidence_items          | table | lawapp
+ public | funnel_events           | table | lawapp
+ public | guardrail_events        | table | lawapp
+ public | handoff_leads           | table | lawapp
+ public | ingestion_runs          | table | lawapp
+ public | legal_change_watch      | table | lawapp
+ public | legal_edges             | table | lawapp
+ public | legal_memory            | table | lawapp
+ public | legal_nodes             | table | lawapp
+ public | legislation             | table | lawapp
+ public | mcp_tool_calls          | table | lawapp
+ public | model_call_audit        | table | lawapp
+ public | official_guidance       | table | lawapp
+ public | public_datasets_index   | table | lawapp
+ public | referrals               | table | lawapp
+ public | reminder_events         | table | lawapp
+ public | retention_runs          | table | lawapp
+ public | retrieval_audit         | table | lawapp
+ public | routing_decisions       | table | lawapp
+ public | rules                   | table | lawapp
+ public | safety_boundary_checks  | table | lawapp
+ public | semantic_cache          | table | lawapp
+ public | solicitor_reviews       | table | lawapp
+ public | support_sessions        | table | lawapp
+ public | user_feedback           | table | lawapp
+ public | users                   | table | lawapp
+ public | wasm_calculations       | table | lawapp
+ public | workflow_runs           | table | lawapp
+ public | workflow_steps          | table | lawapp
+(43 rows)
+
+                              List of installed extensions
+   Name   | Version |   Schema   |                     Description                      
+----------+---------+------------+------------------------------------------------------
+ pgcrypto | 1.3     | public     | cryptographic functions
+ plpgsql  | 1.0     | pg_catalog | PL/pgSQL procedural language
+ vector   | 0.8.2   | public     | vector data type and ivfflat and hnsw access methods
+(3 rows)
+
+COUNT rules:
+ count 
+-------
+    19
+(1 row)
+
+COUNT legislation:
+ count 
+-------
+     0
+(1 row)
+
+COUNT acas_guidance:
+ count 
+-------
+     0
+(1 row)
+
+COUNT case_law_chunks:
+ count 
+-------
+     0
+(1 row)
+
+COUNT legal_nodes:
+ count 
+-------
+    15
+(1 row)
+
+COUNT legal_edges:
+ count 
+-------
+    14
+(1 row)
+
+      source       | rows |        oldest_verified        
+-------------------+------+-------------------------------
+ legislation       |    0 | 
+ case_law          |    0 | 
+ acas_guidance     |    0 | 
+ official_guidance |    0 | 
+ bills             |    0 | 
+ rules             |   19 | 2026-06-04 05:46:16.659778+00
+(6 rows)
+

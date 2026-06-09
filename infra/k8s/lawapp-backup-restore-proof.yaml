@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lawapp-backup-restore-proof
+  namespace: lawapp-rag
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-op
+        image: postgres:16
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          set -e
+          export PGPASSWORD=$POSTGRES_PASSWORD
+          echo "Step 1: Dumping production database 'lawapp'..."
+          pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/prod_backup.sql
+          echo "Dump complete. Size: $(ls -lh /tmp/prod_backup.sql | awk '{print $5}')"
+          
+          echo "Step 2: Restoring into 'lawapp_test'..."
+          psql -h lawapp-postgres -U lawapp_user -d lawapp_test < /tmp/prod_backup.sql > /dev/null
+          
+          echo "Step 3: Verifying restoration..."
+          ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+          echo "Restored rules count: $ROW_COUNT"
+          
+          if [ "$(echo $ROW_COUNT | xargs)" -gt 0 ]; then
+            echo "BACKUP/RESTORE PROOF: PASS"
+          else
+            echo "BACKUP/RESTORE PROOF: FAIL"
+            exit 1
+          fi
+        envFrom:
+        - secretRef:
+            name: lawapp-secrets
+      restartPolicy: Never

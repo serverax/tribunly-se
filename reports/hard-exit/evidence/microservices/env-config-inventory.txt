@@ -1,0 +1,13 @@
+===== ENV / CONFIG INVENTORY =====
+Generated: Sun Jun  7 15:22:17 UTC 2026
+
+--- hardcoded localhost in service source (prod risk) ---
+(none above = good)
+
+--- service DNS / URL env references in k8s manifests ---
+61:            - name: POSTGRES_HOST
+62:              value: "lawapp-postgres.lawapp-api.svc.cluster.local"
+
+--- brain LOCAL_INFERENCE_URL (live) ---
+  LIVE: http://llm-inference-service.lawapp-ai.svc.cluster.local:11434  -> DEAD SERVICE (0 endpoints)
+  WORKING ALT: http://ollama-inference.lawapp-ai.svc.cluster.local:11434 -> 3 endpoints, qwen2.5:3b loaded

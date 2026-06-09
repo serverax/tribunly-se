@@ -1,0 +1,81 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: lawapp-smoke-test
+  namespace: lawapp-monitoring
+  labels:
+    app: lawapp-monitoring
+    part-of: lawapp
+spec:
+  schedule: "*/15 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            fsGroup: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+          - name: smoke-test
+            image: ghcr.io/serverax/lawapp/backend:0fec3d8
+            command: ["bash", "scripts/smoke-iterlaw-ai.sh"]
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+              runAsNonRoot: true
+              runAsUser: 10001
+              runAsGroup: 10001
+            envFrom:
+            - configMapRef:
+                name: lawapp-config
+            - secretRef:
+                name: lawapp-secrets
+          restartPolicy: OnFailure
+          imagePullSecrets:
+          - name: ghcr-pull-secret
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: lawapp-legal-accuracy-check
+  namespace: lawapp-monitoring
+  labels:
+    app: lawapp-monitoring
+    part-of: lawapp
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            fsGroup: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+          - name: accuracy-check
+            image: ghcr.io/serverax/lawapp/backend:0fec3d8
+            command: ["python", "scripts/run_legal_accuracy.py"]
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+              runAsNonRoot: true
+              runAsUser: 10001
+              runAsGroup: 10001
+            envFrom:
+            - configMapRef:
+                name: lawapp-config
+            - secretRef:
+                name: lawapp-secrets
+          restartPolicy: OnFailure
+          imagePullSecrets:
+          - name: ghcr-pull-secret

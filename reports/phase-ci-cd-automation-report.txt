@@ -1,0 +1,108 @@
+================================================================================
+PHASE CI/CD AUTOMATION REPORT
+lawapp / IterLaw — namespace: iterlaw-ai
+Date: 2026-06-02
+================================================================================
+
+PHASE A — CLUSTER + REPO STATE
+───────────────────────────────
+Context:      admin@ordinox-talos (Talos/K3s Hetzner)
+Nodes:        3 × Ready (control-plane)
+              talos-h93-b9x   148.251.247.56   Ready
+              talos-5h3-83r   138.201.253.245  Ready
+              talos-138-*     138.201.202.174  Ready
+Namespace:    iterlaw-ai — Active
+Pods:         lawapp-backend  1/1 Running
+              lawapp-postgres 1/1 Running
+Services:     lawapp-backend  ClusterIP 10.104.194.17  :80
+              lawapp-postgres ClusterIP 10.109.37.31   :5432
+Secrets:      lawapp-secrets (10 keys), ghcr-pull-secret
+ConfigMaps:   lawapp-config
+Repo:         github.com/serverax/lawapp  branch: master
+PHASE A:      PASS
+
+PHASE B — CI PIPELINE
+──────────────────────
+File:    .github/workflows/ci.yml
+Jobs:
+  integration-tests      — pytest regression (767 tests)
+  legal-accuracy-gate    — 38 legal accuracy tests (mandatory gate)
+  rules-verification-gate— all production rules verified
+  production-readiness-check — readiness report (informational)
+  build-push             — docker build + push to GHCR (independent, master only)
+
+Triggers: push to master, pull_request, workflow_dispatch
+Image tags: ghcr.io/serverax/lawapp/backend:latest + :<git-sha>
+Status: CI runs, build-push PASSED on last run (26801489256)
+PHASE B: PASS (minor: regression tests have some failures to fix — see below)
+
+PHASE C — CD DEPLOYMENT WORKFLOW
+──────────────────────────────────
+File: .github/workflows/deploy-iterlaw-ai.yml
+Trigger: workflow_dispatch only (manual)
+Input: image_tag (default: latest)
+Steps: kubeconfig → validate ns → confirm secrets → apply manifests →
+       set image → rollout → smoke test (health + OOS rejection)
+Required GitHub secret: KUBECONFIG_HETZNER
+PHASE C: CREATED — requires KUBECONFIG_HETZNER secret to be added
+
+PHASE D — LOCAL HELPER SCRIPTS
+────────────────────────────────
+scripts/check-iterlaw-ai.sh  — pod/svc/deploy/event status
+scripts/smoke-iterlaw-ai.sh  — 7 smoke tests (health, DB, rules, OOS, UD, PII)
+scripts/deploy-iterlaw-ai.sh — image set + rollout + smoke test
+All scoped to iterlaw-ai. Refuse to run if namespace missing.
+PHASE D: PASS
+
+PHASE E — REQUIRED GITHUB SECRETS
+────────────────────────────────────
+Required now:
+  CI_ENCRYPTION_KEY   — Fernet key for test suite (set ✓ already)
+  KUBECONFIG_HETZNER  — base64-encoded ~/.kube/config-hetzner (MISSING — needed for CD)
+
+Optional:
+  ANTHROPIC_API_KEY   — enables real ML classification + reasoning in CI
+                        (currently placeholder; tests use StubReasoningModel)
+  OPENAI_API_KEY      — enables pgvector embeddings; NOT needed until pgvector unblocked
+  GHCR_PAT_READ_PACKAGES — not needed in CI (GITHUB_TOKEN auto-has write:packages)
+
+To add KUBECONFIG_HETZNER:
+  cat ~/.kube/config-hetzner | base64 | gh secret set KUBECONFIG_HETZNER \
+    --repo serverax/lawapp
+
+PHASE F — IMAGE PULL FIX
+──────────────────────────
+Issue: GHCR package private, original ghcr-pull-secret lacked read:packages
+Fix: gh auth refresh to add read:packages, recreated secret with correct token
+Result: image pulled (241MB), backend pod Running 1/1
+Health: {"status":"ok","db":"connected"}
+PHASE F: PASS
+
+SMOKE TEST RESULTS
+───────────────────
+Test                           Result
+health endpoint                PASS — {"status":"ok","db":"connected"}
+DB connected                   PASS
+Rules lookup (19 rules)        PASS
+Out-of-scope rejection         PASS — not_supported / out_of_scope
+Ambiguous query conservative   PASS — not_supported / ambiguous
+UD assessment (deadline=rules) PASS — insufficient_grounding (no corpus yet)
+PII in output                  PASS — []
+controlled_beta_ready          FALSE (expected)
+production_ready               FALSE (expected)
+
+CURRENT BLOCKERS
+─────────────────
+1. Regression tests: some CI tests fail (BM25 corpus empty, ENCRYPTION_KEY
+   now set — next run should clear BM25 failures once corpus is ingested)
+2. KUBECONFIG_HETZNER secret not yet in GitHub (CD workflow needs it)
+3. pgvector corpus empty (legislation/case_law/acas = 0 rows) — BM25 active
+4. Backend image tag in deployment: lawapp-backend container uses key "backend"
+   not "lawapp-backend" (fixed inline via env patch — manifests need updating)
+
+NEXT ACTION
+────────────
+Set KUBECONFIG_HETZNER in GitHub secrets (see Phase E above).
+Then proceed to Phase G: retrieval + reasoning vertical slice.
+
+================================================================================

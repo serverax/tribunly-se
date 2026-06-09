@@ -1,0 +1,135 @@
+PHASE 6A — CONTROLLED PRODUCTION DEPLOYMENT PREPARATION
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 6A closes deployment, authentication, payment, and operational gaps:
+  1. Startup config validation (fail-fast in production mode)
+  2. End-user auth foundation (mock X-User-ID; case ownership)
+  3. Payment mode abstraction (mock/disabled/stripe_test/stripe_live)
+  4. Production readiness report extended with new status fields
+  5. CI/CD hardened (legal accuracy + rules verification gates added)
+  6. Operational scripts (Docker-safe, WSL-safe)
+
+═══════════════════════════════════════════════════════════════════════════════
+1. DEPLOYMENT READINESS FOUNDATION
+═══════════════════════════════════════════════════════════════════════════════
+
+Module: backend/engine/config_validation.py
+FastAPI lifespan: validate_startup_config() called at startup.
+
+DEPLOYMENT_MODE=development (default): warns about missing vars, does not fail.
+DEPLOYMENT_MODE=production:
+  - Required vars: POSTGRES_PASSWORD, ADMIN_API_KEY, ENCRYPTION_KEY
+  - Missing any → StartupConfigError → startup aborted (sys.exit equivalent)
+  - PAYMENT_MODE=stripe_live requires STRIPE_SECRET_KEY
+
+GUARDRAIL: Only var names logged, never values.
+
+═══════════════════════════════════════════════════════════════════════════════
+2. END-USER AUTHENTICATION FOUNDATION
+═══════════════════════════════════════════════════════════════════════════════
+
+Module: backend/engine/user_auth.py
+LAWAPP_AUTH_MODE env var:
+  none (default): no auth — all case endpoints open (backward compat)
+  mock:           X-User-ID header (any valid UUID); case ownership enforced
+  jwt:            not yet implemented (Phase 7 — returns 501)
+
+When mock auth is active:
+  POST /cases: associates case with user_id (upserts into users table)
+  GET /cases/{id}: requires X-User-ID matching case.user_id
+  Admin key (X-Admin-Key) always overrides ownership check
+  Cases with no user_id (legacy): accessible to any authenticated user
+
+GUARDRAIL: User ID values never logged.
+GUARDRAIL: Admin API key is completely separate from end-user auth.
+
+═══════════════════════════════════════════════════════════════════════════════
+3. PAYMENT READINESS FOUNDATION
+═══════════════════════════════════════════════════════════════════════════════
+
+Module: backend/engine/payment.py (extended)
+PAYMENT_MODE env var:
+  mock (default):   any non-empty token = paid (test/dev)
+  disabled:         all paid operations return payment_required=True
+  stripe_test:      Phase 7 stub — fails safely with NotImplementedError
+  stripe_live:      requires STRIPE_SECRET_KEY; Phase 7 stub — fails safely
+
+GUARDRAIL: stripe_live mode FAILS SAFELY if STRIPE_SECRET_KEY is not set.
+GUARDRAIL: PAYMENT_MODE=disabled completely blocks paid output (maintenance mode).
+GUARDRAIL: No hidden payment — price always shown before any charge.
+
+═══════════════════════════════════════════════════════════════════════════════
+4. CI/CD HARDENING
+═══════════════════════════════════════════════════════════════════════════════
+
+File: .github/workflows/ci.yml (updated)
+Three jobs (all must pass):
+  integration-tests:      pytest tests/integration -q
+  legal-accuracy-gate:    python scripts/run_legal_accuracy.py (mandatory, separate job)
+  rules-verification-gate: python scripts/check_rules_verification.py (mandatory, separate job)
+
+Both gate jobs run AFTER integration tests (needs: chain).
+Real-model/quota skips are NOT treated as legal accuracy pass evidence.
+Python 3.12 throughout. All required packages installed.
+
+═══════════════════════════════════════════════════════════════════════════════
+5. OPERATIONAL SCRIPTS (WSL-SAFE)
+═══════════════════════════════════════════════════════════════════════════════
+
+All scripts use Docker to avoid WSL/Windows venv issues:
+  scripts/run_full_regression.sh      — docker compose run --rm ingestion pytest
+  scripts/run_legal_accuracy.py       — existing, confirmed working
+  scripts/check_rules_verification.py — existing, confirmed working
+  scripts/run_production_readiness.py — calls /admin/production-readiness endpoint
+  scripts/docker_proof.sh             — brings up Docker + curls all endpoints
+  scripts/safe_push.sh                — runs all gates then git push
+
+GUARDRAIL: safe_push.sh requires all gates to pass before pushing.
+
+═══════════════════════════════════════════════════════════════════════════════
+REMAINING BLOCKERS — STILL NOT_PRODUCTION_READY
+═══════════════════════════════════════════════════════════════════════════════
+
+/admin/production-readiness correctly returns NOT_PRODUCTION_READY.
+
+Remaining blockers:
+  1. HSM/KMS key management — encryption key in env var
+  2. DPIA not legally reviewed or signed off
+  3. Privacy notice not legally reviewed or published
+  4. End-user OAuth/JWT not implemented (mock auth only)
+  5. No live deployment environment
+  6. Stripe live payment not implemented (Phase 7)
+  7. Formal consent management system not implemented
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/engine/config_validation.py
+  backend/engine/user_auth.py
+  scripts/run_full_regression.sh
+  scripts/run_production_readiness.py
+  scripts/docker_proof.sh
+  scripts/safe_push.sh
+  tests/integration/test_phase6a_deployment.py  (28 tests)
+  reports/phase6a-deployment-readiness-report.txt
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/engine/payment.py               — PAYMENT_MODE abstraction (4 modes)
+  backend/engine/production_readiness.py  — deployment/auth/payment status
+  backend/api/main.py                     — lifespan startup validation;
+                                            user auth on POST/GET /cases;
+                                            version 1.3.0-phase6a
+  .github/workflows/ci.yml               — legal accuracy + rules verification gates
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 6A
+═══════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,966 @@
+backend/api/main.py:570:    facts: Optional[dict] = None  # Phase 6: raw facts for encryption at rest
+backend/api/main.py:599:            encrypted_facts = None
+backend/api/main.py:602:                from backend.core.encryption import encrypt_bytes, is_configured, FERNET_V1
+backend/api/main.py:604:                    encrypted_facts = encrypt_bytes(json.dumps(req.facts).encode("utf-8"))
+backend/api/main.py:611:                    facts_encrypted, encryption_version
+backend/api/main.py:621:                    encrypted_facts,
+backend/api/main.py:701:                       key_dates, status, created_at, facts_encrypted, encryption_version
+backend/api/main.py:714:            from backend.core.encryption import decrypt_bytes, is_configured
+backend/api/main.py:717:                    facts_json = decrypt_bytes(bytes(row[7]))
+backend/api/main.py:720:                    logger.warning("Failed to decrypt facts for case %s: %s", case_id, exc)
+backend/api/main.py:721:                    facts = {"error": "decryption_failed"}
+backend/api/main.py:782:    # Phase 7E: envelope encryption (aws_kms) or direct Fernet (env key)
+backend/api/main.py:784:    from backend.core.encryption import is_configured as _enc_ready
+backend/api/main.py:785:    from backend.core.envelope_encryption import envelope_encrypt_str
+backend/api/main.py:787:    _pii_encrypted   = False
+backend/api/main.py:798:        # Envelope encryption path (Phase 7E) — one data key per record
+backend/api/main.py:800:            from cryptography.fernet import Fernet as _Fernet
+backend/api/main.py:803:                raise RuntimeError("KMS generate_data_key returned None — service unavailable")
+backend/api/main.py:804:            _fernet = _Fernet(_data_key)
+backend/api/main.py:806:            _name_enc  = _fernet.encrypt(req.name.encode()).decode("ascii")
+backend/api/main.py:807:            _email_enc = _fernet.encrypt(req.email.encode()).decode("ascii")
+backend/api/main.py:808:            _phone_enc = _fernet.encrypt(req.phone.encode()).decode("ascii") if req.phone else None
+backend/api/main.py:809:            _name_store = "[encrypted]"
+backend/api/main.py:810:            _email_store = "[encrypted]"
+backend/api/main.py:811:            _phone_store = "[encrypted]" if req.phone else None
+backend/api/main.py:813:            _pii_encrypted = True
+backend/api/main.py:815:                "Handoff lead PII envelope-encrypted via %s. "
+backend/api/main.py:816:                "Plaintext data key discarded. Bundle stored in encryption_key_metadata.",
+backend/api/main.py:820:            logger.error("Handoff lead envelope encryption failed: %s — failing closed.", type(exc).__name__)
+backend/api/main.py:826:            from backend.core.encryption import encrypt_str as _enc
+backend/api/main.py:830:            _name_store = "[encrypted]"
+backend/api/main.py:831:            _email_store = "[encrypted]"
+backend/api/main.py:832:            _phone_store = "[encrypted]" if req.phone else None
+backend/api/main.py:833:            _pii_encrypted = True
+backend/api/main.py:834:            logger.info("Handoff lead PII encrypted (env key). Plaintext not stored.")
+backend/api/main.py:836:            logger.error("Handoff lead env-key encryption failed — storing plaintext: %s", exc)
+backend/api/main.py:849:                    name_encrypted, email_encrypted, phone_encrypted, pii_encrypted,
+backend/api/main.py:850:                    encryption_key_metadata
+backend/api/main.py:865:                    _pii_encrypted,
+backend/api/main.py:875:            "pii_encrypted":      _pii_encrypted,
+backend/api/main.py:876:            "encryption_method":  (
+backend/api/main.py:878:                "direct_fernet" if _pii_encrypted else "none"
+backend/api/main.py:1061:# Production: replace with encrypted object storage (S3/GCS + AES-256).
+backend/api/main.py:1093:    No encryption at rest. Clearly marked as local/test-only.
+backend/api/main.py:1115:    # Phase 6: encrypt file bytes if ENCRYPTION_KEY configured
+backend/api/main.py:1116:    from backend.core.encryption import is_configured as _enc_ready, encrypt_bytes as _enc_b
+backend/api/main.py:1117:    _file_encrypted = False
+backend/api/main.py:1121:            _file_encrypted = True
+backend/api/main.py:1123:            logger.error("Upload file encryption failed — storing plaintext: %s", exc)
+backend/api/main.py:1130:    # Log metadata only — NEVER log file_bytes or encryption key
+backend/api/main.py:1133:        "content_type=%s encrypted=%s",
+backend/api/main.py:1134:        upload_id, case_id, doc_type, file_size, file.content_type, _file_encrypted,
+backend/api/main.py:1148:                    id, case_id, doc_type, storage_ref, is_user_upload,
+backend/api/main.py:1175:                "No encryption at rest. Not production-ready."
+backend/api/main.py:1366:    PII fields (employer_name, employee_name) are excluded (Phase 5: encryption).
+backend/api/main.py:1368:    GUARDRAIL: PII fields not applied until encryption at rest is implemented (Phase 5).
+backend/api/main.py:1417:            "encryption at rest is implemented (Phase 5)."
+backend/api/main.py:1478:                    INSERT INTO documents (case_id, doc_type, storage_ref, is_user_upload,
+backend/api/main.py:1797:    Phase 7C: ?health_check=true performs live KMS health check (DescribeKey for aws_kms).
+backend/api/main.py:1798:    Without the flag, KMS connectivity is shown as NOT_CHECKED.
+backend/api/main.py:1831:    Return DPIA and privacy notice sign-off state from docs/compliance-signoff.json.
+backend/api/main.py:2189:    Clears name, email, phone, case_summary, and encrypted values.
+backend/api/main.py:2202:                    name_encrypted  = NULL,
+backend/api/main.py:2203:                    email_encrypted = NULL,
+backend/api/main.py:2204:                    phone_encrypted = NULL,
+backend/api/main.py:2865:@app.get("/admin/retention-status")
+backend/api/main.py:2866:def get_retention_status(
+backend/api/main.py:2867:    retention_days: int = 90,
+backend/api/main.py:2871:    Return retention status — records older than retention_days.
+backend/api/main.py:2872:    Reports only; does not delete. Run scripts/run_retention.py to apply.
+backend/api/main.py:2880:                (retention_days,),
+backend/api/main.py:2886:                (retention_days,),
+backend/api/main.py:2892:        "retention_days":          retention_days,
+backend/api/main.py:2895:        "action":                  "Run scripts/run_retention.py to apply retention.",
+backend/api/main.py:3462:                SELECT d.id, d.doc_type, d.storage_ref, d.original_filename,
+backend/api/main.py:3478:    doc_id, doc_type, storage_ref, filename, case_id, created_at, case_owner = row
+backend/api/main.py:3487:        "storage_ref":    storage_ref,
+backend/api/main.py:3491:        "download_ready": storage_ref is not None,
+backend/core/brain.py:373:        memory_consent: True only if user has explicitly consented to memory retention
+backend/core/brain.py:686:                encrypted   = False,
+backend/core/config_validation.py:25:    "ENCRYPTION_KEY",       # PII encryption at rest
+backend/core/config_validation.py:43:VALID_KMS_MODES     = frozenset({"env", "kms_stub", "disabled"})
+backend/core/config_validation.py:96:        # KMS mode validation in production
+backend/core/config_validation.py:100:                "Use kms_stub or real KMS (Phase 7)."
+backend/core/config_validation.py:104:                "KEY_MANAGEMENT_MODE=disabled not allowed in production — encryption required."
+backend/core/config_validation.py:106:        if kms_mode == "kms_stub" and not os.getenv("KMS_KEY_ID"):
+backend/core/config_validation.py:108:                "KMS_KEY_ID (required for KEY_MANAGEMENT_MODE=kms_stub in production)"
+backend/core/config_validation.py:110:        if kms_mode == "aws_kms" and not os.getenv("AWS_KMS_KEY_ARN"):
+backend/core/config_validation.py:112:                "AWS_KMS_KEY_ARN (required for KEY_MANAGEMENT_MODE=aws_kms — "
+backend/core/deidentify.py:4:GUARDRAIL (data protection / UK GDPR Article 9):
+backend/core/dp_report.py:13:A full DPIA is required before production deployment.
+backend/core/dp_report.py:38:            "A formal DPIA and legal review are required before production deployment."
+backend/core/dp_report.py:46:            "encryption_at_rest":  "NOT_IMPLEMENTED",
+backend/core/dp_report.py:48:            "retention_policy":    "NOT_IMPLEMENTED",
+backend/core/dp_report.py:51:                "Phase 5B+: replace with AES-256-GCM encrypted object storage "
+backend/core/dp_report.py:52:                "(S3/GCS with server-side encryption and RBAC)."
+backend/core/dp_report.py:62:            "log_retention":      "NOT_IMPLEMENTED",
+backend/core/dp_report.py:89:        "encryption_at_rest": {
+backend/core/dp_report.py:92:            "cases_facts":        "facts_encrypted column is NULL — encryption not yet applied",
+backend/core/dp_report.py:93:            "uploaded_documents": "Local filesystem, no encryption",
+backend/core/dp_report.py:96:                "Phase 5B: implement AES-256-GCM for cases.facts_encrypted, "
+backend/core/dp_report.py:97:                "encrypted object storage for uploads, and encrypt handoff_leads PII."
+backend/core/dp_report.py:116:        "retention_deletion": {
+backend/core/dp_report.py:118:            "retention_policy": "None defined",
+backend/core/dp_report.py:123:                "audit log retention limits, and automated deletion schedules."
+backend/core/dp_report.py:137:                "real_ocr_pii_risk": "Phase 5B: real OCR will extract real PII — needs encryption pipeline",
+backend/core/dp_report.py:143:                "encryption": "NOT_IMPLEMENTED",
+backend/core/dp_report.py:148:                "encryption": "NOT_IMPLEMENTED",
+backend/core/dp_report.py:153:        # ── 8. Article 9 risk ──────────────────────────────────────────────────
+backend/core/dp_report.py:171:                "A full DPIA covering Art.9 is required before production. "
+backend/core/dp_report.py:183:                "DPIA not completed — required before any real user data is processed",
+backend/core/dp_report.py:188:                "No encryption at rest for uploaded documents (AES-256-GCM required)",
+backend/core/dp_report.py:189:                "No encryption for cases.facts_encrypted column (NULL — unfilled)",
+backend/core/dp_report.py:190:                "No encryption for handoff_leads PII (name, email in plaintext)",
+backend/core/dp_report.py:191:                "No data retention or deletion policy (Art.17 UK GDPR right to erasure)",
+backend/core/dp_report.py:216:                "DPIA not completed (launch blocker)",
+backend/core/dp_report.py:218:                "No encryption at rest for uploaded documents (production blocker)",
+backend/core/dp_report.py:219:                "No encryption for cases.facts_encrypted (production blocker)",
+backend/core/dp_report.py:220:                "No data retention/deletion policy — Art.17 UK GDPR (production blocker)",
+backend/core/encryption.py:4:Provides Fernet symmetric encryption for PII fields and uploaded files.
+backend/core/encryption.py:5:Key sourced exclusively from the ENCRYPTION_KEY environment variable.
+backend/core/encryption.py:8:  - Key stored in env var; HSM / KMS integration required for production
+backend/core/encryption.py:9:  - Fernet (AES-128-CBC + HMAC-SHA256); AES-256-GCM recommended for production
+backend/core/encryption.py:16:  - is_configured() must be checked before calling encrypt/decrypt
+backend/core/encryption.py:18:    when encryption is configured
+backend/core/encryption.py:30:# Encryption version tag — stored alongside encrypted data for future migration
+backend/core/encryption.py:35:    """Return True if ENCRYPTION_KEY env var is set and parseable."""
+backend/core/encryption.py:36:    key = os.getenv("ENCRYPTION_KEY", "")
+backend/core/encryption.py:42:    Return a Fernet instance from ENCRYPTION_KEY env var.
+backend/core/encryption.py:46:    from cryptography.fernet import Fernet, InvalidToken  # noqa: F401 — ensure package present
+backend/core/encryption.py:47:    key_str = os.getenv("ENCRYPTION_KEY", "")
+backend/core/encryption.py:49:        raise ValueError("ENCRYPTION_KEY environment variable is not set.")
+backend/core/encryption.py:51:        return Fernet(key_str.encode())
+backend/core/encryption.py:53:        raise ValueError(f"ENCRYPTION_KEY is malformed: {type(exc).__name__}") from exc
+backend/core/encryption.py:56:def encrypt_str(plaintext: str) -> str:
+backend/core/encryption.py:58:    Encrypt a UTF-8 string. Returns a Fernet token (URL-safe base64 string).
+backend/core/encryption.py:59:    Raises if encryption is not configured or key is invalid.
+backend/core/encryption.py:63:    token = f.encrypt(plaintext.encode("utf-8"))
+backend/core/encryption.py:67:def decrypt_str(token: str) -> str:
+backend/core/encryption.py:69:    Decrypt a Fernet token back to plaintext string.
+backend/core/encryption.py:71:    NEVER logs the decrypted value.
+backend/core/encryption.py:73:    from cryptography.fernet import Fernet  # noqa
+backend/core/encryption.py:75:    return f.decrypt(token.encode("ascii")).decode("utf-8")
+backend/core/encryption.py:78:def encrypt_bytes(data: bytes) -> bytes:
+backend/core/encryption.py:79:    """Encrypt raw bytes. Returns Fernet token bytes."""
+backend/core/encryption.py:81:    return f.encrypt(data)
+backend/core/encryption.py:84:def decrypt_bytes(token: bytes) -> bytes:
+backend/core/encryption.py:85:    """Decrypt Fernet token bytes back to plaintext bytes."""
+backend/core/encryption.py:87:    return f.decrypt(token)
+backend/core/encryption.py:92:    Generate a new Fernet key (for setup/testing only).
+backend/core/encryption.py:93:    Returns URL-safe base64 string suitable for ENCRYPTION_KEY env var.
+backend/core/encryption.py:96:    from cryptography.fernet import Fernet
+backend/core/encryption.py:97:    return Fernet.generate_key().decode("ascii")
+backend/core/envelope_encryption.py:2:Envelope encryption integration layer — Phase 7E.
+backend/core/envelope_encryption.py:4:Provides encrypt/decrypt functions that wire the KeyProvider interface
+backend/core/envelope_encryption.py:5:into the existing Fernet encryption path.
+backend/core/envelope_encryption.py:9:  2. Fernet(plaintext_key_transient).encrypt(data) → ciphertext
+backend/core/envelope_encryption.py:15:  3. provider.decrypt_data_key(bundle) → plaintext_key_transient
+backend/core/envelope_encryption.py:16:  4. Fernet(plaintext_key_transient).decrypt(ciphertext) → plaintext
+backend/core/envelope_encryption.py:19:  Records where encryption_key_metadata IS NULL were encrypted with the env key.
+backend/core/envelope_encryption.py:20:  safe_decrypt_* functions handle both paths.
+backend/core/envelope_encryption.py:23:  EncryptedKeyBundle already tracks: encryption_version, provider_key_id.
+backend/core/envelope_encryption.py:24:  Rotation: generate new data key, re-encrypt record, update bundle.
+backend/core/envelope_encryption.py:29:  - del key is called after Fernet construction (best-effort GC in CPython).
+backend/core/envelope_encryption.py:31:  - KMS failures fail closed (return None, not stale plaintext).
+backend/core/envelope_encryption.py:43:# ── String envelope encrypt/decrypt ──────────────────────────────────────────
+backend/core/envelope_encryption.py:45:def envelope_encrypt_str(
+backend/core/envelope_encryption.py:50:    Encrypt a UTF-8 string using envelope encryption.
+backend/core/envelope_encryption.py:53:    GUARDRAIL: plaintext_key is transient — del'd after Fernet construction.
+backend/core/envelope_encryption.py:56:    from cryptography.fernet import Fernet
+backend/core/envelope_encryption.py:60:        logger.warning("envelope_encrypt_str: generate_data_key failed. Failing closed.")
+backend/core/envelope_encryption.py:63:        fernet    = Fernet(key)
+backend/core/envelope_encryption.py:64:        ciphertext = fernet.encrypt(plaintext.encode("utf-8")).decode("ascii")
+backend/core/envelope_encryption.py:67:        logger.warning("envelope_encrypt_str: Fernet encrypt failed. Failing closed.")
+backend/core/envelope_encryption.py:73:def envelope_decrypt_str(
+backend/core/envelope_encryption.py:79:    Decrypt a string using envelope decryption.
+backend/core/envelope_encryption.py:90:        logger.warning("envelope_decrypt_str: malformed bundle_json. Failing closed.")
+backend/core/envelope_encryption.py:94:        # No bundle (old record) or env-mode bundle (no KMS blob) → backward compat
+backend/core/envelope_encryption.py:95:        return _backward_compat_decrypt_str(ciphertext, provider)
+backend/core/envelope_encryption.py:97:    # Envelope path: decrypt via KMS
+backend/core/envelope_encryption.py:98:    key = provider.decrypt_data_key(bundle)
+backend/core/envelope_encryption.py:100:        logger.warning("envelope_decrypt_str: KMS decrypt_data_key failed. Failing closed.")
+backend/core/envelope_encryption.py:103:        from cryptography.fernet import Fernet, InvalidToken
+backend/core/envelope_encryption.py:104:        return Fernet(key).decrypt(ciphertext.encode("ascii")).decode("utf-8")
+backend/core/envelope_encryption.py:106:        logger.warning("envelope_decrypt_str: Fernet decrypt failed. Failing closed.")
+backend/core/envelope_encryption.py:112:def _backward_compat_decrypt_str(ciphertext: str, provider) -> Optional[str]:
+backend/core/envelope_encryption.py:114:    Backward compat: decrypt using direct env key (old records without bundle).
+backend/core/envelope_encryption.py:115:    GUARDRAIL: fails closed if env key unavailable or decryption fails.
+backend/core/envelope_encryption.py:117:    key = provider.get_encryption_key()
+backend/core/envelope_encryption.py:119:        logger.warning("_backward_compat_decrypt_str: no encryption key available. Failing closed.")
+backend/core/envelope_encryption.py:122:        from cryptography.fernet import Fernet
+backend/core/envelope_encryption.py:123:        return Fernet(key).decrypt(ciphertext.encode("ascii")).decode("utf-8")
+backend/core/envelope_encryption.py:125:        logger.warning("_backward_compat_decrypt_str: decryption failed. Failing closed.")
+backend/core/envelope_encryption.py:131:# ── Bytes envelope encrypt/decrypt ────────────────────────────────────────────
+backend/core/envelope_encryption.py:133:def envelope_encrypt_bytes(
+backend/core/envelope_encryption.py:138:    Encrypt raw bytes using envelope encryption.
+backend/core/envelope_encryption.py:141:    from cryptography.fernet import Fernet
+backend/core/envelope_encryption.py:145:        logger.warning("envelope_encrypt_bytes: generate_data_key failed. Failing closed.")
+backend/core/envelope_encryption.py:148:        ciphertext = Fernet(key).encrypt(data)
+backend/core/envelope_encryption.py:151:        logger.warning("envelope_encrypt_bytes: Fernet encrypt failed. Failing closed.")
+backend/core/envelope_encryption.py:157:def envelope_decrypt_bytes(
+backend/core/envelope_encryption.py:163:    Decrypt bytes using envelope decryption.
+backend/core/envelope_encryption.py:168:        logger.warning("envelope_decrypt_bytes: malformed bundle_json. Failing closed.")
+backend/core/envelope_encryption.py:172:        return _backward_compat_decrypt_bytes(ciphertext, provider)
+backend/core/envelope_encryption.py:174:    key = provider.decrypt_data_key(bundle)
+backend/core/envelope_encryption.py:176:        logger.warning("envelope_decrypt_bytes: KMS decrypt_data_key failed. Failing closed.")
+backend/core/envelope_encryption.py:179:        from cryptography.fernet import Fernet
+backend/core/envelope_encryption.py:180:        return Fernet(key).decrypt(ciphertext)
+backend/core/envelope_encryption.py:182:        logger.warning("envelope_decrypt_bytes: Fernet decrypt failed. Failing closed.")
+backend/core/envelope_encryption.py:188:def _backward_compat_decrypt_bytes(ciphertext: bytes, provider) -> Optional[bytes]:
+backend/core/envelope_encryption.py:189:    """Backward compat: decrypt bytes using direct env key."""
+backend/core/envelope_encryption.py:190:    key = provider.get_encryption_key()
+backend/core/envelope_encryption.py:194:        from cryptography.fernet import Fernet
+backend/core/envelope_encryption.py:195:        return Fernet(key).decrypt(ciphertext)
+backend/core/envelope_encryption.py:197:        logger.warning("_backward_compat_decrypt_bytes: decryption failed. Failing closed.")
+backend/core/envelope_encryption.py:205:def decrypt_pii_field(
+backend/core/envelope_encryption.py:206:    encrypted_value: Optional[str],
+backend/core/envelope_encryption.py:211:    Safely decrypt a single PII field from a handoff lead record.
+backend/core/envelope_encryption.py:215:      - envelope-encrypted (bundle_json present, KMS ciphertext in bundle)
+backend/core/envelope_encryption.py:216:      - env-key-encrypted (bundle_json absent or empty KMS blob)
+backend/core/envelope_encryption.py:217:      - plaintext (encrypted_value is None)
+backend/core/envelope_encryption.py:219:    if not encrypted_value:
+backend/core/envelope_encryption.py:221:    if encrypted_value == "[deleted]":
+backend/core/envelope_encryption.py:223:    return envelope_decrypt_str(encrypted_value, bundle_json, provider)
+backend/core/extraction.py:92:# PII fields — require Phase 5 encryption before applying to persistent storage
+backend/core/kms.py:5:envelope encryption support:
+backend/core/kms.py:7:  EnvKeyProvider   — reads ENCRYPTION_KEY from env var (dev/test, not production-grade)
+backend/core/kms.py:8:  KmsStubProvider  — represents a real KMS key reference; Phase 7B stub (no real API call)
+backend/core/kms.py:9:  AwsKmsProvider   — real AWS KMS via boto3; full envelope encryption (Phase 7D)
+backend/core/kms.py:10:  DisabledProvider — no encryption; development only
+backend/core/kms.py:13:  1. generate_data_key() calls KMS.GenerateDataKey → (plaintext_key, EncryptedKeyBundle)
+backend/core/kms.py:14:     - plaintext_key: use transiently for encryption ONLY — NEVER log, store, or return
+backend/core/kms.py:15:     - EncryptedKeyBundle: safe to persist (contains CiphertextBlob encrypted by KMS)
+backend/core/kms.py:16:  2. decrypt_data_key(bundle) calls KMS.Decrypt(CiphertextBlob) → plaintext_key
+backend/core/kms.py:17:     - Used for decryption path
+backend/core/kms.py:21:    ciphertext_blob:     base64-encoded CiphertextBlob from KMS (NOT the plaintext key)
+backend/core/kms.py:23:    provider_key_id:     KMS key ARN (identifies the master key, NOT the data key)
+backend/core/kms.py:24:    algorithm:           encryption algorithm
+backend/core/kms.py:25:    encryption_version:  schema version
+backend/core/kms.py:30:  - AWS KMS ARNs are NEVER logged (internal infrastructure reference).
+backend/core/kms.py:32:  - Failures always fail closed (return None, never skip encryption).
+backend/core/kms.py:53:    Metadata about an envelope-encrypted data key.
+backend/core/kms.py:56:    ciphertext_blob:     base64-encoded KMS CiphertextBlob (encrypted data key)
+backend/core/kms.py:58:    provider_key_id:     KMS master key ARN or 'env' for dev mode
+backend/core/kms.py:59:    algorithm:           data encryption algorithm
+backend/core/kms.py:60:    encryption_version:  schema version for future migration
+backend/core/kms.py:67:    algorithm:           str = "AES_256_FERNET"
+backend/core/kms.py:68:    encryption_version:  str = "7D"
+backend/core/kms.py:85:        """True if this bundle contains a real KMS-encrypted data key."""
+backend/core/kms.py:95:    def get_encryption_key(self) -> Optional[bytes]:
+backend/core/kms.py:114:    # ── Phase 7D: envelope encryption methods ────────────────────────────────
+backend/core/kms.py:118:        Generate a new data key for envelope encryption.
+backend/core/kms.py:125:          - Use plaintext_key TRANSIENTLY for encryption ONLY.
+backend/core/kms.py:134:    def decrypt_data_key(self, bundle: EncryptedKeyBundle) -> Optional[bytes]:
+backend/core/kms.py:139:          - Use returned key TRANSIENTLY for decryption ONLY.
+backend/core/kms.py:144:        logger.warning("%s.decrypt_data_key(): not supported by this provider.", self.provider_name())
+backend/core/kms.py:147:    def supports_envelope_encryption(self) -> bool:
+backend/core/kms.py:148:        """True if generate_data_key / decrypt_data_key are implemented."""
+backend/core/kms.py:161:            "envelope_encryption_supported":   self.supports_envelope_encryption(),
+backend/core/kms.py:162:            "ciphertext_blob_persistence":     self.supports_envelope_encryption(),
+backend/core/kms.py:170:    Reads ENCRYPTION_KEY from env var. NOT production-grade.
+backend/core/kms.py:171:    Phase 7D: implements generate_data_key / decrypt_data_key in dev mode.
+backend/core/kms.py:172:    No real KMS — CiphertextBlob is empty (envelope encryption is simulated).
+backend/core/kms.py:175:    def get_encryption_key(self) -> Optional[bytes]:
+backend/core/kms.py:176:        key_str = os.getenv("ENCRYPTION_KEY", "")
+backend/core/kms.py:180:            from cryptography.fernet import Fernet
+backend/core/kms.py:181:            Fernet(key_str.encode())
+backend/core/kms.py:184:            logger.error("ENCRYPTION_KEY is malformed. (value not logged)")
+backend/core/kms.py:188:        """Dev mode: use env key as data key; no real KMS CiphertextBlob."""
+backend/core/kms.py:189:        key = self.get_encryption_key()
+backend/core/kms.py:193:            ciphertext_blob="",   # empty — no KMS encryption of data key in dev mode
+backend/core/kms.py:200:    def decrypt_data_key(self, bundle: EncryptedKeyBundle) -> Optional[bytes]:
+backend/core/kms.py:201:        """Dev mode: return env key (no KMS decryption needed)."""
+backend/core/kms.py:203:            logger.warning("EnvKeyProvider.decrypt_data_key(): bundle provider mismatch.")
+backend/core/kms.py:205:        return self.get_encryption_key()
+backend/core/kms.py:207:    def supports_envelope_encryption(self) -> bool:
+backend/core/kms.py:208:        return True   # dev mode — simulated (no real KMS blob)
+backend/core/kms.py:211:        return bool(os.getenv("ENCRYPTION_KEY"))
+backend/core/kms.py:223:            "Envelope encryption simulated (no real KMS CiphertextBlob)."
+backend/core/kms.py:231:    """Phase 7B stub — no real KMS API call. Phase 7C/7D: use AwsKmsProvider."""
+backend/core/kms.py:233:    def get_encryption_key(self) -> Optional[bytes]:
+backend/core/kms.py:234:        if not os.getenv("KMS_KEY_ID"):
+backend/core/kms.py:237:        return EnvKeyProvider().get_encryption_key()
+backend/core/kms.py:240:        return bool(os.getenv("KMS_KEY_ID"))
+backend/core/kms.py:246:        return bool(os.getenv("KMS_KEY_ID"))
+backend/core/kms.py:255:            "kms_key_id_configured": bool(os.getenv("KMS_KEY_ID")),
+backend/core/kms.py:257:            "note": "Phase 7B stub: KMS_KEY_ID configured; no real API call. Use aws_kms mode.",
+backend/core/kms.py:266:    AWS KMS provider — full envelope encryption support (Phase 7D).
+backend/core/kms.py:269:      AWS_KMS_KEY_ARN — KMS key ARN
+backend/core/kms.py:271:      KMS_REGION / AWS_DEFAULT_REGION — AWS region (default: us-east-1)
+backend/core/kms.py:275:      generate_data_key(): KMS.GenerateDataKey → (plaintext_key, EncryptedKeyBundle)
+backend/core/kms.py:276:      decrypt_data_key(bundle): KMS.Decrypt(CiphertextBlob) → plaintext_key
+backend/core/kms.py:292:            os.getenv("KMS_REGION")
+backend/core/kms.py:298:    # ── Phase 7D: envelope encryption ────────────────────────────────────────
+backend/core/kms.py:302:        Generate a new envelope-encrypted data key.
+backend/core/kms.py:308:        key_arn = os.getenv("AWS_KMS_KEY_ARN", "")
+backend/core/kms.py:310:            logger.error("AwsKmsProvider.generate_data_key(): AWS_KMS_KEY_ARN not set.")
+backend/core/kms.py:314:            resp = client.generate_data_key(KeyId=key_arn, KeySpec="AES_256")
+backend/core/kms.py:318:            # Derive Fernet key from plaintext (transient)
+backend/core/kms.py:335:    def decrypt_data_key(self, bundle: EncryptedKeyBundle) -> Optional[bytes]:
+backend/core/kms.py:344:            logger.error("AwsKmsProvider.decrypt_data_key(): bundle has no CiphertextBlob.")
+backend/core/kms.py:349:            resp = client.decrypt(CiphertextBlob=ciphertext)
+backend/core/kms.py:352:            logger.debug("AwsKmsProvider.decrypt_data_key(): decryption succeeded. (value not logged)")
+backend/core/kms.py:357:            logger.warning("AwsKmsProvider.decrypt_data_key(): failed. Failing closed.")
+backend/core/kms.py:360:    def supports_envelope_encryption(self) -> bool:
+backend/core/kms.py:361:        return bool(os.getenv("AWS_KMS_KEY_ARN"))
+backend/core/kms.py:365:    def get_encryption_key(self) -> Optional[bytes]:
+backend/core/kms.py:367:        Backward-compat: generate a key via KMS (no CiphertextBlob persisted).
+backend/core/kms.py:374:        key_arn = os.getenv("AWS_KMS_KEY_ARN", "")
+backend/core/kms.py:387:        return bool(os.getenv("AWS_KMS_KEY_ARN"))
+backend/core/kms.py:393:        return bool(os.getenv("AWS_KMS_KEY_ARN"))
+backend/core/kms.py:401:            "provider_configured":             bool(os.getenv("AWS_KMS_KEY_ARN")),
+backend/core/kms.py:403:                os.getenv("KMS_REGION") or os.getenv("AWS_DEFAULT_REGION")
+backend/core/kms.py:406:            "envelope_encryption_supported":   self.supports_envelope_encryption(),
+backend/core/kms.py:408:                "IMPLEMENTED" if self.supports_envelope_encryption() else "NOT_CONFIGURED"
+backend/core/kms.py:410:            "note": "Phase 7D: full envelope encryption (GenerateDataKey + Decrypt).",
+backend/core/kms.py:418:    """No encryption. Development/testing only. Production blocker."""
+backend/core/kms.py:420:    def get_encryption_key(self) -> Optional[bytes]:
+backend/core/kms.py:421:        logger.warning("DisabledProvider: encryption OFF. (dev only)")
+backend/core/kms.py:461:def get_encryption_key() -> Optional[bytes]:
+backend/core/kms.py:462:    return get_key_provider().get_encryption_key()
+backend/core/memory.py:8:GUARDRAIL: Sensitive facts are encrypted at rest.
+backend/core/memory.py:9:GUARDRAIL: User consent required for retention beyond session.
+backend/core/memory.py:37:    encrypted: bool = False,
+backend/core/memory.py:43:    GUARDRAIL: If encrypted=True, value is encrypted before storage.
+backend/core/memory.py:57:    if encrypted:
+backend/core/memory.py:59:            from backend.core.encryption import encrypt_str
+backend/core/memory.py:60:            serialised = encrypt_str(serialised)
+backend/core/memory.py:62:            logger.warning("Memory encryption failed: %s. Storing unencrypted.", exc)
+backend/core/memory.py:70:                INSERT INTO legal_memory (user_id, case_id, memory_type, memory_key, value, encrypted)
+backend/core/memory.py:74:                              encrypted = EXCLUDED.encrypted,
+backend/core/memory.py:78:                (user_id, case_id, memory_type, key, serialised, encrypted),
+backend/core/memory.py:108:                "SELECT id, memory_type, memory_key, value, encrypted, created_at, updated_at "
+backend/core/memory.py:125:            if row[4]:  # encrypted
+backend/core/memory.py:127:                    from backend.core.encryption import decrypt_str
+backend/core/memory.py:128:                    val = decrypt_str(val)
+backend/core/memory.py:130:                    val = "[ENCRYPTED — decryption failed]"
+backend/core/memory.py:140:                "encrypted": row[4],
+backend/core/production_readiness.py:9:  - DPIA is completed and legal basis documented
+backend/core/production_readiness.py:83:            "DPIA not completed",
+backend/core/production_readiness.py:97:    enc_key_set   = bool(os.getenv("ENCRYPTION_KEY", ""))
+backend/core/production_readiness.py:106:        overall_blockers.append("ENCRYPTION_KEY not set — PII stored in plaintext")
+backend/core/production_readiness.py:108:        "HSM/KMS key management not implemented — env var key not suitable for production",
+backend/core/production_readiness.py:109:        "DPIA not legally reviewed or completed",
+backend/core/production_readiness.py:149:            "A formal DPIA and legal review are required before production deployment. "
+backend/core/production_readiness.py:159:        "encryption_at_rest": {
+backend/core/production_readiness.py:162:            "algorithm":      "Fernet (AES-128-CBC + HMAC-SHA256)",
+backend/core/production_readiness.py:164:            "envelope_encryption_supported": (
+backend/core/production_readiness.py:166:                .get_key_provider().supports_envelope_encryption()
+backend/core/production_readiness.py:171:                and bool(os.getenv("AWS_KMS_KEY_ARN"))
+backend/core/production_readiness.py:175:                "Phase 7D: envelope encryption (GenerateDataKey/Decrypt) implemented. "
+backend/core/production_readiness.py:182:            "script":    "scripts/run_retention.py",
+backend/core/production_readiness.py:281:            "required_vars_present": all(os.getenv(v) for v in ["POSTGRES_PASSWORD","ADMIN_API_KEY","ENCRYPTION_KEY"]),
+backend/core/production_readiness.py:282:            "missing_required":      [v for v in ["POSTGRES_PASSWORD","ADMIN_API_KEY","ENCRYPTION_KEY"] if not os.getenv(v)],
+backend/core/production_readiness.py:286:            "encrypted": enc_key_set,
+backend/core/production_readiness.py:287:            "phase":     "Phase 7: encrypted object storage required for production.",
+backend/core/production_readiness.py:290:        # ── Phase 6B/7E: KMS + envelope encryption + key rotation ──────────────
+backend/core/production_readiness.py:297:            "encryption_version":   "7D",
+backend/core/production_readiness.py:299:            "envelope_encrypt_str_available": True,
+backend/core/production_readiness.py:300:            "envelope_decrypt_str_available": True,
+backend/core/production_readiness.py:302:            "db_schema_ready":      True,   # encryption_key_metadata jsonb (migration 013)
+backend/core/production_readiness.py:304:                "Phase 7E: envelope encryption integrated into handoff-leads PII path. "
+backend/core/production_readiness.py:305:                "Key rotation lifecycle (re-encrypt + update bundle) is Phase 7F."
+backend/core/production_readiness.py:344:        cb_blockers.append("ENCRYPTION_KEY not set")
+backend/core/production_readiness.py:356:            "KEY_MANAGEMENT_MODE=env is not production-grade — use kms_stub or real KMS (Phase 7)."
+backend/core/production_readiness.py:407:            "DPIA DPO review",
+backend/core/production_readiness.py:427:    if any("ENCRYPTION_KEY" in b for b in cb_blockers):
+backend/core/production_readiness.py:429:            "Set ENCRYPTION_KEY environment variable",
+backend/core/production_readiness.py:431:            'Generate: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"',
+backend/domains/employment/compliance.py:102:      - DPIA: (reviewed_by_dpo OR approved) + reviewer_name + review_date
+backend/domains/employment/compliance.py:109:    # DPIA
+backend/domains/employment/compliance.py:111:        blockers.append("DPIA not drafted — create artefact at docs/dpia-artefact.md")
+backend/domains/employment/compliance.py:114:            "DPIA not reviewed by DPO or approved. "
+backend/domains/employment/compliance.py:121:                f"DPIA sign-off flag set but lacks required evidence: {missing}. "
+backend/domains/employment/compliance.py:151:        blockers.append("DPIA not approved — full legal sign-off required for production.")
+backend/domains/employment/compliance.py:155:            blockers.append(f"DPIA approval lacks required evidence: {missing}")
+db/migrations/001_initial.sql:128:-- cases.facts_encrypted holds special-category data (Art.9) — encrypted at rest.
+db/migrations/001_initial.sql:134:    facts_encrypted  bytea,                             -- AES-256-GCM encrypted JSON
+db/migrations/001_initial.sql:149:    storage_ref      text        NOT NULL,  -- encrypted blob location
+db/migrations/004_phase3_tables.sql:1:-- Migration 004: Phase 3 dashboard, retention, coaching, solicitor review
+db/migrations/004_phase3_tables.sql:29:    notes               text,       -- session notes (encrypted before storing in production)
+db/migrations/008_phase4a_uploads.sql:3:-- NOTE: storage_ref in Phase 4A points to local filesystem path.
+db/migrations/012_phase6_encryption_retention.sql:1:-- Migration 012: Phase 6 — encryption at rest + retention/deletion support
+db/migrations/012_phase6_encryption_retention.sql:2:-- Adds soft-delete timestamps and encrypted PII columns.
+db/migrations/012_phase6_encryption_retention.sql:3:-- Encryption uses Fernet (AES-128-CBC + HMAC-SHA256) from cryptography package.
+db/migrations/012_phase6_encryption_retention.sql:8:ALTER TABLE cases ADD COLUMN IF NOT EXISTS encryption_version text DEFAULT 'none';
+db/migrations/012_phase6_encryption_retention.sql:9:-- encryption_version: 'none' | 'fernet_v1'
+db/migrations/012_phase6_encryption_retention.sql:16:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS name_encrypted  text;
+db/migrations/012_phase6_encryption_retention.sql:17:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS email_encrypted text;
+db/migrations/012_phase6_encryption_retention.sql:18:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS phone_encrypted text;
+db/migrations/012_phase6_encryption_retention.sql:19:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS pii_encrypted   boolean NOT NULL DEFAULT false;
+db/migrations/012_phase6_encryption_retention.sql:25:CREATE TABLE IF NOT EXISTS retention_runs (
+db/migrations/013_phase7d_envelope_encryption.sql:1:-- Migration 013: Phase 7D — envelope encryption key metadata columns
+db/migrations/013_phase7d_envelope_encryption.sql:2:-- Adds encryption_key_metadata jsonb to tables that store encrypted data.
+db/migrations/013_phase7d_envelope_encryption.sql:5:-- GUARDRAIL: encryption_key_metadata must NEVER contain plaintext key material.
+db/migrations/013_phase7d_envelope_encryption.sql:6:--            It contains the KMS CiphertextBlob which is safe to persist.
+db/migrations/013_phase7d_envelope_encryption.sql:8:ALTER TABLE cases ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb;
+db/migrations/013_phase7d_envelope_encryption.sql:9:ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb;
+db/migrations/013_phase7d_envelope_encryption.sql:11:-- Index for querying unencrypted records (NULL = not yet envelope-encrypted)
+db/migrations/013_phase7d_envelope_encryption.sql:13:    ON cases (id) WHERE encryption_key_metadata IS NULL;
+db/migrations/013_phase7d_envelope_encryption.sql:15:    ON handoff_leads (id) WHERE encryption_key_metadata IS NULL;
+db/migrations/013_phase7d_envelope_encryption.sql:17:COMMENT ON COLUMN cases.encryption_key_metadata IS
+db/migrations/013_phase7d_envelope_encryption.sql:19:COMMENT ON COLUMN handoff_leads.encryption_key_metadata IS
+db/migrations/018_brain_architecture.sql:37:-- Sensitive fields are stored encrypted (encrypted=true).
+db/migrations/018_brain_architecture.sql:46:    encrypted   BOOLEAN     NOT NULL DEFAULT false,
+tests/documents/test_documents.py:133:            AND column_name IN ('case_id', 'doc_type', 'storage_ref');
+tests/integration/test_phase5a_hardening.py:20:  11.  DP report marks encryption at rest NOT_IMPLEMENTED
+tests/integration/test_phase5a_hardening.py:244:def test_dp_report_encryption_not_implemented():
+tests/integration/test_phase5a_hardening.py:247:    enc = data.get("encryption_at_rest", {})
+tests/integration/test_phase5a_hardening.py:257:    assert "encryption" in gap_text
+tests/integration/test_phase5a_hardening.py:258:    assert "deletion" in gap_text or "retention" in gap_text
+tests/integration/test_phase5c_verification.py:18:  11.  Report identifies encryption blockers
+tests/integration/test_phase5c_verification.py:19:  12.  Report identifies DPIA blocker
+tests/integration/test_phase5c_verification.py:263:def test_production_readiness_identifies_encryption_blockers():
+tests/integration/test_phase5c_verification.py:267:    # Blocker wording is "hsm/kms key management not implemented" or "encryption"
+tests/integration/test_phase5c_verification.py:268:    assert "hsm" in blockers or "kms" in blockers or "encryption" in blockers or "key management" in blockers, \
+tests/integration/test_phase6a_deployment.py:93:    from cryptography.fernet import Fernet
+tests/integration/test_phase6a_deployment.py:94:    enc_key = Fernet.generate_key().decode()
+tests/integration/test_phase6a_deployment.py:97:        "ENCRYPTION_KEY":   os.environ.get("ENCRYPTION_KEY"),
+tests/integration/test_phase6a_deployment.py:103:    os.environ["ENCRYPTION_KEY"]   = enc_key
+tests/integration/test_phase6b_beta_readiness.py:18:  KMS:
+tests/integration/test_phase6b_beta_readiness.py:19:  10.  KMS stub does not claim real KMS is connected
+tests/integration/test_phase6b_beta_readiness.py:20:  11.  KMS mode env is not production-grade
+tests/integration/test_phase6b_beta_readiness.py:21:  12.  KMS mode kms_stub is accepted for production-grade flag
+tests/integration/test_phase6b_beta_readiness.py:23:  Compliance / DPIA:
+tests/integration/test_phase6b_beta_readiness.py:24:  13.  DPIA unsigned state blocks controlled beta
+tests/integration/test_phase6b_beta_readiness.py:94:    from cryptography.fernet import Fernet
+tests/integration/test_phase6b_beta_readiness.py:95:    enc_key = Fernet.generate_key().decode()
+tests/integration/test_phase6b_beta_readiness.py:97:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "LAWAPP_AUTH_MODE",
+tests/integration/test_phase6b_beta_readiness.py:103:        "ENCRYPTION_KEY":     enc_key,
+tests/integration/test_phase6b_beta_readiness.py:208:# ── 10-12. KMS ────────────────────────────────────────────────────────────────
+tests/integration/test_phase6b_beta_readiness.py:231:    """Phase 7B: kms_stub is production-grade only when KMS_KEY_ID is also configured."""
+tests/integration/test_phase6b_beta_readiness.py:234:    os.environ["KMS_KEY_ID"] = "arn:aws:kms:test:123:key/regression-test-key"
+tests/integration/test_phase6b_beta_readiness.py:239:        os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase6b_beta_readiness.py:242:# ── 13-15. Compliance / DPIA ──────────────────────────────────────────────────
+tests/integration/test_phase6c_jwt.py:29:  18.  controlled_beta_ready remains false (DPIA blockers)
+tests/integration/test_phase6c_jwt.py:94:    from cryptography.fernet import Fernet
+tests/integration/test_phase6c_jwt.py:96:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "LAWAPP_AUTH_MODE",
+tests/integration/test_phase6c_jwt.py:102:        "ENCRYPTION_KEY":   Fernet.generate_key().decode(),
+tests/integration/test_phase6c_jwt.py:321:    """Controlled beta still blocked by DPIA/privacy — not a technical issue."""
+tests/integration/test_phase6c_jwt.py:324:    # With current compliance-signoff.json (DPIA not reviewed), CB is still False
+tests/integration/test_phase6c_jwt.py:326:        "controlled_beta_ready must remain False until DPIA/privacy are genuinely reviewed"
+tests/integration/test_phase6d_compliance.py:11:   6.  DPIA reviewed + privacy_notice reviewed + full evidence → beta-ready
+tests/integration/test_phase6d_compliance.py:26:  15.  controlled_beta_ready remains false (DPIA not reviewed in current signoff)
+tests/integration/test_phase6d_compliance.py:59:    from cryptography.fernet import Fernet
+tests/integration/test_phase6d_compliance.py:61:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "LAWAPP_AUTH_MODE", "DEPLOYMENT_MODE",
+tests/integration/test_phase6d_compliance.py:65:        "ENCRYPTION_KEY":   Fernet.generate_key().decode(),
+tests/integration/test_phase6d_compliance.py:84:    assert not result["ready"], "Current state must be blocked (DPIA/privacy not reviewed)"
+tests/integration/test_phase6d_compliance.py:124:            "review_scope": "Full DPIA review per checklist v6D",
+tests/integration/test_phase6d_compliance.py:178:    """Both DPIA and privacy with full evidence → beta ready."""
+tests/integration/test_phase6d_compliance.py:293:        "Controlled beta must remain FALSE — DPIA and privacy not yet reviewed"
+tests/integration/test_phase6e_prelaunch.py:15:   8.  DPIA review is first priority when not reviewed
+tests/integration/test_phase6e_prelaunch.py:61:    from cryptography.fernet import Fernet
+tests/integration/test_phase6e_prelaunch.py:63:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "LAWAPP_AUTH_MODE", "DEPLOYMENT_MODE",
+tests/integration/test_phase6e_prelaunch.py:67:        "ENCRYPTION_KEY":   Fernet.generate_key().decode(),
+tests/integration/test_phase6e_prelaunch.py:89:                "ENCRYPTION_KEY", "LAWAPP_AUTH_MODE", "JWT_SECRET",
+tests/integration/test_phase6e_prelaunch.py:148:        f"DPIA review must be first priority when not done: {first['action']}"
+tests/integration/test_phase6e_prelaunch.py:200:    saved_enc = os.environ.pop("ENCRYPTION_KEY", None)
+tests/integration/test_phase6e_prelaunch.py:209:            os.environ["ENCRYPTION_KEY"] = saved_enc
+tests/integration/test_phase6_production.py:26:    """Apply migration 012 (encryption + deletion columns)."""
+tests/integration/test_phase6_production.py:28:    from cryptography.fernet import Fernet
+tests/integration/test_phase6_production.py:34:            cur.execute("ALTER TABLE cases ADD COLUMN IF NOT EXISTS encryption_version text DEFAULT 'none'")
+tests/integration/test_phase6_production.py:36:            cur.execute("ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS name_encrypted text")
+tests/integration/test_phase6_production.py:37:            cur.execute("ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS email_encrypted text")
+tests/integration/test_phase6_production.py:38:            cur.execute("ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS phone_encrypted text")
+tests/integration/test_phase6_production.py:39:            cur.execute("ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS pii_encrypted boolean NOT NULL DEFAULT false")
+tests/integration/test_phase6_production.py:41:                CREATE TABLE IF NOT EXISTS retention_runs (
+tests/integration/test_phase6_production.py:55:    test_key = Fernet.generate_key().decode()
+tests/integration/test_phase6_production.py:57:    os.environ["ENCRYPTION_KEY"]   = test_key
+tests/integration/test_phase6_production.py:60:    os.environ.pop("ENCRYPTION_KEY", None)
+tests/integration/test_phase6_production.py:118:def test_admin_retention_status_requires_key():
+tests/integration/test_phase6_production.py:119:    assert client.get("/admin/retention-status").status_code == 403
+tests/integration/test_phase6_production.py:120:    assert client.get("/admin/retention-status", headers=_ADMIN_HDR).status_code == 200
+tests/integration/test_phase6_production.py:125:def test_encrypt_decrypt_roundtrip():
+tests/integration/test_phase6_production.py:126:    from backend.core.encryption import encrypt_str, decrypt_str
+tests/integration/test_phase6_production.py:128:    ciphertext = encrypt_str(plaintext)
+tests/integration/test_phase6_production.py:129:    recovered  = decrypt_str(ciphertext)
+tests/integration/test_phase6_production.py:133:def test_encrypt_produces_different_value():
+tests/integration/test_phase6_production.py:134:    from backend.core.encryption import encrypt_str
+tests/integration/test_phase6_production.py:136:    ciphertext = encrypt_str(plaintext)
+tests/integration/test_phase6_production.py:141:def test_handoff_lead_pii_encrypted_at_rest():
+tests/integration/test_phase6_production.py:142:    """When ENCRYPTION_KEY set, handoff lead PII should be encrypted in DB."""
+tests/integration/test_phase6_production.py:151:    assert data.get("pii_encrypted") is True, \
+tests/integration/test_phase6_production.py:152:        "pii_encrypted must be True when ENCRYPTION_KEY is set"
+tests/integration/test_phase6_production.py:155:def test_upload_stores_encrypted_file():
+tests/integration/test_phase6_production.py:156:    """When ENCRYPTION_KEY is set, upload endpoint should encrypt the file."""
+tests/integration/test_phase6_production.py:164:    # The storage_note should reference local storage (encryption is transparent)
+tests/integration/test_phase6_production.py:168:# ── 11-15. Deletion / retention ───────────────────────────────────────────────
+tests/integration/test_phase6_production.py:201:def test_retention_script_dry_run():
+tests/integration/test_phase6_production.py:203:        [sys.executable, "scripts/run_retention.py"],   # dry run by default
+tests/integration/test_phase6_production.py:210:def test_retention_status_endpoint():
+tests/integration/test_phase6_production.py:211:    resp = client.get("/admin/retention-status?retention_days=90", headers=_ADMIN_HDR)
+tests/integration/test_phase6_production.py:219:# ── 16-17. Privacy / DPIA artefacts ──────────────────────────────────────────
+tests/integration/test_phase6_production.py:231:    assert docs_path.exists(), f"DPIA artefact not found at {docs_path}"
+tests/integration/test_phase6_production.py:233:    assert "DPIA" in content
+tests/integration/test_phase6_production.py:244:    assert "encryption_at_rest" in data
+tests/integration/test_phase6_production.py:254:        "Must remain NOT_PRODUCTION_READY — no live deployment or DPIA signed off"
+tests/integration/test_phase6_production.py:258:def test_production_readiness_shows_encryption_status():
+tests/integration/test_phase6_production.py:260:    enc = resp.json().get("encryption_at_rest", {})
+tests/integration/test_phase6_production.py:261:    # With ENCRYPTION_KEY set in fixture, should be PARTIAL
+tests/integration/test_phase6_production.py:300:def test_case_facts_encrypted_on_save():
+tests/integration/test_phase6_production.py:301:    """Phase 6: save_case with facts -> encrypted in DB, decrypted on GET."""
+tests/integration/test_phase6_production.py:324:    # Check DB directly to prove encryption
+tests/integration/test_phase6_production.py:329:            cur.execute("SELECT facts_encrypted, encryption_version FROM cases WHERE id = %s", (case_id,))
+tests/integration/test_phase6_production.py:333:            # Proven: facts_encrypted is a binary blob
+tests/integration/test_phase6_production.py:337:    # Retrieve via GET and prove decryption
+tests/integration/test_phase7a_jwks.py:30:  19.  controlled_beta_ready remains false (DPIA/privacy blockers)
+tests/integration/test_phase7a_jwks.py:123:    from cryptography.fernet import Fernet
+tests/integration/test_phase7a_jwks.py:125:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "LAWAPP_AUTH_MODE",
+tests/integration/test_phase7a_jwks.py:131:        "ENCRYPTION_KEY":   Fernet.generate_key().decode(),
+tests/integration/test_phase7b_kms.py:2:Phase 7B — KMS/HSM-ready key management provider tests.
+tests/integration/test_phase7b_kms.py:6:   1.  EnvKeyProvider available when ENCRYPTION_KEY set
+tests/integration/test_phase7b_kms.py:7:   2.  EnvKeyProvider unavailable when ENCRYPTION_KEY not set
+tests/integration/test_phase7b_kms.py:9:   4.  KmsStubProvider available when KMS_KEY_ID set
+tests/integration/test_phase7b_kms.py:10:   5.  KmsStubProvider unavailable when KMS_KEY_ID not set
+tests/integration/test_phase7b_kms.py:11:   6.  KmsStubProvider IS production-grade when KMS_KEY_ID configured
+tests/integration/test_phase7b_kms.py:17:  10.  kms_stub in production requires KMS_KEY_ID
+tests/integration/test_phase7b_kms.py:18:  11.  kms_stub in production with KMS_KEY_ID passes
+tests/integration/test_phase7b_kms.py:22:  13.  encrypt_str / decrypt_str roundtrip unchanged
+tests/integration/test_phase7b_kms.py:23:  14.  encrypt_bytes / decrypt_bytes roundtrip unchanged
+tests/integration/test_phase7b_kms.py:30:  17.  kms_stub with KMS_KEY_ID shows production_grade=true
+tests/integration/test_phase7b_kms.py:31:  18.  kms_stub without KMS_KEY_ID shows production_grade=false
+tests/integration/test_phase7b_kms.py:32:  19.  encryption_at_rest shows key_provider field
+tests/integration/test_phase7b_kms.py:60:_MOCK_KMS_KEY_ID = "arn:aws:kms:us-east-1:123456789:key/phase7b-test-key"
+tests/integration/test_phase7b_kms.py:65:    from cryptography.fernet import Fernet
+tests/integration/test_phase7b_kms.py:67:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "LAWAPP_AUTH_MODE",
+tests/integration/test_phase7b_kms.py:68:        "KEY_MANAGEMENT_MODE", "KMS_KEY_ID", "DEPLOYMENT_MODE",
+tests/integration/test_phase7b_kms.py:73:        "ENCRYPTION_KEY":      Fernet.generate_key().decode(),
+tests/integration/test_phase7b_kms.py:78:    os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7b_kms.py:92:    assert provider.is_available() is True   # ENCRYPTION_KEY set by fixture
+tests/integration/test_phase7b_kms.py:97:    saved = os.environ.pop("ENCRYPTION_KEY", None)
+tests/integration/test_phase7b_kms.py:102:            os.environ["ENCRYPTION_KEY"] = saved
+tests/integration/test_phase7b_kms.py:112:    key = EnvKeyProvider().get_encryption_key()
+tests/integration/test_phase7b_kms.py:119:    os.environ["KMS_KEY_ID"] = _MOCK_KMS_KEY_ID
+tests/integration/test_phase7b_kms.py:123:        os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7b_kms.py:128:    os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7b_kms.py:134:    os.environ["KMS_KEY_ID"] = _MOCK_KMS_KEY_ID
+tests/integration/test_phase7b_kms.py:138:        os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7b_kms.py:144:    os.environ["KMS_KEY_ID"] = _MOCK_KMS_KEY_ID
+tests/integration/test_phase7b_kms.py:151:        os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7b_kms.py:158:    assert DisabledProvider().get_encryption_key() is None
+tests/integration/test_phase7b_kms.py:164:    """In production mode, kms_stub without KMS_KEY_ID must fail validation."""
+tests/integration/test_phase7b_kms.py:176:    os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7b_kms.py:179:        assert any("KMS_KEY_ID" in m for m in result["missing_required"]), \
+tests/integration/test_phase7b_kms.py:180:            f"KMS_KEY_ID should be required: {result['missing_required']}"
+tests/integration/test_phase7b_kms.py:190:    """kms_stub + KMS_KEY_ID in production should not flag KMS_KEY_ID missing."""
+tests/integration/test_phase7b_kms.py:195:        "KMS_KEY_ID":          _MOCK_KMS_KEY_ID,
+tests/integration/test_phase7b_kms.py:205:        assert not any("KMS_KEY_ID" in m for m in result["missing_required"]), \
+tests/integration/test_phase7b_kms.py:206:            f"KMS_KEY_ID should not be missing when set: {result['missing_required']}"
+tests/integration/test_phase7b_kms.py:210:        for k in ["KMS_KEY_ID", "POSTGRES_PASSWORD", "APP_BASE_URL",
+tests/integration/test_phase7b_kms.py:226:        assert any("disabled" in m.lower() or "encryption" in m.lower()
+tests/integration/test_phase7b_kms.py:239:def test_encrypt_decrypt_str_roundtrip():
+tests/integration/test_phase7b_kms.py:240:    from backend.core.encryption import encrypt_str, decrypt_str
+tests/integration/test_phase7b_kms.py:241:    plaintext = "Phase 7B test — encryption unchanged"
+tests/integration/test_phase7b_kms.py:242:    ciphertext = encrypt_str(plaintext)
+tests/integration/test_phase7b_kms.py:245:    assert decrypt_str(ciphertext) == plaintext
+tests/integration/test_phase7b_kms.py:248:def test_encrypt_decrypt_bytes_roundtrip():
+tests/integration/test_phase7b_kms.py:249:    from backend.core.encryption import encrypt_bytes, decrypt_bytes
+tests/integration/test_phase7b_kms.py:251:    enc  = encrypt_bytes(data)
+tests/integration/test_phase7b_kms.py:253:    assert decrypt_bytes(enc) == data
+tests/integration/test_phase7b_kms.py:260:    enc_key = os.getenv("ENCRYPTION_KEY", "")
+tests/integration/test_phase7b_kms.py:264:        assert enc_key not in caplog.text, "ENCRYPTION_KEY value must not appear in logs"
+tests/integration/test_phase7b_kms.py:272:    enc  = data.get("encryption_at_rest", {})
+tests/integration/test_phase7b_kms.py:273:    assert "key_provider" in enc, "encryption_at_rest must include key_provider"
+tests/integration/test_phase7b_kms.py:279:    os.environ["KMS_KEY_ID"] = _MOCK_KMS_KEY_ID
+tests/integration/test_phase7b_kms.py:287:        os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7b_kms.py:292:    os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7c_aws_kms.py:2:Phase 7C — AWS KMS provider tests.
+tests/integration/test_phase7c_aws_kms.py:8:   1.  Missing AWS_KMS_KEY_ARN → not available
+tests/integration/test_phase7c_aws_kms.py:9:   2.  AWS_KMS_KEY_ARN set → available
+tests/integration/test_phase7c_aws_kms.py:10:   3.  AWS_KMS_KEY_ARN set → is_production_grade=True
+tests/integration/test_phase7c_aws_kms.py:14:   7.  get_encryption_key: mock GenerateDataKey → returns Fernet-compatible bytes
+tests/integration/test_phase7c_aws_kms.py:15:   8.  get_encryption_key: API failure → None (fails closed)
+tests/integration/test_phase7c_aws_kms.py:16:   9.  get_encryption_key: missing ARN → None
+tests/integration/test_phase7c_aws_kms.py:24:  13.  aws_kms in production requires AWS_KMS_KEY_ARN
+tests/integration/test_phase7c_aws_kms.py:25:  14.  aws_kms in production with AWS_KMS_KEY_ARN passes KMS config check
+tests/integration/test_phase7c_aws_kms.py:67:_MOCK_KMS_ARN = "arn:aws:kms:us-east-1:123456789012:key/phase7c-test-key"
+tests/integration/test_phase7c_aws_kms.py:72:    from cryptography.fernet import Fernet
+tests/integration/test_phase7c_aws_kms.py:74:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "KEY_MANAGEMENT_MODE",
+tests/integration/test_phase7c_aws_kms.py:75:        "AWS_KMS_KEY_ARN", "DEPLOYMENT_MODE", "LAWAPP_AUTH_MODE",
+tests/integration/test_phase7c_aws_kms.py:80:        "ENCRYPTION_KEY":      Fernet.generate_key().decode(),
+tests/integration/test_phase7c_aws_kms.py:85:    os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:98:    os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:104:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7c_aws_kms.py:108:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:113:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7c_aws_kms.py:117:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:130:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7c_aws_kms.py:142:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:154:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7c_aws_kms.py:160:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:166:    os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:171:def test_get_encryption_key_returns_fernet_key(mock_boto3_client):
+tests/integration/test_phase7c_aws_kms.py:172:    """Mock GenerateDataKey → returns Fernet-compatible bytes."""
+tests/integration/test_phase7c_aws_kms.py:174:    mock_plaintext = _os.urandom(32)   # 32 random bytes = AES-256 key
+tests/integration/test_phase7c_aws_kms.py:183:    from cryptography.fernet import Fernet
+tests/integration/test_phase7c_aws_kms.py:184:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7c_aws_kms.py:186:        key = AwsKmsProvider().get_encryption_key()
+tests/integration/test_phase7c_aws_kms.py:189:        # Returned key must be valid Fernet key
+tests/integration/test_phase7c_aws_kms.py:190:        Fernet(key)   # raises if invalid
+tests/integration/test_phase7c_aws_kms.py:192:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:196:def test_get_encryption_key_fails_closed_on_api_error(mock_boto3_client):
+tests/integration/test_phase7c_aws_kms.py:203:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7c_aws_kms.py:205:        key = AwsKmsProvider().get_encryption_key()
+tests/integration/test_phase7c_aws_kms.py:208:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:211:def test_get_encryption_key_fails_without_arn():
+tests/integration/test_phase7c_aws_kms.py:213:    os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:214:    key = AwsKmsProvider().get_encryption_key()
+tests/integration/test_phase7c_aws_kms.py:252:    os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:255:        assert any("AWS_KMS_KEY_ARN" in m for m in result["missing_required"])
+tests/integration/test_phase7c_aws_kms.py:266:                       "AWS_KMS_KEY_ARN": _MOCK_KMS_ARN, "POSTGRES_PASSWORD": "test",
+tests/integration/test_phase7c_aws_kms.py:272:        assert not any("AWS_KMS_KEY_ARN" in m for m in result["missing_required"])
+tests/integration/test_phase7c_aws_kms.py:276:        for k in ["AWS_KMS_KEY_ARN", "POSTGRES_PASSWORD", "APP_BASE_URL",
+tests/integration/test_phase7c_aws_kms.py:300:    os.environ.update({"KEY_MANAGEMENT_MODE": "aws_kms", "AWS_KMS_KEY_ARN": _MOCK_KMS_ARN})
+tests/integration/test_phase7c_aws_kms.py:308:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:318:    os.environ.update({"KEY_MANAGEMENT_MODE": "aws_kms", "AWS_KMS_KEY_ARN": _MOCK_KMS_ARN})
+tests/integration/test_phase7c_aws_kms.py:326:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:331:    enc = resp.json().get("encryption_at_rest", {})
+tests/integration/test_phase7c_aws_kms.py:339:    """AWS_KMS_KEY_ARN value must not appear in log output."""
+tests/integration/test_phase7c_aws_kms.py:345:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7c_aws_kms.py:349:        assert _MOCK_KMS_ARN not in caplog.text, \
+tests/integration/test_phase7c_aws_kms.py:350:            "KMS ARN value must not appear in log output"
+tests/integration/test_phase7c_aws_kms.py:352:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:368:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7c_aws_kms.py:371:            key = AwsKmsProvider().get_encryption_key()
+tests/integration/test_phase7c_aws_kms.py:375:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7c_aws_kms.py:382:    from backend.core.encryption import encrypt_str, decrypt_str
+tests/integration/test_phase7c_aws_kms.py:384:    assert decrypt_str(encrypt_str(plaintext)) == plaintext
+tests/integration/test_phase7c_aws_kms.py:389:    os.environ["KMS_KEY_ID"] = "stub-key-id"
+tests/integration/test_phase7c_aws_kms.py:393:        os.environ.pop("KMS_KEY_ID", None)
+tests/integration/test_phase7c_aws_kms.py:399:    assert DisabledProvider().get_encryption_key() is None
+tests/integration/test_phase7d_envelope_encryption.py:2:Phase 7D — Envelope encryption (GenerateDataKey + CiphertextBlob) tests.
+tests/integration/test_phase7d_envelope_encryption.py:16:   7.  Bundle provider_key_id is KMS ARN (NOT the data key)
+tests/integration/test_phase7d_envelope_encryption.py:17:   8.  KMS failure → (None, None) fails closed
+tests/integration/test_phase7d_envelope_encryption.py:20:  AwsKmsProvider — decrypt_data_key:
+tests/integration/test_phase7d_envelope_encryption.py:21:  10.  decrypt_data_key returns plaintext key matching original
+tests/integration/test_phase7d_envelope_encryption.py:23:  12.  KMS Decrypt failure → None fails closed
+tests/integration/test_phase7d_envelope_encryption.py:27:  14.  decrypt_data_key: no plaintext key in logs
+tests/integration/test_phase7d_envelope_encryption.py:31:  16.  EnvKeyProvider.decrypt_data_key recovers key from empty bundle
+tests/integration/test_phase7d_envelope_encryption.py:34:  17.  encryption_key_metadata column exists on cases table
+tests/integration/test_phase7d_envelope_encryption.py:35:  18.  encryption_key_metadata column exists on handoff_leads table
+tests/integration/test_phase7d_envelope_encryption.py:38:  19.  envelope_encryption_supported shown when aws_kms configured
+tests/integration/test_phase7d_envelope_encryption.py:49:        tests/integration/test_phase7d_envelope_encryption.py -v -s
+tests/integration/test_phase7d_envelope_encryption.py:69:_MOCK_KMS_ARN = "arn:aws:kms:us-east-1:123456789012:key/phase7d-test-key"
+tests/integration/test_phase7d_envelope_encryption.py:74:    from cryptography.fernet import Fernet
+tests/integration/test_phase7d_envelope_encryption.py:77:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "KEY_MANAGEMENT_MODE",
+tests/integration/test_phase7d_envelope_encryption.py:78:        "AWS_KMS_KEY_ARN", "DEPLOYMENT_MODE", "LAWAPP_AUTH_MODE",
+tests/integration/test_phase7d_envelope_encryption.py:83:        "ENCRYPTION_KEY":      Fernet.generate_key().decode(),
+tests/integration/test_phase7d_envelope_encryption.py:88:    os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:94:            cur.execute("ALTER TABLE cases ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb")
+tests/integration/test_phase7d_envelope_encryption.py:95:            cur.execute("ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb")
+tests/integration/test_phase7d_envelope_encryption.py:116:        provider_key_id=_MOCK_KMS_ARN,
+tests/integration/test_phase7d_envelope_encryption.py:122:    assert _MOCK_KMS_ARN in j   # ARN in metadata is acceptable (KMS key reference)
+tests/integration/test_phase7d_envelope_encryption.py:130:        provider_key_id=_MOCK_KMS_ARN, algorithm="AES_256_FERNET",
+tests/integration/test_phase7d_envelope_encryption.py:131:        encryption_version="7D",
+tests/integration/test_phase7d_envelope_encryption.py:137:    assert recovered.encryption_version == "7D"
+tests/integration/test_phase7d_envelope_encryption.py:144:        provider="AwsKmsProvider", provider_key_id=_MOCK_KMS_ARN,
+tests/integration/test_phase7d_envelope_encryption.py:167:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:173:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:188:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:195:        assert key.decode() not in bundle_json, "Fernet key must not be in bundle"
+tests/integration/test_phase7d_envelope_encryption.py:197:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:210:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:217:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:222:    """provider_key_id must be the KMS master key ARN, not the data key."""
+tests/integration/test_phase7d_envelope_encryption.py:230:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:233:        assert bundle.provider_key_id == _MOCK_KMS_ARN, \
+tests/integration/test_phase7d_envelope_encryption.py:234:            "provider_key_id must be the KMS ARN (master key), not the data key"
+tests/integration/test_phase7d_envelope_encryption.py:236:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:246:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:249:        assert key is None and bundle is None, "KMS failure must return (None, None)"
+tests/integration/test_phase7d_envelope_encryption.py:251:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:256:    os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:261:# ── 10-12. AwsKmsProvider decrypt_data_key ────────────────────────────────────
+tests/integration/test_phase7d_envelope_encryption.py:264:def test_decrypt_data_key_returns_matching_key(mock_boto3_client):
+tests/integration/test_phase7d_envelope_encryption.py:265:    """Decrypt should return the same Fernet key that was originally generated."""
+tests/integration/test_phase7d_envelope_encryption.py:274:    mock_client.decrypt.return_value = {"Plaintext": mock_plaintext}
+tests/integration/test_phase7d_envelope_encryption.py:278:    from cryptography.fernet import Fernet
+tests/integration/test_phase7d_envelope_encryption.py:279:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:283:        dec_key = provider.decrypt_data_key(bundle)
+tests/integration/test_phase7d_envelope_encryption.py:285:        # Both must be valid Fernet keys
+tests/integration/test_phase7d_envelope_encryption.py:286:        Fernet(gen_key)
+tests/integration/test_phase7d_envelope_encryption.py:287:        Fernet(dec_key)
+tests/integration/test_phase7d_envelope_encryption.py:289:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:292:def test_decrypt_data_key_fails_on_empty_blob():
+tests/integration/test_phase7d_envelope_encryption.py:296:        ciphertext_blob="", provider="AwsKmsProvider", provider_key_id=_MOCK_KMS_ARN,
+tests/integration/test_phase7d_envelope_encryption.py:298:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:300:        result = AwsKmsProvider().decrypt_data_key(empty_bundle)
+tests/integration/test_phase7d_envelope_encryption.py:303:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:307:def test_decrypt_data_key_fails_closed_on_kms_error(mock_boto3_client):
+tests/integration/test_phase7d_envelope_encryption.py:309:    mock_client.decrypt.side_effect = Exception("InvalidCiphertextException")
+tests/integration/test_phase7d_envelope_encryption.py:315:        provider="AwsKmsProvider", provider_key_id=_MOCK_KMS_ARN,
+tests/integration/test_phase7d_envelope_encryption.py:317:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:319:        result = AwsKmsProvider().decrypt_data_key(bundle)
+tests/integration/test_phase7d_envelope_encryption.py:320:        assert result is None, "KMS Decrypt failure must return None"
+tests/integration/test_phase7d_envelope_encryption.py:322:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:337:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:346:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:350:def test_no_key_in_logs_during_decrypt(mock_boto3_client, caplog):
+tests/integration/test_phase7d_envelope_encryption.py:353:    mock_client.decrypt.return_value = {"Plaintext": mock_plaintext}
+tests/integration/test_phase7d_envelope_encryption.py:359:        provider="AwsKmsProvider", provider_key_id=_MOCK_KMS_ARN,
+tests/integration/test_phase7d_envelope_encryption.py:361:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7d_envelope_encryption.py:364:            key = AwsKmsProvider().decrypt_data_key(bundle)
+tests/integration/test_phase7d_envelope_encryption.py:368:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:380:    assert bundle.ciphertext_blob == "", "Dev mode: no KMS CiphertextBlob"
+tests/integration/test_phase7d_envelope_encryption.py:384:def test_env_provider_decrypt_data_key_recovers_key():
+tests/integration/test_phase7d_envelope_encryption.py:388:    dec_key = provider.decrypt_data_key(bundle)
+tests/integration/test_phase7d_envelope_encryption.py:394:def test_encryption_key_metadata_column_on_cases():
+tests/integration/test_phase7d_envelope_encryption.py:401:                WHERE table_name='cases' AND column_name='encryption_key_metadata'
+tests/integration/test_phase7d_envelope_encryption.py:404:                "encryption_key_metadata column must exist on cases table"
+tests/integration/test_phase7d_envelope_encryption.py:409:def test_encryption_key_metadata_column_on_handoff_leads():
+tests/integration/test_phase7d_envelope_encryption.py:416:                WHERE table_name='handoff_leads' AND column_name='encryption_key_metadata'
+tests/integration/test_phase7d_envelope_encryption.py:425:def test_readiness_shows_envelope_encryption_fields():
+tests/integration/test_phase7d_envelope_encryption.py:428:    enc  = data.get("encryption_at_rest", {})
+tests/integration/test_phase7d_envelope_encryption.py:429:    assert "envelope_encryption_supported" in enc
+tests/integration/test_phase7d_envelope_encryption.py:433:def test_envelope_encryption_supported_when_aws_kms_configured():
+tests/integration/test_phase7d_envelope_encryption.py:434:    os.environ.update({"KEY_MANAGEMENT_MODE": "aws_kms", "AWS_KMS_KEY_ARN": _MOCK_KMS_ARN})
+tests/integration/test_phase7d_envelope_encryption.py:437:        enc  = resp.json().get("encryption_at_rest", {})
+tests/integration/test_phase7d_envelope_encryption.py:438:        assert enc.get("envelope_encryption_supported") is True
+tests/integration/test_phase7d_envelope_encryption.py:442:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7d_envelope_encryption.py:454:    from backend.core.encryption import encrypt_str, decrypt_str
+tests/integration/test_phase7d_envelope_encryption.py:455:    assert decrypt_str(encrypt_str("phase 7d regression")) == "phase 7d regression"
+tests/integration/test_phase7e_envelope_integration.py:2:Phase 7E — Envelope encryption integration tests.
+tests/integration/test_phase7e_envelope_integration.py:7:  envelope_encryption module:
+tests/integration/test_phase7e_envelope_integration.py:8:   1.  envelope_encrypt_str returns (ciphertext, bundle)
+tests/integration/test_phase7e_envelope_integration.py:10:   3.  envelope_decrypt_str recovers original (envelope path)
+tests/integration/test_phase7e_envelope_integration.py:11:   4.  envelope_decrypt_str backward compat (no bundle → env key)
+tests/integration/test_phase7e_envelope_integration.py:14:   7.  KMS decrypt failure fails closed
+tests/integration/test_phase7e_envelope_integration.py:15:   8.  envelope_encrypt_bytes / decrypt_bytes roundtrip
+tests/integration/test_phase7e_envelope_integration.py:16:   9.  no key material in logs during encrypt
+tests/integration/test_phase7e_envelope_integration.py:17:  10.  no key material in logs during decrypt
+tests/integration/test_phase7e_envelope_integration.py:19:  Handoff lead encryption (POST /handoff/leads):
+tests/integration/test_phase7e_envelope_integration.py:20:  11.  aws_kms mode: encryption_key_metadata stored in DB
+tests/integration/test_phase7e_envelope_integration.py:22:  13.  aws_kms mode: pii_encrypted=true + encryption_method=envelope_kms
+tests/integration/test_phase7e_envelope_integration.py:23:  14.  env mode: encryption_key_metadata is NULL (existing behavior unchanged)
+tests/integration/test_phase7e_envelope_integration.py:24:  15.  KMS failure on encrypt → 503 fails closed (no unencrypted storage)
+tests/integration/test_phase7e_envelope_integration.py:27:  16.  decrypt_pii_field with bundle → KMS path
+tests/integration/test_phase7e_envelope_integration.py:28:  17.  decrypt_pii_field without bundle → env key path
+tests/integration/test_phase7e_envelope_integration.py:29:  18.  decrypt_pii_field with malformed bundle → fails closed
+tests/integration/test_phase7e_envelope_integration.py:63:_MOCK_KMS_ARN = "arn:aws:kms:us-east-1:123456789012:key/phase7e-test-key"
+tests/integration/test_phase7e_envelope_integration.py:69:    from cryptography.fernet import Fernet
+tests/integration/test_phase7e_envelope_integration.py:72:        "ADMIN_API_KEY", "ENCRYPTION_KEY", "KEY_MANAGEMENT_MODE",
+tests/integration/test_phase7e_envelope_integration.py:73:        "AWS_KMS_KEY_ARN", "DEPLOYMENT_MODE", "LAWAPP_AUTH_MODE",
+tests/integration/test_phase7e_envelope_integration.py:77:        "ENCRYPTION_KEY":      Fernet.generate_key().decode(),
+tests/integration/test_phase7e_envelope_integration.py:82:    os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:88:            cur.execute("ALTER TABLE handoff_leads ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb")
+tests/integration/test_phase7e_envelope_integration.py:110:    mock_client.decrypt.return_value = {"Plaintext": plaintext}
+tests/integration/test_phase7e_envelope_integration.py:115:# ── 1-10. envelope_encryption module ─────────────────────────────────────────
+tests/integration/test_phase7e_envelope_integration.py:118:def test_envelope_encrypt_str_returns_ciphertext_and_bundle(mock_boto3_client):
+tests/integration/test_phase7e_envelope_integration.py:123:    from backend.core.envelope_encryption import envelope_encrypt_str
+tests/integration/test_phase7e_envelope_integration.py:124:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:126:        ct, bundle = envelope_encrypt_str(_TEST_PLAINTEXT, AwsKmsProvider())
+tests/integration/test_phase7e_envelope_integration.py:131:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:140:    from backend.core.envelope_encryption import envelope_encrypt_str
+tests/integration/test_phase7e_envelope_integration.py:141:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:143:        ct, bundle = envelope_encrypt_str(_TEST_PLAINTEXT, AwsKmsProvider())
+tests/integration/test_phase7e_envelope_integration.py:150:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:154:def test_envelope_decrypt_str_recovers_original(mock_boto3_client):
+tests/integration/test_phase7e_envelope_integration.py:159:    from backend.core.envelope_encryption import envelope_encrypt_str, envelope_decrypt_str
+tests/integration/test_phase7e_envelope_integration.py:160:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:163:        ct, bundle = envelope_encrypt_str(_TEST_PLAINTEXT, provider)
+tests/integration/test_phase7e_envelope_integration.py:164:        recovered = envelope_decrypt_str(ct, bundle.to_json(), provider)
+tests/integration/test_phase7e_envelope_integration.py:167:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:170:def test_envelope_decrypt_str_backward_compat_no_bundle():
+tests/integration/test_phase7e_envelope_integration.py:173:    from backend.core.encryption import encrypt_str
+tests/integration/test_phase7e_envelope_integration.py:174:    from backend.core.envelope_encryption import envelope_decrypt_str
+tests/integration/test_phase7e_envelope_integration.py:175:    ct = encrypt_str(_TEST_PLAINTEXT)
+tests/integration/test_phase7e_envelope_integration.py:176:    recovered = envelope_decrypt_str(ct, None, EnvKeyProvider())
+tests/integration/test_phase7e_envelope_integration.py:182:    from backend.core.envelope_encryption import envelope_decrypt_str
+tests/integration/test_phase7e_envelope_integration.py:183:    from backend.core.encryption import encrypt_str
+tests/integration/test_phase7e_envelope_integration.py:184:    ct = encrypt_str("test")
+tests/integration/test_phase7e_envelope_integration.py:185:    result = envelope_decrypt_str(ct, '{"not_valid": true, "missing": "fields"}', EnvKeyProvider())
+tests/integration/test_phase7e_envelope_integration.py:190:    """EnvKeyProvider bundle (empty blob) → backward compat decrypt."""
+tests/integration/test_phase7e_envelope_integration.py:192:    from backend.core.encryption import encrypt_str
+tests/integration/test_phase7e_envelope_integration.py:193:    from backend.core.envelope_encryption import envelope_decrypt_str
+tests/integration/test_phase7e_envelope_integration.py:194:    ct = encrypt_str(_TEST_PLAINTEXT)
+tests/integration/test_phase7e_envelope_integration.py:196:    recovered = envelope_decrypt_str(ct, env_bundle.to_json(), EnvKeyProvider())
+tests/integration/test_phase7e_envelope_integration.py:201:def test_kms_decrypt_failure_fails_closed(mock_boto3_client):
+tests/integration/test_phase7e_envelope_integration.py:206:    mock_client.decrypt.side_effect = Exception("InvalidCiphertextException")
+tests/integration/test_phase7e_envelope_integration.py:210:    from backend.core.envelope_encryption import envelope_encrypt_str, envelope_decrypt_str
+tests/integration/test_phase7e_envelope_integration.py:211:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:214:        ct, bundle = envelope_encrypt_str(_TEST_PLAINTEXT, provider)
+tests/integration/test_phase7e_envelope_integration.py:215:        result = envelope_decrypt_str(ct, bundle.to_json(), provider)
+tests/integration/test_phase7e_envelope_integration.py:216:        assert result is None, "KMS decrypt failure must fail closed"
+tests/integration/test_phase7e_envelope_integration.py:218:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:227:    from backend.core.envelope_encryption import envelope_encrypt_bytes, envelope_decrypt_bytes
+tests/integration/test_phase7e_envelope_integration.py:228:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:232:        ct, bundle = envelope_encrypt_bytes(data, provider)
+tests/integration/test_phase7e_envelope_integration.py:233:        recovered = envelope_decrypt_bytes(ct, bundle.to_json(), provider)
+tests/integration/test_phase7e_envelope_integration.py:236:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:240:def test_no_key_in_logs_during_encrypt(mock_boto3_client, caplog):
+tests/integration/test_phase7e_envelope_integration.py:245:    from backend.core.envelope_encryption import envelope_encrypt_str
+tests/integration/test_phase7e_envelope_integration.py:246:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:249:            ct, bundle = envelope_encrypt_str(_TEST_PLAINTEXT, AwsKmsProvider())
+tests/integration/test_phase7e_envelope_integration.py:255:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:259:def test_no_key_in_logs_during_decrypt(mock_boto3_client, caplog):
+tests/integration/test_phase7e_envelope_integration.py:264:    from backend.core.envelope_encryption import envelope_encrypt_str, envelope_decrypt_str
+tests/integration/test_phase7e_envelope_integration.py:265:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:268:        ct, bundle = envelope_encrypt_str(_TEST_PLAINTEXT, provider)
+tests/integration/test_phase7e_envelope_integration.py:270:            recovered = envelope_decrypt_str(ct, bundle.to_json(), provider)
+tests/integration/test_phase7e_envelope_integration.py:274:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:277:# ── 11-15. Handoff lead encryption ────────────────────────────────────────────
+tests/integration/test_phase7e_envelope_integration.py:288:def test_aws_kms_mode_stores_encryption_key_metadata(mock_boto3_client):
+tests/integration/test_phase7e_envelope_integration.py:289:    """With aws_kms mode, encryption_key_metadata must be stored in DB."""
+tests/integration/test_phase7e_envelope_integration.py:294:    os.environ.update({"KEY_MANAGEMENT_MODE": "aws_kms", "AWS_KMS_KEY_ARN": _MOCK_KMS_ARN})
+tests/integration/test_phase7e_envelope_integration.py:305:                    "SELECT encryption_key_metadata FROM handoff_leads WHERE id = %s::uuid",
+tests/integration/test_phase7e_envelope_integration.py:310:            assert row[0] is not None, "encryption_key_metadata must be stored for aws_kms mode"
+tests/integration/test_phase7e_envelope_integration.py:315:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:324:    os.environ.update({"KEY_MANAGEMENT_MODE": "aws_kms", "AWS_KMS_KEY_ARN": _MOCK_KMS_ARN})
+tests/integration/test_phase7e_envelope_integration.py:332:                    "SELECT encryption_key_metadata FROM handoff_leads WHERE id = %s::uuid",
+tests/integration/test_phase7e_envelope_integration.py:345:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:349:def test_aws_kms_mode_encryption_method_envelope(mock_boto3_client):
+tests/integration/test_phase7e_envelope_integration.py:353:    os.environ.update({"KEY_MANAGEMENT_MODE": "aws_kms", "AWS_KMS_KEY_ARN": _MOCK_KMS_ARN})
+tests/integration/test_phase7e_envelope_integration.py:358:        assert data["pii_encrypted"] is True
+tests/integration/test_phase7e_envelope_integration.py:359:        assert data.get("encryption_method") == "envelope_kms"
+tests/integration/test_phase7e_envelope_integration.py:362:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:365:def test_env_mode_encryption_key_metadata_null():
+tests/integration/test_phase7e_envelope_integration.py:366:    """Env mode: no envelope bundle — encryption_key_metadata should be NULL."""
+tests/integration/test_phase7e_envelope_integration.py:371:    assert data.get("encryption_method") in ("direct_fernet", "none")
+tests/integration/test_phase7e_envelope_integration.py:377:                "SELECT encryption_key_metadata FROM handoff_leads WHERE id = %s::uuid",
+tests/integration/test_phase7e_envelope_integration.py:382:        assert row[0] is None, "Env mode must not store encryption_key_metadata"
+tests/integration/test_phase7e_envelope_integration.py:388:def test_kms_failure_on_encrypt_returns_503(mock_boto3_client):
+tests/integration/test_phase7e_envelope_integration.py:389:    """KMS generate_data_key failure → 503, no unencrypted storage."""
+tests/integration/test_phase7e_envelope_integration.py:394:    os.environ.update({"KEY_MANAGEMENT_MODE": "aws_kms", "AWS_KMS_KEY_ARN": _MOCK_KMS_ARN})
+tests/integration/test_phase7e_envelope_integration.py:398:            f"KMS failure must return 503, not {resp.status_code}"
+tests/integration/test_phase7e_envelope_integration.py:401:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:407:def test_decrypt_pii_with_bundle_uses_kms(mock_boto3_client):
+tests/integration/test_phase7e_envelope_integration.py:412:    from backend.core.envelope_encryption import (
+tests/integration/test_phase7e_envelope_integration.py:413:        envelope_encrypt_str, decrypt_pii_field
+tests/integration/test_phase7e_envelope_integration.py:415:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:418:        ct, bundle = envelope_encrypt_str("test-pii-value", provider)
+tests/integration/test_phase7e_envelope_integration.py:419:        result = decrypt_pii_field(ct, bundle.to_json(), provider)
+tests/integration/test_phase7e_envelope_integration.py:422:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase7e_envelope_integration.py:425:def test_decrypt_pii_without_bundle_uses_env_key():
+tests/integration/test_phase7e_envelope_integration.py:428:    from backend.core.encryption import encrypt_str
+tests/integration/test_phase7e_envelope_integration.py:429:    from backend.core.envelope_encryption import decrypt_pii_field
+tests/integration/test_phase7e_envelope_integration.py:430:    ct = encrypt_str("old-record-value")
+tests/integration/test_phase7e_envelope_integration.py:431:    result = decrypt_pii_field(ct, None, EnvKeyProvider())
+tests/integration/test_phase7e_envelope_integration.py:435:def test_decrypt_pii_malformed_bundle_fails_closed():
+tests/integration/test_phase7e_envelope_integration.py:437:    from backend.core.envelope_encryption import decrypt_pii_field
+tests/integration/test_phase7e_envelope_integration.py:438:    result = decrypt_pii_field("some-ciphertext", '{"broken": true}', EnvKeyProvider())
+tests/integration/test_phase7e_envelope_integration.py:470:    os.environ["AWS_KMS_KEY_ARN"] = _MOCK_KMS_ARN
+tests/integration/test_phase7e_envelope_integration.py:477:        os.environ.pop("AWS_KMS_KEY_ARN", None)
+tests/integration/test_phase8b_algorithm_brain.py:80:    from cryptography.fernet import Fernet
+tests/integration/test_phase8b_algorithm_brain.py:81:    saved = {k: os.environ.get(k) for k in ["ADMIN_API_KEY", "ENCRYPTION_KEY", "DEPLOYMENT_MODE"]}
+tests/integration/test_phase8b_algorithm_brain.py:84:        "ENCRYPTION_KEY":   Fernet.generate_key().decode(),
+tests/security/test_encryption.py:2:Encryption tests — lawapp case facts encryption at rest.
+tests/security/test_encryption.py:5:  - facts_encrypted column stores ciphertext (not plaintext)
+tests/security/test_encryption.py:6:  - encrypt/decrypt round-trip
+tests/security/test_encryption.py:7:  - encrypted bytes are not readable as plain text
+tests/security/test_encryption.py:8:  - encryption key required for decryption
+tests/security/test_encryption.py:9:  - cases table stores encrypted facts when ENCRYPTION_KEY is configured
+tests/security/test_encryption.py:10:  - envelope encryption API
+tests/security/test_encryption.py:20:    def test_encryption_module_importable(self):
+tests/security/test_encryption.py:21:        from backend.core.encryption import encrypt_bytes, decrypt_bytes, is_configured
+tests/security/test_encryption.py:22:        assert callable(encrypt_bytes)
+tests/security/test_encryption.py:23:        assert callable(decrypt_bytes)
+tests/security/test_encryption.py:27:        from backend.core.encryption import is_configured
+tests/security/test_encryption.py:31:    def test_encrypt_decrypt_round_trip(self):
+tests/security/test_encryption.py:32:        """Encrypt then decrypt returns original data."""
+tests/security/test_encryption.py:33:        with patch.dict(os.environ, {"ENCRYPTION_KEY": "test-key-32-chars-padded-here!!!"}):
+tests/security/test_encryption.py:35:            import backend.core.encryption as enc_mod
+tests/security/test_encryption.py:40:                ciphertext = enc_mod.encrypt_bytes(plaintext)
+tests/security/test_encryption.py:42:                recovered = enc_mod.decrypt_bytes(ciphertext)
+tests/security/test_encryption.py:45:                # encryption module may require valid Fernet key format
+tests/security/test_encryption.py:48:    def test_encrypt_str_round_trip(self):
+tests/security/test_encryption.py:49:        """String encrypt/decrypt round trip."""
+tests/security/test_encryption.py:50:        from backend.core.encryption import is_configured, encrypt_str, decrypt_str
+tests/security/test_encryption.py:52:            pytest.skip("ENCRYPTION_KEY not configured in test environment")
+tests/security/test_encryption.py:54:        ciphertext = encrypt_str(original)
+tests/security/test_encryption.py:56:        recovered = decrypt_str(ciphertext)
+tests/security/test_encryption.py:59:    def test_encrypted_data_not_human_readable(self):
+tests/security/test_encryption.py:61:        from backend.core.encryption import is_configured, encrypt_str
+tests/security/test_encryption.py:63:            pytest.skip("ENCRYPTION_KEY not configured")
+tests/security/test_encryption.py:65:        ciphertext = encrypt_str(sensitive)
+tests/security/test_encryption.py:69:        from backend.core.encryption import generate_key
+tests/security/test_encryption.py:76:    def test_cases_table_has_facts_encrypted_column(self):
+tests/security/test_encryption.py:85:            "WHERE table_name='cases' AND column_name='facts_encrypted'"
+tests/security/test_encryption.py:89:        assert row is not None, "cases.facts_encrypted column missing"
+tests/security/test_encryption.py:91:    def test_cases_table_has_encryption_version(self):
+tests/security/test_encryption.py:100:            "WHERE table_name='cases' AND column_name='encryption_version'"
+tests/security/test_encryption.py:104:        assert row is not None, "cases.encryption_version column missing"
+tests/security/test_encryption.py:107:        """The 'facts' column should not store raw user facts — use facts_encrypted."""
+tests/security/test_encryption.py:114:        # facts_encrypted is bytea; if 'facts' text column exists, it should be de-identified only
+tests/security/test_encryption.py:121:        # facts_encrypted should be bytea or text (encrypted)
+tests/security/test_encryption.py:122:        assert "facts_encrypted" in cols, "facts_encrypted column missing"
+tests/uploads/test_uploads.py:6:  - raw upload fields are encrypted/stored separately
+tests/uploads/test_uploads.py:104:    def test_storage_ref_column_exists(self, db_conn):
+tests/uploads/test_uploads.py:105:        """storage_ref allows encrypted cloud storage."""
+tests/uploads/test_uploads.py:109:            WHERE table_name = 'documents' AND column_name = 'storage_ref';
+docs/00_README.md:39:5. **Validate, Harden, 2nd claim type** — prove willingness-to-pay, accuracy regression suite, GDPR/DPIA, add discrimination or unpaid-wages.
+docs/00_README.md:62:5. **Data protection:** special-category data (Art.9) — encrypt, minimise, de-identify before any third-party model.
+docs/01_BUILD_PLAN.md:106:3. **Case timeline / escalation tracking:** holds the dispute sequence ("they have 14 days," "escalate on X"). Drives retention.
+docs/01_BUILD_PLAN.md:107:4. Optional thin **subscription** (storage, "ask about any letter") — baseline retention only, not the focus.
+docs/01_BUILD_PLAN.md:109:**GUARDRAILS:** Uploaded documents are special-category data — encrypt, minimise, never route raw to third-party models. Extraction errors must be surfaced for user confirmation, never silently trusted.
+docs/01_BUILD_PLAN.md:125:3. **Security/compliance hardening:** UK GDPR Article 9 review, data-retention policy, encryption audit, de-identification boundary test, DPIA.
+docs/02_HLD_ARCHITECTURE.md:89:- **Special-category data**: discrimination/health facts → encrypt at rest + transit, minimise, de-identify at the third-party boundary (UK GDPR Article 9).
+docs/03_DATABASE_DESIGN.md:131:  email           text UNIQUE,                    -- consider encryption/hash
+docs/03_DATABASE_DESIGN.md:138:A user's matter. Holds facts (special-category data → encrypt) and the latest structured assessment.
+docs/03_DATABASE_DESIGN.md:145:  facts_encrypted bytea,                           -- encrypted JSON of user facts (Art.9 data)
+docs/03_DATABASE_DESIGN.md:163:  storage_ref     text NOT NULL,                   -- encrypted blob location
+docs/03_DATABASE_DESIGN.md:195:## 4. Data-protection notes (UK GDPR Article 9)
+docs/03_DATABASE_DESIGN.md:196:- `cases.facts_encrypted` and `documents.storage_ref` hold special-category data (discrimination/health) → encrypt at rest; minimise; define retention + deletion (`ON DELETE CASCADE` supports user erasure).
+docs/03_DATABASE_DESIGN.md:198:- Build a DPIA before launch (Phase 5).
+docs/05_WASM_SPEC.md:42:- This supports the Article 9 minimisation principle — keep sensitive computation client-side where feasible.
+docs/06_USER_STORIES.md:63:- AC3: Uploads encrypted; never sent raw to third-party models.
+docs/06_USER_STORIES.md:116:| US-8 Upload | 4 | OCR/extraction + encryption |
+docs/07_PROJECT_HANDOVER.md:39:5. **Data protection.** Special-category data (discrimination, health, UK GDPR Article 9) is encrypted at rest and in transit, minimised, and de-identified before any third-party model call.
+docs/07_PROJECT_HANDOVER.md:79:- **Application tables:** `users`, `cases` (facts_encrypted as bytea, latest assessment as jsonb, key_dates, status, payment_tier), `documents` (generated outputs and uploads, extracted_facts needing user confirmation), `referrals` (Phase 6).
+docs/07_PROJECT_HANDOVER.md:81:- **Article 9:** `cases.facts_encrypted` and `documents.storage_ref` hold special-category data - encrypt, minimise, define retention and deletion, never copy raw facts into logs or third-party payloads. DPIA before launch (Phase 5).
+docs/07_PROJECT_HANDOVER.md:97:5. **Validate, Harden, 2nd Claim Type.** Willingness-to-pay and conversion funnel, accuracy regression suite with CI gate, GDPR/Article 9 review and DPIA, add a second claim type (discrimination or unpaid wages) only after it passes the same accuracy bar.
+docs/07_PROJECT_HANDOVER.md:142:| Special-category data leakage | De-identification boundary before any third-party model, proven by a logged boundary-payload test in Phase 2. Encryption at rest and in transit. DPIA in Phase 5. |
+docs/09_PHASE3_RETENTION_DESIGN.md:13:tribunal needs. Every retention touchpoint must be grounded in the user's
+docs/09_PHASE3_RETENTION_DESIGN.md:18:## Core retention loop
+docs/09_PHASE3_RETENTION_DESIGN.md:69:Checklist is stored as `cases.key_dates` and `cases.facts_encrypted`.
+docs/09_PHASE3_RETENTION_DESIGN.md:115:Completion is computed from which fields are present in `cases.facts_encrypted`.
+docs/09_PHASE3_RETENTION_DESIGN.md:165:## 8. What retention must NOT do
+docs/10_FEATURE_ROADMAP.md:87:## PHASE 3 — MVP dashboard, retention, pricing, coaching
+docs/10_FEATURE_ROADMAP.md:244:| 4-6 | Security: encrypt uploads, confirm before use, no raw to LLM | Planned |
+docs/10_FEATURE_ROADMAP.md:269:- Uploaded documents encrypted at rest (AES)
+docs/10_FEATURE_ROADMAP.md:293:| 5-4 | DPIA and UK GDPR review | Planned |
+docs/10_FEATURE_ROADMAP.md:326:- Audit log retention behaves as documented
+docs/10_FEATURE_ROADMAP.md:379:4. **Retention is built on legal urgency**, not generic engagement. Every retention touchpoint comes from the governed assessment.
+docs/controlled-beta-human-review-handover.md:27:| DPIA reviewed by DPO | **NOT DONE** |
+docs/controlled-beta-human-review-handover.md:39:## Review 1: DPO — DPIA Review
+docs/controlled-beta-human-review-handover.md:64:  "review_scope": "Full DPIA review per checklist at docs/dpia-review-checklist.md",
+docs/controlled-beta-human-review-handover.md:95:3. Note any changes required (placeholder fields, legal basis, retention periods).
+docs/controlled-beta-human-review-handover.md:174:| `docs/dpia-artefact.md` | Full DPIA artefact for DPO review |
+docs/dpia-artefact.md:1:# Data Protection Impact Assessment (DPIA) — ARTEFACT IN PROGRESS
+docs/dpia-artefact.md:12:This is a DPIA artefact in progress. It has NOT been:
+docs/dpia-artefact.md:18:A DPIA is likely required before deploying lawapp to real users, because:
+docs/dpia-artefact.md:43:6. Documents uploaded: file stored locally (Phase 6: encrypted)
+docs/dpia-artefact.md:60:| PII in handoff leads exposed | Medium | High | Fernet encryption (Phase 6) | Medium |
+docs/dpia-artefact.md:63:| Uploaded files leaked | Medium | High | Local encryption (Phase 6); no external storage | Medium |
+docs/dpia-artefact.md:65:| Inadequate retention | Medium | Medium | Soft-delete + retention script (Phase 6) | Low |
+docs/dpia-artefact.md:70:## 4. Article 9 (special category data) assessment
+docs/dpia-artefact.md:90:- Encryption at rest for uploads and handoff PII (Fernet AES-128-CBC)
+docs/dpia-artefact.md:98:- HSM/KMS key management (Phase 7)
+docs/dpia-artefact.md:133:## END OF DPIA ARTEFACT IN PROGRESS
+docs/dpia-review-checklist.md:1:# DPIA DPO Review Checklist
+docs/dpia-review-checklist.md:18:- [ ] The DPIA at `docs/dpia-artefact.md` accurately describes all data flows
+docs/dpia-review-checklist.md:32:- [ ] All risks in the DPIA risk table have been assessed
+docs/dpia-review-checklist.md:35:  - Fernet encryption for handoff PII and uploaded files
+docs/dpia-review-checklist.md:43:- [ ] Reviewer has noted that encryption key is stored in env var (NOT HSM-backed — Phase 7)
+docs/dpia-review-checklist.md:55:- [ ] Reviewer has noted that retention periods are not yet formally set (Phase 7 gap)
+docs/dpia-review-checklist.md:87:  "review_scope": "Full DPIA review per checklist at docs/dpia-review-checklist.md v6D",
+docs/env-production.template:25:# Fernet key (AES-128-CBC + HMAC-SHA256).
+docs/env-production.template:26:# Generate: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+docs/env-production.template:28:# Phase 7: replace with KMS-backed key (AWS KMS / GCP KMS / HashiCorp Vault).
+docs/env-production.template:29:ENCRYPTION_KEY=<REQUIRED: Fernet key — 44-char URL-safe base64>
+docs/env-production.template:77:# KMS_KEY_ID=<Phase 7: AWS KMS / GCP KMS key ID>
+docs/FCL_APPLICATION_PREP.md:84:| Independent ethical review? | No | No independent ethical review at this stage. DPIA planned before launch (Phase 5). Documented guardrails and the accuracy regression process are the interim internal governance. |
+docs/FCL_APPLICATION_PREP.md:107:**6. Privacy:** Retrieved decisions are publicly available under the Open Justice Licence. No personal data about parties is extracted for any purpose other than citation display. User case data is encrypted and never sent to third-party models without de-identification.
+docs/pre-beta-runbook.md:18:## Step 1 — DPIA DPO Review [BLOCKED: human review required]
+docs/pre-beta-runbook.md:33:     "review_scope": "Full DPIA review per checklist v6D",
+docs/pre-beta-runbook.md:75:   - `ENCRYPTION_KEY` — Fernet key (generate: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`)
+docs/pre-beta-runbook.md:139:- Monitor `GET /admin/retention-status` for data accumulation
+docs/pre-beta-runbook.md:140:- Run `scripts/run_retention.py --apply` periodically per retention policy
+docs/pre-beta-runbook.md:148:- Real HSM/KMS key management
+docs/privacy-notice-draft.md:56:- Document files (stored locally, Phase 6: Fernet-encrypted)
+docs/privacy-notice-draft.md:71:Special category data (Art.9): [TO BE ASSESSED — see DPIA artefact]
+docs/privacy-notice-draft.md:106:- PII in handoff leads encrypted at rest (Fernet AES-128-CBC)
+docs/privacy-notice-draft.md:107:- Uploaded files encrypted at rest (Fernet AES-128-CBC)
+docs/privacy-notice-draft.md:111:Remaining gaps (see DPIA artefact):
+docs/privacy-review-checklist.md:40:- [ ] Note: current implementation uses configurable retention (Phase 7 gap — must be set before publication)
+docs/privacy-review-checklist.md:70:- [ ] Placeholder fields (controller details, retention periods) are filled in

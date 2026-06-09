@@ -1,0 +1,5 @@
+=== BEFORE COUNTS ===
+ legal_sources=8
+
+ corpus_chunks=92
+

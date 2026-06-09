@@ -1,0 +1,133 @@
+PHASE 5A — VALIDATION, HARDENING, ACCURACY REGRESSION, PRODUCTION-READINESS
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 5A adds:
+  1. Legal accuracy regression suite (8 fact patterns, deterministic)
+  2. CI quality gate script
+  3. Data-protection status report
+  4. Log PII scanner
+  5. De-identification boundary proof tests
+  6. Funnel event instrumentation (local, no external analytics)
+
+═══════════════════════════════════════════════════════════════════════════════
+LEGAL ACCURACY REGRESSION SUITE
+═══════════════════════════════════════════════════════════════════════════════
+
+Location: tests/legal_accuracy/test_legal_accuracy.py
+Fixtures: tests/legal_accuracy/fixtures.py (8 fact patterns)
+Model:    StubReasoningModel only — no real LLM, no quota dependency
+
+Fact patterns:
+  FP1: Ordinary UD (4yr, conduct, no procedure) — deadline, QP, weaknesses
+  FP2: Under qualifying period (14mo) — QP fails, has_viable_claim='no'
+  FP3: Day-one service (auto-unfair candidate) — QP fails
+  FP4: EC applied, floor does NOT bite — deadline 2026-04-14
+  FP5: EC applied, floor BITES — deadline 2026-04-25
+  FP6: Missed deadline — urgency='expired'
+  FP7: Insufficient facts (no EDT) — missing_edt status, no fabrication
+  FP8: Complex case (SOSR + procedure) — deadline correct, QP passes
+
+Cross-fixture assertions:
+  - All in-scope deadlines: source='rules'
+  - All results: boundary_log present
+  - All results: pii_in_output=[]
+
+═══════════════════════════════════════════════════════════════════════════════
+CI QUALITY GATE
+═══════════════════════════════════════════════════════════════════════════════
+
+Script: scripts/run_legal_accuracy.py
+Usage:  python scripts/run_legal_accuracy.py
+Exit:   0 = all pass, 1 = any fail
+
+The CI gate runs ONLY tests/legal_accuracy/ — not the full integration suite.
+Real-model tests are excluded. Deterministic layer only.
+Skipped tests (quota/model) are not treated as pass evidence.
+
+═══════════════════════════════════════════════════════════════════════════════
+DATA-PROTECTION REPORT SUMMARY (GET /admin/dp-report)
+═══════════════════════════════════════════════════════════════════════════════
+
+IMPLEMENTED:
+  [✓] Third-party model boundary — deidentify.py strips 14 PII field types
+  [✓] boundary_log in every assess() response
+  [✓] Raw uploaded bytes never logged, never sent to external service
+
+PARTIAL:
+  [~] Log PII scanning — test-fixture level only, not production audit
+  [~] Facts persistence — assessment jsonb is de-identified; extracted_facts may hold confirmed PII
+
+NOT IMPLEMENTED:
+  [✗] Encryption at rest (uploads, cases.facts_encrypted, handoff_leads)
+  [✗] Data retention / deletion policy (Art.17 UK GDPR)
+  [✗] DPIA not completed
+
+Critical gaps:
+  - No encryption at rest for uploaded documents
+  - cases.facts_encrypted column is NULL (no AES-256-GCM)
+  - handoff_leads: name+email stored in plaintext
+  - No right-to-erasure endpoint
+  - DPIA not completed
+
+Production-ready: NO
+
+═══════════════════════════════════════════════════════════════════════════════
+DE-IDENTIFICATION BOUNDARY PROOF
+═══════════════════════════════════════════════════════════════════════════════
+
+Test: test_phase5a_hardening.py::test_deidentify_strips_all_pii_fields
+      test_phase5a_hardening.py::test_safe_facts_contain_no_pii_values
+      test_phase5a_hardening.py::test_mock_model_payload_contains_no_pii
+
+PII values tested (verified absent from safe_facts):
+  "Alice Johnson", "Big Corp Ltd", "alice@bigcorp.com",
+  "42 Maple Road", "07800 123456", "1985-06-15", "AB123456C"
+
+Fields stripped: claimant_name, employer_name, email, home_address, phone,
+                 date_of_birth, national_insurance (+ 7 more in production)
+
+═══════════════════════════════════════════════════════════════════════════════
+FUNNEL EVENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+Endpoints:  POST /funnel/events, GET /cases/{id}/funnel
+Storage:    local DB (funnel_events table), no external analytics
+Events (11): diagnosis_started, diagnosis_completed, document_preview_generated,
+             mock_payment_completed, full_document_generated, case_saved,
+             upload_added, extraction_reviewed, bundle_preview_generated,
+             handoff_started, handoff_submitted
+
+GUARDRAIL: case_id is nullable — pre-case events supported
+GUARDRAIL: metadata must not contain PII or raw file content
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  tests/legal_accuracy/__init__.py
+  tests/legal_accuracy/fixtures.py                8 fact-pattern fixtures
+  tests/legal_accuracy/test_legal_accuracy.py     35 legal accuracy tests
+  scripts/run_legal_accuracy.py                   CI gate script
+  db/migrations/010_phase5a_funnel.sql            funnel_events table
+  backend/engine/dp_report.py                     DP status report generator
+  backend/engine/log_scanner.py                   PII log scanner
+  tests/integration/test_phase5a_hardening.py     29 integration tests
+  reports/phase5a-hardening-report.txt            this report
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/api/main.py
+    - POST /funnel/events, GET /cases/{id}/funnel
+    - GET /admin/dp-report
+    - Version: 1.0.0-phase5a
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 5A
+═══════════════════════════════════════════════════════════════════════════════

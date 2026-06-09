@@ -1,0 +1,94 @@
+=== T-004 RETRIEVAL PROOF ===
+Date: Sun Jun  7 15:13:32 UTC 2026
+Method: query embedded with BAAI/bge-small-en-v1.5 (fastembed ONNX, 384-dim)
+        pgvector cosine NN (operator <=>) over corpus_chunks.embedding (HNSW index)
+DB: lawapp-rag/lawapp-postgres-0 db=lawapp (via port-forward 15432)
+
+==========================================================================================
+QUERY: 'unfair dismissal qualifying period'   (cosine NN, top-5)
+==========================================================================================
+
+[1] cos_dist=0.1745  chunk_id=116098db-0e57-4c6f-9d1d-a3eb9010112c
+    source_id=10  source_type=legislation  licence=active
+    authority_ref=Equality Act 2010 s.129
+    source_url=http://www.legislation.gov.uk/ukpga/2010/15/section/129
+    parent_source_name=Equality Act 2010  base_url=https://www.legislation.gov.uk/ukpga/2010/15/data.xml
+    chunk_hash=21c4587747921a415b3d775f7e3fc50b5a44349903c1c1879f398d03ed0c2ccd
+    snippet: Time limits 129 1 This section applies to— a a complaint relating to a breach of an equality clause or rule; b an application for a declaration referred to in section 127(3) or (4). 2 Proceedings on the complaint or appl
+
+[2] cos_dist=0.2070  chunk_id=4f547231-b754-469e-b6d3-a303bee6ef0a
+    source_id=9  source_type=legislation  licence=active
+    authority_ref=Employment Rights Act 1996 s.108
+    source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/108
+    parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
+    chunk_hash=de5f5dfcec658b6b6acf342d71be94da85d774d5e3818a0f6eacd2794679bc1b
+    snippet: Qualifying period of employment. 108 1 Section 94 does not apply to the dismissal of an employee unless he has been continuously employed for a period of not less than two years ending with the effective date of terminat
+
+[3] cos_dist=0.2122  chunk_id=a43554a3-9bb7-4b67-b751-20a27794e455
+    source_id=9  source_type=legislation  licence=active
+    authority_ref=Employment Rights Act 1996 s.98
+    source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/98
+    parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
+    chunk_hash=1df53108403372f9a77e3512a0a7e9a1d17355d103fd0a2c7417495eac6419d1
+    snippet: General. 98 1 In determining for the purposes of this Part whether the dismissal of an employee is fair or unfair, it is for the employer to show— a the reason (or, if more than one, the principal reason) for the dismiss
+
+[4] cos_dist=0.2138  chunk_id=e8f5e622-3a93-4dd4-9b5e-f6a56141fc7f
+    source_id=12  source_type=acas_guidance  licence=review
+    authority_ref=What dismissal is - Dismissals - Acas (https://www.acas.org.uk/dismissals)
+    source_url=https://www.acas.org.uk/dismissals
+    parent_source_name=What dismissal is - Dismissals - Acas  base_url=https://www.acas.org.uk/dismissals
+    chunk_hash=4f9617ce4dabd07b525cc10dc5804e25d8be9a06644d13424c246dcf1df38bdd
+    snippet: Dismissals with and without notice Constructive dismissal Following a fair procedure A dismissal is when an employer ends an employee's contract. It usually means the same as being sacked or fired. It's important that an
+
+[5] cos_dist=0.2208  chunk_id=3e743683-98f2-4e89-8633-528630562617
+    source_id=9  source_type=legislation  licence=active
+    authority_ref=Employment Rights Act 1996 s.111
+    source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/111
+    parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
+    chunk_hash=17be4bac49e5daced0575eafe45dd97abd0b1229d24a861e963c84025b7a0924
+    snippet: Complaints to employment tribunal . 111 1 A complaint may be presented to an employment tribunal against an employer by any person that he was unfairly dismissed by the employer. 2 Subject to the following provisions of 
+
+==========================================================================================
+QUERY: 'employment tribunal time limit'   (cosine NN, top-5)
+==========================================================================================
+
+[1] cos_dist=0.1802  chunk_id=6257bb83-42d2-4a9c-a177-f4910a4f0656
+    source_id=9  source_type=legislation  licence=active
+    authority_ref=Employment Rights Act 1996 s.57B
+    source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/57B
+    parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
+    chunk_hash=f040a6af32a9c917224b59ddc120cc75bd20f60b69ace5228193c06b0faf6769
+    snippet: Complaint to employment tribunal. 57B 1 An employee may present a complaint to an employment tribunal that his employer has unreasonably refused to permit him to take time off as required by section 57A. 2 An employment 
+
+[2] cos_dist=0.1863  chunk_id=0485065e-8242-4ee1-8149-28af4aff1904
+    source_id=9  source_type=legislation  licence=active
+    authority_ref=Employment Rights Act 1996 s.51
+    source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/51
+    parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
+    chunk_hash=e91fdf35189573e7a4e6ff8f7ba1ba9f51f4159d3301c9a5c2077bf21ef664a1
+    snippet: Complaints to employment tribunals . 51 1 An employee may present a complaint to an employment tribunal that his employer has failed to permit him to take time off as required by section 50. 2 An employment tribunal shal
+
+[3] cos_dist=0.1898  chunk_id=3047cb44-64aa-41a0-9005-2b7159e792f3
+    source_id=9  source_type=legislation  licence=active
+    authority_ref=Employment Rights Act 1996 s.63
+    source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/63
+    parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
+    chunk_hash=3c6755f3a956585f6b6093fd1a72094373fcf88e8ababda162496588017a9f49
+    snippet: Complaints to employment tribunals . 63 1 An employee may present a complaint to an employment tribunal that his employer— a has unreasonably refused to permit him to take time off as required by section 61, or b has fai
+
+[4] cos_dist=0.1921  chunk_id=759941bf-975b-4c93-be78-c6b2c8566153
+    source_id=9  source_type=legislation  licence=active
+    authority_ref=Employment Rights Act 1996 s.54
+    source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/54
+    parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
+    chunk_hash=ca97b29cba074c3149f0c991e719a0b7fcfa224044855c248956a7657f7bc57a
+    snippet: Complaints to employment tribunals . 54 1 An employee may present a complaint to an employment tribunal that his employer— a has unreasonably refused to permit him to take time off as required by section 52, or b has fai
+
+[5] cos_dist=0.1936  chunk_id=aff7b175-def6-4e85-8beb-0f81752943dd
+    source_id=9  source_type=legislation  licence=active
+    authority_ref=Employment Rights Act 1996 s.27BH
+    source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/27BH
+    parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
+    chunk_hash=32444227916f0103a5964af90df011d3ef8a8c8425ccd366ce7cb5872ddb5cd0
+    snippet: Complaints to employment tribunals: time limits 27BH 1 An employment tribunal must not consider a complaint under section 27BG(1) unless it is presented before the end of the period of six months beginning with the day a
+

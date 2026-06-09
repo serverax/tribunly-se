@@ -1,0 +1,20 @@
+                                          Table "public.legal_edges"
+      Column       |           Type           | Collation | Nullable |                 Default                 
+-------------------+--------------------------+-----------+----------+-----------------------------------------
+ id                | bigint                   |           | not null | nextval('legal_edges_id_seq'::regclass)
+ from_node_id      | text                     |           | not null | 
+ to_node_id        | text                     |           | not null | 
+ relationship_type | text                     |           | not null | 
+ weight            | double precision         |           | not null | 1.0
+ notes             | text                     |           |          | 
+ jurisdiction      | text                     |           | not null | 'EW'::text
+ created_at        | timestamp with time zone |           | not null | now()
+Indexes:
+    "legal_edges_pkey" PRIMARY KEY, btree (id)
+    "legal_edges_from_idx" btree (from_node_id)
+    "legal_edges_rel_idx" btree (relationship_type)
+    "legal_edges_to_idx" btree (to_node_id)
+Foreign-key constraints:
+    "legal_edges_from_node_id_fkey" FOREIGN KEY (from_node_id) REFERENCES legal_nodes(node_id)
+    "legal_edges_to_node_id_fkey" FOREIGN KEY (to_node_id) REFERENCES legal_nodes(node_id)
+

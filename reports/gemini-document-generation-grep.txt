@@ -1,0 +1,227 @@
+backend/api/main.py:487:        "particulars_of_claim", "schedule_of_loss",
+backend/api/main.py:495:@app.post("/documents/generate")
+backend/api/main.py:496:def generate_document(req: DocumentRequest) -> dict:
+backend/api/main.py:510:        generate_particulars_of_claim,
+backend/api/main.py:511:        generate_schedule_of_loss,
+backend/api/main.py:516:    if req.document_type == "particulars_of_claim":
+backend/api/main.py:517:        content = generate_particulars_of_claim(req.assessment, req.facts)
+backend/api/main.py:519:    elif req.document_type == "schedule_of_loss":
+backend/api/main.py:520:        content = generate_schedule_of_loss(req.assessment, req.facts)
+backend/api/main.py:557:        "generation_method":  "template",
+backend/api/main.py:1066:    "application/pdf",
+backend/api/main.py:1088:    Supported types: application/pdf, image/jpeg, image/png, image/tiff.
+backend/api/main.py:2317:        "particulars_of_claim", "schedule_of_loss",
+backend/api/main.py:3061:        "application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+backend/api/main.py:3492:        "note":           "Document content is stored as text in the case record. Use /documents/generate to regenerate.",
+backend/core/agents/registry.py:329:    allowed_tools = ["generate_particulars", "generate_schedule_of_loss",
+backend/core/agents/registry.py:344:            from backend.core.documents import generate_particulars_of_claim
+backend/core/agents/registry.py:345:            poc = generate_particulars_of_claim(facts, {}, jurisdiction=jurisdiction)
+backend/core/agents/registry.py:348:                    "doc_type": "particulars_of_claim",
+backend/core/agents/registry.py:349:                    "template": "v1",
+backend/core/agents/registry.py:355:            gaps.append("particulars_of_claim_generation_failed")
+backend/core/agents/registry.py:359:                from backend.core.documents import generate_schedule_of_loss
+backend/core/agents/registry.py:360:                sol = generate_schedule_of_loss(facts, {}, jurisdiction=jurisdiction)
+backend/core/agents/registry.py:363:                        "doc_type": "schedule_of_loss",
+backend/core/agents/registry.py:364:                        "template": "v1",
+backend/core/bundle.py:249:Method: template (no freeform AI drafting)
+backend/core/bundle.py:346:Method: template (no freeform AI drafting)
+backend/core/bundle.py:386:  [ ] Employment contract (or written statement of particulars)
+backend/core/bundle.py:437:Method: template (no freeform AI drafting)
+backend/core/bundle.py:516:   Summary for particulars section:
+backend/core/bundle.py:523:   [Expand with your full particulars. See your drafted Particulars of Claim
+backend/core/bundle.py:557:Method: template (no freeform AI drafting)
+backend/core/classify.py:58:    "particulars of claim", "schedule of loss",
+backend/core/classify.py:81:    "particulars", "schedule of loss", "et1", "document", "draft", "prepare",
+backend/core/documents.py:139:def generate_particulars_of_claim(assessment: dict, facts: dict) -> str:
+backend/core/documents.py:322:Generation method: template (no freeform AI drafting)
+backend/core/documents.py:330:def generate_schedule_of_loss(assessment: dict, facts: dict) -> str:
+backend/core/documents.py:489:Generation method: template (no freeform AI drafting)
+backend/core/documents.py:595:Method: template (no freeform AI drafting)
+backend/core/documents.py:685:   [Expand with full particulars. Include: date wages became due, amount,
+backend/core/documents.py:718:Method: template (no freeform AI drafting)
+backend/core/document_extractor.py:156:def _extract_text_from_pdf(content: bytes) -> str:
+backend/core/document_extractor.py:158:    Extract text from a PDF using pypdf (text-based PDFs only).
+backend/core/document_extractor.py:165:        import pypdf  # type: ignore
+backend/core/document_extractor.py:166:        reader = pypdf.PdfReader(io.BytesIO(content))
+backend/core/document_extractor.py:175:        logger.warning("pypdf not installed. PDF text extraction unavailable. "
+backend/core/document_extractor.py:176:                       "Install: pip install pypdf")
+backend/core/document_extractor.py:183:def _extract_text_from_docx(content: bytes) -> str:
+backend/core/document_extractor.py:185:    Extract text from a DOCX file using python-docx.
+backend/core/document_extractor.py:190:        import docx  # type: ignore
+backend/core/document_extractor.py:191:        doc = docx.Document(io.BytesIO(content))
+backend/core/document_extractor.py:194:        logger.warning("python-docx not installed. DOCX extraction unavailable. "
+backend/core/document_extractor.py:195:                       "Install: pip install python-docx")
+backend/core/document_extractor.py:215:        content_type:  MIME type (application/pdf, application/vnd.openxmlformats...)
+backend/core/document_extractor.py:221:      - "extraction_method": "pdf_text" | "docx" | "plain_text" | "unavailable"
+backend/core/document_extractor.py:235:    if "pdf" in content_type.lower():
+backend/core/document_extractor.py:236:        text = _extract_text_from_pdf(content)
+backend/core/document_extractor.py:237:        extraction_method = "pdf_text"
+backend/core/document_extractor.py:242:    elif "docx" in content_type.lower() or "wordprocessingml" in content_type.lower():
+backend/core/document_extractor.py:243:        text = _extract_text_from_docx(content)
+backend/core/document_extractor.py:244:        extraction_method = "docx"
+backend/core/document_extractor.py:337:                        fact.get("extraction_method", "pdf_text"),
+backend/core/mcp_connectors.py:191:    doc_type = params.get("doc_type", "particulars_of_claim")
+backend/core/mcp_connectors.py:196:    if doc_type == "particulars_of_claim":
+backend/core/mcp_connectors.py:197:        from backend.core.documents import generate_particulars_of_claim
+backend/core/mcp_connectors.py:198:        return generate_particulars_of_claim(facts, assessment, jurisdiction=jurisdiction)
+backend/core/mcp_connectors.py:199:    elif doc_type == "schedule_of_loss":
+backend/core/mcp_connectors.py:200:        from backend.core.documents import generate_schedule_of_loss
+backend/core/mcp_connectors.py:201:        return generate_schedule_of_loss(facts, assessment, jurisdiction=jurisdiction)
+backend/core/production_readiness.py:432:            "docs/env-production.template",
+backend/core/production_readiness.py:438:            "Set to a strong random string. See docs/env-production.template.",
+backend/core/production_readiness.py:439:            "docs/env-production.template",
+backend/core/production_readiness.py:445:            "HS256 JWT verification is implemented (Phase 6C). See docs/env-production.template.",
+backend/core/production_readiness.py:446:            "docs/env-production.template",
+backend/core/router.py:44:    r"particulars of claim",
+backend/domains/employment/checklists/evidence_weight.py:21:    elif bool(re.search(r"\b(email|contract|minutes|letter|pdf|screenshot)\b", t, re.IGNORECASE)):
+client/public/css/styles.css:163:  div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+client/public/index.html:37:    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-bottom:2rem;">
+client/public/index.html:56:        <p style="font-size:.9rem;color:var(--muted);margin-top:.5rem;">Particulars of Claim and Schedule of Loss when you're ready — with your actual facts, not a generic template.</p>
+client/public/js/document_preview.js:124:    const required = (documentType === 'schedule_of_loss' || documentType === 'particulars_of_claim')
+client/public/pages/assessment.html:568:      'prepare_documents':   {label: 'Prepare your claim documents', desc: 'Your case appears viable. The next step is to start ACAS Early Conciliation and prepare your ET1 particulars.'},
+client/public/pages/assessment.html:972:    document.getElementById('btn-poc')?.addEventListener('click', () => generateDoc('particulars_of_claim', assessment));
+client/public/pages/assessment.html:973:    document.getElementById('btn-sol')?.addEventListener('click', () => generateDoc('schedule_of_loss', assessment));
+client/public/pages/assessment.html:991:      const resp = await fetch(`${API_BASE}/documents/generate`, {
+client/public/pages/case_detail.html:167:    pocBtn.onclick = () => downloadDoc(c, a, 'particulars_of_claim');
+client/public/pages/case_detail.html:172:    solBtn.onclick = () => downloadDoc(c, a, 'schedule_of_loss');
+client/public/pages/case_detail.html:204:      const resp = await LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/documents/generate`, {
+client/public/pages/intake.html:36:    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+client/public/pages/intake.html:37:    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+tests/documents/test_documents.py:40:        assert "particulars" in str(cfg["allowed_tools"]).lower() or \
+tests/documents/test_documents.py:61:        result = agent.process("Generate particulars", _UD_FACTS, None)
+tests/documents/test_documents.py:70:        result = agent.process("Generate particulars", _UD_FACTS, None)
+tests/documents/test_documents.py:77:        assert hasattr(documents, "generate_particulars_of_claim")
+tests/documents/test_documents.py:80:        """documents.generate_particulars_of_claim() returns formatted string."""
+tests/documents/test_documents.py:81:        from backend.core.documents import generate_particulars_of_claim
+tests/documents/test_documents.py:82:        result = generate_particulars_of_claim(_UD_FACTS, {})
+tests/documents/test_documents.py:86:        from backend.core.documents import generate_particulars_of_claim
+tests/documents/test_documents.py:87:        result = generate_particulars_of_claim(_UD_FACTS, {})
+tests/documents/test_documents.py:91:        from backend.core.documents import generate_particulars_of_claim
+tests/documents/test_documents.py:92:        result = generate_particulars_of_claim(_UD_FACTS, {})
+tests/documents/test_documents.py:96:        from backend.core.documents import generate_particulars_of_claim, LEGAL_BOUNDARY_NOTICE
+tests/documents/test_documents.py:97:        result = generate_particulars_of_claim(_UD_FACTS, {})
+tests/documents/test_documents.py:110:        assert hasattr(documents, "generate_schedule_of_loss")
+tests/documents/test_documents.py:113:        """documents.generate_schedule_of_loss() returns formatted string."""
+tests/documents/test_documents.py:114:        from backend.core.documents import generate_schedule_of_loss
+tests/documents/test_documents.py:115:        result = generate_schedule_of_loss(_UD_FACTS, {})
+tests/documents/test_documents.py:119:        from backend.core.documents import generate_schedule_of_loss
+tests/documents/test_documents.py:120:        result = generate_schedule_of_loss(_UD_FACTS, {})
+tests/document_intelligence/test_document_intelligence.py:27:        files = {"file": ("test.pdf", io.BytesIO(b"%PDF"), "application/pdf")}
+tests/e2e/lawapp-journey.spec.js:209:    data: { document_type: 'particulars_of_claim' },
+tests/e2e/lawapp-journey.spec.js:218:  const docR = await request.post(`${BASE}/documents/generate`, {
+tests/e2e/lawapp-journey.spec.js:220:      document_type: 'particulars_of_claim',
+tests/e2e/lawapp-journey.spec.js:237:  const r = await request.post(`${BASE}/documents/generate`, {
+tests/e2e/lawapp-journey.spec.js:239:      document_type: 'schedule_of_loss',
+tests/integration/test_phase3c_documents.py:19: 15.  /documents/generate appears in live Docker (health check)
+tests/integration/test_phase3c_documents.py:92:_POC_REQUEST = {"document_type": "particulars_of_claim", "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "mock-paid-test"}
+tests/integration/test_phase3c_documents.py:93:_SOL_REQUEST = {"document_type": "schedule_of_loss",     "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "mock-paid-test"}
+tests/integration/test_phase3c_documents.py:98:def test_particulars_of_claim_endpoint_returns_200():
+tests/integration/test_phase3c_documents.py:99:    resp = client.post("/documents/generate", json=_POC_REQUEST)
+tests/integration/test_phase3c_documents.py:102:    assert data["document_type"] == "particulars_of_claim"
+tests/integration/test_phase3c_documents.py:106:    assert data["generation_method"] == "template"
+tests/integration/test_phase3c_documents.py:112:def test_schedule_of_loss_endpoint_returns_200():
+tests/integration/test_phase3c_documents.py:113:    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+tests/integration/test_phase3c_documents.py:116:    assert data["document_type"] == "schedule_of_loss"
+tests/integration/test_phase3c_documents.py:124:def test_particulars_includes_edt():
+tests/integration/test_phase3c_documents.py:125:    resp = client.post("/documents/generate", json=_POC_REQUEST)
+tests/integration/test_phase3c_documents.py:131:def test_particulars_includes_reason_for_dismissal():
+tests/integration/test_phase3c_documents.py:132:    resp = client.post("/documents/generate", json=_POC_REQUEST)
+tests/integration/test_phase3c_documents.py:137:def test_particulars_includes_service_dates():
+tests/integration/test_phase3c_documents.py:138:    resp = client.post("/documents/generate", json=_POC_REQUEST)
+tests/integration/test_phase3c_documents.py:147:    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+tests/integration/test_phase3c_documents.py:154:    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+tests/integration/test_phase3c_documents.py:162:    resp = client.post("/documents/generate", json=_POC_REQUEST)
+tests/integration/test_phase3c_documents.py:168:    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+tests/integration/test_phase3c_documents.py:176:    resp = client.post("/documents/generate", json=_POC_REQUEST)
+tests/integration/test_phase3c_documents.py:184:    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+tests/integration/test_phase3c_documents.py:192:        resp = client.post("/documents/generate", json=req)
+tests/integration/test_phase3c_documents.py:201:    resp = client.post("/documents/generate", json=_POC_REQUEST)
+tests/integration/test_phase3c_documents.py:210:    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+tests/integration/test_phase3c_documents.py:220:    resp = client.post("/documents/generate", json=_POC_REQUEST)
+tests/integration/test_phase3c_documents.py:228:    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+tests/integration/test_phase3c_documents.py:239:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase3c_documents.py:251:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase3c_documents.py:252:        "document_type": "particulars_of_claim",
+tests/integration/test_phase3d_paid_handoff.py:99:_POC_UNPAID = {"document_type": "particulars_of_claim", "assessment": _ASSESSMENT, "facts": _FACTS}
+tests/integration/test_phase3d_paid_handoff.py:101:_SOL_PAID   = {"document_type": "schedule_of_loss", "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "mock-paid-2026"}
+tests/integration/test_phase3d_paid_handoff.py:107:    resp = client.post("/documents/generate", json=_POC_UNPAID)
+tests/integration/test_phase3d_paid_handoff.py:114:    resp_unpaid = client.post("/documents/generate", json=_POC_UNPAID)
+tests/integration/test_phase3d_paid_handoff.py:115:    resp_paid   = client.post("/documents/generate", json=_POC_PAID)
+tests/integration/test_phase3d_paid_handoff.py:125:    resp = client.post("/documents/generate", json=_POC_UNPAID)
+tests/integration/test_phase3d_paid_handoff.py:134:    resp = client.post("/documents/generate", json=_POC_PAID)
+tests/integration/test_phase3d_paid_handoff.py:140:    resp = client.post("/documents/generate", json=_POC_PAID)
+tests/integration/test_phase3d_paid_handoff.py:148:    resp = client.post("/documents/generate", json=_SOL_PAID)
+tests/integration/test_phase3d_paid_handoff.py:158:    resp = client.post("/documents/generate", json=_POC_UNPAID)
+tests/integration/test_phase3d_paid_handoff.py:281:    resp = client.post("/documents/generate", json=_POC_PAID)
+tests/integration/test_phase3e_mvp_close.py:366:    preview_resp = client.post("/documents/generate", json={
+tests/integration/test_phase3e_mvp_close.py:367:        "document_type": "particulars_of_claim",
+tests/integration/test_phase3e_mvp_close.py:377:    full_resp = client.post("/documents/generate", json={
+tests/integration/test_phase3e_mvp_close.py:378:        "document_type": "particulars_of_claim",
+tests/integration/test_phase3e_mvp_close.py:447:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase3e_mvp_close.py:448:        "document_type": "schedule_of_loss",
+tests/integration/test_phase4a_upload_ocr.py:117:            content_type="application/pdf", filename="test.pdf"):
+tests/integration/test_phase4a_upload_ocr.py:127:def test_pdf_upload_accepted():
+tests/integration/test_phase4a_upload_ocr.py:134:    assert data["content_type"] == "application/pdf"
+tests/integration/test_phase4a_upload_ocr.py:155:        filename="letter.docx",
+tests/integration/test_phase4a_upload_ocr.py:403:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase4a_upload_ocr.py:404:        "document_type": "particulars_of_claim",
+tests/integration/test_phase4b_bundle.py:207:        files={"file": ("dl.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/integration/test_phase4b_bundle.py:234:        files={"file": ("dl.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/integration/test_phase4b_bundle.py:253:        files={"file": ("c.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/integration/test_phase4b_bundle.py:345:        files={"file": ("p.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/integration/test_phase4b_bundle.py:351:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase4b_bundle.py:352:        "document_type": "schedule_of_loss", "assessment": _ASSESSMENT,
+tests/integration/test_phase4c_timeline.py:183:        files={"file": ("dl.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/integration/test_phase4c_timeline.py:273:        files={"file": ("c.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/integration/test_phase4c_timeline.py:288:        files={"file": ("dl.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/integration/test_phase4c_timeline.py:400:        files={"file": ("p.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/integration/test_phase4c_timeline.py:407:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase4c_timeline.py:408:        "document_type": "schedule_of_loss",
+tests/integration/test_phase5b_unpaid_wages.py:207:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase5b_unpaid_wages.py:220:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase5b_unpaid_wages.py:232:        resp = client.post("/documents/generate", json={
+tests/integration/test_phase5b_unpaid_wages.py:245:        resp = client.post("/documents/generate", json={
+tests/integration/test_phase5b_unpaid_wages.py:258:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase5b_unpaid_wages.py:269:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase6a_deployment.py:229:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase6a_deployment.py:230:        "document_type": "particulars_of_claim",
+tests/integration/test_phase6a_deployment.py:241:        resp = client.post("/documents/generate", json={
+tests/integration/test_phase6a_deployment.py:242:            "document_type": "particulars_of_claim",
+tests/integration/test_phase6a_deployment.py:257:        resp = client.post("/documents/generate", json={
+tests/integration/test_phase6a_deployment.py:258:            "document_type": "particulars_of_claim",
+tests/integration/test_phase6a_deployment.py:272:        resp = client.post("/documents/generate", json={
+tests/integration/test_phase6a_deployment.py:273:            "document_type": "particulars_of_claim",
+tests/integration/test_phase6a_deployment.py:286:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase6a_deployment.py:287:        "document_type": "schedule_of_loss",
+tests/integration/test_phase6b_beta_readiness.py:373:    resp = client.post("/documents/generate", json={
+tests/integration/test_phase6b_beta_readiness.py:374:        "document_type": "particulars_of_claim",
+tests/integration/test_phase6e_prelaunch.py:6:   1.  env-production.template exists and has required sections
+tests/integration/test_phase6e_prelaunch.py:81:def test_env_production_template_exists():
+tests/integration/test_phase6e_prelaunch.py:82:    template = _ROOT / "docs" / "env-production.template"
+tests/integration/test_phase6e_prelaunch.py:83:    assert template.exists(), "docs/env-production.template must exist"
+tests/integration/test_phase6e_prelaunch.py:86:def test_env_template_has_required_sections():
+tests/integration/test_phase6e_prelaunch.py:87:    template = (_ROOT / "docs" / "env-production.template").read_text(encoding="utf-8")
+tests/integration/test_phase6e_prelaunch.py:92:        assert var in template, f"{var} missing from env-production.template"
+tests/integration/test_phase6_production.py:161:        files={"file": ("dl.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
+tests/mcp/test_mcp.py:35:    "generate_document",
+tests/payment/test_payment.py:118:                "document_type": "particulars_of_claim"
+tests/payment/test_payment.py:143:                "document_type": "schedule_of_loss"
+tests/payment/test_payment.py:151:    """Test that /documents/generate enforces payment gating."""
+tests/payment/test_payment.py:156:            r = client.post("/documents/generate", json={
+tests/payment/test_payment.py:157:                "document_type": "particulars_of_claim",
+tests/payment/test_payment.py:169:            r = client.post("/documents/generate", json={
+tests/payment/test_payment.py:170:                "document_type": "particulars_of_claim",
+tests/security/test_payment_access.py:31:            r = client.post("/documents/generate", json={
+tests/security/test_payment_access.py:32:                "document_type": "particulars_of_claim",
+tests/security/test_payment_access.py:43:            r = client.post("/documents/generate", json={
+tests/security/test_payment_access.py:44:                "document_type": "particulars_of_claim",
+tests/security/test_payment_access.py:58:            r = client.post("/documents/generate", json={
+tests/security/test_payment_access.py:59:                "document_type": "schedule_of_loss",
+tests/security/test_payment_access.py:73:            r = client.post("/documents/generate", json={
+tests/security/test_payment_access.py:74:                "document_type": "particulars_of_claim",
+tests/security/test_payment_access.py:90:            r = client.post("/documents/generate", json={
+tests/security/test_payment_access.py:91:                "document_type": "particulars_of_claim",
+tests/security/test_payment_access.py:135:                "document_type": "particulars_of_claim"
+tests/test_classify.py:41:    r = classify("I need to prepare particulars of claim for my dismissal")
+tests/test_wasm_document_preview.js:61:  const r1 = preview.validateFactsForDocument({service_start_date: '2022-01-01'}, 'particulars_of_claim');
+tests/test_wasm_document_preview.js:69:    'particulars_of_claim'

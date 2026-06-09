@@ -1,0 +1,87 @@
+name: lawapp-deploy-k8s
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to deploy, for example latest or a commit SHA"
+        required: true
+        default: "latest"
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  deploy:
+    name: Deploy lawapp to Kubernetes
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}/lawapp-backend:${{ inputs.image_tag }}
+      KUBECONFIG: /tmp/kubeconfig
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: latest
+
+      - name: Load kubeconfig
+        run: |
+          set -e
+          if [ -z "${{ secrets.KUBECONFIG_B64 }}" ]; then
+            echo "ERROR: Missing GitHub secret KUBECONFIG_B64"
+            exit 1
+          fi
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > "$KUBECONFIG"
+          chmod 600 "$KUBECONFIG"
+
+      - name: Confirm approved namespaces
+        run: |
+          set -e
+          for ns in lawapp-api lawapp-rag lawapp-ai lawapp-security lawapp-monitoring; do
+            kubectl get ns "$ns"
+          done
+
+      - name: Deploy backend image
+        run: |
+          set -e
+          kubectl -n lawapp-api get deploy
+
+          if kubectl -n lawapp-api get deploy lawapp-backend >/dev/null 2>&1; then
+            kubectl -n lawapp-api set image deploy/lawapp-backend lawapp-backend="$IMAGE"
+            kubectl -n lawapp-api rollout status deploy/lawapp-backend --timeout=180s
+          else
+            echo "ERROR: deployment/lawapp-backend not found in lawapp-api."
+            echo "Create the deployment first or change this workflow to match the real deployment name."
+            exit 1
+          fi
+
+      - name: Report pod/service/ingress status
+        run: |
+          set -e
+          echo "=== pods ==="
+          kubectl -n lawapp-api get pods -o wide
+          echo "=== services ==="
+          kubectl -n lawapp-api get svc -o wide
+          echo "=== ingress ==="
+          kubectl -n lawapp-api get ingress -o wide || true
+          echo "=== recent events ==="
+          kubectl -n lawapp-api get events --sort-by=.lastTimestamp | tail -50
+
+      - name: Smoke test inside cluster
+        run: |
+          set -e
+          kubectl -n lawapp-api run lawapp-smoke-${{ github.run_id }} \
+            --rm -i --restart=Never \
+            --image=curlimages/curl:latest \
+            --command -- sh -c '
+              echo "Testing lawapp-backend service..."
+              curl -fsS http://lawapp-backend:8080/health || \
+              curl -fsS http://lawapp-backend:8000/health || \
+              curl -fsS http://lawapp-backend/health
+            '

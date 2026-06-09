@@ -1,0 +1,150 @@
+PHASE 3B — DETERMINISTIC DEADLINE TRACKER
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 3B builds the client-side deadline calculator and wires it to the live
+rules API. The backend deadline computation is unchanged and remains
+authoritative. The client now previews the deadline live as the user types,
+and submits its computed value for backend validation on each assessment.
+
+═══════════════════════════════════════════════════════════════════════════════
+WASM DECISION
+═══════════════════════════════════════════════════════════════════════════════
+
+A clean JS fallback was implemented rather than WASM for Phase 3B. Reasons:
+  - WASM requires a separate compile toolchain (Rust/Emscripten) and a
+    build step that would extend this phase significantly.
+  - The arithmetic (month addition, integer subtraction) is trivial and
+    identical in JS and Python.
+  - The JS module (deadline.js) mirrors deadline.py function-by-function,
+    so correctness is validated by the Python test suite.
+  - WASM can replace the JS module in Phase 3C or later without any API
+    changes — the interface is stable.
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  client/public/js/deadline.js         — client-side deadline calculator
+  tests/integration/test_phase3b_deadline.py — 15 integration tests
+  reports/phase3b-deadline-tracker-report.txt — this report
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/api/main.py
+    - /rules/{claim_type}: SQL SELECT now includes last_verified_at
+    - AssessRequest: adds optional client_deadline (YYYY-MM-DD)
+    - assess_endpoint: validates client_deadline against backend result;
+      sets deadline_mismatch: bool in response; logs WARNING on mismatch
+    - Version bumped: 0.3.0-phase3b
+
+  client/public/pages/intake.html
+    - Loads /js/deadline.js on page load
+    - Fetches /rules/unfair_dismissal once; stores in _deadlineRules
+    - Live deadline preview section shown once EDT is entered
+    - Updates on change to EDT, EC Day A, EC Day B
+    - Shows urgency warning if deadline ≤ 30 days from today
+    - Shows inline error if EC Day B < Day A
+    - Shows authority ref (from rules API) in preview card
+    - Submits client_deadline with POST /assess for backend validation
+
+═══════════════════════════════════════════════════════════════════════════════
+DEADLINE ARITHMETIC (client/public/js/deadline.js)
+═══════════════════════════════════════════════════════════════════════════════
+
+Mirrors backend/engine/deadline.py exactly. No legal values hardcoded.
+
+addCalendarMonths(d, n):
+  Adds N calendar months, clamping to month-end. Mirrors _add_months().
+
+computeDeadline(edtStr, timeLimitMonths, ecDayAStr, ecDayBStr):
+  Step 1 — base limit:
+    anniversary = addCalendarMonths(edt, timeLimitMonths)
+    baseLimit   = anniversary - 1 day   (ERA 1996 s.111(2))
+
+  If no EC dates:
+    return { limitation_date: baseLimit, ... }
+
+  Step 2 — EC stop-clock (ERA 1996 s.207B):
+    if dayB < dayA: return { error: '...' }
+    pauseDays = daysDiff(dayA, dayB)       [Day A+1 through Day B inclusive]
+    adjusted  = baseLimit + pauseDays
+
+  Step 3 — floor:
+    floor      = addCalendarMonths(dayB, 1)
+    final      = max(adjusted, floor)
+    floorApplied = (final === floor && floor > adjusted)
+
+fetchDeadlineRules(apiBase, claimType):
+  Fetches /rules/{claimType}, extracts time_limit_months rule.
+  Returns { timeLimitMonths, authorityRef, authorityUrl, effectiveFrom,
+            effectiveTo, lastVerifiedAt }.
+  This is the ONLY source of timeLimitMonths — never hardcoded.
+
+═══════════════════════════════════════════════════════════════════════════════
+BACKEND VALIDATION
+═══════════════════════════════════════════════════════════════════════════════
+
+The backend is always authoritative. When POST /assess includes client_deadline:
+
+  - Backend computes its own deadline from facts (unchanged pipeline)
+  - Compares backend deadline_info.limitation_date against client_deadline
+  - If they differ: deadline_mismatch=True, deadline_mismatch_detail logged
+  - If they match: deadline_mismatch=False
+  - If client_deadline not supplied: deadline_mismatch absent from response
+
+The mismatch detail includes both client and backend values, enabling
+monitoring for JS/Python divergence. Mismatch is logged as WARNING server-side.
+
+═══════════════════════════════════════════════════════════════════════════════
+TESTS (test_phase3b_deadline.py)
+═══════════════════════════════════════════════════════════════════════════════
+
+  test_rules_api_returns_time_limit_months    time_limit_months in response
+  test_rules_api_time_limit_value_is_three    value_numeric == 3
+  test_rules_api_has_authority_ref            authority_ref contains s.111
+  test_rules_api_has_last_verified_at         last_verified_at present + non-null
+  test_rules_api_no_prospective_rows          no is_prospective=true in response
+  test_deadline_edt_only                      EDT 2026-04-01 → 2026-06-30
+  test_deadline_edt_only_month_end_clamp      EDT 2026-01-31 → 2026-04-29
+  test_deadline_ec_no_floor                   floor doesn't bite → extended wins
+  test_deadline_ec_floor_bites                floor bites → floor wins
+  test_deadline_ec_day_b_before_day_a_rejected pipeline handles gracefully (no 500)
+  test_assess_correct_client_deadline_no_mismatch  deadline_mismatch=False
+  test_assess_wrong_client_deadline_flags_mismatch deadline_mismatch=True + detail
+  test_assess_without_client_deadline_no_mismatch_key  key absent when not sent
+  test_static_routes_still_work               Phase 3A routes still 200
+  test_health_still_ok                        /health still returns ok
+
+═══════════════════════════════════════════════════════════════════════════════
+LIVE PREVIEW BEHAVIOUR (intake.html)
+═══════════════════════════════════════════════════════════════════════════════
+
+  - Deadline preview hidden until EDT is entered
+  - Shown once EDT is valid; recalculates on any date field change
+  - EC dates optional: preview shows base limit until Day A + Day B entered
+  - Urgency warning (red card): ≤ 30 days from today to deadline
+  - EC inline error: Day B < Day A shows error in the EC section
+  - Authority ref shown in preview card (from rules API, e.g. ERA 1996 s.111(2))
+  - Rules API failure is non-fatal — preview silently absent, form still works
+  - On submit: client_deadline included in request body for backend validation
+
+═══════════════════════════════════════════════════════════════════════════════
+CARRY-FORWARD
+═══════════════════════════════════════════════════════════════════════════════
+
+  - WASM replacement of JS deadline module (Phase 3C or later)
+  - CORS headers (Phase 3B/3C — once client is on separate origin)
+  - 3 skipped tests remain: BLOCKED_BY_OPENAI_QUOTA (unchanged)
+  - assessment_audit_logs.case_id wiring (Phase 3+)
+  - DB migrations 004-006 not yet applied
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 3B
+═══════════════════════════════════════════════════════════════════════════════

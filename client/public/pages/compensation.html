@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compensation estimator — lawapp</title>
+  <meta name="description" content="Estimate the statutory basic award for unfair dismissal, grounded in the effective-dated week's-pay cap from real UK law.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
+  <script src="/js/a11y.js"></script>
+</head>
+<body>
+
+<div class="legal-notice" role="note">
+  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="nav-links" id="navlinks">
+    <a href="/">Home</a>
+    <a href="/#tools">Tools</a>
+  </div>
+</nav>
+
+<main class="page" id="main">
+  <div class="tool-head">
+    <span class="eyebrow">Free tool · Compensation estimator</span>
+    <h1>Estimate your basic award</h1>
+    <p>Get a quick estimate of the statutory <strong>basic award</strong> for unfair dismissal — calculated from the real, effective-dated week's-pay cap, not a guess.</p>
+  </div>
+
+  <div class="tool-layout">
+    <form id="compForm" class="form-section" novalidate>
+      <div class="form-group">
+        <label for="weekly_pay">Your gross weekly pay (£)</label>
+        <input type="number" id="weekly_pay" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 500" required>
+      </div>
+
+      <div class="form-group">
+        <label for="months_employed">How long were you employed? (months)</label>
+        <input type="number" id="months_employed" min="0" step="1" inputmode="numeric" placeholder="e.g. 36" required>
+      </div>
+
+      <div id="form-error" class="form-section" style="display:none;background:var(--warn-bg);border-color:var(--warn-bd);padding:1rem;margin-bottom:1rem;">
+        <p id="form-error-text" style="color:var(--warn);font-size:.9rem;margin:0;"></p>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;">Estimate my basic award</button>
+    </form>
+
+    <div id="spinner" class="spinner" hidden></div>
+
+    <section id="resultPanel" class="result-panel" hidden aria-live="polite">
+      <div class="deadline-card" style="background:var(--grad-teal);">
+        <div>
+          <div class="days" id="comp-amount">—</div>
+          <div class="label">estimated statutory basic award</div>
+        </div>
+      </div>
+
+      <div class="assessment-wrap">
+        <div class="assessment-header">
+          <h2>Your breakdown</h2>
+          <span class="badge badge-yes">Grounded</span>
+        </div>
+        <div class="assessment-body">
+          <table class="breakdown">
+            <tbody id="comp-breakdown"></tbody>
+            <tfoot>
+              <tr><td>Estimated basic award</td><td id="comp-total">—</td></tr>
+            </tfoot>
+          </table>
+
+          <div class="assessment-section" style="margin-top:1rem;">
+            <h3>Authority</h3>
+            <ul class="citation-list"><li id="comp-authority"></li></ul>
+          </div>
+
+          <div class="grounding-alert" id="comp-note"></div>
+        </div>
+      </div>
+
+      <div id="gate-banner" class="gate-banner">
+        <div class="gate-text">
+          <strong>Want the full picture, including the compensatory award?</strong>
+          <span>Log in and complete a full assessment to build a proper schedule of loss.</span>
+        </div>
+        <a id="gate-login" class="btn btn-accent" href="/pages/login.html">Log in to continue</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script>
+(function () {
+  var form = document.getElementById("compForm");
+  var spinner = document.getElementById("spinner");
+  var resultPanel = document.getElementById("resultPanel");
+  var errBox = document.getElementById("form-error");
+  var errText = document.getElementById("form-error-text");
+
+  function gbp(n) {
+    var v = Number(n || 0);
+    return "£" + v.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function row(label, value) {
+    var tr = document.createElement("tr");
+    var td1 = document.createElement("td"); td1.textContent = label;
+    var td2 = document.createElement("td"); td2.textContent = value;
+    tr.appendChild(td1); tr.appendChild(td2);
+    return tr;
+  }
+
+  function render(data) {
+    var b = data.breakdown || {};
+    document.getElementById("comp-amount").textContent = gbp(data.estimated_amount);
+    document.getElementById("comp-total").textContent = gbp(data.estimated_amount);
+
+    var tbody = document.getElementById("comp-breakdown");
+    tbody.textContent = "";
+    tbody.appendChild(row("Gross weekly pay", gbp(b.weekly_pay)));
+    tbody.appendChild(row("Statutory week's-pay cap", gbp(b.weeks_pay_cap)));
+    tbody.appendChild(row("Capped weekly pay used", gbp(b.capped_weekly_pay)));
+    tbody.appendChild(row("Complete years of service", String(b.complete_years)));
+    tbody.appendChild(row("Age multiplier (preview)", String(b.age_multiplier)));
+
+    document.getElementById("comp-authority").textContent = b.authority || "ERA 1996 s.227(1)";
+
+    var note = document.getElementById("comp-note");
+    note.textContent = "";
+    var h = document.createElement("h3"); h.textContent = "What this covers";
+    var p = document.createElement("p"); p.textContent = b.note || "Statutory basic award only — excludes the compensatory award.";
+    note.appendChild(h); note.appendChild(p);
+
+    document.getElementById("gate-banner").hidden = LAWAPP_API.isLoggedIn();
+    document.getElementById("gate-login").href =
+      "/pages/login.html?gate=1&next=" + encodeURIComponent("/pages/intake.html");
+    resultPanel.hidden = false;
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    errBox.style.display = "none";
+    var wp = document.getElementById("weekly_pay").value;
+    var mo = document.getElementById("months_employed").value;
+    if (wp === "" || mo === "") { errText.textContent = "Please enter both your weekly pay and months employed."; errBox.style.display = "block"; return; }
+    if (Number(wp) < 0 || parseInt(mo, 10) < 0) { errText.textContent = "Values can't be negative."; errBox.style.display = "block"; return; }
+
+    var btn = form.querySelector("button[type=submit]");
+    btn.disabled = true; spinner.hidden = false; resultPanel.hidden = true;
+    try {
+      var data = await LAWAPP_API.toolsCompensation({ weekly_pay: wp, months_employed: mo, jurisdiction: "EW" });
+      render(data);
+    } catch (err) {
+      errText.textContent = (err && err.message) || "Could not estimate the award. Please try again.";
+      errBox.style.display = "block";
+    } finally {
+      btn.disabled = false; spinner.hidden = true;
+    }
+  });
+
+  (function () {
+    var t = document.querySelector('.nav-toggle'), n = document.getElementById('navlinks');
+    if (!t || !n) return;
+    t.addEventListener('click', function () { n.classList.toggle('open'); });
+  })();
+})();
+</script>
+
+</body>
+</html>

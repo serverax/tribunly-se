@@ -1,0 +1,17 @@
+--- K. KUBERNETES AUDIT ---
+lawapp-ai                Active   30h
+lawapp-api               Active   30h
+lawapp-monitoring        Active   30h
+lawapp-rag               Active   30h
+lawapp-security          Active   30h
+iterlaw-ai               lawapp-backend-5df7848d8c-v78jm                          1/1     Running                      0                  24h
+iterlaw-ai               lawapp-postgres-6c97965775-jp8qv                         1/1     Running                      0                  2d
+lawapp-ai                lawapp-brain-56d95c7c9d-ll487                            0/1     CrashLoopBackOff             30 (2m47s ago)     137m
+lawapp-ai                lawapp-brain-6dc68ccb98-dxkfx                            0/1     CrashLoopBackOff             24 (3m12s ago)     100m
+lawapp-api               lawapp-backend-7757c5df85-2l8kn                          1/1     Running                      0                  8h
+lawapp-api               lawapp-backend-b679fc695-4vlr2                           0/1     CrashLoopBackOff             20 (3m43s ago)     82m
+lawapp-api               lawapp-postgres-0                                        1/1     Running                      0                  138m
+lawapp-api               test-db-connectivity                                     1/1     Running                      0                  28h
+lawapp-monitoring        lawapp-legal-accuracy-check-29675520-s8ft6               0/1     Completed                    0                  5h48m
+lawapp-monitoring        lawapp-smoke-test-29675865-jbtwk                         0/1     Error                        5 (105s ago)       3m18s
+lawapp-rag               lawapp-postgres-0                                        1/1     Running                      0                  30h

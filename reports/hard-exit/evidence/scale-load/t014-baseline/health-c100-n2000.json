@@ -1,0 +1,22 @@
+{
+  "url": "http://localhost:8000/health",
+  "method": "GET",
+  "concurrency": 100,
+  "requests": 2000,
+  "wall_seconds": 39.019,
+  "throughput_rps": 51.3,
+  "ok": 2000,
+  "errors": 0,
+  "error_rate_pct": 0.0,
+  "latency_ms": {
+    "p50": 1748.3,
+    "p95": 2504.8,
+    "p99": 3103.6,
+    "max": 3240.9,
+    "mean": 1698.6
+  },
+  "status_codes": {
+    "200": 2000
+  },
+  "error_types": {}
+}

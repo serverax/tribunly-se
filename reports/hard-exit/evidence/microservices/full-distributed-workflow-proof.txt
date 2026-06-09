@@ -1,0 +1,87 @@
+===== SA-014 FULL DISTRIBUTED WORKFLOW PROOF =====
+Generated: Sun Jun  7 15:24:46 UTC 2026
+Context: admin@ordinox-talos
+Flow: register -> token -> /api/brain/trace (served by lawapp-brain pod, lawapp-ai)
+
+--- STEP 1 REGISTER (HTTP 201) ---
+POST /auth/register {email: sa014-1780845401@evidence.local}
+-> {"user_id":"081b4896-92f0-4a00-a45f-be1826306c9e","message":"User registered successfully"} HTTP:201
+
+--- STEP 2 TOKEN (JWT issued, len 233) ---
+POST /auth/token -> {"access_token":"eyJhbGci...","token_type":"bearer"}
+
+--- STEP 3 BRAIN TRACE (POST /api/brain/trace, Bearer JWT) ---
+message: dismissed after 3 years for raising a health & safety complaint; was it unfair?
+
+trace_id: cfcf419d-012d-4166-bb04-80644f12f7b3
+legal_area: employment_law claim_type: unfair_dismissal
+rag_sources: ['hybrid', 'legal_graph']
+rules_applied: 0
+sources_retrieved: 10
+citations_verified: 10 citations_failed: 0
+final_status: missing_edt duration_ms: 3047.3
+audit_id: cfcf419d-012d-4166-bb04-80644f12f7b3
+
+  select_rag_source        ok             | {'sources': ['hybrid', 'legal_graph'], 'primary': 'hybrid', 'use_graph': True, 'use_kg': False, 'reason': 'known_claim_type_graph_activated', 'route': 'full_legal_pipeline'}
+  run_rules_engine         ok             | {'rules_found': 0, 'claim_type': 'unfair_dismissal'}
+  retrieve_legal_evidence  ok             | {'sources_count': 10, 'insufficient_grounding': False, 'graph_nodes': 10}
+  verify_citations         ok             | {'verified': 10, 'failed': 0}
+  generate_draft           missing_edt    | {'status': 'missing_edt'}
+  evaluate_draft           fail           | {'passed': False, 'reason': 'missing_required_facts:jurisdiction,edt,service_start_date'}
+  store_audit_log          ok             | {'audit_id': 'cfcf419d-012d-4166-bb04-80644f12f7b3'}
+
+assessment.status: missing_edt source: model_cited fallback_used: False rules_used: []
+
+--- 23 PIPELINE STEPS ---
+  injection_guard          ok
+  authenticate             ok
+  load_context             ok
+  detect_jurisdiction      ok
+  detect_legal_area        ok
+  detect_claim_type        ok
+  detect_urgency           ok
+  human_review_check       not_required
+  detect_missing_facts     gaps_found
+  select_agents            ok
+  select_rag_source        ok
+  run_rules_engine         ok
+  retrieve_legal_evidence  ok
+  verify_citations         ok
+  compress_context         ok
+  cost_governor            ok
+  generate_draft           missing_edt
+  evaluate_draft           fail
+  apply_safety_policy      pass
+  save_case_memory         skipped
+  store_audit_log          ok
+  publish_outbox_event     skipped
+  return_answer            ok
+
+--- DB PERSISTENCE (lawapp-rag/lawapp-postgres-0) ---
+brain_traces count BEFORE=5  AFTER=6
+-[ RECORD 1 ]------+-------------------------------------
+trace_id           | cfcf419d-012d-4166-bb04-80644f12f7b3
+user_id            | 081b4896-92f0-4a00-a45f-be1826306c9e
+claim_type         | unfair_dismissal
+legal_area         | 
+sources_count      | 10
+citations_verified | 10
+citations_failed   | 0
+final_status       | missing_edt
+safety_passed      | t
+created_at         | 2026-06-07 15:16:59.926773+00
+
+
+--- RAG SOURCE / CITATION / DEADLINE FIELDS ---
+rag_sources=[hybrid, legal_graph]  sources_retrieved=10  citations_verified=10  citations_failed=0
+urgency=unknown  days_remaining=None (no EDT provided -> fail-closed, no fabricated deadline)
+final_status=missing_edt (fail-closed; no fabricated legal answer)
+
+--- PGVECTOR REAL RETRIEVAL (corpus_chunks, HNSW cosine) ---
+ source_id | source_type |                       source_url                       |                                       snip                                       | cos_dist 
+-----------+-------------+--------------------------------------------------------+----------------------------------------------------------------------------------+----------
+        10 | legislation | http://www.legislation.gov.uk/ukpga/2010/15/section/13 | Direct discrimination 13 1 A person (A) discriminates against another (B) if, be |   0.0000
+        10 | legislation | http://www.legislation.gov.uk/ukpga/2010/15/section/14 | Combined discrimination: dual characteristics 14 1 A person (A) discriminates ag |   0.1232
+        10 | legislation | http://www.legislation.gov.uk/ukpga/2010/15/section/19 | Indirect discrimination 19 1 A person (A) discriminates against another (B) if A |   0.1384
+(3 rows)
+

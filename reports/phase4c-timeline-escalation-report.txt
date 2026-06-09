@@ -1,0 +1,136 @@
+PHASE 4C — CASE TIMELINE TRACKING, ESCALATION STATE, PHASE 4 DEPTH COMPLETION
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 4C adds:
+  1. Case timeline events (DB table + auto-generation from case data)
+  2. Escalation state computation (deterministic, 6 states)
+  3. Saved-case page: timeline + escalation badge sections
+  4. 4 new API endpoints
+
+═══════════════════════════════════════════════════════════════════════════════
+TIMELINE (backend/engine/timeline.py)
+═══════════════════════════════════════════════════════════════════════════════
+
+build_timeline() generates events from:
+  - case.key_dates (EDT, start, ACAS, deadline) → source=system_generated
+  - ET deadline → source=rules_engine (authoritative backend value only)
+  - Uploads → document_uploaded events
+  - Generated docs → document_generated events
+  - Handoff leads → handoff_triggered event
+  - Confirmed/corrected extracted facts ONLY → source=confirmed_extraction
+  - Manual DB events → source=user_entered (from case_timeline_events table)
+
+GUARDRAILS:
+  - Dates never invented; missing_date=True + warning when absent
+  - Unconfirmed and rejected extracted facts excluded (get_confirmed_facts())
+  - ET deadline always uses backend-authoritative rules_engine source
+  - Timeline notes "not legal advice" and does not imply platform manages litigation
+
+═══════════════════════════════════════════════════════════════════════════════
+ESCALATION (backend/engine/timeline.py — compute_escalation())
+═══════════════════════════════════════════════════════════════════════════════
+
+States (priority order):
+  1. solicitor_recommended  — seek_solicitor or (insufficient + low strength)
+  2. handoff_started        — handoff lead exists for this case
+  3. urgent_deadline        — deadline expired, within 7 or within 14 days
+  4. needs_review           — insufficient_grounding or strength=low
+  5. watch                  — deadline within 30 days
+  6. none                   — no escalation needed
+
+Returns: state, state_label, triggered_states, urgency, days_remaining,
+         next_action, escalation_note.
+
+GUARDRAIL: Never claims a solicitor has accepted the case.
+GUARDRAIL: Purely deterministic — no model involvement.
+GUARDRAIL: next_action text never implies platform manages litigation.
+
+═══════════════════════════════════════════════════════════════════════════════
+EVENT TYPES AND SOURCES
+═══════════════════════════════════════════════════════════════════════════════
+
+Valid event_types (11):
+  employment_started | dismissal | appeal_submitted | appeal_outcome |
+  acas_day_a | acas_day_b | et_deadline | document_uploaded |
+  document_generated | handoff_triggered | custom_user_event
+
+Valid sources (4):
+  user_entered | rules_engine | confirmed_extraction | system_generated
+
+source='rules_engine' is reserved — users cannot set it via POST endpoint.
+
+═══════════════════════════════════════════════════════════════════════════════
+ENDPOINTS
+═══════════════════════════════════════════════════════════════════════════════
+
+GET   /cases/{id}/timeline                   — full timeline (auto + DB)
+POST  /cases/{id}/timeline/events            — add manual event
+PATCH /cases/{id}/timeline/events/{event_id} — update event title/date/status
+GET   /cases/{id}/escalation[?as_of=DATE]    — escalation state
+
+as_of param on escalation: allows deterministic testing with fixed reference date.
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  db/migrations/009_phase4c_timeline.sql      — case_timeline_events table
+  backend/engine/timeline.py                  — timeline builder + escalation
+  tests/integration/test_phase4c_timeline.py  — 23+ integration tests
+  reports/phase4c-timeline-escalation-report.txt — this report
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/api/main.py
+    - _fetch_timeline_data() helper
+    - GET /cases/{id}/timeline
+    - POST /cases/{id}/timeline/events
+    - PATCH /cases/{id}/timeline/events/{event_id}
+    - GET /cases/{id}/escalation + as_of param
+    - Version bumped: 0.9.0-phase4c
+
+  client/public/pages/saved_case.html
+    - Fetches timeline + escalation on page load
+    - renderEscalationBadge(): state badge + next action + note
+    - renderTimelineSection(): sorted event list with source colour coding +
+      missing-date warnings
+
+═══════════════════════════════════════════════════════════════════════════════
+DATA-PROTECTION NOTES
+═══════════════════════════════════════════════════════════════════════════════
+
+  - Timeline uses only de-identified assessment data and confirmed extracted facts
+  - Unconfirmed and rejected extracted facts are excluded at get_confirmed_facts()
+  - Manual events can include user-supplied text — stored in case_timeline_events
+  - No PII from uploads included in timeline events
+  - No external API calls
+
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 4 DEPTH — COMPLETION STATEMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 4 is COMPLETE across all sub-phases:
+
+  Phase 4A ✓  Document upload, mock OCR extraction, user confirmation flow
+  Phase 4B ✓  Premium tribunal bundle (witness statement, chronology,
+               evidence checklist, ET1 support notes) with confirmed-facts gating
+  Phase 4C ✓  Case timeline tracking, escalation state, Phase 4 depth proof
+
+Carry-forward to Phase 5:
+  - Real OCR (Tesseract/Textract) replacing Phase 4A mock
+  - facts_encrypted at rest (AES-256-GCM) for uploaded PII
+  - User authentication (user_id on all case records)
+  - Email/SMS notification delivery (currently in_app only)
+  - Discrimination, redundancy pay, and other claim types beyond unfair dismissal
+  - 3 skipped tests: BLOCKED_BY_OPENAI_QUOTA (unchanged throughout Phase 4)
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 4C
+═══════════════════════════════════════════════════════════════════════════════

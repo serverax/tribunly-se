@@ -1,0 +1,8 @@
+.github/workflows/build-images.yml
+.github/workflows/ci.yml
+.github/workflows/deploy-iterlaw-ai.yml
+.github/workflows/deploy-staging.yml
+.github/workflows/docker-proof.yml
+.github/workflows/lawapp-ci.yml
+.github/workflows/lawapp-deploy-k8s.yml
+.github/workflows/smoke.yml

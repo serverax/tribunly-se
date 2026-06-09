@@ -1,0 +1,9 @@
+
+== Security & privacy ==
+  [PASS] working-tree secret scan clean
+  [PASS] G2 history remediation tracked (script + runbook present)
+  [PASS] /cases requires auth (code=401)
+  [PASS] no PAT pattern in reports/
+
+=== GATE RESULT: final-security-performance-gate ===
+RESULT: PASS

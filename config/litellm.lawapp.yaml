@@ -1,0 +1,46 @@
+# lawapp LiteLLM routing (Year-1: OpenRouter free tier per founder decision).
+#
+# The single adapter (backend/core/agentic/litellm_adapter.py) is the ONLY caller
+# (AC-006). All payloads are de-identified before any cloud call (AC-007/008).
+# Keys are read from the environment only — never commit secrets.
+
+model_list:
+  # Year-1 substitute for the local edge SLM. AEE / SEA / Citation Guard use this.
+  - model_name: lawapp-edge-slm
+    litellm_params:
+      model: openrouter/meta-llama/llama-3-8b-instruct:free
+      api_key: os.environ/OPENROUTER_API_KEY
+      rpm: 200
+
+  # ART local-first; this is the cloud escalation target (policy-gated, de-identified).
+  - model_name: lawapp-reasoning-heavy
+    litellm_params:
+      model: openrouter/meta-llama/llama-3.1-70b-instruct:free
+      api_key: os.environ/OPENROUTER_API_KEY
+      rpm: 60
+
+  - model_name: lawapp-reasoning-fallback
+    litellm_params:
+      model: openrouter/mistralai/mistral-7b-instruct:free
+      api_key: os.environ/OPENROUTER_API_KEY
+      rpm: 100
+
+router_settings:
+  drop_params: true
+  routing_strategy: usage-based-routing
+  fallbacks:
+    - {"lawapp-reasoning-heavy": ["lawapp-reasoning-fallback"]}
+
+litellm_settings:
+  # Semantic cache isolated to the caching layer (all-MiniLM internal is fine;
+  # the legal corpus RAG keeps fastembed bge-small separately).
+  cache: true
+  cache_type: redis-semantic
+  redis_host: os.environ/REDIS_HOST
+  redis_port: 6379
+  cache_params:
+    similarity_threshold: 0.95
+    embedding_model: huggingface/all-MiniLM-L6-v2
+  success_callbacks: ["otel"]
+  failure_callbacks: ["otel"]
+  request_timeout: 45

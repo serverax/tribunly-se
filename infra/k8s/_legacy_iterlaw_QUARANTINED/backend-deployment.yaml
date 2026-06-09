@@ -1,0 +1,88 @@
+---
+# IterLaw lawapp — backend FastAPI service
+# REVIEW BEFORE APPLY. Do not apply until:
+#   1. Node is Ready
+#   2. Image is built and pushed (ghcr.io/serverax/lawapp/backend:${GIT_SHA} or equivalent)
+#   3. lawapp-secrets Secret is created with real values
+#   4. Database migrations have run
+#   5. Legal accuracy gate passed in CI
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lawapp-backend
+  namespace: iterlaw-ai
+  labels:
+    app: lawapp-backend
+    project: iterlaw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lawapp-backend
+  template:
+    metadata:
+      labels:
+        app: lawapp-backend
+        project: iterlaw
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: backend
+          # Replace with actual image after build+push
+          image: ghcr.io/serverax/lawapp/backend:${GIT_SHA}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: POSTGRES_HOST
+              value: "lawapp-postgres.iterlaw-ai.svc.cluster.local"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: "lawapp"
+            - name: POSTGRES_USER
+              value: "lawapp"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: lawapp-secrets
+                  key: POSTGRES_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: lawapp-config
+            - secretRef:
+                name: lawapp-secrets
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+      imagePullSecrets:
+        - name: ghcr-pull-secret

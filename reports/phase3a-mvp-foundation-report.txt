@@ -1,0 +1,129 @@
+PHASE 3A — MVP PRODUCT FOUNDATION
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 3A builds the client-facing layer of the employment claim co-pilot.
+Backend engine (Phases 1–2E) is unchanged. This phase adds:
+
+  1. Static HTML/JS/CSS client served directly by FastAPI
+  2. Landing page with trust-first messaging and legal notice
+  3. Guided unfair-dismissal intake form
+  4. Assessment results page rendering all structured fields
+  5. Wire /assess endpoint to client; FastAPI mounts static files
+  6. Integration tests (test_phase3a_flows.py)
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  client/public/css/styles.css          — complete design system
+  client/public/index.html              — landing page
+  client/public/pages/intake.html       — guided intake form (4 sections)
+  client/public/pages/assessment.html   — assessment results renderer
+  tests/integration/test_phase3a_flows.py — 10 integration tests
+
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/api/main.py
+    - Added StaticFiles mounts for /css and /js
+    - Added GET / → index.html
+    - Added GET /pages/{page_name} → client/public/pages/
+    - Version bumped: 0.2.0-phase3a
+    - Added aiofiles import dependency
+
+  Dockerfile
+    - Added aiofiles>=23.2 to pip install
+    - Added COPY client ./client so static files reach the container
+
+═══════════════════════════════════════════════════════════════════════════════
+CLIENT ARCHITECTURE DECISIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+Static HTML served by FastAPI (not Next.js) chosen for Phase 3A MVP:
+  - Zero new runtime deps (no Node.js in container)
+  - No separate frontend service to orchestrate or debug
+  - Full pipeline reachable from TestClient (no cross-origin issues in tests)
+  - Sufficient for self-represented claimant use case at this stage
+
+Assessment result is passed between pages via sessionStorage (not URL params
+or a back-end session store). This keeps no fact data on the server beyond
+the audit log written by the governance layer.
+
+═══════════════════════════════════════════════════════════════════════════════
+LEGAL GUARDRAILS — CLIENT LAYER
+═══════════════════════════════════════════════════════════════════════════════
+
+Every page carries:
+  "Not a law firm. Not legal advice."
+  Legal Services Act 2007 boundary disclosure on every view.
+
+Landing page explicitly lists:
+  - What lawapp is for (information, assessment, document drafting)
+  - What lawapp is not (no representation, no litigation, no guarantees)
+
+Assessment page:
+  - Renders insufficient_grounding honestly — no fabricated diagnosis
+  - Renders key_weaknesses before compensation range (weaknesses first)
+  - Deadline card shows statute authority (ERA 1996 s.111(2))
+  - Urgency flag (<30 days) prominently shown
+  - All citations rendered with links to legislation.gov.uk
+  - Boundary log (data protection) shown in collapsible detail section
+
+═══════════════════════════════════════════════════════════════════════════════
+ASSESSMENT FIELDS RENDERED
+═══════════════════════════════════════════════════════════════════════════════
+
+  Field                   Source              Displayed as
+  ─────────────────────── ─────────────────── ──────────────────────────────
+  has_viable_claim        pipeline            Viability badge (yes/no/uncertain)
+  strength                pipeline            Strength badge (high/medium/low)
+  reasoning_summary       pipeline            Paragraph under header
+  deadline.limitation_date pipeline/rules     Deadline card with urgency flag
+  deadline.authority      rules table         Statute ref below date
+  key_weaknesses          assess_logic.py     Red-border bulleted list
+  employer_arguments      assess_logic.py     Blue-border bulleted list
+  value_range.low/high    assess_logic.py     Formatted GBP amounts
+  recommended_next_step   pipeline            Highlighted action card
+  citations               pipeline            Linked citation list
+  boundary_log            deidentify.py       Collapsible data protection log
+  insufficient_grounding  pipeline            Honest "insufficient info" card
+
+═══════════════════════════════════════════════════════════════════════════════
+TESTS
+═══════════════════════════════════════════════════════════════════════════════
+
+tests/integration/test_phase3a_flows.py — 10 tests:
+
+  test_landing_page_served                  GET / → 200 HTML
+  test_intake_page_served                   GET /pages/intake.html → 200
+  test_assessment_page_served               GET /pages/assessment.html → 200
+  test_legal_notice_on_landing_page         "Not a law firm" in body
+  test_legal_notice_on_intake_page          "Not a law firm" in body
+  test_legal_notice_on_assessment_page      "Not a law firm" in body
+  test_intake_submit_returns_assessment     POST /assess → structured dict
+  test_oos_rejection                        OOS → not_supported, no fields
+  test_citations_present_in_assessment      Citations list non-empty
+  test_weak_case_shows_weaknesses           <2yr service → key_weaknesses
+
+All tests use FastAPI TestClient with use_model=False (StubReasoningModel).
+No external API calls. No OpenAI quota dependency.
+
+═══════════════════════════════════════════════════════════════════════════════
+CARRY-FORWARD
+═══════════════════════════════════════════════════════════════════════════════
+
+- 3 skipped tests (BLOCKED_BY_OPENAI_QUOTA) — unchanged from Phase 2E
+- OpenAI quota: unresolved — user to provide new key when available
+- DB migrations 004-006 not yet applied (Phase 3+ tables)
+- assessment_audit_logs.case_id wiring deferred to Phase 3B
+- FCL bulk ingestion blocked (FCL_BULK_LICENCE_GRANTED=false)
+- CORS headers not yet added (Phase 3B — once client is on a separate origin)
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 3A
+═══════════════════════════════════════════════════════════════════════════════

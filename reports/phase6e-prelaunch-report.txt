@@ -1,0 +1,94 @@
+PHASE 6E — PRE-BETA LAUNCH READINESS
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 6E REPORT
+═══════════════════════════════════════════════════════════════════════════════
+
+Branch:      master
+Commit:      [set after push]
+Pushed:      [set after push]
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CHANGED
+═══════════════════════════════════════════════════════════════════════════════
+
+  docs/env-production.template         (NEW)
+    Complete production env var reference. All required vars documented.
+    Placeholder values shown — never a real secret. Includes Phase 7 items
+    labelled as future.
+
+  docs/pre-beta-runbook.md             (NEW)
+    Step-by-step operational runbook for reaching controlled beta.
+    Steps 1-2 are human-review-required (DPIA, privacy); Steps 3-7 are
+    technical/operational. Clearly marks Phase 7 items as out-of-scope.
+
+  scripts/check_beta_readiness.py      (NEW)
+    CLI script to check controlled-beta readiness without a running server.
+    Reports ordered next steps. Always exits 0 (reporting only).
+    Checks: compliance signoff, required env vars, auth mode, docs existence.
+
+  backend/engine/production_readiness.py
+    Added controlled_beta_next_steps: ordered list of prioritised next steps.
+    Human review items are always listed first (critical path).
+    Added runbook + beta_readiness_script references.
+    _controlled_beta_next_steps() helper function.
+
+  .github/workflows/ci.yml
+    Added: "Run controlled-beta readiness check" step (exits 0, informational).
+
+  tests/integration/test_phase6e_prelaunch.py  (NEW)
+    22 new tests.
+
+═══════════════════════════════════════════════════════════════════════════════
+TEST RESULTS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Phase 6E tests:     22/22 passed in 37.32s
+  Full regression:    535 passed, 9 skipped, 0 failures in 414s
+  Legal accuracy:     38/38 passed ✓ PASSED
+  Rules verification: ✓ PASSED
+  Beta readiness:     check_beta_readiness.py exits 0 ✓
+
+═══════════════════════════════════════════════════════════════════════════════
+CONTROLLED-BETA READINESS STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+  controlled_beta_ready: FALSE (confirmed by test_controlled_beta_ready_still_false)
+
+  Remaining blockers:
+    1. [HUMAN] DPIA not reviewed by DPO — see docs/dpia-review-checklist.md
+    2. [HUMAN] Privacy notice not legally reviewed — see docs/privacy-review-checklist.md
+    3. [PHASE 7] JWKS/RS256 not implemented
+    4. [PHASE 7] No real HSM/KMS
+    5. [PHASE 7] No live deployment environment
+
+  Phase 6E provides:
+    - Ordered next steps showing DPIA/privacy review as priority 1 and 2
+    - env-production.template: complete env var reference
+    - pre-beta-runbook.md: step-by-step operational guide
+    - check_beta_readiness.py: quick-check script
+
+═══════════════════════════════════════════════════════════════════════════════
+SAFETY CHECK
+═══════════════════════════════════════════════════════════════════════════════
+
+  git diff --cached --name-only (6 files + report):
+    .github/workflows/ci.yml
+    backend/engine/production_readiness.py
+    docs/env-production.template
+    docs/pre-beta-runbook.md
+    reports/phase6e-prelaunch-report.txt
+    scripts/check_beta_readiness.py
+    tests/integration/test_phase6e_prelaunch.py
+
+  Secret-risk scan: ZERO matches
+    docs/env-production.template uses <REQUIRED: ...> placeholders, not real values
+
+  No broad git add: explicit per-file staging used.
+  No secrets printed.
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 6E
+═══════════════════════════════════════════════════════════════════════════════

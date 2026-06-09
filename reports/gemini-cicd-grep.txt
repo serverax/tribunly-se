@@ -1,0 +1,275 @@
+.github/workflows/build-images.yml:26:          registry: ghcr.io
+.github/workflows/build-images.yml:28:          password: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/build-images.yml:37:            ghcr.io/serverax/lawapp/backend:fresh-${{ github.sha }}
+.github/workflows/build-images.yml:38:            ghcr.io/serverax/lawapp/backend:${{ github.sha }}
+.github/workflows/build-images.yml:39:            ghcr.io/serverax/lawapp/backend:latest
+.github/workflows/build-images.yml:43:          docker pull ghcr.io/serverax/lawapp/backend:${{ github.sha }}
+.github/workflows/build-images.yml:44:          echo "IMAGE_SHA=ghcr.io/serverax/lawapp/backend:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+.github/workflows/ci.yml:20:          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'lawapp' }}
+.github/workflows/ci.yml:36:      POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'lawapp' }}
+.github/workflows/ci.yml:38:      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+.github/workflows/ci.yml:39:      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+.github/workflows/ci.yml:56:            pytest pytest-asyncio httpx requests \
+.github/workflows/ci.yml:115:          ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
+.github/workflows/ci.yml:116:        run: pytest tests/integration -q --ignore=tests/integration/test_semantic_retrieval.py
+.github/workflows/ci.yml:136:          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'lawapp' }}
+.github/workflows/ci.yml:152:      POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'lawapp' }}
+.github/workflows/ci.yml:170:            pytest psycopg2-binary pgvector python-dotenv \
+.github/workflows/ci.yml:202:          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'lawapp' }}
+.github/workflows/ci.yml:218:      POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'lawapp' }}
+.github/workflows/ci.yml:267:          registry: ghcr.io
+.github/workflows/ci.yml:269:          password: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/ci.yml:278:            ghcr.io/serverax/lawapp/backend:${{ github.sha }}
+.github/workflows/ci.yml:279:            ghcr.io/serverax/lawapp/backend:latest
+.github/workflows/ci.yml:282:        run: docker pull ghcr.io/serverax/lawapp/backend:latest && echo "PUSH VERIFIED"
+.github/workflows/deploy-iterlaw-ai.yml:7:        description: "Image tag to deploy (default: latest)"
+.github/workflows/deploy-iterlaw-ai.yml:12:  deploy:
+.github/workflows/deploy-iterlaw-ai.yml:22:      - name: Configure kubeconfig
+.github/workflows/deploy-iterlaw-ai.yml:25:          echo "${{ secrets.KUBECONFIG_HETZNER }}" > ~/.kube/config
+.github/workflows/deploy-iterlaw-ai.yml:28:      - name: Install kubectl
+.github/workflows/deploy-iterlaw-ai.yml:29:        uses: azure/setup-kubectl@v4
+.github/workflows/deploy-iterlaw-ai.yml:33:          kubectl get ns iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml:38:          kubectl get secret lawapp-secrets -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml:39:          kubectl get secret ghcr-pull-secret -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml:40:          kubectl get configmap lawapp-config -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml:47:        run: kubectl apply -f infra/k8s/iterlaw/configmap.yaml -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml:49:      - name: Set deployment image
+.github/workflows/deploy-iterlaw-ai.yml:51:          kubectl set image deployment/lawapp-backend \
+.github/workflows/deploy-iterlaw-ai.yml:52:            backend=ghcr.io/serverax/lawapp/backend:${{ env.IMAGE_TAG }} \
+.github/workflows/deploy-iterlaw-ai.yml:56:        run: kubectl rollout status deployment/lawapp-backend -n iterlaw-ai --timeout=180s
+.github/workflows/deploy-iterlaw-ai.yml:59:        run: kubectl get pods -n iterlaw-ai
+.github/workflows/deploy-iterlaw-ai.yml:63:          POD=$(kubectl get pod -n iterlaw-ai -l app=lawapp-backend \
+.github/workflows/deploy-iterlaw-ai.yml:65:          RESULT=$(kubectl exec -n iterlaw-ai $POD -- \
+.github/workflows/deploy-iterlaw-ai.yml:72:          POD=$(kubectl get pod -n iterlaw-ai -l app=lawapp-backend \
+.github/workflows/deploy-iterlaw-ai.yml:74:          RESULT=$(kubectl exec -n iterlaw-ai $POD -- curl -s -X POST \
+.github/workflows/deploy-iterlaw-ai.yml:83:        run: kubectl logs -n iterlaw-ai deploy/lawapp-backend --tail=50 || true
+.github/workflows/deploy-staging.yml:7:        description: "Image tag to deploy"
+.github/workflows/deploy-staging.yml:12:  deploy:
+.github/workflows/deploy-staging.yml:20:      - name: Install kubectl
+.github/workflows/deploy-staging.yml:21:        uses: azure/setup-kubectl@v4
+.github/workflows/deploy-staging.yml:23:      - name: Configure kubeconfig
+.github/workflows/deploy-staging.yml:26:          echo "${{ secrets.KUBECONFIG_HETZNER }}" > ~/.kube/config
+.github/workflows/deploy-staging.yml:31:          kubectl config current-context
+.github/workflows/deploy-staging.yml:32:          kubectl get ns iterlaw-ai
+.github/workflows/deploy-staging.yml:36:          kubectl get secret lawapp-secrets -n iterlaw-ai
+.github/workflows/deploy-staging.yml:37:          kubectl get secret ghcr-pull-secret -n iterlaw-ai
+.github/workflows/deploy-staging.yml:38:          kubectl get configmap lawapp-config -n iterlaw-ai
+.github/workflows/deploy-staging.yml:41:        run: kubectl apply -f infra/k8s/iterlaw/configmap.yaml -n iterlaw-ai
+.github/workflows/deploy-staging.yml:45:          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+.github/workflows/deploy-staging.yml:52:      - name: Set image and rollout
+.github/workflows/deploy-staging.yml:55:          kubectl set image deployment/lawapp-backend \
+.github/workflows/deploy-staging.yml:56:            backend=ghcr.io/serverax/lawapp/backend:${TAG} \
+.github/workflows/deploy-staging.yml:58:          kubectl rollout status deployment/lawapp-backend \
+.github/workflows/deploy-staging.yml:63:          POD=$(kubectl get pod -n iterlaw-ai -l app=lawapp-backend \
+.github/workflows/deploy-staging.yml:65:          kubectl exec -n iterlaw-ai $POD -- \
+.github/workflows/deploy-staging.yml:67:          kubectl exec -n iterlaw-ai $POD -- curl -sf -X POST \
+.github/workflows/deploy-staging.yml:76:          kubectl get pods -n iterlaw-ai
+.github/workflows/deploy-staging.yml:77:          kubectl logs -n iterlaw-ai deploy/lawapp-backend --tail=30
+.github/workflows/docker-proof.yml:18:          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'lawapp' }}
+.github/workflows/docker-proof.yml:37:          docker build -t lawapp:ci .
+.github/workflows/lawapp-ci.yml:68:          pip install pytest pytest-asyncio psycopg2-binary
+.github/workflows/lawapp-ci.yml:91:            python -m pytest tests/legal_accuracy/ --tb=short -q
+.github/workflows/lawapp-ci.yml:101:            python -m pytest tests --tb=short -q
+.github/workflows/lawapp-ci.yml:103:            echo "No tests directory found. Skipping full pytest."
+.github/workflows/lawapp-ci.yml:116:            if [ -f package-lock.json ]; then npm ci; else npm install; fi
+.github/workflows/lawapp-ci.yml:117:            npm test --if-present
+.github/workflows/lawapp-ci.yml:118:            npm run lint --if-present
+.github/workflows/lawapp-ci.yml:119:            npm run build --if-present
+.github/workflows/lawapp-ci.yml:140:      - name: Basic secret leak check
+.github/workflows/lawapp-ci.yml:145:            echo "ERROR: Possible secret found in repository."
+.github/workflows/lawapp-ci.yml:182:          registry: ghcr.io
+.github/workflows/lawapp-ci.yml:184:          password: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/lawapp-ci.yml:188:          IMAGE="ghcr.io/${{ github.repository }}/lawapp-backend"
+.github/workflows/lawapp-ci.yml:189:          docker build \
+.github/workflows/lawapp-deploy-k8s.yml:1:name: lawapp-deploy-k8s
+.github/workflows/lawapp-deploy-k8s.yml:7:        description: "Image tag to deploy, for example latest or a commit SHA"
+.github/workflows/lawapp-deploy-k8s.yml:16:  deploy:
+.github/workflows/lawapp-deploy-k8s.yml:21:      IMAGE: ghcr.io/${{ github.repository }}/lawapp-backend:${{ inputs.image_tag }}
+.github/workflows/lawapp-deploy-k8s.yml:22:      KUBECONFIG: /tmp/kubeconfig
+.github/workflows/lawapp-deploy-k8s.yml:28:      - name: Install kubectl
+.github/workflows/lawapp-deploy-k8s.yml:29:        uses: azure/setup-kubectl@v4
+.github/workflows/lawapp-deploy-k8s.yml:33:      - name: Load kubeconfig
+.github/workflows/lawapp-deploy-k8s.yml:36:          if [ -z "${{ secrets.KUBECONFIG_B64 }}" ]; then
+.github/workflows/lawapp-deploy-k8s.yml:37:            echo "ERROR: Missing GitHub secret KUBECONFIG_B64"
+.github/workflows/lawapp-deploy-k8s.yml:40:          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > "$KUBECONFIG"
+.github/workflows/lawapp-deploy-k8s.yml:47:            kubectl get ns "$ns"
+.github/workflows/lawapp-deploy-k8s.yml:53:          kubectl -n lawapp-api get deploy
+.github/workflows/lawapp-deploy-k8s.yml:55:          if kubectl -n lawapp-api get deploy lawapp-backend >/dev/null 2>&1; then
+.github/workflows/lawapp-deploy-k8s.yml:56:            kubectl -n lawapp-api set image deploy/lawapp-backend lawapp-backend="$IMAGE"
+.github/workflows/lawapp-deploy-k8s.yml:57:            kubectl -n lawapp-api rollout status deploy/lawapp-backend --timeout=180s
+.github/workflows/lawapp-deploy-k8s.yml:59:            echo "ERROR: deployment/lawapp-backend not found in lawapp-api."
+.github/workflows/lawapp-deploy-k8s.yml:60:            echo "Create the deployment first or change this workflow to match the real deployment name."
+.github/workflows/lawapp-deploy-k8s.yml:68:          kubectl -n lawapp-api get pods -o wide
+.github/workflows/lawapp-deploy-k8s.yml:70:          kubectl -n lawapp-api get svc -o wide
+.github/workflows/lawapp-deploy-k8s.yml:72:          kubectl -n lawapp-api get ingress -o wide || true
+.github/workflows/lawapp-deploy-k8s.yml:74:          kubectl -n lawapp-api get events --sort-by=.lastTimestamp | tail -50
+.github/workflows/lawapp-deploy-k8s.yml:79:          kubectl -n lawapp-api run lawapp-smoke-${{ github.run_id }} \
+.github/workflows/smoke.yml:14:      - name: Install kubectl
+.github/workflows/smoke.yml:15:        uses: azure/setup-kubectl@v4
+.github/workflows/smoke.yml:17:      - name: Configure kubeconfig
+.github/workflows/smoke.yml:20:          echo "${{ secrets.KUBECONFIG_HETZNER }}" > ~/.kube/config
+scripts/auto_push_lawapp.sh:18:  python -m pytest tests/legal_accuracy/ --tb=line -q
+scripts/auto_push_lawapp.sh:26:  python -m pytest tests --tb=line -q
+scripts/auto_push_lawapp.sh:32:  if [ -f package-lock.json ]; then npm ci; else npm install; fi
+scripts/auto_push_lawapp.sh:33:  npm test --if-present
+scripts/auto_push_lawapp.sh:34:  npm run lint --if-present
+scripts/auto_push_lawapp.sh:35:  npm run build --if-present
+scripts/auto_push_lawapp.sh:51:  echo "ERROR: Possible secret found. Push blocked."
+scripts/build-images.sh:4:# Requires: docker login ghcr.io -u serverax
+scripts/build-images.sh:10:IMAGE="ghcr.io/serverax/lawapp/backend"
+scripts/build-images.sh:13:docker build -t "$IMAGE:$TAG" -t "$IMAGE:latest" -f Dockerfile .
+scripts/check-iterlaw-ai.sh:7:if ! kubectl get ns "$NAMESPACE" &>/dev/null; then
+scripts/check-iterlaw-ai.sh:13:kubectl get pods -n "$NAMESPACE"
+scripts/check-iterlaw-ai.sh:17:kubectl get svc -n "$NAMESPACE"
+scripts/check-iterlaw-ai.sh:21:kubectl get deploy -n "$NAMESPACE"
+scripts/check-iterlaw-ai.sh:25:kubectl get cm -n "$NAMESPACE" | grep -v kube-root
+scripts/check-iterlaw-ai.sh:29:kubectl get secret -n "$NAMESPACE" --no-headers | awk '{print $1, $2}'
+scripts/check-iterlaw-ai.sh:33:kubectl get events -n "$NAMESPACE" --sort-by='.lastTimestamp' | tail -20
+scripts/check_production_readiness_ci.py:40:    print(f"\nDeployment mode:   {config['deployment_mode']}")
+scripts/check_rules_verification.py:152:        print("  Unverified production rules block deployment.")
+scripts/ci-local.sh:12:docker compose run --rm ingestion python -m pytest \
+scripts/ci-local.sh:26:docker compose run --rm ingestion python -m pytest tests/integration -q \
+scripts/deploy-iterlaw-ai.sh:6:IMAGE="ghcr.io/serverax/lawapp/backend:${IMAGE_TAG}"
+scripts/deploy-iterlaw-ai.sh:8:if ! kubectl get ns "$NAMESPACE" &>/dev/null; then
+scripts/deploy-iterlaw-ai.sh:14:# Confirm required secrets exist
+scripts/deploy-iterlaw-ai.sh:15:kubectl get secret lawapp-secrets   -n "$NAMESPACE" > /dev/null
+scripts/deploy-iterlaw-ai.sh:16:kubectl get secret ghcr-pull-secret -n "$NAMESPACE" > /dev/null
+scripts/deploy-iterlaw-ai.sh:17:kubectl get configmap lawapp-config -n "$NAMESPACE" > /dev/null
+scripts/deploy-iterlaw-ai.sh:20:kubectl set image deployment/lawapp-backend \
+scripts/deploy-iterlaw-ai.sh:24:kubectl rollout status deployment/lawapp-backend -n "$NAMESPACE" --timeout=180s
+scripts/deploy-iterlaw-ai.sh:26:kubectl get pods -n "$NAMESPACE"
+scripts/deploy-staging.sh:3:# Usage: bash scripts/deploy-staging.sh [image_tag]
+scripts/deploy-staging.sh:11:IMAGE="ghcr.io/serverax/lawapp/backend:$TAG"
+scripts/deploy-staging.sh:14:CTX=$(kubectl config current-context)
+scripts/deploy-staging.sh:16:kubectl get ns "$NAMESPACE" > /dev/null
+scripts/deploy-staging.sh:18:# Confirm required secrets exist
+scripts/deploy-staging.sh:19:kubectl get secret lawapp-secrets -n "$NAMESPACE" > /dev/null
+scripts/deploy-staging.sh:20:kubectl get secret ghcr-pull-secret -n "$NAMESPACE" > /dev/null
+scripts/deploy-staging.sh:23:kubectl apply -f infra/k8s/iterlaw/configmap.yaml -n "$NAMESPACE"
+scripts/deploy-staging.sh:25:# Set image and rollout
+scripts/deploy-staging.sh:26:kubectl set image deployment/lawapp-backend \
+scripts/deploy-staging.sh:28:kubectl rollout status deployment/lawapp-backend \
+scripts/deploy-talos.sh:3:# Run from: /mnt/f/lawapp on WSL machine with kubeconfig
+scripts/deploy-talos.sh:15:#   bash scripts/deploy-talos.sh
+scripts/deploy-talos.sh:22:kubectl config current-context
+scripts/deploy-talos.sh:25:kubectl get nodes -o wide
+scripts/deploy-talos.sh:30:kubectl apply -f infra/k8s/lawapp-namespaces.yaml
+scripts/deploy-talos.sh:31:kubectl get ns | grep lawapp
+scripts/deploy-talos.sh:35:echo "=== Creating secrets (values from env vars — not committed) ==="
+scripts/deploy-talos.sh:48:# DB secret (lawapp-api)
+scripts/deploy-talos.sh:49:kubectl -n lawapp-api create secret generic lawapp-postgres-secret \
+scripts/deploy-talos.sh:53:  --dry-run=client -o yaml | kubectl apply -f -
+scripts/deploy-talos.sh:55:# App secrets (lawapp-api)
+scripts/deploy-talos.sh:56:# Secret name MUST match envFrom.secretRef.name in lawapp-backend.yaml: lawapp-secrets
+scripts/deploy-talos.sh:57:kubectl -n lawapp-api create secret generic lawapp-secrets \
+scripts/deploy-talos.sh:69:  --dry-run=client -o yaml | kubectl apply -f -
+scripts/deploy-talos.sh:71:# lawapp-secrets must exist in EVERY namespace that references it.
+scripts/deploy-talos.sh:72:# Manifests in lawapp-rag, lawapp-ai, lawapp-monitoring all use `secretRef: lawapp-secrets`.
+scripts/deploy-talos.sh:74:# lawapp-ai: lawapp-secrets (for lawapp-reasoning-worker, lawapp-brain-deployment legacy)
+scripts/deploy-talos.sh:75:kubectl -n lawapp-ai create secret generic lawapp-secrets \
+scripts/deploy-talos.sh:82:  --dry-run=client -o yaml | kubectl apply -f -
+scripts/deploy-talos.sh:84:# lawapp-ai: lawapp-ai-secrets (REQUIRED by lawapp-ai-brain.yaml envFrom.secretRef)
+scripts/deploy-talos.sh:85:kubectl -n lawapp-ai create secret generic lawapp-ai-secrets \
+scripts/deploy-talos.sh:92:  --dry-run=client -o yaml | kubectl apply -f -
+scripts/deploy-talos.sh:94:# lawapp-rag: lawapp-secrets (for embedding job, ingestion jobs, backup jobs)
+scripts/deploy-talos.sh:95:kubectl -n lawapp-rag create secret generic lawapp-secrets \
+scripts/deploy-talos.sh:100:  --dry-run=client -o yaml | kubectl apply -f -
+scripts/deploy-talos.sh:102:# lawapp-rag: lawapp-rag-secrets (for lawapp-monitoring.yaml POSTGRES_PASSWORD secretKeyRef)
+scripts/deploy-talos.sh:103:kubectl -n lawapp-rag create secret generic lawapp-rag-secrets \
+scripts/deploy-talos.sh:107:  --dry-run=client -o yaml | kubectl apply -f -
+scripts/deploy-talos.sh:109:# lawapp-monitoring: lawapp-secrets (for lawapp-monitoring-cronjobs.yaml + lawapp-monitoring.yaml POSTGRES_PASSWORD)
+scripts/deploy-talos.sh:110:kubectl -n lawapp-monitoring create secret generic lawapp-secrets \
+scripts/deploy-talos.sh:114:  --dry-run=client -o yaml | kubectl apply -f -
+scripts/deploy-talos.sh:117:kubectl get secrets -n lawapp-api        | grep -E "NAME|lawapp"
+scripts/deploy-talos.sh:118:kubectl get secrets -n lawapp-ai         | grep -E "NAME|lawapp"
+scripts/deploy-talos.sh:119:kubectl get secrets -n lawapp-rag        | grep -E "NAME|lawapp"
+scripts/deploy-talos.sh:120:kubectl get secrets -n lawapp-monitoring | grep -E "NAME|lawapp"
+scripts/deploy-talos.sh:125:kubectl apply -f infra/k8s/lawapp-configmaps.yaml
+scripts/deploy-talos.sh:130:kubectl apply -f infra/k8s/lawapp-postgres-sts.yaml
+scripts/deploy-talos.sh:132:kubectl wait --for=condition=ready pod -l app=lawapp-postgres -n lawapp-api --timeout=120s
+scripts/deploy-talos.sh:133:kubectl get pods -n lawapp-api -o wide
+scripts/deploy-talos.sh:138:PGPOD=$(kubectl get pod -n lawapp-api -l app=lawapp-postgres -o jsonpath='{.items[0].metadata.name}')
+scripts/deploy-talos.sh:139:kubectl exec -n lawapp-api "$PGPOD" -- psql -U lawapp -d lawapp -c "
+scripts/deploy-talos.sh:150:  kubectl exec -i -n lawapp-api "$PGPOD" -- psql -U lawapp -d lawapp < "$f"
+scripts/deploy-talos.sh:152:kubectl exec -n lawapp-api "$PGPOD" -- psql -U lawapp -d lawapp -c "SELECT count(*) as rules FROM rules;"
+scripts/deploy-talos.sh:153:kubectl exec -n lawapp-api "$PGPOD" -- psql -U lawapp -d lawapp -c "SELECT count(*) as legal_nodes FROM legal_nodes;"
+scripts/deploy-talos.sh:154:kubectl exec -n lawapp-api "$PGPOD" -- psql -U lawapp -d lawapp -c "SELECT count(*) as legal_edges FROM legal_edges;"
+scripts/deploy-talos.sh:160:# Pre-flight: confirm required secret and configmap exist in lawapp-api
+scripts/deploy-talos.sh:161:echo "  Verifying lawapp-secrets exists in lawapp-api..."
+scripts/deploy-talos.sh:162:kubectl get secret lawapp-secrets -n lawapp-api \
+scripts/deploy-talos.sh:163:  || { echo "ERROR: lawapp-secrets not found in lawapp-api. Run Step 2 first."; exit 1; }
+scripts/deploy-talos.sh:165:kubectl get configmap lawapp-config -n lawapp-api \
+scripts/deploy-talos.sh:168:kubectl apply -f infra/k8s/lawapp-backend.yaml
+scripts/deploy-talos.sh:169:echo "  Waiting for lawapp-backend rollout (up to 120s)..."
+scripts/deploy-talos.sh:170:kubectl rollout status deploy/lawapp-backend -n lawapp-api --timeout=120s
+scripts/deploy-talos.sh:171:kubectl get pods -n lawapp-api -o wide
+scripts/deploy-talos.sh:177:# Pre-flight: confirm required secret and configmap exist in lawapp-ai
+scripts/deploy-talos.sh:178:echo "  Verifying lawapp-ai-secrets exists in lawapp-ai..."
+scripts/deploy-talos.sh:179:kubectl get secret lawapp-ai-secrets -n lawapp-ai \
+scripts/deploy-talos.sh:180:  || { echo "ERROR: lawapp-ai-secrets not found in lawapp-ai. Run Step 2 first."; exit 1; }
+scripts/deploy-talos.sh:182:kubectl get configmap lawapp-ai-config -n lawapp-ai \
+scripts/deploy-talos.sh:185:kubectl apply -f infra/k8s/lawapp-ai-brain.yaml
+scripts/deploy-talos.sh:187:# Trigger a rollout to pick up any secret/configmap updates
+scripts/deploy-talos.sh:188:kubectl rollout restart deploy/lawapp-brain -n lawapp-ai
+scripts/deploy-talos.sh:190:echo "  Waiting for lawapp-brain rollout (up to 180s)..."
+scripts/deploy-talos.sh:191:kubectl rollout status deploy/lawapp-brain -n lawapp-ai --timeout=180s
+scripts/deploy-talos.sh:193:kubectl get pods -n lawapp-ai -o wide
+scripts/deploy-talos.sh:196:kubectl logs -n lawapp-ai deploy/lawapp-brain --tail=50 || true
+scripts/deploy-talos.sh:201:kubectl apply -f infra/k8s/lawapp-ingestion-jobs.yaml || true
+scripts/deploy-talos.sh:202:kubectl apply -f infra/k8s/lawapp-embedding-job.yaml || true
+scripts/deploy-talos.sh:203:kubectl get pods -n lawapp-rag -o wide
+scripts/deploy-talos.sh:204:kubectl get jobs -n lawapp-rag || true
+scripts/deploy-talos.sh:209:kubectl apply -f infra/k8s/lawapp-security-policies.yaml
+scripts/deploy-talos.sh:210:kubectl get networkpolicy -A | grep lawapp
+scripts/deploy-talos.sh:215:kubectl apply -f infra/k8s/lawapp-monitoring.yaml
+scripts/deploy-talos.sh:216:kubectl get cronjob -n lawapp-monitoring
+scripts/deploy-talos.sh:221:kubectl get pods -A | grep -E "traefik|ingress|nginx" || echo "No ingress controller found — apply manually when ready"
+scripts/deploy-talos.sh:227:echo "  kubectl -n lawapp-api port-forward svc/lawapp-backend 8000:8000"
+scripts/deploy-talos.sh:235:kubectl get ns | grep lawapp
+scripts/deploy-talos.sh:237:kubectl get pods -n lawapp-api -o wide
+scripts/deploy-talos.sh:238:kubectl get pods -n lawapp-ai -o wide
+scripts/deploy-talos.sh:239:kubectl get pods -n lawapp-rag -o wide
+scripts/deploy-talos.sh:240:kubectl get pods -n lawapp-security -o wide
+scripts/deploy-talos.sh:241:kubectl get pods -n lawapp-monitoring -o wide
+scripts/deploy-talos.sh:243:kubectl get svc -A | grep lawapp
+scripts/deploy-talos.sh:245:kubectl get pvc -A | grep lawapp
+scripts/deploy-talos.sh:247:kubectl get secrets -n lawapp-api
+scripts/deploy-talos.sh:251:echo "Secret names deployed per namespace (no values):"
+scripts/deploy-talos.sh:252:echo "  lawapp-api:         lawapp-postgres-secret, lawapp-secrets"
+scripts/deploy-talos.sh:253:echo "  lawapp-ai:          lawapp-secrets, lawapp-ai-secrets"
+scripts/deploy-talos.sh:254:echo "  lawapp-rag:         lawapp-secrets, lawapp-rag-secrets"
+scripts/deploy-talos.sh:255:echo "  lawapp-monitoring:  lawapp-secrets"
+scripts/deploy-talos.sh:257:echo "NOTE: lawapp-brain-deployment.yaml is a legacy file."
+scripts/deploy-talos.sh:258:echo "      Use lawapp-ai-brain.yaml (lawapp-ai-secrets) for the current brain deployment."
+scripts/deploy-talos.sh:259:echo "      Do NOT apply lawapp-brain-deployment.yaml in the same cluster."
+scripts/deploy-talos.sh:265:echo "=== To resume after a failed brain deployment (secret was missing) ==="
+scripts/deploy-talos.sh:268:echo "  source scripts/deploy-talos.sh   (or run the secret + brain steps manually)"
+scripts/deploy-talos.sh:269:echo "  kubectl rollout restart deploy/lawapp-brain -n lawapp-ai"
+scripts/deploy-talos.sh:270:echo "  kubectl rollout status deploy/lawapp-brain -n lawapp-ai --timeout=180s"
+scripts/deploy-talos.sh:271:echo "  kubectl get pods -n lawapp-ai -o wide"
+scripts/deploy-talos.sh:272:echo "  kubectl logs -n lawapp-ai deploy/lawapp-brain --tail=100"
+scripts/release-check.sh:32:if docker compose run --rm ingestion python -m pytest \
+scripts/release-check.sh:49:  fail "Secret scan found $FOUND potential secrets in source"
+scripts/run-local-regression.sh:17:  pytest pytest-asyncio httpx requests \
+scripts/run-local-regression.sh:43:  pytest tests/integration -q
+scripts/run-migrations.sh:2:# Run all DB migrations against the cluster Postgres via kubectl exec.
+scripts/run-migrations.sh:14:echo "Cluster: $(kubectl config current-context)"
+scripts/run-migrations.sh:17:PGPOD=$(kubectl get pod -n "$NAMESPACE" -l app=lawapp-postgres \
+scripts/run-migrations.sh:22:kubectl exec -i -n "$NAMESPACE" "$PGPOD" -- \
+scripts/run-migrations.sh:32:  kubectl exec -i -n "$NAMESPACE" "$PGPOD" -- \
+scripts/run-migrations.sh:38:kubectl exec -n "$NAMESPACE" "$PGPOD" -- \
+scripts/run-migrations.sh:44:kubectl exec -n "$NAMESPACE" "$PGPOD" -- \
+scripts/run-migrations.sh:46:kubectl exec -n "$NAMESPACE" "$PGPOD" -- \
+scripts/run-migrations.sh:48:kubectl exec -n "$NAMESPACE" "$PGPOD" -- \
+scripts/run_full_regression.sh:14:docker compose run --rm ingestion python -m pytest tests/integration -q
+scripts/run_legal_accuracy.py:6:pipeline, without relying on pytest or test files in the runtime image.
+scripts/safe_push.sh:23:docker compose run --rm ingestion python -m pytest tests/integration -q
+scripts/smoke-iterlaw-ai.sh:7:if ! kubectl get ns "$NAMESPACE" &>/dev/null; then
+scripts/smoke-iterlaw-ai.sh:14:POD=$(kubectl get pod -n "$NAMESPACE" -l app=lawapp-backend \
+scripts/smoke-iterlaw-ai.sh:20:if kubectl get pod -n "$NAMESPACE" -l app=lawapp-backend \
+scripts/smoke-iterlaw-ai.sh:28:if kubectl get pod -n "$NAMESPACE" -l app=lawapp-postgres \
+scripts/smoke-iterlaw-ai.sh:36:HEALTH=$(kubectl exec -n "$NAMESPACE" "$POD" -- curl -sf http://localhost:8000/health 2>/dev/null || echo "ERROR")
+scripts/smoke-iterlaw-ai.sh:44:RULES=$(kubectl exec -n "$NAMESPACE" "$POD" -- curl -sf \
+scripts/smoke-iterlaw-ai.sh:54:OOS=$(kubectl exec -n "$NAMESPACE" "$POD" -- curl -sf -X POST \
+scripts/smoke-iterlaw-ai.sh:65:UD=$(kubectl exec -n "$NAMESPACE" "$POD" -- curl -sf -X POST \
+scripts/smoke-staging.sh:2:# Smoke test the staged lawapp backend via kubectl exec.

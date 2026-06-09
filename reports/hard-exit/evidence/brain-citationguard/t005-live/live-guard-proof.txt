@@ -1,0 +1,13 @@
+<stdin>:6: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+=== T-005 CitationGuard LIVE-DB PROOF ===
+UTC: 2026-06-07T16:46:36.918443 Z
+corpus_chunks rows (live lawapp-db-1): 8
+real chunk id: e4b669f1-4fe7-43ba-b007-8ce5df35cfe8  title='ACAS Code of Practice on disciplinary an'  authority='ACAS Code of Practice on disciplinary an'
+
+[1] REAL uuid is valid citation: True
+[2] FAKE uuid valid set (must be empty): set()
+[3] FAKE uuid is valid citation (must be False): False
+[4] enforce accepts real-cited draft: accepted attempts= 1 uuids= ['e4b669f1-4fe7-43ba-b007-8ce5df35cfe8']
+[5] enforce rejects uncited -> fallback: fallback attempts= 3 reason_fn_calls= 3
+
+RESULT: valid accepted, fake rejected, uncited regenerated x2 then fell back to deterministic guide. NO ungrounded model text accepted.

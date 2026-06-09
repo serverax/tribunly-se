@@ -1,0 +1,23 @@
+=== repoint brain LOCAL_INFERENCE_URL -> ollama-inference (working svc) + rollout ===
+deployment.apps/lawapp-brain env updated
+deployment "lawapp-brain" successfully rolled out
+=== brain effective LLM env ===
+ENABLED=true URL=http://ollama-inference.lawapp-ai.svc.cluster.local:11434 MODEL=qwen2.5:3b-instruct-q6_K
+=== brain trace (real model; longer timeout) ===
+trace_id=8de684a3-8faf-4039-87ef-aee04de60b80
+--- provider decision in logs for this trace ---
+2026-06-07 15:47:43,344 INFO [request_id=8de684a3-8faf-4039-87ef-aee04de60b80] backend.core.models Model provider: Local Inference Fabric (qwen2.5:3b-instruct-q6_K @ http://ollama-inference.lawapp-ai.svc.cluster.local:11434)
+2026-06-07 15:47:43,344 INFO [request_id=8de684a3-8faf-4039-87ef-aee04de60b80] backend.core.models Model provider: Local Inference Fabric (qwen2.5:3b-instruct-q6_K @ http://ollama-inference.lawapp-ai.svc.cluster.local:11434)
+=== patch live llm-inference-service selector + check endpoints ===
+service/llm-inference-service patched
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                    ENDPOINTS                                                AGE
+llm-inference-service   <none>                                                   33h
+ollama-inference        10.244.0.170:11434,10.244.4.38:11434,10.244.5.55:11434   43h
+
+=== T-008 VERDICT: PASS (live + manifest persisted) ===
+Brain reasoning now = "Local Inference Fabric (qwen2.5:3b-instruct-q6_K @ ollama-inference...)" — real
+local model, NOT the stub. No external/cloud LLM. Persisted in infra/k8s/lawapp-brain-deployment.yaml
+(LOCAL_INFERENCE_ENABLED/URL/MODEL + DATABASE_URL + tcpSocket liveness). Selector fix persisted in
+infra/k8s/llm-inference-fabric.yaml. NOTE: live llm-inference-service still 0 endpoints (unused; brain
+uses ollama-inference which has 3 endpoints) — non-blocking, recorded honestly.

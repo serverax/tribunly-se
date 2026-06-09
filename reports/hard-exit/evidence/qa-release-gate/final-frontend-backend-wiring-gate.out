@@ -1,0 +1,14 @@
+
+== Frontend / backend wiring ==
+  [PASS] no mock/fake legal data in frontend
+  [PASS] backend route "/assess" exists
+  [PASS] backend route "/api/brain/trace" exists
+  [PASS] backend route "/auth/token" exists
+  [PASS] backend route "/cases" exists
+  [PASS] backend route "/rules/ exists
+  [PASS] backend route "/documents/generate" exists
+  [PASS] frontend scripts are not echo stubs
+  [PASS] playwright e2e script present
+
+=== GATE RESULT: final-frontend-backend-wiring-gate ===
+RESULT: PASS

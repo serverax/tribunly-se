@@ -1,0 +1,26 @@
+{
+  "domain": "employment_uk",
+  "title": "UK Employment Law",
+  "country_code": "GB",
+  "jurisdictions": ["EW", "S", "NI"],
+  "default_jurisdiction": "EW",
+  "active": true,
+  "version": "1.0",
+  "active_claim_types": ["unfair_dismissal", "constructive_dismissal"],
+  "future_claim_types": ["discrimination"],
+  "manifests": {
+    "sources": "sources.yaml",
+    "rules": "rules_manifest.yaml",
+    "workflows": "workflows.yaml",
+    "citation_policy": "citation_policy.yaml",
+    "licence_policy": "licence_policy.yaml"
+  },
+  "tables": {
+    "legislation": "legislation",
+    "acas": "acas_guidance",
+    "govuk": "official_guidance",
+    "case_law": "case_law_documents",
+    "rules": "rules",
+    "source_registry": "legal_sources"
+  }
+}

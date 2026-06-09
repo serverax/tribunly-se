@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lawapp-worker
+  namespace: lawapp-rag
+  labels:
+    app: lawapp-worker
+    component: worker
+    part-of: lawapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lawapp-worker
+  template:
+    metadata:
+      labels:
+        app: lawapp-worker
+        component: worker
+        part-of: lawapp
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: lawapp-worker
+          image: ghcr.io/serverax/lawapp-worker:b13c59d01e73e861b35498cac2b37d566609c262
+          imagePullPolicy: Always
+          command: ["python", "-m", "services.lawapp_worker.app"]
+          env:
+            - name: SERVICE_NAME
+              value: "lawapp-worker"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"

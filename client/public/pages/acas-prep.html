@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACAS prep — lawapp</title>
+  <meta name="description" content="Prepare for ACAS Early Conciliation — the mandatory step before most employment tribunal claims. Deterministic checklist grounded in real UK law.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
+  <script src="/js/a11y.js"></script>
+</head>
+<body>
+
+<div class="legal-notice" role="note">
+  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="nav-links" id="navlinks">
+    <a href="/">Home</a>
+    <a href="/#tools">Tools</a>
+  </div>
+</nav>
+
+<main class="page" id="main">
+  <div class="tool-head">
+    <span class="eyebrow">Free tool · ACAS prep</span>
+    <h1>Getting ready for ACAS</h1>
+    <p>Before most employment tribunal claims, you must notify ACAS and go through Early Conciliation. Tell us about your situation and we'll give you a clear checklist of what to do and gather.</p>
+  </div>
+
+  <div class="tool-layout">
+    <form id="acasForm" class="form-section" novalidate>
+      <div class="form-group">
+        <label for="case_summary">Briefly, what's your situation?</label>
+        <textarea id="case_summary" rows="5" placeholder="For example: I was dismissed after raising a grievance about unpaid wages. I want to challenge it but haven't contacted ACAS yet." required></textarea>
+      </div>
+
+      <div id="form-error" class="form-section" style="display:none;background:var(--warn-bg);border-color:var(--warn-bd);padding:1rem;margin-bottom:1rem;">
+        <p id="form-error-text" style="color:var(--warn);font-size:.9rem;margin:0;"></p>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;">Show me my next steps</button>
+    </form>
+
+    <div id="spinner" class="spinner" hidden></div>
+
+    <section id="resultPanel" class="result-panel" hidden aria-live="polite">
+      <div class="assessment-wrap">
+        <div class="assessment-header">
+          <h2>Your ACAS checklist</h2>
+          <span class="badge badge-yes">Grounded</span>
+        </div>
+        <div class="assessment-body">
+          <div class="assessment-section">
+            <h3>Your next steps</h3>
+            <ol class="steps" id="acas-steps" style="max-width:none;"></ol>
+          </div>
+
+          <div class="assessment-section">
+            <h3>Documents to gather</h3>
+            <ul class="employer-list" id="acas-docs"></ul>
+          </div>
+
+          <div class="next-step" style="margin-bottom:1rem;">
+            <div>
+              <div class="step-label">Then</div>
+              <div class="step-text">Check your tribunal deadline with the <a href="/pages/deadline.html">deadline calculator</a> — the ACAS pause changes the final date.</div>
+            </div>
+          </div>
+
+          <div class="assessment-section">
+            <h3>Authority</h3>
+            <ul class="citation-list"><li id="acas-authority"></li></ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="gate-banner" class="gate-banner">
+        <div class="gate-text">
+          <strong>Save your progress and track your ACAS dates</strong>
+          <span>Log in and we'll keep your conciliation dates and deadline together in one case.</span>
+        </div>
+        <a id="gate-login" class="btn btn-accent" href="/pages/login.html">Log in to save</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script>
+(function () {
+  var form = document.getElementById("acasForm");
+  var spinner = document.getElementById("spinner");
+  var resultPanel = document.getElementById("resultPanel");
+  var errBox = document.getElementById("form-error");
+  var errText = document.getElementById("form-error-text");
+
+  function render(data) {
+    var steps = document.getElementById("acas-steps");
+    steps.textContent = "";
+    (data.next_steps || []).forEach(function (s) {
+      var li = document.createElement("li"); li.className = "step-row";
+      var num = document.createElement("span"); num.className = "step-num"; num.setAttribute("aria-hidden", "true");
+      var div = document.createElement("div");
+      var p = document.createElement("p"); p.textContent = s; p.style.margin = "0";
+      div.appendChild(p);
+      li.appendChild(num); li.appendChild(div);
+      steps.appendChild(li);
+    });
+
+    var docs = document.getElementById("acas-docs");
+    docs.textContent = "";
+    (data.required_docs || []).forEach(function (d) {
+      var li = document.createElement("li"); li.textContent = d; docs.appendChild(li);
+    });
+
+    document.getElementById("acas-authority").textContent =
+      data.authority || "Employment Tribunals Act 1996 s.18A; ACAS Early Conciliation";
+
+    document.getElementById("gate-banner").hidden = LAWAPP_API.isLoggedIn();
+    document.getElementById("gate-login").href =
+      "/pages/login.html?gate=1&next=" + encodeURIComponent("/pages/intake.html");
+    resultPanel.hidden = false;
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    errBox.style.display = "none";
+    var summary = document.getElementById("case_summary").value.trim();
+    if (!summary) { errText.textContent = "Please give us a short summary of your situation."; errBox.style.display = "block"; return; }
+
+    var btn = form.querySelector("button[type=submit]");
+    btn.disabled = true; spinner.hidden = false; resultPanel.hidden = true;
+    try {
+      var data = await LAWAPP_API.toolsAcasPrep(summary);
+      render(data);
+    } catch (err) {
+      errText.textContent = (err && err.message) || "Something went wrong. Please try again.";
+      errBox.style.display = "block";
+    } finally {
+      btn.disabled = false; spinner.hidden = true;
+    }
+  });
+
+  (function () {
+    var t = document.querySelector('.nav-toggle'), n = document.getElementById('navlinks');
+    if (!t || !n) return;
+    t.addEventListener('click', function () { n.classList.toggle('open'); });
+  })();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+PHASE 7D — FULL ENVELOPE ENCRYPTION SUPPORT
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+1. FILES CHANGED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/engine/kms.py
+    - Added EncryptedKeyBundle dataclass:
+        ciphertext_blob: base64-encoded KMS CiphertextBlob (NEVER plaintext)
+        provider: provider name; provider_key_id: KMS ARN (NOT data key)
+        algorithm: "AES_256_FERNET"; encryption_version: "7D"
+        to_json() / from_json() / ciphertext_bytes() / has_kms_ciphertext()
+    - Added KeyProvider abstract methods:
+        generate_data_key() → (plaintext_key_transient, EncryptedKeyBundle)
+        decrypt_data_key(bundle) → plaintext_key_transient
+        supports_envelope_encryption() → bool
+    - AwsKmsProvider.generate_data_key():
+        Calls KMS.GenerateDataKey(AES_256) → derives Fernet key from Plaintext
+        Returns (fernet_key_transient, bundle_with_ciphertext_blob)
+        Fails closed: (None, None) on any error
+    - AwsKmsProvider.decrypt_data_key():
+        Calls KMS.Decrypt(CiphertextBlob) → derives Fernet key
+        Fails closed: None on any error (including empty CiphertextBlob)
+    - EnvKeyProvider envelope: returns env key + empty bundle (dev mode)
+    - KmsStubProvider, DisabledProvider: default (not supported) behavior
+    - status() updated: envelope_encryption_supported, ciphertext_blob_persistence
+
+  backend/engine/production_readiness.py
+    - encryption_at_rest: added envelope_encryption_supported,
+      ciphertext_blob_persistence_supported fields
+
+  db/migrations/013_phase7d_envelope_encryption.sql
+    - cases: ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb
+    - handoff_leads: ADD COLUMN IF NOT EXISTS encryption_key_metadata jsonb
+    - Indexes on NULL rows (unencrypted records)
+    - Column comments: "NOT plaintext key" annotation
+
+  tests/integration/test_phase7d_envelope_encryption.py  (NEW — 24 tests)
+
+═══════════════════════════════════════════════════════════════════════════════
+2. ENVELOPE ENCRYPTION BEHAVIOUR
+═══════════════════════════════════════════════════════════════════════════════
+
+  Encryption path (generate_data_key):
+    1. Call KMS.GenerateDataKey(KeyId=ARN, KeySpec="AES_256")
+    2. Receive Plaintext (32 bytes) + CiphertextBlob
+    3. Derive Fernet key: base64.urlsafe_b64encode(Plaintext[:32])
+    4. Use Fernet key TRANSIENTLY for encryption → DISCARD
+    5. Persist EncryptedKeyBundle (CiphertextBlob + metadata) with ciphertext
+    6. CiphertextBlob is safe (encrypted by KMS master key)
+
+  Decryption path (decrypt_data_key):
+    1. Load EncryptedKeyBundle from persisted storage
+    2. Call KMS.Decrypt(CiphertextBlob) to recover Plaintext
+    3. Derive same Fernet key → use TRANSIENTLY for decryption → DISCARD
+
+  Storage model (DB):
+    cases.encryption_key_metadata         = EncryptedKeyBundle JSON (safe to persist)
+    handoff_leads.encryption_key_metadata = EncryptedKeyBundle JSON (safe to persist)
+    NEITHER column contains plaintext keys.
+
+  Phase 7E+ (not implemented):
+    - Integration of generate_data_key into existing Fernet encrypt/decrypt
+    - Key rotation lifecycle (re-encrypt with new data key)
+    - Batch migration of existing records
+
+  GUARDRAILS verified by tests:
+    - Plaintext data keys NEVER in bundle (test 5)
+    - Plaintext NEVER in logs during generate (test 13)
+    - Plaintext NEVER in logs during decrypt (test 14)
+    - Empty CiphertextBlob fails closed (test 11)
+    - KMS failures fail closed (tests 8, 12)
+
+═══════════════════════════════════════════════════════════════════════════════
+3. MIGRATION / SCHEMA CHANGES
+═══════════════════════════════════════════════════════════════════════════════
+
+  Migration 013: encryption_key_metadata jsonb columns (applied via test fixture)
+  No destructive changes. All columns are nullable with IF NOT EXISTS guard.
+  Schema is additive — existing data is unchanged.
+
+═══════════════════════════════════════════════════════════════════════════════
+4. TEST RESULTS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Phase 7D tests:    24/24 passed in 31.14s
+  Full regression:   631 passed, 9 skipped, 0 failures in 449s
+
+═══════════════════════════════════════════════════════════════════════════════
+5. READINESS STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+  controlled_beta_ready: FALSE (DPIA/privacy reviews still required)
+  production_ready: FALSE
+
+  Production readiness report (aws_kms + AWS_KMS_KEY_ARN configured):
+    envelope_encryption_supported:       true
+    ciphertext_blob_persistence_supported: true
+
+═══════════════════════════════════════════════════════════════════════════════
+6. REMAINING PHASE 7 BLOCKERS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Closed:
+    ✓ Phase 7A: JWKS/RS256 JWT verification
+    ✓ Phase 7B: KMS provider abstraction
+    ✓ Phase 7C: Real AWS KMS API connection
+    ✓ Phase 7D: Full envelope encryption (GenerateDataKey + Decrypt)
+
+  Still remaining:
+  5. Envelope encryption integration into existing Fernet path (Phase 7E)
+  6. Key rotation lifecycle — Phase 7E+
+  7. Live deployment environment
+  8. Stripe live payment mode
+  9. Subject Access Request (SAR) process
+  10. Monitoring and alerting
+
+═══════════════════════════════════════════════════════════════════════════════
+7. SECRET-RISK SCAN
+═══════════════════════════════════════════════════════════════════════════════
+
+  Staged files: 4 (kms.py, production_readiness.py, migration 013, test file)
+  Real secrets: ZERO
+  No AWS credentials, KMS ARNs, or key material in diff
+  Explicit per-file staging — no broad git add
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 7D
+═══════════════════════════════════════════════════════════════════════════════

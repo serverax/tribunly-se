@@ -1,0 +1,131 @@
+---
+# lawapp Brain Algorithm — Kubernetes Deployment
+# Namespace: lawapp-ai
+# Service: lawapp-brain (internal only — not exposed to public internet)
+#
+# The Brain is the ONLY authorised entry point to the reasoning layer.
+# All other services route through the Brain API.
+#
+# DO NOT apply until:
+# 1. lawapp-secrets secret is created in lawapp-ai namespace
+# 2. lawapp-config ConfigMap is created in lawapp-ai namespace
+# 3. lawapp-postgres is running and healthy in lawapp-rag namespace
+# 4. ANTHROPIC_API_KEY is set to a real key in lawapp-secrets
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lawapp-ai
+  labels:
+    app.kubernetes.io/part-of: lawapp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lawapp-brain
+  namespace: lawapp-ai
+  labels:
+    app: lawapp-brain
+    part-of: lawapp
+    component: brain-algorithm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lawapp-brain
+  template:
+    metadata:
+      labels:
+        app: lawapp-brain
+        part-of: lawapp
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: brain
+          image: ghcr.io/serverax/lawapp/backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            # DATABASE_URL is the authoritative DB target (overrides POSTGRES_* in ingestion/config).
+            # Points at the real legal DB in lawapp-rag as lawapp_user (G1 fix). Secret created via:
+            #   kubectl create secret generic lawapp-brain-db -n lawapp-ai --from-literal=DATABASE_URL=...
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: lawapp-brain-db
+                  key: DATABASE_URL
+            - name: POSTGRES_HOST
+              value: "lawapp-postgres.lawapp-api.svc.cluster.local"
+            - name: POSTGRES_PORT
+              value: "5432"
+            # Local Inference Fabric (Ollama) — local-only reasoning, NO external LLM (T-008).
+            # NOTE: target the WORKING service `ollama-inference` (llm-inference-service has a stale
+            # selector and 0 endpoints — see llm-inference-fabric.yaml).
+            - name: LOCAL_INFERENCE_ENABLED
+              value: "true"
+            - name: LOCAL_INFERENCE_URL
+              value: "http://ollama-inference.lawapp-ai.svc.cluster.local:11434"
+            - name: LOCAL_INFERENCE_MODEL
+              value: "qwen2.5:3b-instruct-q6_K"
+          envFrom:
+            - configMapRef:
+                name: lawapp-ai-config
+            - secretRef:
+                name: lawapp-ai-secrets
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            # Liveness must NOT depend on the DB — a DB outage marks the pod NotReady
+            # (readiness=/health) without crash-looping the container.
+            # tcpSocket (not httpGet /livez): the currently deployed :latest image predates the
+            # /livez route and 404s on it, which would itself crash-loop. TCP checks the process is
+            # up without any dependency. Switch to httpGet /livez once the image ships /livez.
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawapp-brain
+  namespace: lawapp-ai
+  labels:
+    app: lawapp-brain
+    part-of: lawapp
+spec:
+  selector:
+    app: lawapp-brain
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+  type: ClusterIP   # Internal only — Brain is not exposed to public internet

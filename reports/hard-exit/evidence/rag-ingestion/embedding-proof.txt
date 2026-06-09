@@ -1,0 +1,56 @@
+=== T-004 EMBEDDING PROOF ===
+Date: Sun Jun  7 15:01:50 UTC 2026
+DB: lawapp-rag/lawapp-postgres-0  db=lawapp  user=lawapp_user
+Model: BAAI/bge-small-en-v1.5 (stored as bge-small-en-v1.5), fastembed ONNX, vector(384)
+
+=== BEFORE (existing model of embedded rows) ===
+  embedding_model  | count 
+-------------------+-------
+ bge-small-en-v1.5 |    92
+(1 row)
+
+
+=== BEFORE counts (total / with_embedding / null) ===
+ total | with_embedding | null_embedding 
+-------+----------------+----------------
+   890 |             92 |            798
+(1 row)
+
+
+=== AFTER counts (total / with_embedding / null) ===
+ total | with_embedding | null_embedding 
+-------+----------------+----------------
+   890 |            890 |              0
+(1 row)
+
+=== AFTER model breakdown ===
+  embedding_model  | dim | count 
+-------------------+-----+-------
+ bge-small-en-v1.5 | 384 |   890
+(1 row)
+
+=== ZERO-VECTOR / placeholder check (rows where L2 norm < 1e-6 must be 0) ===
+ zero_or_placeholder_vectors 
+-----------------------------
+                           0
+(1 row)
+
+=== distinct embedding norms sample (proves vectors differ, not constant) ===
+ l2_norm | count 
+---------+-------
+  1.0000 |   890
+(1 row)
+
+=== newly embedded rows have embedding_created_at today ===
+     d      | count 
+------------+-------
+ 2026-06-03 |    92
+ 2026-06-07 |   798
+(2 rows)
+
+=== vectors are DISTINCT (bge is L2-normalised so norm=1.0 is correct; check pairwise distances vary) ===
+ min_cos_dist | max_cos_dist | distinct_distances | compared 
+--------------+--------------+--------------------+----------
+       0.1232 |       0.8981 |                727 |      889
+(1 row)
+

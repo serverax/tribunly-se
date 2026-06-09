@@ -1,0 +1,13 @@
+ id |          source_id          |  source_type   |                          source_url                           | source_hash_12 
+----+-----------------------------+----------------+---------------------------------------------------------------+----------------
+  9 | era-1996                    | legislation    | https://www.legislation.gov.uk/ukpga/1996/18/data.xml         | 7b977b2450e4
+ 10 | equality-act-2010           | legislation    | https://www.legislation.gov.uk/ukpga/2010/15/data.xml         | cc1bceab9d41
+ 11 | eta-1996                    | legislation    | https://www.legislation.gov.uk/ukpga/1996/17/data.xml         | d0816d9bfad5
+ 12 | acas-dismissals             | acas_guidance  | https://www.acas.org.uk/dismissals                            | 2a0a95116770
+ 13 | acas-disciplinary-grievance | acas_guidance  | https://www.acas.org.uk/disciplinary-and-grievance-procedures | 6f7787a5dec0
+ 14 | govuk-et-make-a-claim       | govuk_guidance | https://www.gov.uk/employment-tribunals/make-a-claim          | b0bae5073df7
+ 15 | acas-early-conciliation     | acas_guidance  | https://www.acas.org.uk/early-conciliation                    | 8349f87e8103
+ 16 | govuk-redundancy            | govuk_guidance | https://www.gov.uk/redundancy-your-rights                     | 5db263dfc13d
+ 17 | govuk-holiday-entitlement   | govuk_guidance | https://www.gov.uk/holiday-entitlement-rights                 | d8bebf185d28
+(9 rows)
+

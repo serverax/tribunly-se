@@ -1,0 +1,147 @@
+PHASE 6C — REAL JWT CRYPTOGRAPHIC VERIFICATION
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+1. GIT
+═══════════════════════════════════════════════════════════════════════════════
+
+Branch:      master
+[commit hash to be set after push]
+Push result: [to be set after push]
+
+═══════════════════════════════════════════════════════════════════════════════
+2. FILES CHANGED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/engine/user_auth.py
+    - Removed JWT stub placeholder
+    - Added _verify_jwt(): real HS256 verification via PyJWT
+      Validates: signature, exp, iss (if JWT_ISSUER set), aud (if JWT_AUDIENCE set)
+      Requires sub claim; returns str(sub) as user identity
+      All errors → specific 401 responses; details suppressed for security
+      JWT_SECRET missing → 503 (server not configured)
+    - is_auth_production_ready(): returns {"ready": True} when jwt mode + all vars set
+    - Mock mode unchanged (dev/test only)
+    - GUARDRAIL: token/sub values NEVER logged or returned in responses
+
+  backend/engine/config_validation.py
+    - Updated docstring to Phase 6C
+    - No logic changes required (JWT validation was already in place)
+
+  backend/engine/production_readiness.py
+    - user_authentication section: jwt_hs256_verification field added
+    - Shows "IMPLEMENTED" when LAWAPP_AUTH_MODE=jwt + JWT_SECRET set
+    - overall_status shows "IMPLEMENTED" when all JWT vars configured
+
+  Dockerfile
+    - Added PyJWT>=2.8 to pip install
+
+  Dockerfile.ingestion
+    - Added PyJWT>=2.8 to pip install
+
+  tests/integration/test_phase6c_jwt.py
+    - 23 new tests (see section 6)
+
+═══════════════════════════════════════════════════════════════════════════════
+3. JWT IMPLEMENTATION PROOF
+═══════════════════════════════════════════════════════════════════════════════
+
+  valid token accepted:         test_valid_jwt_accepted PASSED
+  expired token rejected:       test_expired_jwt_rejected PASSED — HTTP 401
+  wrong issuer rejected:        test_wrong_issuer_rejected PASSED — HTTP 401
+  wrong audience rejected:      test_wrong_audience_rejected PASSED — HTTP 401
+  invalid signature rejected:   test_invalid_signature_rejected PASSED — HTTP 401
+  malformed token rejected:     test_malformed_token_rejected PASSED — HTTP 401
+  missing Authorization → None: test_missing_authorization_returns_none PASSED
+  missing JWT_SECRET → 503:     test_missing_jwt_secret_returns_503 PASSED
+  token value not in response:  test_token_value_not_in_response PASSED
+
+Algorithm: HS256 (HMAC-SHA256) via PyJWT>=2.8
+Claims required: sub, exp (always); iss and aud when env vars set
+JWKS/RS256: NOT implemented — Phase 7
+
+═══════════════════════════════════════════════════════════════════════════════
+4. AUTH MODE PROOF
+═══════════════════════════════════════════════════════════════════════════════
+
+  mock mode preserved:          test_mock_mode_still_works PASSED
+  jwt mode real verification:   test_jwt_mode_valid_token_allows_case_access PASSED
+  jwt expired rejected by API:  test_jwt_mode_expired_token_rejected_by_api PASSED
+  jwt bad sig rejected by API:  test_jwt_mode_invalid_signature_rejected_by_api PASSED
+  production jwt configured:    test_production_readiness_jwt_configured PASSED
+    → is_auth_production_ready() returns {"ready": True, "blockers": []}
+      when LAWAPP_AUTH_MODE=jwt + JWT_SECRET + JWT_ISSUER + JWT_AUDIENCE all set
+
+  production mode still blocks mock/none:
+    → is_auth_production_ready() returns blockers for mock/none (unchanged from 6B)
+
+═══════════════════════════════════════════════════════════════════════════════
+5. ADMIN PROTECTION PROOF
+═══════════════════════════════════════════════════════════════════════════════
+
+  /admin/production-readiness without key: 403 ✓
+  /admin/compliance-status without key:    403 ✓
+
+═══════════════════════════════════════════════════════════════════════════════
+6. TEST RESULTS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Phase 6C tests:    23/23 passed in 47.57s
+  Full regression:   493 passed, 9 skipped, 0 failures in 458s
+  Legal accuracy:    38/38 passed ✓ CI gate PASSED
+  Rules verification: ✓ CI gate PASSED
+
+═══════════════════════════════════════════════════════════════════════════════
+7. READINESS STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+  controlled_beta_ready: FALSE
+  Current blockers:
+    1. DPIA not reviewed by DPO (compliance-signoff.json reviewed_by_dpo=false)
+    2. Privacy notice not legally reviewed (legally_reviewed=false)
+    3. JWKS/RS256 not implemented (HS256 only — Phase 7)
+    4. No real HSM/KMS (Phase 7)
+    5. No live deployment environment (Phase 7)
+
+  production_ready: FALSE (additional blockers: DPIA approved, privacy published,
+                           HSM/KMS, full OAuth/JWT, live deployment)
+
+  Blocker CLOSED by Phase 6C:
+    ✓ "JWT not cryptographically verified" — CLOSED (HS256 real verification)
+    ✓ "mock/JWT stub auth only" — PARTIALLY CLOSED
+      (jwt mode is now real; mock remains for dev/test only as intended)
+
+═══════════════════════════════════════════════════════════════════════════════
+8. SAFETY CHECK
+═══════════════════════════════════════════════════════════════════════════════
+
+  git diff --cached --name-only:
+    Dockerfile
+    Dockerfile.ingestion
+    backend/engine/config_validation.py
+    backend/engine/production_readiness.py
+    backend/engine/user_auth.py
+    tests/integration/test_phase6c_jwt.py
+    reports/phase6c-jwt-auth-report.txt
+    (exactly the 7 allowed files)
+
+  Secret-risk scan: ZERO matches
+    (no real secrets in staged diff; test constants are clearly labeled as test-only)
+
+  Confirm no secrets printed:
+    - JWT token values: NEVER logged or included in response bodies (proven by
+      test_token_value_not_in_response)
+    - JWT_SECRET: read from env only; never logged; grep of user_auth.py confirms
+      no print/logger.info/logger.debug of secret value
+    - sub claim: NEVER logged (logger.debug confirms "sub value not logged")
+
+  Confirm no broad git add:
+    - Used: git add backend/engine/user_auth.py backend/engine/config_validation.py
+      backend/engine/production_readiness.py Dockerfile Dockerfile.ingestion
+      tests/integration/test_phase6c_jwt.py
+    - Did NOT use: git add -A, git add ., git add *
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 6C
+═══════════════════════════════════════════════════════════════════════════════

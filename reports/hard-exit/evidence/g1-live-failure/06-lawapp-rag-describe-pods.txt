@@ -1,0 +1,1428 @@
+Name:             lawapp-backup-proof-26bvp
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:21:18 +0100
+Labels:           batch.kubernetes.io/controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  batch.kubernetes.io/job-name=lawapp-backup-proof
+                  controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  job-name=lawapp-backup-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.67
+IPs:
+  IP:           10.244.4.67
+Controlled By:  Job/lawapp-backup-proof
+Containers:
+  backup:
+    Container ID:  containerd://101943a9bd74fddc533be7702f9792baa14ff68887dbb4ec1407a8d36fcbdc34
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      echo "Starting backup proof..."
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/backup.sql
+      echo "Backup created: $(ls -lh /tmp/backup.sql)"
+      echo "Verifying backup content..."
+      grep "CREATE TABLE public.cases" /tmp/backup.sql
+      echo "BACKUP PROOF: PASS"
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:21:18 +0100
+      Finished:     Thu, 04 Jun 2026 07:21:18 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-9fm2v (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-9fm2v:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-proof-29vkd
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Thu, 04 Jun 2026 07:20:48 +0100
+Labels:           batch.kubernetes.io/controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  batch.kubernetes.io/job-name=lawapp-backup-proof
+                  controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  job-name=lawapp-backup-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.5.76
+IPs:
+  IP:           10.244.5.76
+Controlled By:  Job/lawapp-backup-proof
+Containers:
+  backup:
+    Container ID:  containerd://0ed6d2afa166cf9d094b1586b94167891d6b736a4d4c1f224aaffd037fa26348
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      echo "Starting backup proof..."
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/backup.sql
+      echo "Backup created: $(ls -lh /tmp/backup.sql)"
+      echo "Verifying backup content..."
+      grep "CREATE TABLE public.cases" /tmp/backup.sql
+      echo "BACKUP PROOF: PASS"
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:20:48 +0100
+      Finished:     Thu, 04 Jun 2026 07:20:48 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-qmgh5 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-qmgh5:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-proof-7cmpm
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:21:58 +0100
+Labels:           batch.kubernetes.io/controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  batch.kubernetes.io/job-name=lawapp-backup-proof
+                  controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  job-name=lawapp-backup-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.69
+IPs:
+  IP:           10.244.4.69
+Controlled By:  Job/lawapp-backup-proof
+Containers:
+  backup:
+    Container ID:  containerd://ce60bb94f760e0cb540edbd15efbf97417f720ffe5b8b2896f6619c9a9c9b2b6
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      echo "Starting backup proof..."
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/backup.sql
+      echo "Backup created: $(ls -lh /tmp/backup.sql)"
+      echo "Verifying backup content..."
+      grep "CREATE TABLE public.cases" /tmp/backup.sql
+      echo "BACKUP PROOF: PASS"
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:21:58 +0100
+      Finished:     Thu, 04 Jun 2026 07:21:58 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-cj9mn (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-cj9mn:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-proof-btnzg
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Thu, 04 Jun 2026 07:20:58 +0100
+Labels:           batch.kubernetes.io/controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  batch.kubernetes.io/job-name=lawapp-backup-proof
+                  controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  job-name=lawapp-backup-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.5.80
+IPs:
+  IP:           10.244.5.80
+Controlled By:  Job/lawapp-backup-proof
+Containers:
+  backup:
+    Container ID:  containerd://f1ef15e2a4c6e94501858cbe90354b8d555d2b74f82b1eaa518342b36499a51c
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      echo "Starting backup proof..."
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/backup.sql
+      echo "Backup created: $(ls -lh /tmp/backup.sql)"
+      echo "Verifying backup content..."
+      grep "CREATE TABLE public.cases" /tmp/backup.sql
+      echo "BACKUP PROOF: PASS"
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:20:58 +0100
+      Finished:     Thu, 04 Jun 2026 07:20:58 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-6rj7f (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-6rj7f:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-proof-gh5f8
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:25:58 +0100
+Labels:           batch.kubernetes.io/controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  batch.kubernetes.io/job-name=lawapp-backup-proof
+                  controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  job-name=lawapp-backup-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.74
+IPs:
+  IP:           10.244.4.74
+Controlled By:  Job/lawapp-backup-proof
+Containers:
+  backup:
+    Container ID:  containerd://102517d45e4a6334233dddb322cd36b9e05d61497e8707481bd47dc405ed9b61
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      echo "Starting backup proof..."
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/backup.sql
+      echo "Backup created: $(ls -lh /tmp/backup.sql)"
+      echo "Verifying backup content..."
+      grep "CREATE TABLE public.cases" /tmp/backup.sql
+      echo "BACKUP PROOF: PASS"
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:25:58 +0100
+      Finished:     Thu, 04 Jun 2026 07:25:58 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-2n5gd (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-2n5gd:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-proof-hmnj5
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:23:18 +0100
+Labels:           batch.kubernetes.io/controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  batch.kubernetes.io/job-name=lawapp-backup-proof
+                  controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  job-name=lawapp-backup-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.71
+IPs:
+  IP:           10.244.4.71
+Controlled By:  Job/lawapp-backup-proof
+Containers:
+  backup:
+    Container ID:  containerd://500833bc41a8e978031e8645741b5d939c4cf854aaf1bd862c50e55f929038d4
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      echo "Starting backup proof..."
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/backup.sql
+      echo "Backup created: $(ls -lh /tmp/backup.sql)"
+      echo "Verifying backup content..."
+      grep "CREATE TABLE public.cases" /tmp/backup.sql
+      echo "BACKUP PROOF: PASS"
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:23:18 +0100
+      Finished:     Thu, 04 Jun 2026 07:23:18 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-9zc5t (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-9zc5t:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-proof-svl76
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:31:18 +0100
+Labels:           batch.kubernetes.io/controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  batch.kubernetes.io/job-name=lawapp-backup-proof
+                  controller-uid=b3833a90-058d-4436-8275-b2370d0fc167
+                  job-name=lawapp-backup-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.78
+IPs:
+  IP:           10.244.4.78
+Controlled By:  Job/lawapp-backup-proof
+Containers:
+  backup:
+    Container ID:  containerd://1210ca11b95a775fecbe1c0aeb35d58cf180ba3e1ff4e7cb2e5d6ebc988d0d99
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      echo "Starting backup proof..."
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/backup.sql
+      echo "Backup created: $(ls -lh /tmp/backup.sql)"
+      echo "Verifying backup content..."
+      grep "CREATE TABLE public.cases" /tmp/backup.sql
+      echo "BACKUP PROOF: PASS"
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:31:18 +0100
+      Finished:     Thu, 04 Jun 2026 07:31:18 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-db24q (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-db24q:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-restore-proof-6b2sq
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:25:59 +0100
+Labels:           batch.kubernetes.io/controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  batch.kubernetes.io/job-name=lawapp-backup-restore-proof
+                  controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  job-name=lawapp-backup-restore-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.75
+IPs:
+  IP:           10.244.4.75
+Controlled By:  Job/lawapp-backup-restore-proof
+Containers:
+  db-op:
+    Container ID:  containerd://a80e75d6df804a77b16bec59c2cbd6e018047ed904da7824a12dd5ac0bdbf453
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      echo "Step 1: Dumping production database 'lawapp'..."
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/prod_backup.sql
+      echo "Dump complete. Size: $(ls -lh /tmp/prod_backup.sql | awk '{print $5}')"
+      
+      echo "Step 2: Restoring into 'lawapp_test'..."
+      psql -h lawapp-postgres -U lawapp_user -d lawapp_test < /tmp/prod_backup.sql > /dev/null
+      
+      echo "Step 3: Verifying restoration..."
+      ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+      echo "Restored rules count: $ROW_COUNT"
+      
+      if [ "$(echo $ROW_COUNT | xargs)" -gt 0 ]; then
+        echo "BACKUP/RESTORE PROOF: PASS"
+      else
+        echo "BACKUP/RESTORE PROOF: FAIL"
+        exit 1
+      fi
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:25:59 +0100
+      Finished:     Thu, 04 Jun 2026 07:25:59 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-27kqj (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-27kqj:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-restore-proof-bts4m
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:21:59 +0100
+Labels:           batch.kubernetes.io/controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  batch.kubernetes.io/job-name=lawapp-backup-restore-proof
+                  controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  job-name=lawapp-backup-restore-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.70
+IPs:
+  IP:           10.244.4.70
+Controlled By:  Job/lawapp-backup-restore-proof
+Containers:
+  db-op:
+    Container ID:  containerd://54d31a88e605fcfa2260a7610c0b0877cd89c77e4d32752572e54f11ed99b003
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      echo "Step 1: Dumping production database 'lawapp'..."
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/prod_backup.sql
+      echo "Dump complete. Size: $(ls -lh /tmp/prod_backup.sql | awk '{print $5}')"
+      
+      echo "Step 2: Restoring into 'lawapp_test'..."
+      psql -h lawapp-postgres -U lawapp_user -d lawapp_test < /tmp/prod_backup.sql > /dev/null
+      
+      echo "Step 3: Verifying restoration..."
+      ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+      echo "Restored rules count: $ROW_COUNT"
+      
+      if [ "$(echo $ROW_COUNT | xargs)" -gt 0 ]; then
+        echo "BACKUP/RESTORE PROOF: PASS"
+      else
+        echo "BACKUP/RESTORE PROOF: FAIL"
+        exit 1
+      fi
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:21:59 +0100
+      Finished:     Thu, 04 Jun 2026 07:21:59 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-8g767 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-8g767:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-restore-proof-frvqx
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:20:48 +0100
+Labels:           batch.kubernetes.io/controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  batch.kubernetes.io/job-name=lawapp-backup-restore-proof
+                  controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  job-name=lawapp-backup-restore-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.63
+IPs:
+  IP:           10.244.4.63
+Controlled By:  Job/lawapp-backup-restore-proof
+Containers:
+  db-op:
+    Container ID:  containerd://f968e29420df3234f99adbaf7028b9061db1a4b7b6003a4d7cddf72356812a0c
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      echo "Step 1: Dumping production database 'lawapp'..."
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/prod_backup.sql
+      echo "Dump complete. Size: $(ls -lh /tmp/prod_backup.sql | awk '{print $5}')"
+      
+      echo "Step 2: Restoring into 'lawapp_test'..."
+      psql -h lawapp-postgres -U lawapp_user -d lawapp_test < /tmp/prod_backup.sql > /dev/null
+      
+      echo "Step 3: Verifying restoration..."
+      ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+      echo "Restored rules count: $ROW_COUNT"
+      
+      if [ "$(echo $ROW_COUNT | xargs)" -gt 0 ]; then
+        echo "BACKUP/RESTORE PROOF: PASS"
+      else
+        echo "BACKUP/RESTORE PROOF: FAIL"
+        exit 1
+      fi
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:20:49 +0100
+      Finished:     Thu, 04 Jun 2026 07:20:49 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-csdh5 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-csdh5:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-restore-proof-fv259
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:23:19 +0100
+Labels:           batch.kubernetes.io/controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  batch.kubernetes.io/job-name=lawapp-backup-restore-proof
+                  controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  job-name=lawapp-backup-restore-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.72
+IPs:
+  IP:           10.244.4.72
+Controlled By:  Job/lawapp-backup-restore-proof
+Containers:
+  db-op:
+    Container ID:  containerd://0067462523a866041ac6d0372153ea91a8a2eba6b5f66cced81f27d8e80aba9d
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      echo "Step 1: Dumping production database 'lawapp'..."
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/prod_backup.sql
+      echo "Dump complete. Size: $(ls -lh /tmp/prod_backup.sql | awk '{print $5}')"
+      
+      echo "Step 2: Restoring into 'lawapp_test'..."
+      psql -h lawapp-postgres -U lawapp_user -d lawapp_test < /tmp/prod_backup.sql > /dev/null
+      
+      echo "Step 3: Verifying restoration..."
+      ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+      echo "Restored rules count: $ROW_COUNT"
+      
+      if [ "$(echo $ROW_COUNT | xargs)" -gt 0 ]; then
+        echo "BACKUP/RESTORE PROOF: PASS"
+      else
+        echo "BACKUP/RESTORE PROOF: FAIL"
+        exit 1
+      fi
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:23:19 +0100
+      Finished:     Thu, 04 Jun 2026 07:23:19 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-cdc6k (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-cdc6k:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-restore-proof-hm9rz
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 07:21:19 +0100
+Labels:           batch.kubernetes.io/controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  batch.kubernetes.io/job-name=lawapp-backup-restore-proof
+                  controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  job-name=lawapp-backup-restore-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.4.68
+IPs:
+  IP:           10.244.4.68
+Controlled By:  Job/lawapp-backup-restore-proof
+Containers:
+  db-op:
+    Container ID:  containerd://adc83a4979f1ce4ca4b20fb6434cf56e7888362b787c70ea4a3c17430ea7395d
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      echo "Step 1: Dumping production database 'lawapp'..."
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/prod_backup.sql
+      echo "Dump complete. Size: $(ls -lh /tmp/prod_backup.sql | awk '{print $5}')"
+      
+      echo "Step 2: Restoring into 'lawapp_test'..."
+      psql -h lawapp-postgres -U lawapp_user -d lawapp_test < /tmp/prod_backup.sql > /dev/null
+      
+      echo "Step 3: Verifying restoration..."
+      ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+      echo "Restored rules count: $ROW_COUNT"
+      
+      if [ "$(echo $ROW_COUNT | xargs)" -gt 0 ]; then
+        echo "BACKUP/RESTORE PROOF: PASS"
+      else
+        echo "BACKUP/RESTORE PROOF: FAIL"
+        exit 1
+      fi
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:21:19 +0100
+      Finished:     Thu, 04 Jun 2026 07:21:19 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-7qhc5 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-7qhc5:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-restore-proof-hw87c
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Thu, 04 Jun 2026 07:20:59 +0100
+Labels:           batch.kubernetes.io/controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  batch.kubernetes.io/job-name=lawapp-backup-restore-proof
+                  controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  job-name=lawapp-backup-restore-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.5.81
+IPs:
+  IP:           10.244.5.81
+Controlled By:  Job/lawapp-backup-restore-proof
+Containers:
+  db-op:
+    Container ID:  containerd://8d59861bc8137f3ba23ce9d0bd9875d9ee7ab52ef8ecd19b1b654e941356d357
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      echo "Step 1: Dumping production database 'lawapp'..."
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/prod_backup.sql
+      echo "Dump complete. Size: $(ls -lh /tmp/prod_backup.sql | awk '{print $5}')"
+      
+      echo "Step 2: Restoring into 'lawapp_test'..."
+      psql -h lawapp-postgres -U lawapp_user -d lawapp_test < /tmp/prod_backup.sql > /dev/null
+      
+      echo "Step 3: Verifying restoration..."
+      ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+      echo "Restored rules count: $ROW_COUNT"
+      
+      if [ "$(echo $ROW_COUNT | xargs)" -gt 0 ]; then
+        echo "BACKUP/RESTORE PROOF: PASS"
+      else
+        echo "BACKUP/RESTORE PROOF: FAIL"
+        exit 1
+      fi
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:20:59 +0100
+      Finished:     Thu, 04 Jun 2026 07:20:59 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-65jcj (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-65jcj:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backup-restore-proof-m4vz5
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Thu, 04 Jun 2026 07:31:19 +0100
+Labels:           batch.kubernetes.io/controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  batch.kubernetes.io/job-name=lawapp-backup-restore-proof
+                  controller-uid=959fcf15-e7bc-49d0-84ab-0086fb99e3df
+                  job-name=lawapp-backup-restore-proof
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.5.83
+IPs:
+  IP:           10.244.5.83
+Controlled By:  Job/lawapp-backup-restore-proof
+Containers:
+  db-op:
+    Container ID:  containerd://fd1e200486a7836128c0df019613a052973546c07fff1f2905f900b0f4e47c06
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      set -e
+      export PGPASSWORD=$POSTGRES_PASSWORD
+      echo "Step 1: Dumping production database 'lawapp'..."
+      pg_dump -h lawapp-postgres -U lawapp_user -d lawapp -f /tmp/prod_backup.sql
+      echo "Dump complete. Size: $(ls -lh /tmp/prod_backup.sql | awk '{print $5}')"
+      
+      echo "Step 2: Restoring into 'lawapp_test'..."
+      psql -h lawapp-postgres -U lawapp_user -d lawapp_test < /tmp/prod_backup.sql > /dev/null
+      
+      echo "Step 3: Verifying restoration..."
+      ROW_COUNT=$(psql -h lawapp-postgres -U lawapp_user -d lawapp_test -t -c "SELECT count(*) FROM rules;")
+      echo "Restored rules count: $ROW_COUNT"
+      
+      if [ "$(echo $ROW_COUNT | xargs)" -gt 0 ]; then
+        echo "BACKUP/RESTORE PROOF: PASS"
+      else
+        echo "BACKUP/RESTORE PROOF: FAIL"
+        exit 1
+      fi
+      
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 04 Jun 2026 07:31:19 +0100
+      Finished:     Thu, 04 Jun 2026 07:31:19 +0100
+    Ready:          False
+    Restart Count:  0
+    Environment Variables from:
+      lawapp-secrets  Secret  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-wlvrm (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-wlvrm:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-crawler-6658f7998c-nmr2r
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           app=lawapp-crawler
+                  component=lawapp-crawler
+                  part-of=lawapp
+                  pod-template-hash=6658f7998c
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-06T14:43:30+01:00
+Status:           Pending
+IP:               
+IPs:              <none>
+Controlled By:    ReplicaSet/lawapp-crawler-6658f7998c
+Containers:
+  lawapp-crawler:
+    Image:      ghcr.io/serverax/lawapp-crawler:b13c59d01e73e861b35498cac2b37d566609c262
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Command:
+      uvicorn
+    Args:
+      services.lawapp_crawler.app:app
+      --host
+      0.0.0.0
+      --port
+      8080
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=10s timeout=3s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/health delay=5s timeout=3s period=5s #success=1 #failure=12
+    Environment Variables from:
+      lawapp-rag-config   ConfigMap  Optional: true
+      lawapp-rag-secrets  Secret     Optional: true
+    Environment:
+      SERVICE_NAME:  lawapp-crawler
+      LOG_FORMAT:    json
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-p8ppj (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False 
+Volumes:
+  kube-api-access-p8ppj:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-crawler-78dff9d96-6wsb5
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-h93-b9x/148.251.247.56
+Start Time:       Sat, 06 Jun 2026 14:42:23 +0100
+Labels:           app=lawapp-crawler
+                  component=lawapp-crawler
+                  part-of=lawapp
+                  pod-template-hash=78dff9d96
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.72
+IPs:
+  IP:           10.244.0.72
+Controlled By:  ReplicaSet/lawapp-crawler-78dff9d96
+Containers:
+  lawapp-crawler:
+    Container ID:  containerd://0986d6427bb4082a847d898539138d16dd9c4da6fc36b54beabd731664ccb8e7
+    Image:         ghcr.io/serverax/lawapp-crawler:b13c59d01e73e861b35498cac2b37d566609c262
+    Image ID:      ghcr.io/serverax/lawapp-crawler@sha256:15487b4977b58ad69334daf68d2d701e66021103554a59a2b203a9980f797fc6
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Command:
+      uvicorn
+    Args:
+      services.lawapp_crawler.app:app
+      --host
+      0.0.0.0
+      --port
+      8080
+    State:          Running
+      Started:      Sat, 06 Jun 2026 14:42:26 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=10s timeout=3s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/ready delay=5s timeout=3s period=5s #success=1 #failure=12
+    Environment Variables from:
+      lawapp-rag-config   ConfigMap  Optional: true
+      lawapp-rag-secrets  Secret     Optional: true
+    Environment:
+      SERVICE_NAME:  lawapp-crawler
+      LOG_FORMAT:    json
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-r4rpv (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-r4rpv:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-postgres-0
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Wed, 03 Jun 2026 00:20:28 +0100
+Labels:           app=lawapp-postgres
+                  apps.kubernetes.io/pod-index=0
+                  controller-revision-hash=lawapp-postgres-6df9679b76
+                  statefulset.kubernetes.io/pod-name=lawapp-postgres-0
+Annotations:      <none>
+Status:           Running
+IP:               10.244.5.67
+IPs:
+  IP:           10.244.5.67
+Controlled By:  StatefulSet/lawapp-postgres
+Containers:
+  postgres:
+    Container ID:   containerd://5d6043c3c6ed9830a2e8e90f865daf8439c583b8d71f2c3d8bf0a3c4e8aaab56
+    Image:          pgvector/pgvector:pg16
+    Image ID:       docker.io/pgvector/pgvector@sha256:00ba258a66dac104fd5171074a0084462a64a1369d8513f3d0a634e2f24d15bc
+    Port:           5432/TCP (postgres)
+    Host Port:      0/TCP (postgres)
+    State:          Running
+      Started:      Wed, 03 Jun 2026 00:20:40 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     500m
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Readiness:  exec [pg_isready -U lawapp_user -d lawapp] delay=10s timeout=1s period=10s #success=1 #failure=3
+    Environment:
+      POSTGRES_DB:        lawapp
+      POSTGRES_USER:      lawapp_user
+      POSTGRES_PASSWORD:  <set to the key 'POSTGRES_PASSWORD' in secret 'lawapp-postgres-auth'>  Optional: false
+    Mounts:
+      /var/lib/postgresql/data from data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-zvlq6 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  data:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  data-lawapp-postgres-0
+    ReadOnly:   false
+  kube-api-access-zvlq6:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-rag-ingestion-77c8c7cfbb-ltcrb
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Sat, 06 Jun 2026 15:07:07 +0100
+Labels:           app=lawapp-rag-ingestion
+                  component=lawapp-rag-ingestion
+                  part-of=lawapp
+                  pod-template-hash=77c8c7cfbb
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-06T14:43:30+01:00
+Status:           Running
+IP:               10.244.5.48
+IPs:
+  IP:           10.244.5.48
+Controlled By:  ReplicaSet/lawapp-rag-ingestion-77c8c7cfbb
+Containers:
+  lawapp-rag-ingestion:
+    Container ID:  containerd://186114401ac599eb7ef9f6709cce4bb414838a5ea29a2c72e10d6148d3ccf3e0
+    Image:         ghcr.io/serverax/lawapp-rag-ingestion:b13c59d01e73e861b35498cac2b37d566609c262
+    Image ID:      ghcr.io/serverax/lawapp-rag-ingestion@sha256:584edf5221652ebf0235b32f6845a7c4a86a40f93df1b7e9849fd17d60aa735c
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Command:
+      uvicorn
+    Args:
+      services.lawapp_rag_ingestion.app:app
+      --host
+      0.0.0.0
+      --port
+      8080
+    State:          Running
+      Started:      Sat, 06 Jun 2026 15:07:10 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=10s timeout=3s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/health delay=5s timeout=3s period=5s #success=1 #failure=12
+    Environment Variables from:
+      lawapp-rag-config   ConfigMap  Optional: true
+      lawapp-rag-secrets  Secret     Optional: true
+    Environment:
+      SERVICE_NAME:  lawapp-rag-ingestion
+      LOG_FORMAT:    json
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-5n9l9 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-5n9l9:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node-role.kubernetes.io/control-plane:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-rag-retrieval-67877c778b-t5jmm
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Sat, 06 Jun 2026 15:06:55 +0100
+Labels:           app=lawapp-rag-retrieval
+                  component=lawapp-rag-retrieval
+                  part-of=lawapp
+                  pod-template-hash=67877c778b
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-06T14:43:30+01:00
+Status:           Running
+IP:               10.244.5.45
+IPs:
+  IP:           10.244.5.45
+Controlled By:  ReplicaSet/lawapp-rag-retrieval-67877c778b
+Containers:
+  lawapp-rag-retrieval:
+    Container ID:  containerd://0c5dba07125db5dd8a14671b25400b9a8b954a79ed4cb50aeb26499250a53941
+    Image:         ghcr.io/serverax/lawapp-rag-retrieval:b13c59d01e73e861b35498cac2b37d566609c262
+    Image ID:      ghcr.io/serverax/lawapp-rag-retrieval@sha256:b3dc6d19af9d1c8a36f40c9adb08a4edf1b0a372a48f64e100616b50745b01ff
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Command:
+      uvicorn
+    Args:
+      services.lawapp_rag_retrieval.app:app
+      --host
+      0.0.0.0
+      --port
+      8080
+    State:          Running
+      Started:      Sat, 06 Jun 2026 15:06:58 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=10s timeout=3s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/health delay=5s timeout=3s period=5s #success=1 #failure=12
+    Environment Variables from:
+      lawapp-rag-config   ConfigMap  Optional: true
+      lawapp-rag-secrets  Secret     Optional: true
+    Environment:
+      SERVICE_NAME:  lawapp-rag-retrieval
+      LOG_FORMAT:    json
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-2jscf (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-2jscf:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node-role.kubernetes.io/control-plane:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-worker-c84989df6-gt4lg
+Namespace:        lawapp-rag
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Sat, 06 Jun 2026 15:07:16 +0100
+Labels:           app=lawapp-worker
+                  component=worker
+                  part-of=lawapp
+                  pod-template-hash=c84989df6
+Annotations:      <none>
+Status:           Running
+IP:               10.244.5.49
+IPs:
+  IP:           10.244.5.49
+Controlled By:  ReplicaSet/lawapp-worker-c84989df6
+Containers:
+  lawapp-worker:
+    Container ID:  containerd://61c4304da3e70f64c40d6c25fb367f96bca6f9bd1af256290024cfc48558549c
+    Image:         ghcr.io/serverax/lawapp-worker:b13c59d01e73e861b35498cac2b37d566609c262
+    Image ID:      ghcr.io/serverax/lawapp-worker@sha256:8e3bc45bb3e79953d440265dad6a665b25d1645c8cc8605219ae85c1281255b8
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      python
+      -m
+      services.lawapp_worker.app
+    State:          Running
+      Started:      Sat, 06 Jun 2026 15:07:18 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:     100m
+      memory:  256Mi
+    Environment:
+      SERVICE_NAME:  lawapp-worker
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-mwh2p (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-mwh2p:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node-role.kubernetes.io/control-plane:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s

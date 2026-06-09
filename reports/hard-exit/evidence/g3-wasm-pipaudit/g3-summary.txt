@@ -1,0 +1,15 @@
+=== G3 WASM + pip-audit CI-equivalent proof ===
+Sun Jun  7 14:38:07 UTC 2026
+
+--- WASM build: exit 0 (wasm-pack release + wasm-opt) ---
+binary: 94077 bytes client/public/wasm/lawapp_wasm_bg.wasm
+
+--- WASM tests: 13 passed / 0 failed (incl. bad-input fail-closed) ---
+  lib.rs: base limit, EC pause, negative/zero/extreme months, invalid EDT/EC, day_b<day_a
+  notice.rs: 12-week cap, 1-week band, employee fixed, negative service, unknown direction
+
+--- panic fix: compute_deadline now guards time_limit_months (1..=120) + checked arithmetic ---
+  previously: (-3 as u32) -> checked_add_months None -> .unwrap() PANIC (bad input did NOT fail safe)
+
+--- pip-audit: No known vulnerabilities found (exit 0) ---
+--- no hardcoded legal values in client/wasm/src: CLEAN ---

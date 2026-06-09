@@ -1,0 +1,250 @@
+Name:             lawapp-backend-6c85f79cbd-qm9vl
+Namespace:        lawapp-api
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Fri, 05 Jun 2026 14:12:33 +0100
+Labels:           app=lawapp-backend
+                  part-of=lawapp
+                  pod-template-hash=6c85f79cbd
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-05T13:12:33Z
+                  production-readiness: verified-inline-reasoning
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.244.5.38
+IPs:
+  IP:           10.244.5.38
+Controlled By:  ReplicaSet/lawapp-backend-6c85f79cbd
+Containers:
+  backend:
+    Container ID:   containerd://00abc6682c39b1380a814e5056ff791b3ef44e8d88de0f7defbbb21d9e465d9e
+    Image:          ghcr.io/serverax/lawapp/backend:latest
+    Image ID:       ghcr.io/serverax/lawapp/backend@sha256:4c88929dfda178ae565ec8efa5b4f40cc0d443a59e8f5cc97850de948f141932
+    Port:           8000/TCP (http)
+    Host Port:      0/TCP (http)
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    3
+      Started:      Sun, 07 Jun 2026 14:58:25 +0100
+      Finished:     Sun, 07 Jun 2026 14:58:27 +0100
+    Ready:          False
+    Restart Count:  568
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      200m
+      memory:   512Mi
+    Liveness:   http-get http://:8000/health delay=30s timeout=1s period=30s #success=1 #failure=3
+    Readiness:  http-get http://:8000/health delay=10s timeout=1s period=10s #success=1 #failure=3
+    Environment Variables from:
+      lawapp-config   ConfigMap  Optional: false
+      lawapp-secrets  Secret     Optional: false
+    Environment:
+      POSTGRES_HOST:  lawapp-postgres.lawapp-api.svc.cluster.local
+      POSTGRES_PORT:  5432
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-xlhgm (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-xlhgm:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-backend-7757c5df85-2l8kn
+Namespace:        lawapp-api
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Wed, 03 Jun 2026 22:16:55 +0100
+Labels:           app=lawapp-backend
+                  part-of=lawapp
+                  pod-template-hash=7757c5df85
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-03T21:34:37+01:00
+                  production-readiness: verified-inline-reasoning
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.244.4.253
+IPs:
+  IP:           10.244.4.253
+Controlled By:  ReplicaSet/lawapp-backend-7757c5df85
+Containers:
+  backend:
+    Container ID:   containerd://9ff9a9b4ff3620bc09de1fd75c3a53afc494045bdc40d8dcffbcbf5bf6bd79ef
+    Image:          ghcr.io/serverax/lawapp/backend:0fec3d8
+    Image ID:       ghcr.io/serverax/lawapp/backend@sha256:6755a4c3d0e6e9f53e2565aa6c3df45821a56b3e67a4b413537f60ce5cc4b614
+    Port:           8000/TCP (http)
+    Host Port:      0/TCP (http)
+    State:          Running
+      Started:      Wed, 03 Jun 2026 22:16:57 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      200m
+      memory:   512Mi
+    Liveness:   http-get http://:8000/health delay=30s timeout=1s period=30s #success=1 #failure=3
+    Readiness:  http-get http://:8000/health delay=10s timeout=1s period=10s #success=1 #failure=3
+    Environment Variables from:
+      lawapp-config   ConfigMap  Optional: false
+      lawapp-secrets  Secret     Optional: false
+    Environment:
+      POSTGRES_HOST:  lawapp-postgres.lawapp-rag.svc.cluster.local
+      POSTGRES_PORT:  5432
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-88r48 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-88r48:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-postgres-0
+Namespace:        lawapp-api
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Thu, 04 Jun 2026 04:29:51 +0100
+Labels:           app=lawapp-postgres
+                  apps.kubernetes.io/pod-index=0
+                  controller-revision-hash=lawapp-postgres-6498745c8f
+                  part-of=lawapp
+                  statefulset.kubernetes.io/pod-name=lawapp-postgres-0
+Annotations:      <none>
+Status:           Running
+IP:               10.244.4.40
+IPs:
+  IP:           10.244.4.40
+Controlled By:  StatefulSet/lawapp-postgres
+Containers:
+  postgres:
+    Container ID:   containerd://f89b3cd40a53e0c8da35da8dcc0bb44e42a71153035c86f9e512077013b4c22f
+    Image:          pgvector/pgvector:pg16
+    Image ID:       docker.io/pgvector/pgvector@sha256:00ba258a66dac104fd5171074a0084462a64a1369d8513f3d0a634e2f24d15bc
+    Port:           5432/TCP (postgres)
+    Host Port:      0/TCP (postgres)
+    State:          Running
+      Started:      Thu, 04 Jun 2026 04:29:51 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  2Gi
+    Requests:
+      cpu:      200m
+      memory:   512Mi
+    Liveness:   exec [sh -c pg_isready -U $POSTGRES_USER -d $POSTGRES_DB] delay=30s timeout=1s period=30s #success=1 #failure=3
+    Readiness:  exec [sh -c pg_isready -U $POSTGRES_USER -d $POSTGRES_DB] delay=10s timeout=1s period=10s #success=1 #failure=6
+    Environment:
+      POSTGRES_DB:        <set to the key 'POSTGRES_DB' in secret 'lawapp-postgres-secret'>        Optional: false
+      POSTGRES_USER:      <set to the key 'POSTGRES_USER' in secret 'lawapp-postgres-secret'>      Optional: false
+      POSTGRES_PASSWORD:  <set to the key 'POSTGRES_PASSWORD' in secret 'lawapp-postgres-secret'>  Optional: false
+      PGDATA:             /var/lib/postgresql/data/pgdata
+    Mounts:
+      /var/lib/postgresql/data from data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-n4m27 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  data:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  data-lawapp-postgres-0
+    ReadOnly:   false
+  kube-api-access-n4m27:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             test-db-connectivity
+Namespace:        lawapp-api
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Wed, 03 Jun 2026 01:55:42 +0100
+Labels:           run=test-db-connectivity
+Annotations:      <none>
+Status:           Running
+IP:               10.244.4.91
+IPs:
+  IP:  10.244.4.91
+Containers:
+  test-db-connectivity:
+    Container ID:  containerd://8379f4fb068909a7015ce5446da1ff0b50a1ad4909badf5c0363d8a3abae2e1b
+    Image:         postgres:16
+    Image ID:      docker.io/library/postgres@sha256:4b7183ac05f8ef417db21fd72d71047a4238340c261d3cc3ddb6d579ab5071ae
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      psql
+      postgresql://lawapp_user:<REDACTED-DB-PASSWORD>@lawapp-postgres.lawapp-rag.svc.cluster.local:5432/lawapp
+      -c
+      SELECT 1;
+    State:          Running
+      Started:      Wed, 03 Jun 2026 01:55:42 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-gbd7s (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-gbd7s:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s

@@ -1,0 +1,163 @@
+PHASE 6 — PRODUCTION BLOCKERS CLOSURE
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 6 closes the five production blockers identified in Phase 5C:
+
+  1. Authentication and admin access control
+  2. Encryption at rest (uploads, handoff PII, facts_encrypted)
+  3. Retention/deletion policy (Art.17 UK GDPR right to erasure)
+  4. Privacy notice and DPIA artefact placeholders
+  5. Tests proving unauthenticated users cannot access admin endpoints
+
+═══════════════════════════════════════════════════════════════════════════════
+1. ADMIN AUTHENTICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+Mechanism: X-Admin-Key header on all /admin/* endpoints.
+Implementation: FastAPI Depends() → _require_admin_key().
+Key source: ADMIN_API_KEY environment variable (read at request time).
+Behaviour:
+  - ADMIN_API_KEY not set → 403 "Admin access is not configured"
+  - Wrong key → 403 "Invalid or missing X-Admin-Key header"
+  - Correct key → 200
+
+Endpoints protected:
+  GET /admin/dp-report
+  GET /admin/rules-verification
+  GET /admin/production-readiness
+  GET /admin/retention-status
+
+GUARDRAIL: Key value never logged. NEVER print or expose the key value.
+Limitation: This is an API key, not OAuth/JWT user authentication.
+  Full user authentication is Phase 7.
+
+═══════════════════════════════════════════════════════════════════════════════
+2. ENCRYPTION AT REST
+═══════════════════════════════════════════════════════════════════════════════
+
+Module: backend/engine/encryption.py
+Algorithm: Fernet (AES-128-CBC + HMAC-SHA256) from cryptography package.
+Key source: ENCRYPTION_KEY environment variable (URL-safe base64 Fernet key).
+
+Fields encrypted when ENCRYPTION_KEY is set:
+  - handoff_leads: name, email, phone (plaintext replaced by "[encrypted]";
+    encrypted ciphertext stored in name_encrypted, email_encrypted, phone_encrypted)
+  - Uploaded files: file bytes encrypted before writing to filesystem
+  - Upload encryption is transparent to callers (no API change)
+
+New DB columns (migration 012):
+  - handoff_leads: name_encrypted, email_encrypted, phone_encrypted, pii_encrypted
+
+API response includes: pii_encrypted: true/false on POST /handoff/leads.
+
+Phase 6 limitations (NOT production-ready for key management):
+  - Key in env var — no HSM, no KMS, no key rotation
+  - Fernet (AES-128-CBC) — AES-256-GCM recommended for production
+  - Phase 7: HSM integration, key rotation, separate keys per data class
+  - cases.facts_encrypted: column exists; not populated in Phase 6
+    (assessment jsonb is already de-identified; intake facts not persisted)
+
+═══════════════════════════════════════════════════════════════════════════════
+3. RETENTION AND DELETION POLICY (Art.17 UK GDPR)
+═══════════════════════════════════════════════════════════════════════════════
+
+New endpoints:
+  DELETE /cases/{case_id}         — soft delete; sets deleted_at; 404 on GET
+  DELETE /handoff/leads/{lead_id} — clears PII fields; sets deleted_at
+
+New DB columns (migration 012):
+  - cases: deleted_at timestamptz
+  - handoff_leads: deleted_at timestamptz
+  - retention_runs: audit log of retention script runs
+
+Admin endpoint:
+  GET /admin/retention-status?retention_days=N  — report old records (no delete)
+
+Script:
+  scripts/run_retention.py  — dry run by default; --apply to execute
+  Soft-deletes cases older than RETENTION_CASES_DAYS (default 90)
+  Clears PII from handoff leads older than RETENTION_HANDOFF_DAYS (default 30)
+
+GUARDRAIL: Audit logs preserved; only PII cleared. Consent records retained.
+GUARDRAIL: run_retention.py is DRY RUN by default — require --apply flag.
+
+═══════════════════════════════════════════════════════════════════════════════
+4. PRIVACY NOTICE AND DPIA ARTEFACTS
+═══════════════════════════════════════════════════════════════════════════════
+
+docs/privacy-notice-draft.md — DRAFT artefact
+  - Covers: who we are, data collected, legal basis, retention, rights, security
+  - Status: DRAFT — not legally reviewed, not suitable for publication
+  - Legal review and DPO sign-off required before use
+
+docs/dpia-artefact.md — DPIA in progress
+  - Covers: processing description, necessity, risk identification, Art.9 assessment,
+    mitigation measures, ICO prior consultation recommendation, sign-off checklist
+  - Status: IN PROGRESS — not completed, not legally reviewed
+  - DPO and legal counsel review required before production
+
+Both files verified present by test_phase6_production.py and production
+readiness report.
+
+═══════════════════════════════════════════════════════════════════════════════
+REMAINING BLOCKERS — STILL NOT_PRODUCTION_READY
+═══════════════════════════════════════════════════════════════════════════════
+
+The /admin/production-readiness endpoint correctly returns NOT_PRODUCTION_READY.
+
+Remaining before production:
+  1. HSM/KMS key management (env var key not suitable for production)
+  2. DPIA legally reviewed and signed off by qualified DPO/lawyer
+  3. Privacy notice legally reviewed and published
+  4. User authentication (OAuth/JWT) for end-users — Phase 7
+  5. No live deployment — Phase 7
+  6. Formal consent management system — Phase 7
+  7. Breach notification procedure — Phase 7
+  8. Subject access request (SAR) process — Phase 7
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  db/migrations/012_phase6_encryption_retention.sql
+  backend/engine/encryption.py
+  scripts/run_retention.py
+  docs/privacy-notice-draft.md
+  docs/dpia-artefact.md
+  tests/integration/test_phase6_production.py  (25 tests)
+  reports/phase6-production-blockers-report.txt
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/api/main.py
+    - _require_admin_key() dependency
+    - Depends(_require_admin_key) on all /admin/* endpoints
+    - POST /handoff/leads: Fernet encryption when ENCRYPTION_KEY set
+    - POST /cases/{id}/uploads: file encryption when ENCRYPTION_KEY set
+    - GET /cases/{id}: filters out soft-deleted (deleted_at IS NULL)
+    - DELETE /cases/{case_id}: soft delete
+    - DELETE /handoff/leads/{lead_id}: PII cleared
+    - GET /admin/retention-status (admin-protected)
+    - Version: 1.2.0-phase6
+
+  backend/engine/production_readiness.py
+    - Phase 6 status checks (admin_auth, encryption, deletion, privacy, dpia)
+    - Updated overall_blockers
+    - report_version: phase6
+
+  Dockerfile + Dockerfile.ingestion: cryptography>=42.0 added
+  Dockerfile: COPY scripts ./scripts
+
+  tests/integration/test_phase5a_hardening.py: admin key fixture + headers
+  tests/integration/test_phase5c_verification.py: admin key fixture + headers
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 6
+═══════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,155 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-inference
+  namespace: lawapp-ai
+  labels:
+    app.kubernetes.io/name: ollama-inference
+spec:
+  type: ClusterIP
+  internalTrafficPolicy: Local
+  selector:
+    app.kubernetes.io/name: ollama-inference
+  ports:
+    - name: http
+      port: 11434
+      targetPort: 11434
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ollama-inference
+  namespace: lawapp-ai
+  labels:
+    app.kubernetes.io/name: ollama-inference
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ollama-inference
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ollama-inference
+    spec:
+      terminationGracePeriodSeconds: 30
+      tolerations:
+        - operator: Exists
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: ollama-data
+          emptyDir: {}
+        - name: tools
+          emptyDir: {}
+      initContainers:
+        - name: copy-busybox-taskset
+          image: busybox:1.36
+          command:
+            - /bin/sh
+            - -lc
+            - |
+              set -e
+              cp /bin/busybox /tools/busybox
+              chmod +x /tools/busybox
+              /tools/busybox taskset --help >/dev/null
+          volumeMounts:
+            - name: tools
+              mountPath: /tools
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0:11434"
+            - name: OLLAMA_MODELS
+              value: "/root/.ollama/models"
+            - name: OLLAMA_KEEP_ALIVE
+              value: "24h"
+            - name: OLLAMA_NUM_PARALLEL
+              value: "1"
+            - name: OLLAMA_MAX_LOADED_MODELS
+              value: "1"
+            - name: OLLAMA_MODEL
+              valueFrom:
+                configMapKeyRef:
+                  name: lawapp-inference-policy
+                  key: OLLAMA_MODEL
+            - name: CPUSET
+              valueFrom:
+                configMapKeyRef:
+                  name: lawapp-inference-policy
+                  key: CPUSET
+          ports:
+            - name: http
+              containerPort: 11434
+          resources:
+            requests:
+              cpu: "2"
+              memory: "4Gi"
+            limits:
+              cpu: "4"
+              memory: "10Gi"
+          volumeMounts:
+            - name: ollama-data
+              mountPath: /root/.ollama
+            - name: tools
+              mountPath: /tools
+          command:
+            - /bin/sh
+            - -lc
+            - |
+              set -e
+
+              echo "Starting temporary Ollama server..."
+              ollama serve &
+              PID="$!"
+
+              for i in $(seq 1 180); do
+                if ollama list >/dev/null 2>&1; then
+                  break
+                fi
+                echo "Waiting for Ollama server..."
+                sleep 2
+              done
+
+              echo "Pulling model: ${OLLAMA_MODEL}"
+              ollama pull "${OLLAMA_MODEL}"
+
+              echo "Stopping temporary Ollama server..."
+              kill "${PID}" || true
+              wait "${PID}" || true
+
+              echo "Starting pinned Ollama server on CPU set ${CPUSET}"
+              exec /tools/busybox taskset -c "${CPUSET}" ollama serve
+          readinessProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 90
+          livenessProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault

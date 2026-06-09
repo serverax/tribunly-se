@@ -1,0 +1,4 @@
+NAME                    STATUS   ROLES           AGE   VERSION   INTERNAL-IP       EXTERNAL-IP   OS-IMAGE          KERNEL-VERSION          CONTAINER-RUNTIME
+talos-138-201-202-174   Ready    control-plane   12d   v1.36.0   138.201.202.174   <none>        Talos (v1.13.2)   6.18.29-talos (amd64)   containerd://2.2.3
+talos-5h3-83r           Ready    control-plane   12d   v1.36.0   138.201.253.245   <none>        Talos (v1.13.2)   6.18.29-talos (amd64)   containerd://2.2.3
+talos-h93-b9x           Ready    control-plane   12d   v1.36.0   148.251.247.56    <none>        Talos (v1.13.2)   6.18.29-talos (amd64)   containerd://2.2.3

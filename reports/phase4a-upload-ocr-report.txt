@@ -1,0 +1,165 @@
+PHASE 4A — DOCUMENT UPLOAD, OCR/EXTRACTION, USER CONFIRMATION
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 4A adds:
+  1. Document upload endpoint (PDF, JPEG, PNG, TIFF) linked to cases
+  2. Mock OCR extraction pipeline with confidence scores per field
+  3. User confirmation flow (extracted_unconfirmed → confirmed/corrected/rejected)
+  4. Apply-confirmed endpoint: non-PII facts → case.key_dates; PII skipped
+  5. Saved-case page updated to display uploads and extraction review state
+
+═══════════════════════════════════════════════════════════════════════════════
+STORAGE — LOCAL/TEST-ONLY (NOT PRODUCTION-READY)
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 4A uploads are stored at: /tmp/lawapp_uploads/{case_id}/{upload_id}
+  - No encryption at rest (Phase 5)
+  - Container ephemeral storage only
+  - Every response includes storage_note: "LOCAL STORAGE — Phase 4A only..."
+  - DB stores only metadata (no file content in DB)
+
+Phase 5 replacement: encrypted object storage (S3/GCS + AES-256-GCM).
+
+═══════════════════════════════════════════════════════════════════════════════
+MOCK EXTRACTION (backend/engine/extraction.py)
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 4A uses mock extraction — no actual OCR or LLM.
+Real file bytes are NEVER read by the extraction module.
+
+Confidence scores per doc_type (higher = more reliable):
+  dismissal_letter:    employer_name(0.85) edt_candidate(0.88) notice_period(0.62)*
+  employment_contract: employer_name(0.92) employment_start_date(0.87) gross_pay(0.78)
+  email_chain:         all fields 0.42–0.58* (flagged)
+  payslip:             employer_name(0.93) gross_pay(0.95)
+  other:               all fields 0.38–0.40*
+
+*Fields < 0.70 are flagged with flagged=True in response.
+
+LOW_CONFIDENCE_THRESHOLD = 0.70
+
+Phase 5+: replace mock with Tesseract/Textract/Azure Form Recognizer.
+The interface is stable — callers use the same field dict shape.
+
+═══════════════════════════════════════════════════════════════════════════════
+USER CONFIRMATION FLOW
+═══════════════════════════════════════════════════════════════════════════════
+
+All extracted facts start as "extracted_unconfirmed".
+User must explicitly update status via PATCH /facts before facts affect case data.
+
+States:
+  extracted_unconfirmed → user has not reviewed
+  user_confirmed        → accept extracted value as-is
+  user_corrected        → override with user-supplied value
+  rejected              → discard; never applied
+
+Non-PII fields that can be applied to case.key_dates (after confirmation):
+  edt_candidate, employment_start_date, gross_pay,
+  dismissal_reason, notice_period, key_procedure_concerns
+
+PII fields EXCLUDED from apply-confirmed (Phase 5):
+  employer_name, employee_name
+  (Requires encryption at rest before persistent storage)
+
+═══════════════════════════════════════════════════════════════════════════════
+ENDPOINTS
+═══════════════════════════════════════════════════════════════════════════════
+
+POST /cases/{case_id}/uploads        — upload document (multipart)
+GET  /cases/{case_id}/uploads        — list upload metadata (no file content)
+POST /cases/{case_id}/uploads/{id}/extract          — mock extraction
+PATCH /cases/{case_id}/uploads/{id}/facts           — confirm/correct/reject
+POST /cases/{case_id}/uploads/{id}/apply-confirmed  — apply to case key_dates
+
+Supported content types: application/pdf, image/jpeg, image/png, image/tiff
+Supported doc_types: dismissal_letter, employment_contract, email_chain,
+                     payslip, other
+
+═══════════════════════════════════════════════════════════════════════════════
+DATA PROTECTION NOTES
+═══════════════════════════════════════════════════════════════════════════════
+
+  - Raw file bytes: NEVER logged (metadata only in logger calls)
+  - Raw file bytes: NEVER sent to external service (no external calls)
+  - Raw file bytes: NEVER returned in API response
+  - File content: NOT stored in DB (storage_ref points to local path)
+  - PII in extracted facts: NOT applied to persistent storage (Phase 5)
+  - All extraction responses include: "check every field carefully"
+  - Apply-confirmed includes: "PII fields not applied until Phase 5"
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  db/migrations/008_phase4a_uploads.sql      — ALTER TABLE documents
+  backend/engine/extraction.py               — mock OCR extraction
+  tests/integration/test_phase4a_upload_ocr.py — 29 integration tests
+  reports/phase4a-upload-ocr-report.txt      — this report
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/api/main.py
+    - Added import: File, Form, UploadFile, json, uuid, Path
+    - 5 new endpoints for upload, extraction, confirmation
+    - Version bumped: 0.7.0-phase4a
+
+  client/public/pages/saved_case.html
+    - Fetches GET /cases/{id}/uploads on page load
+    - renderUploadsSection(): shows upload list with extraction state
+    - renderExtractedFacts(): table of unconfirmed fields for review
+    - Legal notice unchanged and visible
+
+═══════════════════════════════════════════════════════════════════════════════
+TESTS (test_phase4a_upload_ocr.py) — 29 tests
+═══════════════════════════════════════════════════════════════════════════════
+
+  test_pdf_upload_accepted
+  test_jpeg_upload_accepted
+  test_unsupported_file_type_rejected (415)
+  test_text_plain_rejected (415)
+  test_invalid_doc_type_rejected (422)
+  test_upload_linked_to_case
+  test_upload_response_does_not_contain_file_bytes
+  test_upload_unknown_case_returns_404
+  test_extraction_returns_structured_facts
+  test_extraction_includes_confidence_per_field
+  test_extraction_flags_low_confidence_fields
+  test_extraction_all_facts_start_unconfirmed
+  test_extraction_includes_notice
+  test_facts_not_applied_to_case_before_confirmation
+  test_confirmed_facts_update_status
+  test_corrected_facts_update_value
+  test_rejected_facts_not_in_confirmed_list
+  test_apply_confirmed_non_pii_facts_to_case
+  test_apply_confirmed_pii_fields_are_skipped
+  test_saved_case_page_still_loads
+  test_list_uploads_contains_no_file_bytes
+  test_extract_response_contains_no_file_bytes
+  test_phase3e_deadline_urgency_regression
+  test_phase3c_document_generation_regression
+  test_phase3d_consent_regression
+  test_static_routes_regression
+  test_health_regression
+
+═══════════════════════════════════════════════════════════════════════════════
+CARRY-FORWARD (Phase 4B+)
+═══════════════════════════════════════════════════════════════════════════════
+
+  - Real OCR (Tesseract/Textract) replacing mock extraction
+  - Encrypted file storage (S3 + AES-256-GCM)
+  - PII facts apply after encryption at rest
+  - User authentication (user_id on cases + uploads)
+  - UI extraction review form (confirm/correct/reject in browser)
+  - Premium bundle generation from confirmed facts
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 4A
+═══════════════════════════════════════════════════════════════════════════════

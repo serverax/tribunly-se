@@ -1,0 +1,116 @@
+PHASE 7A — JWKS/RS256 JWT VERIFICATION
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+1. FILES CHANGED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/engine/user_auth.py
+    - Added _fetch_jwks(): fetches JWKS from JWT_JWKS_URL with 5-minute TTL cache;
+      thread-safe; JWKS URL never logged; fails closed (503) on any error
+    - Added _find_jwks_key(): selects key by kid; 401 on unknown kid or ambiguity
+    - Added _verify_jwt_rs256(): full RS256/JWKS verification using PyJWT RSAAlgorithm
+      Validates: signature (RS256), exp, iss (if set), aud (if set), kid, sub
+      All errors → 401/503; token/URL/sub values NEVER logged
+    - Renamed existing _verify_jwt() → _verify_jwt_hs256() (Phase 6C unchanged)
+    - New _verify_jwt() dispatcher: JWT_JWKS_URL → RS256; JWT_SECRET → HS256; neither → 503
+    - Updated is_auth_production_ready(): RS256+JWKS with full config → ready=True;
+      HS256-only → not production-ready (env-var key not production-grade)
+
+  backend/engine/production_readiness.py
+    - jwt_rs256_jwks_verification: IMPLEMENTED/NOT_CONFIGURED based on JWT_JWKS_URL
+    - jwt_production_grade: true only when RS256+JWKS+issuer+audience all configured
+    - overall_status: IMPLEMENTED_PRODUCTION_GRADE / IMPLEMENTED_DEV_QUALITY / PARTIAL
+
+  tests/integration/test_phase7a_jwks.py  (NEW — 24 tests)
+
+  tests/integration/test_phase6c_jwt.py
+    - Updated test_production_readiness_jwt_configured: HS256-only is now correctly
+      NOT production-ready (Phase 7A change); RS256+JWKS IS production-ready
+
+═══════════════════════════════════════════════════════════════════════════════
+2. SECURITY BEHAVIOUR IMPLEMENTED
+═══════════════════════════════════════════════════════════════════════════════
+
+  RS256/JWKS verification path (when JWT_JWKS_URL is set):
+    Algorithm:   RS256 (via PyJWT RSAAlgorithm.from_jwk)
+    Key source:  JWKS endpoint fetched from JWT_JWKS_URL
+    Key cache:   5-minute in-memory TTL cache; thread-safe
+    Key select:  by kid header claim; fails closed (401) on unknown kid
+    Validates:   signature, exp, iss (if JWT_ISSUER), aud (if JWT_AUDIENCE), sub
+    Fails closed: JWKS fetch failure → 503; decode error → 401; no silent accept
+
+  Dispatcher routing:
+    JWT_JWKS_URL set → RS256/JWKS (production-grade)
+    JWT_SECRET set   → HS256 (Phase 6C, dev/test quality)
+    Neither          → 503 (server misconfigured)
+
+  What changed for HS256:
+    HS256 path (Phase 6C) is preserved unchanged.
+    is_auth_production_ready() now correctly marks HS256-only as NOT production-ready.
+    Phase 6C test updated to reflect this (Phase 7A is not a regression — it's correct).
+
+  Guaranteed:
+    - Token values NEVER logged
+    - JWKS URL NEVER logged
+    - Sub claim NEVER logged
+    - Exception details from PyJWT NOT forwarded to callers
+    - JWKS cache never bypasses signature verification
+
+═══════════════════════════════════════════════════════════════════════════════
+3. TEST RESULTS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Phase 7A tests:    24/24 passed in 38.50s
+  Full regression:   559 passed, 9 skipped, 0 failures in 475s
+  Legal accuracy:    38/38 passed ✓ PASSED
+  Rules verification: ✓ PASSED
+
+  Note: 2 warnings — both cosmetic:
+    - StarletteDeprecationWarning: httpx vs httpx2 (existing, not Phase 7A)
+    - InsecureKeyLengthWarning: test_wrong_algorithm_rejected intentionally uses
+      a short HS256 key to trigger the algorithm rejection path — not a real issue
+
+═══════════════════════════════════════════════════════════════════════════════
+4. READINESS STATUS
+═══════════════════════════════════════════════════════════════════════════════
+
+  controlled_beta_ready: FALSE (DPIA/privacy human reviews still required)
+  production_ready: FALSE
+
+  Phase 7A closes:
+    ✓ "JWKS/RS256 not implemented" — CLOSED (RS256/JWKS via JWT_JWKS_URL)
+
+  Authentication status when RS256+JWKS fully configured:
+    is_auth_production_ready() → {"ready": True, "blockers": []}
+    jwt_production_grade: true
+
+═══════════════════════════════════════════════════════════════════════════════
+5. REMAINING PHASE 7 BLOCKERS
+═══════════════════════════════════════════════════════════════════════════════
+
+  Closed by Phase 7A:
+    ✓ JWKS/RS256 JWT verification
+
+  Still remaining:
+    2. Real HSM/KMS key management (KMS_STUB mode exists; real HSM not connected)
+    3. Live deployment environment
+    4. Stripe live payment mode
+    5. Subject Access Request (SAR) process
+    6. Monitoring and alerting
+
+═══════════════════════════════════════════════════════════════════════════════
+6. SECRET-RISK SCAN
+═══════════════════════════════════════════════════════════════════════════════
+
+  Staged files: 4 (user_auth.py, production_readiness.py, test_phase7a_jwks.py,
+                   test_phase6c_jwt.py)
+  Real secrets in diff: ZERO
+  No Dockerfiles changed (no new packages — PyJWT, cryptography, httpx already present)
+  No env files changed
+  No broad git add
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 7A
+═══════════════════════════════════════════════════════════════════════════════

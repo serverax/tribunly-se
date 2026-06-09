@@ -1,0 +1,55 @@
+===== DOCKER INVENTORY =====
+Generated: Sun Jun  7 15:21:26 UTC 2026
+
+--- service Dockerfiles ---
+### /mnt/f/lawapp/services/lawapp_crawler/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+EXPOSE 8080
+CMD ["uvicorn", "services.lawapp_crawler.app:app", "--host", "0.0.0.0", "--port", "8080"]
+
+### /mnt/f/lawapp/services/lawapp_document_service/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+EXPOSE 8080
+CMD ["uvicorn", "services.lawapp_document_service.app:app", "--host", "0.0.0.0", "--port", "8080"]
+
+### /mnt/f/lawapp/services/lawapp_llm_gateway/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+EXPOSE 8080
+CMD ["uvicorn", "services.lawapp_llm_gateway.app:app", "--host", "0.0.0.0", "--port", "8080"]
+
+### /mnt/f/lawapp/services/lawapp_rag_ingestion/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+EXPOSE 8080
+CMD ["uvicorn", "services.lawapp_rag_ingestion.app:app", "--host", "0.0.0.0", "--port", "8080"]
+
+### /mnt/f/lawapp/services/lawapp_rag_retrieval/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+EXPOSE 8080
+CMD ["uvicorn", "services.lawapp_rag_retrieval.app:app", "--host", "0.0.0.0", "--port", "8080"]
+
+### /mnt/f/lawapp/services/lawapp_rules_engine/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+EXPOSE 8080
+CMD ["uvicorn", "services.lawapp_rules_engine.app:app", "--host", "0.0.0.0", "--port", "8080"]
+
+### /mnt/f/lawapp/services/lawapp_worker/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+CMD ["python", "-m", "services.lawapp_worker.app"]
+
+### /mnt/f/lawapp/services/lawapp_brain/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+EXPOSE 8080
+CMD ["uvicorn", "services.lawapp_brain.app:app", "--host", "0.0.0.0", "--port", "8080"]
+
+### /mnt/f/lawapp/services/lawapp_citation_guard/Dockerfile
+FROM ghcr.io/serverax/lawapp/backend:latest
+EXPOSE 8080
+CMD ["uvicorn", "services.lawapp_citation_guard.app:app", "--host", "0.0.0.0", "--port", "8080"]
+
+--- root-level Dockerfiles ---
+/mnt/f/lawapp/Dockerfile
+/mnt/f/lawapp/Dockerfile.ingestion
+
+--- docker-compose files ---
+/mnt/f/lawapp/docker-compose.override.yml
+/mnt/f/lawapp/docker-compose.yml

@@ -1,0 +1,6 @@
+== /freshness (DB read source_freshness) ==
+200 {"sources":[{"source":"acas_guidance","rows":48,"oldest_verified":"2026-06-03T02:34:59.209401+00:00"},{"source":"bills","rows":0,"oldest_verified":null},{"sourc
+== /rules/unfair_dismissal (DB read rules) ==
+200 {"claim_type":"unfair_dismissal","jurisdiction":"EW","rules":[{"rule_key":"unfair_dismissal.basic_award_formula","value_numeric":null,"value_text":"Per complete year of service (max 20 years): 1.5 x w
+== /api/workflows/constructive-dismissal (grounded brain workflow, no auth) ==
+200 {"claim_type":"constructive_dismissal","claim_viability":"zero","breach_type":"none","repudiatory_acts":[],"affirmation_risk":{"delay_days":null,"risk_level":"unknown","mitigation":""},"causation_established":false,"evidence_gaps":["repudiatory_acts","resignation_date"],"recommended_action":"human_review","grounding_score":0.0,"confidence_score":0.0,"key_weaknesses":["Need at least one dated repud

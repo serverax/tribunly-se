@@ -1,0 +1,62 @@
+[project]
+name = "lawapp"
+version = "0.1.0"
+description = "UK employment claim co-pilot — backend and ingestion"
+requires-python = ">=3.12"
+dependencies = [
+    # HTTP
+    "httpx>=0.27",
+    "tenacity>=8.3",
+    # XML parsing (CLML + Akoma Ntoso/LegalDocML)
+    "lxml>=5.2",
+    # Database
+    "psycopg2-binary>=2.9",
+    "pgvector>=0.3",
+    # Embeddings
+    "openai>=1.35",
+    "tiktoken>=0.7",
+    "fastembed>=0.4",
+    "slowapi>=0.1.9",
+    "redis[hiredis]>=5.0",
+    "stripe>=10.0",
+    # Web / API
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    "pyjwt[crypto]>=2.8",  # JWT/JWKS auth (user_auth.py); [crypto] pulls cryptography for RS256/JWKS
+
+    # Config / utilities
+    "python-dotenv>=1.0",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "rich>=13.7",         # CLI output for ingestion reports
+    "httpx[http2]>=0.27",
+    "python-multipart>=0.0.9",
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    # Observability (OpenTelemetry — order §18)
+    "opentelemetry-sdk>=1.27",
+    "opentelemetry-instrumentation-fastapi>=0.48b0",
+    "opentelemetry-exporter-otlp-proto-http>=1.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    "httpx",             # for TestClient
+    "ruff>=0.4",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.hatch.build.targets.wheel]
+packages = ["backend", "shared", "ingestion"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -1,0 +1,7 @@
+HTTP/1.1 503 Service Unavailable
+date: Thu, 04 Jun 2026 05:08:21 GMT
+server: uvicorn
+content-length: 65
+content-type: application/json
+
+{"status":"error","service":"lawapp-backend","db":"disconnected"}

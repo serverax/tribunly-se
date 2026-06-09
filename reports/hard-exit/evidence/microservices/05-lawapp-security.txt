@@ -1,0 +1,12 @@
+===== NAMESPACE: lawapp-security =====
+--- pods ---
+NAME                                     READY   STATUS    RESTARTS   AGE   IP            NODE                    NOMINATED NODE   READINESS GATES
+lawapp-citation-guard-77cbb75db9-kd7gq   1/1     Running   0          25h   10.244.5.50   talos-138-201-202-174   <none>           <none>
+--- describe deploy/sts (probes/images) ---
+  File "<string>", line 20
+    print(f"{k}/{n} c={c[\"name\"]} img={img} ports={ports} ready={pp(rp)} live={pp(lp)}")
+                          ^
+SyntaxError: unexpected character after line continuation character
+
+=== PROBE/IMAGE MAP ===
+lawapp-security/Deployment/lawapp-citation-guard c=lawapp-citation-guard img=ghcr.io/serverax/lawapp-citation-guard:b13c59d01e73e861b35498cac2b37d566609c262 ports=[8080] ready=[GET /health:8080] live=[GET /health:8080]

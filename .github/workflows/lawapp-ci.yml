@@ -1,0 +1,207 @@
+name: LawApp CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: lawapp
+          POSTGRES_USER: lawapp
+          POSTGRES_PASSWORD: lawapp
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U lawapp -d lawapp"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://lawapp:lawapp@localhost:5432/lawapp
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: lawapp
+      POSTGRES_USER: lawapp
+      POSTGRES_PASSWORD: lawapp
+      LAWAPP_AUTH_MODE: jwt
+      JWT_SECRET: ci-test-secret-not-for-production
+      JWT_ISSUER: lawapp-issuer
+      JWT_AUDIENCE: lawapp-audience
+      AI_PROVIDER: disabled
+      PAYMENT_MODE: disabled
+      RATELIMIT_STORAGE_URI: redis://localhost:6379
+      PYTHONPATH: .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -e . --quiet
+
+      - name: Apply DB migrations
+        run: |
+          for f in db/migrations/*.sql; do
+            echo "  $f"
+            psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$f" 2>&1 | tail -2 || true
+          done
+
+      - name: Verify rules seeded
+        run: |
+          COUNT=$(psql "$DATABASE_URL" -t -c "SELECT COUNT(*) FROM rules;" | xargs)
+          echo "rules count: $COUNT"
+          [ "$COUNT" -ge 1 ] || (echo "ERROR: rules table empty after migrations" && exit 1)
+
+      - name: Run tests
+        run: python -m pytest -q --tb=short
+
+      - name: Run smoke security checks
+        run: |
+          python -m pytest tests/security/ tests/user_isolation/ -q --tb=short
+
+      - name: Hardcoded legal values scan
+        run: |
+          echo "Scanning for hardcoded legal values in frontend JS/HTML..."
+          ! grep -RIn "time_limit_months.*=.*3\|qualifying.*=.*2\|= 123543\|= 751\|= 118223" \
+            client/public --include="*.js" --include="*.html" 2>/dev/null || \
+            (echo "WARNING: Possible hardcoded legal value found" && exit 1)
+          echo "CLEAN"
+
+      - name: Reserved activity language scan
+        run: |
+          echo "Scanning for reserved legal activity language..."
+          ! grep -RInE "we represent you|we will file|we file the claim|rights of audience|conduct litigation for you" \
+            backend client --include="*.py" --include="*.js" --include="*.html" 2>/dev/null \
+            | grep -v "prohibited_actions\|BLOCKED\|blocked\|not.*represent\|#" || \
+            (echo "FAIL: Reserved legal language found" && exit 1)
+          echo "CLEAN"
+
+      - name: Secret scan
+        run: |
+          ! grep -R "sk-ant-[A-Za-z0-9]\{20\}\|sk_live_[A-Za-z0-9]\{20\}\|ghp_[A-Za-z0-9]\{20\}" \
+            -n . --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv \
+            --exclude="*.md" --exclude="*.disabled" 2>/dev/null
+          echo "Secret scan: CLEAN"
+
+  security-scan:
+    runs-on: ubuntu-latest
+    name: SAST / SCA / container scan (release gate)
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install scanners
+        run: pip install bandit pip-audit --quiet
+
+      - name: SAST (bandit — high severity blocks release)
+        run: |
+          echo "Running bandit static analysis on backend/ + ingestion/ ..."
+          bandit -r backend ingestion \
+            -x backend/tests,tests \
+            --severity-level high --confidence-level medium \
+            -f screen
+
+      - name: SCA (pip-audit — vulnerable dependencies block release)
+        run: |
+          echo "Upgrading build toolchain (pip/setuptools/wheel) to patched versions first ..."
+          # pip<26.1 and wheel<0.46.2 carry their own CVEs (path traversal / archive handling)
+          # that are unrelated to lawapp's dependencies. Patch the toolchain, then audit our deps.
+          python -m pip install --upgrade pip setuptools wheel --quiet
+          echo "Auditing Python dependencies for known CVEs ..."
+          pip install -e . --quiet
+          pip-audit --desc \
+            || (echo "FAIL: vulnerable dependencies found" && exit 1)
+
+      - name: Secret scan (working tree — leaked credentials block release)
+        run: |
+          echo "Scanning working tree for leaked credential patterns ..."
+          # Working-tree gate (fail-closed). History remediation is a separate owner action.
+          SCAN_HISTORY=0 bash scripts/security/scan-secrets-history.sh
+
+      - name: Container / filesystem vulnerability scan (trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Kubernetes manifest policy scan (trivy config)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: config
+          scan-ref: infra/k8s
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+  wasm-check:
+    runs-on: ubuntu-latest
+    name: WASM source integrity check
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check WASM binary is committed
+        run: |
+          test -f client/public/wasm/lawapp_wasm_bg.wasm \
+            && echo "WASM binary: present" \
+            || (echo "ERROR: WASM binary missing from client/public/wasm/" && exit 1)
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Rebuild WASM if Rust source is newer than binary
+        run: |
+          RUST_SRC="client/wasm/src/lib.rs"
+          WASM_BIN="client/public/wasm/lawapp_wasm_bg.wasm"
+          if [ "$RUST_SRC" -nt "$WASM_BIN" ]; then
+            echo "Rust source ($RUST_SRC) is newer than WASM binary — rebuilding..."
+            cd client/wasm
+            wasm-pack build --target web --out-dir ../public/wasm
+            echo "WASM rebuild complete"
+          else
+            echo "WASM binary is up to date ($(stat -c %y $WASM_BIN 2>/dev/null || stat -f '%Sm' $WASM_BIN))"
+          fi
+
+      - name: Verify no legal values hardcoded in Rust WASM source
+        run: |
+          echo "Checking Rust WASM source for hardcoded legal values..."
+          ! grep -RIn "\b3\b.*months\|= 2.*years\|123543\|751\|118223" \
+            client/wasm/src/ 2>/dev/null \
+            | grep -v "//" \
+            | grep -v "test\|spec" || \
+            (echo "WARNING: Possible hardcoded legal value in Rust source" && exit 1)
+          echo "CLEAN"

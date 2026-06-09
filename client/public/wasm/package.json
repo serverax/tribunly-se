@@ -1,0 +1,16 @@
+{
+  "name": "lawapp-wasm",
+  "type": "module",
+  "description": "Deterministic legal arithmetic subsystem for lawapp.",
+  "version": "0.1.0",
+  "files": [
+    "lawapp_wasm_bg.wasm",
+    "lawapp_wasm.js",
+    "lawapp_wasm.d.ts"
+  ],
+  "main": "lawapp_wasm.js",
+  "types": "lawapp_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

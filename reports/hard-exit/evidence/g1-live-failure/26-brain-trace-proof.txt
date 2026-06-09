@@ -1,0 +1,8 @@
+== register ==
+(201, '{"user_id":"8c9b1aad-ca89-445b-9413-3ee92cf63422","message":"User registered successfully"}')
+== token == 200
+audit BEFORE: {'assessment_audit_logs': 57, 'model_call_audit': 0, 'retrieval_audit': 0}
+== /api/brain/trace == 200
+RESP: {"trace":{"trace_id":"5d34cd07-80fa-41ed-945d-1e8a79010312","started_at":"2026-06-07T14:08:31.497786+00:00","jurisdiction":"EW","legal_area":"employment_law","claim_type":"unfair_dismissal","urgency":"unknown","days_remaining":null,"missing_facts":["jurisdiction","edt","service_start_date","recommended:reason_for_dismissal","recommended:weekly_pay"],"agents_selected":["employment_law","deadline","evidence","citation_verification","evaluation"],"rag_sources":["hybrid","legal_graph"],"rules_applied":0,"sources_retrieved":0,"citations_verified":0,"citations_failed":0,"compression_stats":{"rules_i
+audit AFTER: {'assessment_audit_logs': 57, 'model_call_audit': 0, 'retrieval_audit': 0}
+DELTA: {'assessment_audit_logs': 0, 'model_call_audit': 0, 'retrieval_audit': 0}

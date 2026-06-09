@@ -1,0 +1,35 @@
+--- J. WASM AUDIT ---
+total 73K
+-rwxrwxrwx 1 kalshafee kalshafee 1.8K Jun  2 23:01 lawapp_wasm.d.ts
+-rwxrwxrwx 1 kalshafee kalshafee  12K Jun  2 23:01 lawapp_wasm.js
+-rwxrwxrwx 1 kalshafee kalshafee  94K Jun  2 23:01 lawapp_wasm_bg.wasm
+-rwxrwxrwx 1 kalshafee kalshafee  546 Jun  2 23:01 lawapp_wasm_bg.wasm.d.ts
+-rwxrwxrwx 1 kalshafee kalshafee  335 Jun  2 23:01 package.json
+client/public/js/deadline.js:89:  function computeDeadlineJS(edtStr, timeLimitMonths, ecDayAStr, ecDayBStr) {
+client/public/js/deadline.js:137:  function computeDeadline(edtStr, timeLimitMonths, ecDayAStr, ecDayBStr) {
+client/public/js/deadline.js:150:    return computeDeadlineJS(edtStr, timeLimitMonths, ecDayAStr, ecDayBStr);
+client/public/js/deadline.js:164:  async function fetchDeadlineRules(apiBase, claimType) {
+client/public/js/deadline.js:185:    initWasm, computeDeadline, calculateStatutoryNotice, 
+client/public/js/deadline.js:186:    fetchDeadlineRules, parseDate, formatDate, addCalendarMonths, daysDiff 
+client/public/js/document_preview.js:140:  function computeDeadlineLocally(edt, timeLimitMonths, ecDayA, ecDayB) {
+client/public/js/document_preview.js:144:    const result = global.LawappDeadline.computeDeadline(
+client/public/js/document_preview.js:160:    computeDeadlineLocally,
+client/public/pages/intake.html:366:      try { rulesCache = await fetchDeadlineRules(API_BASE, 'unfair_dismissal'); } catch(e) { return; }
+client/public/pages/intake.html:370:    const result = computeDeadline(edt, rulesCache.timeLimitMonths, dayA, dayB);
+client/public/wasm/lawapp_wasm.d.ts:8:export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
+client/public/wasm/lawapp_wasm.d.ts:11:    readonly memory: WebAssembly.Memory;
+client/public/wasm/lawapp_wasm.d.ts:16:    readonly __wbindgen_externrefs: WebAssembly.Table;
+client/public/wasm/lawapp_wasm.d.ts:20:export type SyncInitInput = BufferSource | WebAssembly.Module;
+client/public/wasm/lawapp_wasm.d.ts:24: * a precompiled `WebAssembly.Module`.
+client/public/wasm/lawapp_wasm.d.ts:34: * for everything else, calls `WebAssembly.instantiate` directly.
+client/public/wasm/lawapp_wasm.js:262:        if (typeof WebAssembly.instantiateStreaming === 'function') {
+client/public/wasm/lawapp_wasm.js:264:                return await WebAssembly.instantiateStreaming(module, imports);
+client/public/wasm/lawapp_wasm.js:269:                    console.warn("`WebAssembly.instantiateStreaming` failed because your server does not serve Wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n", e);
+client/public/wasm/lawapp_wasm.js:276:        return await WebAssembly.instantiate(bytes, imports);
+client/public/wasm/lawapp_wasm.js:278:        const instance = await WebAssembly.instantiate(module, imports);
+client/public/wasm/lawapp_wasm.js:280:        if (instance instanceof WebAssembly.Instance) {
+client/public/wasm/lawapp_wasm.js:308:    if (!(module instanceof WebAssembly.Module)) {
+client/public/wasm/lawapp_wasm.js:309:        module = new WebAssembly.Module(module);
+client/public/wasm/lawapp_wasm.js:311:    const instance = new WebAssembly.Instance(module, imports);
+client/public/wasm/lawapp_wasm_bg.wasm.d.ts:3:export const memory: WebAssembly.Memory;
+client/public/wasm/lawapp_wasm_bg.wasm.d.ts:8:export const __wbindgen_externrefs: WebAssembly.Table;

@@ -1,0 +1,20 @@
+=== run a brain trace, capture trace_id (response) ===
+RESPONSE trace_id = 71a3b652-6876-45b5-b1f7-18652ff091f6
+=== same trace_id persisted in DB brain_traces? ===
+71a3b652-6876-45b5-b1f7-18652ff091f6|unfair_dismissal||2026-06-07 15:06:21.72662+00
+=== same trace_id in brain pod logs? ===
+2026-06-07 15:06:18,994 INFO [request_id=71a3b652-6876-45b5-b1f7-18652ff091f6] backend.core.models Model provider: local-only. Ollama not enabled/unreachable -> StubReasoningModel (insufficient_grounding); NO external/cloud fallback.
+2026-06-07 15:06:21,692 INFO [request_id=71a3b652-6876-45b5-b1f7-18652ff091f6] backend.core.pipeline Classification: {'matter_type': 'unfair_dismissal', 'intent': 'diagnosis', 'in_scope': True}
+
+=== T-011 VERDICT: PASS ===
+Same trace_id (71a3b652-...) in: HTTP response.trace.trace_id + DB brain_traces row + pod logs request_id.
+Stages logged with the trace_id: backend.core.models (provider decision), backend.core.pipeline (classification).
+No secrets/PII in the logged lines.
+
+=== T-008 FINDING (honest) ===
+Logs show: "Model provider: local-only. Ollama not enabled/unreachable -> StubReasoningModel
+(insufficient_grounding); NO external/cloud fallback." The local-only / no-external-LLM policy is
+ENFORCED (correct, fail-closed). BUT local_inference_enabled defaults false, so the brain reasoning
+falls to the stub instead of the deployed Ollama (3 ollama-inference pods Running). T-008 action:
+enable + wire local Ollama into the reasoning path so legal answers are model-grounded (still no
+external LLM). Until then, answers are deterministic/stub-grounded with honest insufficient_grounding.

@@ -1,0 +1,58 @@
+---
+# Run the sentence-transformers embedder as a one-shot Job in the cluster.
+# This generates 384-dim embeddings and writes them directly to the cluster DB.
+# The ingestion image must have sentence-transformers installed.
+#
+# Apply: kubectl apply -f infra/k8s/iterlaw/embedding-job.yaml -n iterlaw-ai
+# Watch: kubectl logs -n iterlaw-ai job/lawapp-embed-corpus -f
+# Clean: kubectl delete job lawapp-embed-corpus -n iterlaw-ai
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lawapp-embed-corpus
+  namespace: iterlaw-ai
+  labels:
+    app: lawapp-embed
+    project: lawapp
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: embedder
+          image: ghcr.io/serverax/lawapp/backend:${GIT_SHA}
+          imagePullPolicy: Always
+          command: ["python", "-m", "ingestion.embeddings.embedder"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: POSTGRES_HOST
+              value: "lawapp-postgres.iterlaw-ai.svc.cluster.local"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: "lawapp"
+            - name: POSTGRES_USER
+              value: "lawapp"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: lawapp-secrets
+                  key: POSTGRES_PASSWORD
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+      imagePullSecrets:
+        - name: ghcr-pull-secret

@@ -1,0 +1,48 @@
+# docker-compose.override.yml — local dev only (auto-loaded).
+# Aligns the database password to 'lawapp' across every service so the backend,
+# outbox-worker, ingestion runs, proof scripts and pytest all authenticate the
+# same way. Keeps .env untouched. NOT for production.
+services:
+  db:
+    environment:
+      POSTGRES_PASSWORD: lawapp
+    ports:
+      - "5435:5432"
+  backend:
+    environment:
+      POSTGRES_PASSWORD: lawapp
+  outbox-worker:
+    environment:
+      POSTGRES_PASSWORD: lawapp
+  # Test/ingestion runners must authenticate the same way, else pytest fails
+  # closed with "password authentication failed" and every DB-backed test breaks.
+  ingestion:
+    environment:
+      POSTGRES_PASSWORD: lawapp
+  db-bootstrap:
+    environment:
+      POSTGRES_PASSWORD: lawapp
+  lawapp-rules-service:
+    environment:
+      DATABASE_URL: postgresql://lawapp:lawapp@db:5432/lawapp
+  lawapp-audit-service:
+    environment:
+      DATABASE_URL: postgresql://lawapp:lawapp@db:5432/lawapp
+  lawapp-case-service:
+    environment:
+      DATABASE_URL: postgresql://lawapp:lawapp@db:5432/lawapp
+  lawapp-graph-rag-service:
+    environment:
+      DATABASE_URL: postgresql://lawapp:lawapp@db:5432/lawapp
+  lawapp-redaction-service:
+    environment:
+      DATABASE_URL: postgresql://lawapp:lawapp@db:5432/lawapp
+  lawapp-admin-service:
+    environment:
+      DATABASE_URL: postgresql://lawapp:lawapp@db:5432/lawapp
+  lawapp-notification-service:
+    environment:
+      DATABASE_URL: postgresql://lawapp:lawapp@db:5432/lawapp
+  lawapp-rag-service:
+    environment:
+      DATABASE_URL: postgresql://lawapp:lawapp@db:5432/lawapp

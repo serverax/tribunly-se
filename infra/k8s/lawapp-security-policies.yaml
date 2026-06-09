@@ -1,0 +1,86 @@
+---
+# lawapp Security Policies — namespace: lawapp-security
+# NetworkPolicies enforcing user data isolation and lawapp namespace boundaries.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: lawapp-api-ingress
+  namespace: lawapp-api
+  labels:
+    part-of: lawapp
+spec:
+  podSelector:
+    matchLabels:
+      part-of: lawapp
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+    ports:
+    - port: 8000
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          part-of: lawapp
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - port: 53
+      protocol: UDP
+  - to: []
+    ports:
+    - port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: lawapp-postgres-isolation
+  namespace: lawapp-rag
+  labels:
+    part-of: lawapp
+spec:
+  podSelector:
+    matchLabels:
+      app: lawapp-postgres
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          part-of: lawapp
+    ports:
+    - port: 5432
+---
+# Resource quota for lawapp-security namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: lawapp-security-quota
+  namespace: lawapp-security
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "500m"
+    requests.memory: "512Mi"
+    limits.cpu: "2"
+    limits.memory: "2Gi"
+---
+# PodDisruptionBudget for backend availability
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: lawapp-backend-pdb
+  namespace: lawapp-api
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: lawapp-backend

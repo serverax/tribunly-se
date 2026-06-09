@@ -1,0 +1,96 @@
+---
+# lawapp Monitoring — namespace: lawapp-monitoring
+# Health check CronJob + source freshness reporter.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lawapp-monitoring
+  labels:
+    part-of: lawapp
+---
+# Source freshness CronJob — runs daily at 06:00 UTC
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: lawapp-freshness-check
+  namespace: lawapp-monitoring
+  labels:
+    app: lawapp-freshness
+    part-of: lawapp
+spec:
+  schedule: "0 6 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+          containers:
+          - name: freshness
+            image: ghcr.io/serverax/lawapp/backend:latest
+            imagePullPolicy: Always
+            command: ["python", "-m", "ingestion.freshness.report"]
+            env:
+            - name: POSTGRES_HOST
+              value: "lawapp-postgres.lawapp-api.svc.cluster.local"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: "lawapp"
+            - name: POSTGRES_USER
+              value: "lawapp"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: lawapp-secrets
+                  key: POSTGRES_PASSWORD
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 500m
+                memory: 256Mi
+---
+# Health probe CronJob — every 5 minutes
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: lawapp-health-probe
+  namespace: lawapp-monitoring
+  labels:
+    app: lawapp-health-probe
+    part-of: lawapp
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: probe
+            image: curlimages/curl:latest
+            command:
+            - /bin/sh
+            - -c
+            - |
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://lawapp-backend.lawapp-api.svc.cluster.local:8000/health)
+              echo "Health check status: $STATUS"
+              [ "$STATUS" = "200" ] || exit 1
+            resources:
+              requests:
+                cpu: 10m
+                memory: 16Mi
+              limits:
+                cpu: 100m
+                memory: 64Mi

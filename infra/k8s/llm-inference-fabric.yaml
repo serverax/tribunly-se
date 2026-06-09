@@ -1,0 +1,166 @@
+# lawapp Node-Local Inference Fabric — Ollama DaemonSet (namespace: lawapp-ai)
+# ---------------------------------------------------------------------------
+# One Ollama pod per Talos node, CPU-only, serving a small Qwen2.5-3B model for
+# JSON extraction / classification / support tasks. NOT publicly exposed.
+#
+# Routing: the Service uses internalTrafficPolicy: Local, so kube-proxy PREFERS
+# the Ollama pod on the SAME node as the calling backend pod (local-traffic
+# preference). NOTE: with Local policy, if a node has NO Ready Ollama pod, calls
+# from that node get no endpoint — so the backend provider MUST fail soft to the
+# deterministic stub. We do not claim "zero network latency"; we claim node-local
+# preference + measured latency.
+#
+# Model preload: handled by a postStart lifecycle hook on the DaemonSet container
+# (PART 3, approach A — per-node, idempotent). A single Kubernetes Job is NOT used
+# because it would run on one node only, leaving other nodes' hostPath stores
+# empty; a DaemonSet-level pull guarantees the model on every node.
+#
+# Talos note: hostPath /var/lib/lawapp/ollama must be permitted by the cluster's
+# Pod Security / Talos machine config. If blocked, swap the volume for a
+# local-path-provisioner PVC (see the commented alternative at the bottom).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lawapp-ai
+  labels:
+    project: lawapp
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ollama-inference
+  namespace: lawapp-ai
+  labels:
+    app: ollama-inference
+    component: llm-fabric
+    project: lawapp
+spec:
+  selector:
+    matchLabels:
+      app: ollama-inference
+  template:
+    metadata:
+      labels:
+        app: ollama-inference
+        component: llm-fabric
+        project: lawapp
+    spec:
+      # Hardening "where compatible with Ollama": the upstream ollama/ollama image
+      # runs as root and writes models under /root/.ollama, so runAsNonRoot /
+      # readOnlyRootFilesystem are intentionally NOT set (they break Ollama without
+      # a custom image). We still drop all capabilities, block privilege
+      # escalation, and apply the RuntimeDefault seccomp profile.
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ollama
+          image: ollama/ollama:0.3.14   # pinned (was :latest) — change if a newer pinned tag is standardised
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 11434
+              name: http
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0:11434"
+            - name: OLLAMA_NUM_PARALLEL
+              value: "1"
+            - name: OLLAMA_MAX_LOADED_MODELS
+              value: "1"
+            # Model tag is templated via the ConfigMap so it is not hardcoded.
+            - name: LAWAPP_OLLAMA_MODEL
+              valueFrom:
+                configMapKeyRef:
+                  name: lawapp-config
+                  key: LAWAPP_OLLAMA_MODEL
+                  optional: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          # PART 3 — idempotent per-node model preload. Waits for the server then
+          # pulls. `ollama pull` is idempotent (no-op if the blob already exists).
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - |
+                    MODEL="${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}"
+                    for i in $(seq 1 60); do
+                      if wget -qO- http://127.0.0.1:11434/api/tags >/dev/null 2>&1; then
+                        ollama pull "$MODEL" && exit 0
+                      fi
+                      sleep 5
+                    done
+                    echo "preload: server not ready in time for $MODEL" >&2
+          resources:
+            requests:
+              cpu: "4"
+              memory: "8Gi"
+            limits:
+              cpu: "4"
+              memory: "8Gi"
+          volumeMounts:
+            - name: ollama-models
+              mountPath: /root/.ollama
+          # Probes hit /api/tags. startupProbe gives the model time to load before
+          # liveness can kill the pod.
+          startupProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 5
+      volumes:
+        - name: ollama-models
+          hostPath:
+            path: /var/lib/lawapp/ollama
+            type: DirectoryOrCreate
+      # If Talos Pod Security blocks the hostPath above, replace `volumes` with a
+      # per-node local-path PVC, e.g.:
+      #   volumes:
+      #     - name: ollama-models
+      #       persistentVolumeClaim:
+      #         claimName: ollama-models-pvc   # storageClassName: local-path
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-inference-service
+  namespace: lawapp-ai
+  labels:
+    app: ollama-inference
+    component: llm-fabric
+    project: lawapp
+spec:
+  type: ClusterIP                 # internal only — never LoadBalancer
+  selector:
+    # FIX: the live Ollama DaemonSet pods are labelled `app.kubernetes.io/name: ollama-inference`,
+    # so the previous `app: ollama-inference` selector matched 0 pods → 0 endpoints (dead service).
+    # The brain has been repointed to the working `ollama-inference` Service; this revives this one too.
+    app.kubernetes.io/name: ollama-inference
+  internalTrafficPolicy: Local    # prefer the node-local Ollama pod
+  ports:
+    - name: http
+      port: 11434
+      targetPort: 11434
+      protocol: TCP

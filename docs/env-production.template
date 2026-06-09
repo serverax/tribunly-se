@@ -1,0 +1,78 @@
+# lawapp — Production Environment Variables Template
+# Phase 6E | 2026-06-01
+#
+# Copy this file to .env and fill in real values before deployment.
+# NEVER commit .env to version control.
+# GUARDRAIL: Do not use placeholder values in production.
+
+# ── Deployment mode ───────────────────────────────────────────────────────────
+# Controls startup validation strictness.
+# In production, missing required vars cause startup failure.
+DEPLOYMENT_MODE=production
+
+# ── Database ──────────────────────────────────────────────────────────────────
+POSTGRES_HOST=<your-postgres-host>
+POSTGRES_PORT=5432
+POSTGRES_DB=lawapp
+POSTGRES_USER=lawapp
+POSTGRES_PASSWORD=<REQUIRED: strong random password — never default>
+
+# ── Admin API ─────────────────────────────────────────────────────────────────
+# Protects /admin/* endpoints. Required in production.
+ADMIN_API_KEY=<REQUIRED: strong random string — keep secret>
+
+# ── Encryption at rest ────────────────────────────────────────────────────────
+# Fernet key (AES-128-CBC + HMAC-SHA256).
+# Generate: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+# NOTE: env-var key is NOT production-grade key management.
+# Phase 7: replace with KMS-backed key (AWS KMS / GCP KMS / HashiCorp Vault).
+ENCRYPTION_KEY=<REQUIRED: Fernet key — 44-char URL-safe base64>
+KEY_MANAGEMENT_MODE=env
+
+# ── End-user authentication ───────────────────────────────────────────────────
+# jwt mode with HS256 verification is implemented (Phase 6C).
+# mock mode MUST NOT be used in production.
+LAWAPP_AUTH_MODE=jwt
+
+# JWT HS256 signing secret. Must be long, random, and secret.
+# Generate: python -c "import secrets; print(secrets.token_urlsafe(64))"
+JWT_SECRET=<REQUIRED: long random secret — never share>
+
+# Your token issuer URI (e.g. your auth service or JWKS provider)
+JWT_ISSUER=<REQUIRED: e.g. https://auth.yourdomain.com>
+
+# Audience for this API
+JWT_AUDIENCE=<REQUIRED: e.g. lawapp-api>
+
+# Phase 7: JWKS support (RS256/ES256 via JWT_JWKS_URL) not yet implemented.
+# JWT_JWKS_URL=<future: e.g. https://auth.yourdomain.com/.well-known/jwks.json>
+
+# ── Application ──────────────────────────────────────────────────────────────
+APP_BASE_URL=<REQUIRED: e.g. https://app.yourdomain.com>
+ALLOWED_ORIGINS=<REQUIRED: comma-separated allowed origins, e.g. https://app.yourdomain.com>
+
+# ── Payment ───────────────────────────────────────────────────────────────────
+# disabled: no live payments (recommended for controlled beta)
+# stripe_test: Stripe test mode (Phase 7 — not yet implemented)
+# stripe_live: Stripe live mode (Phase 7 — requires STRIPE_SECRET_KEY)
+PAYMENT_MODE=disabled
+
+# STRIPE_SECRET_KEY=<Phase 7: required for PAYMENT_MODE=stripe_live>
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+LOG_LEVEL=WARNING
+
+# ── AI model (optional) ───────────────────────────────────────────────────────
+# If not set, engine falls back to StubReasoningModel (returns insufficient_grounding).
+ANTHROPIC_API_KEY=<optional: sk-ant-...>
+WORKHORSE_MODEL_ID=claude-haiku-4-5-20251001
+
+# ── Embedding (optional) ──────────────────────────────────────────────────────
+# Required for pgvector semantic search. Without it, BM25 fallback is active.
+# OPENAI_API_KEY=<optional: sk-...>
+
+# ── Phase 7 placeholders (do not configure until implemented) ─────────────────
+# STRIPE_SECRET_KEY=<Phase 7: live payment>
+# JWT_JWKS_URL=<Phase 7: RS256/ES256 verification>
+# KMS_KEY_ID=<Phase 7: AWS KMS / GCP KMS key ID>
+# SENTRY_DSN=<Phase 7: error monitoring>

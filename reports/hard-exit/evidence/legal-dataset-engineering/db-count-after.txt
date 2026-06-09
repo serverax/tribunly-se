@@ -1,0 +1,5 @@
+=== AFTER COUNTS ===
+ legal_sources=17
+
+ corpus_chunks=890
+

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Cancelled — lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<div class="legal-notice" role="alert">
+  <strong>Not a law firm. Not legal advice.</strong>
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <div class="nav-links"><a href="/pages/dashboard.html">Dashboard</a></div>
+</nav>
+
+<main class="page-narrow" style="padding-top:3rem; text-align:center;">
+  <div class="form-section" style="border-color:var(--warn); background:#fff8f8;">
+    <div style="font-size:3rem; margin-bottom:1rem;">❌</div>
+    <h1 style="color:var(--warn); margin-bottom:1rem;">Payment Cancelled</h1>
+    <p style="margin-bottom:1.5rem;">Your payment was not completed. No charges were made. You can try again from your assessment page at any time.</p>
+    <a href="/pages/dashboard.html" class="btn btn-outline">Return to dashboard</a>
+  </div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script>
+  LAWAPP_AUTH.updateNav();
+</script>
+</body>
+</html>

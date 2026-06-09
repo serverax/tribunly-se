@@ -1,0 +1,248 @@
+./.claude-flow/data/pending-insights.jsonl:17:{"type":"edit","file":"F:\\lawapp\\tests\\graph_rag\\__init__.py","timestamp":1780532069759,"sessionId":null}
+./.claude-flow/data/pending-insights.jsonl:18:{"type":"edit","file":"F:\\lawapp\\tests\\knowledge_graph\\__init__.py","timestamp":1780532073616,"sessionId":null}
+./.claude-flow/data/pending-insights.jsonl:23:{"type":"edit","file":"F:\\lawapp\\tests\\graph_rag\\test_graph_rag.py","timestamp":1780532121251,"sessionId":null}
+./.claude-flow/data/pending-insights.jsonl:28:{"type":"edit","file":"F:\\lawapp\\tests\\knowledge_graph\\test_knowledge_graph.py","timestamp":1780532288683,"sessionId":null}
+./.pytest_cache/v/cache/nodeids:148:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_depth_1_returns_fewer_nodes_than_depth_2",
+./.pytest_cache/v/cache/nodeids:149:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_ud_subgraph_context_text_not_empty",
+./.pytest_cache/v/cache/nodeids:150:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_ud_subgraph_has_edges",
+./.pytest_cache/v/cache/nodeids:151:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_ud_subgraph_has_nodes",
+./.pytest_cache/v/cache/nodeids:152:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_ud_subgraph_has_root_node",
+./.pytest_cache/v/cache/nodeids:153:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_ud_subgraph_includes_limitation_node",
+./.pytest_cache/v/cache/nodeids:154:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_ud_subgraph_includes_qualifying_service",
+./.pytest_cache/v/cache/nodeids:155:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_ud_subgraph_returns_dict",
+./.pytest_cache/v/cache/nodeids:156:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_ud_subgraph_source_is_legal_graph",
+./.pytest_cache/v/cache/nodeids:157:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_unknown_claim_returns_empty",
+./.pytest_cache/v/cache/nodeids:158:  "tests/graph_rag/test_graph_rag.py::TestGetClaimSubgraph::test_upw_subgraph_returns_nodes",
+./.pytest_cache/v/cache/nodeids:159:  "tests/graph_rag/test_graph_rag.py::TestGetConceptContext::test_context_text_contains_node_label",
+./.pytest_cache/v/cache/nodeids:160:  "tests/graph_rag/test_graph_rag.py::TestGetConceptContext::test_empty_input_returns_empty",
+./.pytest_cache/v/cache/nodeids:161:  "tests/graph_rag/test_graph_rag.py::TestGetConceptContext::test_multiple_nodes_returned",
+./.pytest_cache/v/cache/nodeids:162:  "tests/graph_rag/test_graph_rag.py::TestGetConceptContext::test_single_node_returned",
+./.pytest_cache/v/cache/nodeids:163:  "tests/graph_rag/test_graph_rag.py::TestGetConceptContext::test_source_is_knowledge_graph",
+./.pytest_cache/v/cache/nodeids:164:  "tests/graph_rag/test_graph_rag.py::TestSelectRagSources::test_generic_query_no_graph",
+./.pytest_cache/v/cache/nodeids:165:  "tests/graph_rag/test_graph_rag.py::TestSelectRagSources::test_high_risk_activates_kg",
+./.pytest_cache/v/cache/nodeids:166:  "tests/graph_rag/test_graph_rag.py::TestSelectRagSources::test_hybrid_always_present",
+./.pytest_cache/v/cache/nodeids:167:  "tests/graph_rag/test_graph_rag.py::TestSelectRagSources::test_known_claim_activates_graph",
+./.pytest_cache/v/cache/nodeids:168:  "tests/graph_rag/test_graph_rag.py::TestSelectRagSources::test_oos_no_graph",
+./.pytest_cache/v/cache/nodeids:169:  "tests/graph_rag/test_graph_rag.py::TestSelectRagSources::test_primary_always_hybrid",
+./.pytest_cache/v/cache/nodeids:170:  "tests/graph_rag/test_graph_rag.py::TestSelectRagSources::test_result_has_reason",
+./.pytest_cache/v/cache/nodeids:889:  "tests/knowledge_graph/test_knowledge_graph.py::TestKnowledgeGraphPaths::test_basic_award_has_era1996_s119_ref",
+./.pytest_cache/v/cache/nodeids:890:  "tests/knowledge_graph/test_knowledge_graph.py::TestKnowledgeGraphPaths::test_procedure_node_references_acas_code",
+./.pytest_cache/v/cache/nodeids:891:  "tests/knowledge_graph/test_knowledge_graph.py::TestKnowledgeGraphPaths::test_ud_to_era1996_s111_path",
+./.pytest_cache/v/cache/nodeids:892:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_all_edge_nodes_exist",
+./.pytest_cache/v/cache/nodeids:893:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_legal_edges_table_exists",
+./.pytest_cache/v/cache/nodeids:894:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_no_self_referencing_edges",
+./.pytest_cache/v/cache/nodeids:895:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_ud_applies_to_limitation_date",
+./.pytest_cache/v/cache/nodeids:896:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_ud_leads_to_basic_award",
+./.pytest_cache/v/cache/nodeids:897:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_ud_requires_acas_ec",
+./.pytest_cache/v/cache/nodeids:898:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_ud_requires_qualifying_service",
+./.pytest_cache/v/cache/nodeids:899:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_upw_applies_to_its_limitation",
+./.pytest_cache/v/cache/nodeids:900:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_acas_ec_node_exists",
+./.pytest_cache/v/cache/nodeids:901:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_all_nodes_have_authority_level",
+./.pytest_cache/v/cache/nodeids:902:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_all_nodes_have_source_ref",
+./.pytest_cache/v/cache/nodeids:903:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_legal_nodes_table_exists",
+./.pytest_cache/v/cache/nodeids:904:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_limitation_date_node_exists",
+./.pytest_cache/v/cache/nodeids:905:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_node_types_are_valid",
+./.pytest_cache/v/cache/nodeids:906:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_qualifying_period_node_exists",
+./.pytest_cache/v/cache/nodeids:907:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_ud_claim_node_exists",
+./.pytest_cache/v/cache/nodeids:908:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_upw_claim_node_exists",
+./audit_gather.sh:34:grep -R -E "CREATE TABLE|ALTER TABLE|CREATE EXTENSION|CREATE INDEX|vector|pgcrypto|rules|cases|documents|users|legal_nodes|legal_edges" db backend ingestion infra -n > reports/gemini-db-schema-grep.txt || true
+./audit_gather.sh:43:grep -R -E "graph_rag|GraphRAG|legal_nodes|legal_edges|knowledge_graph|node_type|edge_type|CITES|AMENDS|DEFINES|APPLIES_TO|SUPPORTS|LIMITS" . -n --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv > reports/gemini-graph-rag-grep.txt || true
+./audit_gather.sh:81:docker compose exec -T db psql -U lawapp -d lawapp -c "\d legal_nodes" > reports/gemini-db-legal-nodes.txt || true
+./audit_gather.sh:82:docker compose exec -T db psql -U lawapp -d lawapp -c "\d legal_edges" > reports/gemini-db-legal-edges.txt || true
+./audit_generator.py:134:* **Graph RAG:** Mentioned in tests (`test_graph_rag.py`) but implementation is stubbed.
+./audit_output.txt:45:?? tests/graph_rag/
+./audit_output.txt:46:?? tests/knowledge_graph/
+./audit_output.txt:286: public | legal_edges             | table | lawapp
+./audit_output.txt:288: public | legal_nodes             | table | lawapp
+./audit_output.txt:361:./.pytest_cache/v/cache/nodeids:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_qualifying_period_node_exists",
+./audit_output.txt:379:./.claude-flow/data/pending-insights.jsonl:{"type":"edit","file":"F:\\lawapp\\tests\\graph_rag\\__init__.py","timestamp":1780532069759,"sessionId":null}
+./audit_output.txt:380:./.claude-flow/data/pending-insights.jsonl:{"type":"edit","file":"F:\\lawapp\\tests\\graph_rag\\test_graph_rag.py","timestamp":1780532121251,"sessionId":null}
+./audit_output.txt:485:./.pytest_cache/v/cache/nodeids:  "tests/knowledge_graph/test_knowledge_graph.py::TestKnowledgeGraphPaths::test_procedure_node_references_acas_code",
+./audit_output.txt:486:./.pytest_cache/v/cache/nodeids:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_ud_requires_acas_ec",
+./audit_output.txt:487:./.pytest_cache/v/cache/nodeids:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_acas_ec_node_exists",
+./audit_output.txt:504:./audit_output.txt:./.pytest_cache/v/cache/nodeids:  "tests/knowledge_graph/test_knowledge_graph.py::TestKnowledgeGraphPaths::test_procedure_node_references_acas_code",
+./audit_output.txt:505:./audit_output.txt:./.pytest_cache/v/cache/nodeids:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalEdgesSchema::test_ud_requires_acas_ec",
+./audit_output.txt:506:./audit_output.txt:./.pytest_cache/v/cache/nodeids:  "tests/knowledge_graph/test_knowledge_graph.py::TestLegalNodesSchema::test_acas_ec_node_exists",
+./audit_output.txt:593:./.claude-flow/data/pending-insights.jsonl:{"type":"edit","file":"F:\\lawapp\\tests\\graph_rag\\__init__.py","timestamp":1780532069759,"sessionId":null}
+./audit_output.txt:594:./.claude-flow/data/pending-insights.jsonl:{"type":"edit","file":"F:\\lawapp\\tests\\knowledge_graph\\__init__.py","timestamp":1780532073616,"sessionId":null}
+./audit_output.txt:599:./.claude-flow/data/pending-insights.jsonl:{"type":"edit","file":"F:\\lawapp\\tests\\graph_rag\\test_graph_rag.py","timestamp":1780532121251,"sessionId":null}
+./audit_output.txt:604:./.claude-flow/data/pending-insights.jsonl:{"type":"edit","file":"F:\\lawapp\\tests\\knowledge_graph\\test_knowledge_graph.py","timestamp":1780532288683,"sessionId":null}
+./backend/api/main.py:2456:                SELECT n.node_id, n.node_type, n.label
+./backend/api/main.py:2457:                FROM legal_nodes n
+./backend/api/main.py:2458:                JOIN legal_edges e ON n.node_id = e.to_node_id
+./backend/api/main.py:2460:                ORDER BY n.authority_level, n.node_type
+./backend/api/main.py:2469:                    "SELECT n.node_id, n.node_type, n.label FROM legal_nodes n "
+./backend/api/main.py:2470:                    "JOIN legal_edges e ON n.node_id = e.to_node_id "
+./backend/api/main.py:2482:                "FROM legal_edges e "
+./backend/api/main.py:2483:                "JOIN legal_nodes n ON e.from_node_id = n.node_id "
+./backend/api/main.py:2513:                SELECT node_id, node_type, label, description,
+./backend/api/main.py:2515:                FROM legal_nodes
+./backend/api/main.py:2529:                SELECT e.relationship_type, n.node_id, n.label, n.node_type
+./backend/api/main.py:2530:                FROM legal_edges e
+./backend/api/main.py:2531:                JOIN legal_nodes n ON e.to_node_id = n.node_id
+./backend/api/main.py:2540:                "SELECT DISTINCT e.from_node_id FROM legal_edges e "
+./backend/core/legal_graph.py:4:Queries the legal_nodes and legal_edges tables populated by migration 018
+./backend/core/legal_graph.py:7:Used when Brain selects "legal_graph" or "knowledge_graph" as RAG source.
+./backend/core/legal_graph.py:95:                    SELECT node_id, node_type, label, description,
+./backend/core/legal_graph.py:97:                    FROM legal_nodes
+./backend/core/legal_graph.py:116:                "source":       "knowledge_graph",
+./backend/core/legal_graph.py:128:    """BFS traversal of legal_nodes/legal_edges up to max_depth hops."""
+./backend/core/legal_graph.py:143:                SELECT node_id, node_type, label, description,
+./backend/core/legal_graph.py:145:                FROM legal_nodes
+./backend/core/legal_graph.py:164:                FROM legal_edges
+./backend/core/legal_graph.py:200:        line = f"  [{node['node_type']}] {label}"
+./backend/core/legal_graph.py:248:          "sources":       list[str]  — ["hybrid", "legal_graph", "knowledge_graph"]
+./backend/core/legal_graph.py:268:        sources.append("knowledge_graph")
+./backend/core/legal_graph.py:270:        reason = "high_risk_knowledge_graph_activated"
+./db/migrations/018_brain_architecture.sql:74:-- ── legal_nodes ──────────────────────────────────────────────────────────────
+./db/migrations/018_brain_architecture.sql:78:CREATE TABLE IF NOT EXISTS legal_nodes (
+./db/migrations/018_brain_architecture.sql:81:    node_type       TEXT        NOT NULL,   -- legislation_section | claim_type | legal_test | remedy | defence | evidence_type | deadline | procedure
+./db/migrations/018_brain_architecture.sql:92:CREATE INDEX IF NOT EXISTS legal_nodes_type_idx ON legal_nodes (node_type);
+./db/migrations/018_brain_architecture.sql:93:CREATE INDEX IF NOT EXISTS legal_nodes_j_idx    ON legal_nodes (jurisdiction);
+./db/migrations/018_brain_architecture.sql:95:-- ── legal_edges ──────────────────────────────────────────────────────────────
+./db/migrations/018_brain_architecture.sql:99:CREATE TABLE IF NOT EXISTS legal_edges (
+./db/migrations/018_brain_architecture.sql:101:    from_node_id       TEXT        NOT NULL REFERENCES legal_nodes (node_id),
+./db/migrations/018_brain_architecture.sql:102:    to_node_id         TEXT        NOT NULL REFERENCES legal_nodes (node_id),
+./db/migrations/018_brain_architecture.sql:110:CREATE INDEX IF NOT EXISTS legal_edges_from_idx ON legal_edges (from_node_id);
+./db/migrations/018_brain_architecture.sql:111:CREATE INDEX IF NOT EXISTS legal_edges_to_idx   ON legal_edges (to_node_id);
+./db/migrations/018_brain_architecture.sql:112:CREATE INDEX IF NOT EXISTS legal_edges_rel_idx  ON legal_edges (relationship_type);
+./db/migrations/018_brain_architecture.sql:175:INSERT INTO legal_nodes (node_id, node_type, label, description, jurisdiction, authority_level, source_ref, source_url)
+./db/migrations/018_brain_architecture.sql:195:INSERT INTO legal_edges (from_node_id, to_node_id, relationship_type, notes)
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:76:| legal_nodes | ✓ | 15 (seeded ERA 1996 graph) |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:77:| legal_edges | ✓ | 14 |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:143:| Graph RAG | PASS | legal_graph.py — legal_nodes/edges traversal |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:185:| Graph RAG | yes | legal_graph.py | legal_nodes, legal_edges | /api/rag/graph | 24 | ✓ | PASS |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:186:| Knowledge Graph | yes | legal_graph.py | legal_nodes, legal_edges | get_concept_context() | 21 | ✓ | PASS |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:280:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ \
+./reports/gemini-all-files.txt:50263:./tests/graph_rag/__init__.py
+./reports/gemini-all-files.txt:50264:./tests/graph_rag/__pycache__/__init__.cpython-314.pyc
+./reports/gemini-all-files.txt:50265:./tests/graph_rag/__pycache__/test_graph_rag.cpython-314-pytest-9.0.3.pyc
+./reports/gemini-all-files.txt:50266:./tests/graph_rag/test_graph_rag.py
+./reports/gemini-all-files.txt:50348:./tests/knowledge_graph/__init__.py
+./reports/gemini-all-files.txt:50349:./tests/knowledge_graph/__pycache__/__init__.cpython-314.pyc
+./reports/gemini-all-files.txt:50350:./tests/knowledge_graph/__pycache__/test_knowledge_graph.cpython-314-pytest-9.0.3.pyc
+./reports/gemini-all-files.txt:50351:./tests/knowledge_graph/test_knowledge_graph.py
+./reports/gemini-brain-ai-grep.txt:446:backend/core/legal_graph.py:270:        reason = "high_risk_knowledge_graph_activated"
+./reports/gemini-brain-ai-grep.txt:924:tests/graph_rag/test_graph_rag.py:43:    def test_result_has_reason(self):
+./reports/gemini-brain-ai-grep.txt:925:tests/graph_rag/test_graph_rag.py:45:        assert isinstance(result["reason"], str)
+./reports/gemini-brain-ai-grep.txt:926:tests/graph_rag/test_graph_rag.py:46:        assert len(result["reason"]) > 0
+./reports/gemini-brain-ai-grep.txt:927:tests/graph_rag/test_graph_rag.py:98:        assert "unavailable_reason" in result
+./reports/gemini-brain-ai-grep.txt:1427:tests/knowledge_graph/test_knowledge_graph.py:171:    """Test that key legal reasoning paths exist in the graph."""
+./reports/gemini-db-schema-grep.txt:189:db/migrations/018_brain_architecture.sql:74:-- ── legal_nodes ──────────────────────────────────────────────────────────────
+./reports/gemini-db-schema-grep.txt:190:db/migrations/018_brain_architecture.sql:78:CREATE TABLE IF NOT EXISTS legal_nodes (
+./reports/gemini-db-schema-grep.txt:191:db/migrations/018_brain_architecture.sql:92:CREATE INDEX IF NOT EXISTS legal_nodes_type_idx ON legal_nodes (node_type);
+./reports/gemini-db-schema-grep.txt:192:db/migrations/018_brain_architecture.sql:93:CREATE INDEX IF NOT EXISTS legal_nodes_j_idx    ON legal_nodes (jurisdiction);
+./reports/gemini-db-schema-grep.txt:193:db/migrations/018_brain_architecture.sql:95:-- ── legal_edges ──────────────────────────────────────────────────────────────
+./reports/gemini-db-schema-grep.txt:194:db/migrations/018_brain_architecture.sql:99:CREATE TABLE IF NOT EXISTS legal_edges (
+./reports/gemini-db-schema-grep.txt:195:db/migrations/018_brain_architecture.sql:101:    from_node_id       TEXT        NOT NULL REFERENCES legal_nodes (node_id),
+./reports/gemini-db-schema-grep.txt:196:db/migrations/018_brain_architecture.sql:102:    to_node_id         TEXT        NOT NULL REFERENCES legal_nodes (node_id),
+./reports/gemini-db-schema-grep.txt:197:db/migrations/018_brain_architecture.sql:110:CREATE INDEX IF NOT EXISTS legal_edges_from_idx ON legal_edges (from_node_id);
+./reports/gemini-db-schema-grep.txt:198:db/migrations/018_brain_architecture.sql:111:CREATE INDEX IF NOT EXISTS legal_edges_to_idx   ON legal_edges (to_node_id);
+./reports/gemini-db-schema-grep.txt:199:db/migrations/018_brain_architecture.sql:112:CREATE INDEX IF NOT EXISTS legal_edges_rel_idx  ON legal_edges (relationship_type);
+./reports/gemini-db-schema-grep.txt:209:db/migrations/018_brain_architecture.sql:175:INSERT INTO legal_nodes (node_id, node_type, label, description, jurisdiction, authority_level, source_ref, source_url)
+./reports/gemini-db-schema-grep.txt:210:db/migrations/018_brain_architecture.sql:195:INSERT INTO legal_edges (from_node_id, to_node_id, relationship_type, notes)
+./reports/gemini-db-schema-grep.txt:343:backend/api/main.py:2457:                FROM legal_nodes n
+./reports/gemini-db-schema-grep.txt:344:backend/api/main.py:2458:                JOIN legal_edges e ON n.node_id = e.to_node_id
+./reports/gemini-db-schema-grep.txt:345:backend/api/main.py:2469:                    "SELECT n.node_id, n.node_type, n.label FROM legal_nodes n "
+./reports/gemini-db-schema-grep.txt:346:backend/api/main.py:2470:                    "JOIN legal_edges e ON n.node_id = e.to_node_id "
+./reports/gemini-db-schema-grep.txt:347:backend/api/main.py:2482:                "FROM legal_edges e "
+./reports/gemini-db-schema-grep.txt:348:backend/api/main.py:2483:                "JOIN legal_nodes n ON e.from_node_id = n.node_id "
+./reports/gemini-db-schema-grep.txt:349:backend/api/main.py:2515:                FROM legal_nodes
+./reports/gemini-db-schema-grep.txt:350:backend/api/main.py:2530:                FROM legal_edges e
+./reports/gemini-db-schema-grep.txt:351:backend/api/main.py:2531:                JOIN legal_nodes n ON e.to_node_id = n.node_id
+./reports/gemini-db-schema-grep.txt:352:backend/api/main.py:2540:                "SELECT DISTINCT e.from_node_id FROM legal_edges e "
+./reports/gemini-db-schema-grep.txt:511:backend/core/legal_graph.py:4:Queries the legal_nodes and legal_edges tables populated by migration 018
+./reports/gemini-db-schema-grep.txt:512:backend/core/legal_graph.py:97:                    FROM legal_nodes
+./reports/gemini-db-schema-grep.txt:513:backend/core/legal_graph.py:128:    """BFS traversal of legal_nodes/legal_edges up to max_depth hops."""
+./reports/gemini-db-schema-grep.txt:514:backend/core/legal_graph.py:145:                FROM legal_nodes
+./reports/gemini-db-schema-grep.txt:515:backend/core/legal_graph.py:164:                FROM legal_edges
+./reports/gemini-empty-files.txt:641:./tests/graph_rag/__init__.py
+./reports/gemini-empty-files.txt:644:./tests/knowledge_graph/__init__.py
+./reports/gemini-file-inventory.txt:1566:./tests/graph_rag/__init__.py
+./reports/gemini-file-inventory.txt:1567:./tests/graph_rag/__pycache__/__init__.cpython-314.pyc
+./reports/gemini-file-inventory.txt:1568:./tests/graph_rag/__pycache__/test_graph_rag.cpython-314-pytest-9.0.3.pyc
+./reports/gemini-file-inventory.txt:1569:./tests/graph_rag/test_graph_rag.py
+./reports/gemini-file-inventory.txt:1651:./tests/knowledge_graph/__init__.py
+./reports/gemini-file-inventory.txt:1652:./tests/knowledge_graph/__pycache__/__init__.cpython-314.pyc
+./reports/gemini-file-inventory.txt:1653:./tests/knowledge_graph/__pycache__/test_knowledge_graph.cpython-314-pytest-9.0.3.pyc
+./reports/gemini-file-inventory.txt:1654:./tests/knowledge_graph/test_knowledge_graph.py
+./reports/gemini-hardcoded-legal-values.txt:318:tests/knowledge_graph/test_knowledge_graph.py:7:  - deadlines → ERA 1996 sections
+./reports/gemini-hardcoded-legal-values.txt:319:tests/knowledge_graph/test_knowledge_graph.py:8:  - remedies → ERA 1996 sections
+./reports/gemini-hardcoded-legal-values.txt:320:tests/knowledge_graph/test_knowledge_graph.py:174:        """ud_claim -> limitation_date -> source_ref contains ERA 1996 s.111."""
+./reports/gemini-hardcoded-legal-values.txt:321:tests/knowledge_graph/test_knowledge_graph.py:182:        assert "ERA 1996" in row[0] or "s.111" in row[0]
+./reports/gemini-hardcoded-legal-values.txt:322:tests/knowledge_graph/test_knowledge_graph.py:191:        assert "ERA 1996" in row[0]
+./reports/gemini-lawapp-super-ultimate-qa-security-wiring-audit.md:97:* **Graph RAG:** Mentioned in tests (`test_graph_rag.py`) but implementation is stubbed.
+./reports/gemini-tests-files.txt:58:tests/graph_rag/__init__.py
+./reports/gemini-tests-files.txt:59:tests/graph_rag/__pycache__/__init__.cpython-314.pyc
+./reports/gemini-tests-files.txt:60:tests/graph_rag/__pycache__/test_graph_rag.cpython-314-pytest-9.0.3.pyc
+./reports/gemini-tests-files.txt:61:tests/graph_rag/test_graph_rag.py
+./reports/gemini-tests-files.txt:143:tests/knowledge_graph/__init__.py
+./reports/gemini-tests-files.txt:144:tests/knowledge_graph/__pycache__/__init__.cpython-314.pyc
+./reports/gemini-tests-files.txt:145:tests/knowledge_graph/__pycache__/test_knowledge_graph.cpython-314-pytest-9.0.3.pyc
+./reports/gemini-tests-files.txt:146:tests/knowledge_graph/test_knowledge_graph.py
+./reports/lawapp-code-change-summary.md:15:| `backend/core/legal_graph.py` | Brain Step 9 — Graph RAG query (legal_nodes/edges), RAG source selector |
+./reports/lawapp-code-change-summary.md:38:| `tests/graph_rag/test_graph_rag.py` | 24 | Legal graph traversal, source selection |
+./reports/lawapp-code-change-summary.md:39:| `tests/knowledge_graph/test_knowledge_graph.py` | 21 | legal_nodes/edges schema + paths |
+./reports/lawapp-end-to-end-product-completion-report.md:114:legal_nodes:             15 rows   ✓ (seeded ERA 1996 graph)
+./reports/lawapp-end-to-end-product-completion-report.md:115:legal_edges:             14 rows   ✓ (requires/leads_to/applies_to)
+./reports/lawapp-end-to-end-product-completion-report.md:156:| **Graph RAG** | Brain Step 9: `select_rag_source` → `legal_nodes/edges` enrichment | **PASS** |
+./reports/lawapp-end-to-end-product-completion-report.md:157:| **Knowledge Graph** | legal_nodes (15 ERA sections) → legal_edges (14 relationships) used in assessment | **PASS** |
+./reports/lawapp-end-to-end-product-completion-report.md:231:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ 
+./reports/lawapp-feature-function-completion-audit.md:22:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ 
+./reports/lawapp-local-demo-commands.md:48:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ \
+./reports/lawapp-new-architecture-technology-status.md:40:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ \
+./reports/lawapp-new-architecture-technology-status.md:55:| **Graph RAG** | YES | Step 9 (select_rag_source) | legal_nodes, legal_edges | via brain trace | tests/graph_rag/ 24 passing | `pytest tests/graph_rag/` | **PASS** | Graph enrichment is additive to hybrid |
+./reports/lawapp-new-architecture-technology-status.md:56:| **Knowledge Graph** | YES | Step 9 (KG context enrichment) | legal_nodes, legal_edges | get_concept_context() | tests/knowledge_graph/ 21 passing | `pytest tests/knowledge_graph/` | **PASS** | Needs richer node types for discrimination/whistleblowing |
+./reports/lawapp-new-architecture-technology-status.md:132:| legal_nodes | Knowledge graph nodes (15 seeded) | PASS |
+./reports/lawapp-new-architecture-technology-status.md:133:| legal_edges | Knowledge graph edges (14 seeded) | PASS |
+./reports/lawapp-new-architecture-technology-status.md:226:- `tests/graph_rag/test_graph_rag.py` — 24 tests
+./reports/lawapp-new-architecture-technology-status.md:227:- `tests/knowledge_graph/test_knowledge_graph.py` — 21 tests
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:26:| Graph RAG (legal_nodes/edges) | ✓ | Step 9 | migration 018 | via brain trace | 24 ✓ | pytest graph_rag/ | **PASS** | — |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:27:| Knowledge Graph | ✓ | Step 9 | migration 018 | get_concept_context() | 21 ✓ | pytest knowledge_graph/ | **PASS** | — |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:52:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ 
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:71:legal_nodes:      15 rows (seeded)              ✓
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:72:legal_edges:      14 rows (seeded)              ✓
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:298:- `tests/graph_rag/test_graph_rag.py` (24 tests)
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:299:- `tests/knowledge_graph/test_knowledge_graph.py` (21 tests)
+./reports/lawapp-talos-owner-runbook.md:183:kubectl exec -n lawapp-api "$PGPOD" -- psql -U lawapp -d lawapp -c "SELECT count(*) FROM legal_nodes;"
+./reports/lawapp-talos-owner-runbook.md:186:Expected: ~38 tables, rules=19, legal_nodes=15
+./reports/lawapp-talos-services-deployment-proof.md:300:kubectl exec -n lawapp-api statefulset/lawapp-postgres -- psql -U lawapp -d lawapp -c "SELECT count(*) FROM legal_nodes;"
+./reports/lawapp-talos-services-deployment-proof.md:303:kubectl exec -n lawapp-api statefulset/lawapp-postgres -- psql -U lawapp -d lawapp -c "SELECT count(*) FROM legal_edges;"
+./scripts/deploy-talos.sh:153:kubectl exec -n lawapp-api "$PGPOD" -- psql -U lawapp -d lawapp -c "SELECT count(*) as legal_nodes FROM legal_nodes;"
+./scripts/deploy-talos.sh:154:kubectl exec -n lawapp-api "$PGPOD" -- psql -U lawapp -d lawapp -c "SELECT count(*) as legal_edges FROM legal_edges;"
+./scripts/run-migrations.sh:47:  psql -U lawapp -d lawapp -c "SELECT count(*) AS legal_nodes FROM legal_nodes;"
+./scripts/run-migrations.sh:49:  psql -U lawapp -d lawapp -c "SELECT count(*) AS legal_edges FROM legal_edges;"
+./tests/graph_rag/test_graph_rag.py:4:Tests legal_nodes/legal_edges DB tables and graph traversal.
+./tests/graph_rag/test_graph_rag.py:33:        assert "knowledge_graph" in result["sources"]
+./tests/graph_rag/test_graph_rag.py:50:    """Tests legal graph traversal. Requires DB with legal_nodes/edges seeded."""
+./tests/graph_rag/test_graph_rag.py:119:    def test_source_is_knowledge_graph(self):
+./tests/graph_rag/test_graph_rag.py:121:        assert result["source"] == "knowledge_graph"
+./tests/knowledge_graph/test_knowledge_graph.py:11:Uses the seeded legal_nodes/legal_edges tables from migration 018.
+./tests/knowledge_graph/test_knowledge_graph.py:29:    def test_legal_nodes_table_exists(self, db_conn):
+./tests/knowledge_graph/test_knowledge_graph.py:31:        cur.execute("SELECT COUNT(*) FROM legal_nodes;")
+./tests/knowledge_graph/test_knowledge_graph.py:33:        assert count > 0, "legal_nodes table is empty"
+./tests/knowledge_graph/test_knowledge_graph.py:37:        cur.execute("SELECT node_id, label FROM legal_nodes WHERE node_id = 'ud_claim';")
+./tests/knowledge_graph/test_knowledge_graph.py:44:        cur.execute("SELECT node_id FROM legal_nodes WHERE node_id = 'upw_claim';")
+./tests/knowledge_graph/test_knowledge_graph.py:49:        cur.execute("SELECT node_id FROM legal_nodes WHERE node_id = 'qualifying_service';")
+./tests/knowledge_graph/test_knowledge_graph.py:54:        cur.execute("SELECT node_id FROM legal_nodes WHERE node_id = 'limitation_date';")
+./tests/knowledge_graph/test_knowledge_graph.py:59:        cur.execute("SELECT node_id FROM legal_nodes WHERE node_id = 'acas_ec';")
+./tests/knowledge_graph/test_knowledge_graph.py:65:            SELECT node_id FROM legal_nodes
+./tests/knowledge_graph/test_knowledge_graph.py:67:            AND node_type NOT IN ('concept');
+./tests/knowledge_graph/test_knowledge_graph.py:75:            SELECT node_id FROM legal_nodes
+./tests/knowledge_graph/test_knowledge_graph.py:80:    def test_node_types_are_valid(self, db_conn):
+./tests/knowledge_graph/test_knowledge_graph.py:86:        cur.execute("SELECT DISTINCT node_type FROM legal_nodes;")
+./tests/knowledge_graph/test_knowledge_graph.py:93:    def test_legal_edges_table_exists(self, db_conn):
+./tests/knowledge_graph/test_knowledge_graph.py:95:        cur.execute("SELECT COUNT(*) FROM legal_edges;")
+./tests/knowledge_graph/test_knowledge_graph.py:97:        assert count > 0, "legal_edges table is empty"
+./tests/knowledge_graph/test_knowledge_graph.py:103:            SELECT id FROM legal_edges
+./tests/knowledge_graph/test_knowledge_graph.py:113:            SELECT id FROM legal_edges
+./tests/knowledge_graph/test_knowledge_graph.py:123:            SELECT id FROM legal_edges
+./tests/knowledge_graph/test_knowledge_graph.py:132:            SELECT id FROM legal_edges
+./tests/knowledge_graph/test_knowledge_graph.py:142:            SELECT id FROM legal_edges
+./tests/knowledge_graph/test_knowledge_graph.py:151:            SELECT COUNT(*) FROM legal_edges
+./tests/knowledge_graph/test_knowledge_graph.py:161:            FROM legal_edges le
+./tests/knowledge_graph/test_knowledge_graph.py:162:            LEFT JOIN legal_nodes fn ON fn.node_id = le.from_node_id
+./tests/knowledge_graph/test_knowledge_graph.py:163:            LEFT JOIN legal_nodes tn ON tn.node_id = le.to_node_id
+./tests/knowledge_graph/test_knowledge_graph.py:177:            SELECT ln.source_ref FROM legal_nodes ln
+./tests/knowledge_graph/test_knowledge_graph.py:187:            SELECT source_ref FROM legal_nodes WHERE node_id = 'basic_award';
+./tests/knowledge_graph/test_knowledge_graph.py:196:            SELECT source_ref FROM legal_nodes WHERE node_id = 'procedure';

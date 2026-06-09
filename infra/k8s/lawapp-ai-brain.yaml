@@ -1,0 +1,93 @@
+---
+# lawapp Brain Algorithm — namespace: lawapp-ai
+# Runs the 19-step lawapp Brain Algorithm.
+# Routes all legal requests through classification → retrieval → reasoning → governance → audit.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lawapp-brain
+  namespace: lawapp-ai
+  labels:
+    app: lawapp-brain
+    part-of: lawapp
+    component: ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lawapp-brain
+  template:
+    metadata:
+      labels:
+        app: lawapp-brain
+        part-of: lawapp
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: brain
+        image: ghcr.io/serverax/lawapp/backend:latest
+        imagePullPolicy: Always
+        command: ["uvicorn", "backend.api.main:app", "--host", "0.0.0.0", "--port", "8001"]
+        ports:
+        - containerPort: 8001
+          name: brain-api
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop: ["ALL"]
+        envFrom:
+        - configMapRef:
+            name: lawapp-ai-config
+        - secretRef:
+            name: lawapp-ai-secrets
+        env:
+        - name: LAWAPP_AUTH_MODE
+          value: "jwt"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          failureThreshold: 3
+        livenessProbe:
+          # Liveness must NOT depend on the DB (use /livez, not /health) so a DB
+          # outage marks the pod NotReady instead of crash-looping the container.
+          httpGet:
+            path: /livez
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawapp-brain
+  namespace: lawapp-ai
+  labels:
+    app: lawapp-brain
+    part-of: lawapp
+spec:
+  selector:
+    app: lawapp-brain
+  ports:
+  - port: 8001
+    targetPort: 8001
+    name: brain-api
+  type: ClusterIP

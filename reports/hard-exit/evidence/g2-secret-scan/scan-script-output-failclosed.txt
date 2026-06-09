@@ -1,0 +1,14 @@
+== [1/2] Working-tree scan ==
+OK: no real secrets in working tree.
+== [2/2] Git-history scan (GitHub PATs) ==
+WARNING: GitHub PAT pattern present in git history (commits touching PAT lines):
+6c5882e complete lawapp distributed service deployment stabilization
+a0968b0 confirm lawapp cicd automation
+e165295 lawapp: add CI/CD pipeline and Talos auto deployment
+
+OWNER ACTION REQUIRED (not automatable here):
+  1. Rotate/revoke the exposed PAT(s) in GitHub > Settings > Developer settings.
+  2. Rewrite history (git filter-repo / BFG) to purge the blobs, then force-push.
+  Changing the remote URL is NOT sufficient. (Force-push = owner-approved destructive step.)
+
+RESULT: FAIL — leaked secret patterns detected (working tree and/or git history).

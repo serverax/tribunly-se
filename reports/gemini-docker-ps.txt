@@ -1,0 +1,3 @@
+NAME               IMAGE                    COMMAND                  SERVICE   CREATED          STATUS                             PORTS
+lawapp-backend-1   lawapp-backend           "uvicorn backend.api…"   backend   26 seconds ago   Up 11 seconds (health: starting)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+lawapp-db-1        pgvector/pgvector:pg16   "docker-entrypoint.s…"   db        29 seconds ago   Up 24 seconds (healthy)            0.0.0.0:5435->5432/tcp, [::]:5435->5432/tcp

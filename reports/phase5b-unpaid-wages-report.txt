@@ -1,0 +1,159 @@
+PHASE 5B — UNPAID WAGES / UNLAWFUL DEDUCTION SECOND CLAIM TYPE
+Report date: 2026-06-01
+Status: COMPLETE — pending acceptance
+
+═══════════════════════════════════════════════════════════════════════════════
+SCOPE
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 5B adds unpaid wages / unlawful deduction from wages as the second claim
+type. Unfair dismissal (Phase 3-5A) is unchanged.
+
+Statutory basis: Employment Rights Act 1996 Part II (ss.13-27)
+
+═══════════════════════════════════════════════════════════════════════════════
+PRODUCTION-READINESS STATEMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+VERIFICATION-LIMITED — NOT PRODUCTION-READY
+
+Rules are cited to correct statutory authority and case law.
+Live verification against legislation.gov.uk was not performed during Phase 5B.
+All rule rows are flagged with VERIFICATION_REQUIRED in their descriptions.
+Do not deploy unpaid wages assessment to production without:
+  1. Legal review of all 5 rule rows against current legislation
+  2. Verification of Bear Scotland series-deductions authority
+  3. DPIA update (wages claims may involve additional PII)
+  4. Solicitor review of generated document templates
+
+═══════════════════════════════════════════════════════════════════════════════
+RULES (seed_unpaid_wages.py — 5 rules)
+═══════════════════════════════════════════════════════════════════════════════
+
+  unlawful_deduction_wages.time_limit_months        3 months (ERA 1996 s.23(2))
+  unlawful_deduction_wages.qualifying_period_years  0 — day-one right (s.13)
+  unlawful_deduction_wages.worker_status            "worker" (s.230(3))
+  unlawful_deduction_wages.series_deductions_note   Bear Scotland [2015]
+  unlawful_deduction_wages.remedy_basis             Gross wages, Delaney v Staples [1992]
+
+All rules include: rule_key, claim_type, jurisdiction, value_numeric/value_text,
+authority_ref, authority_url, effective_from, is_prospective=false,
+last_verified_at (set on seeding).
+
+═══════════════════════════════════════════════════════════════════════════════
+CLASSIFICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+_UPW_KEYWORDS added to classify.py (20 keyword phrases).
+Routing: if UPW signals present AND no UD signals → "unpaid_wages".
+Unfair dismissal classification is unchanged.
+
+═══════════════════════════════════════════════════════════════════════════════
+PIPELINE CHANGES (pipeline.py)
+═══════════════════════════════════════════════════════════════════════════════
+
+claim_type-aware routing:
+  - Reference date: wages_due_date (UPW) or edt (UD)
+  - Missing date status: missing_wages_date (UPW) or missing_edt (UD)
+  - Time limit rule key: unlawful_deduction_wages.time_limit_months (UPW)
+  - Qualifying period check: SKIPPED for UPW (day-one right)
+  - Deterministic context: build_deterministic_context_wages() (UPW)
+
+Unfair dismissal path unchanged.
+
+═══════════════════════════════════════════════════════════════════════════════
+DETERMINISTIC PRE-ASSESSMENT (assess_logic.py)
+═══════════════════════════════════════════════════════════════════════════════
+
+build_deterministic_context_wages() computes:
+  - Worker status warnings (self_employed → has_viable_claim='no')
+  - Authorized deduction defense weakness
+  - Series complexity weakness → routes to seek_solicitor
+  - Value range = unpaid_amount (no multiplier — Delaney v Staples [1992])
+  - Employer arguments (6 standard arguments)
+  - Citations from rules table
+
+═══════════════════════════════════════════════════════════════════════════════
+DOCUMENT TYPES (documents.py)
+═══════════════════════════════════════════════════════════════════════════════
+
+letter_before_action:
+  - WITHOUT PREJUDICE SAVE AS TO COSTS header
+  - ERA 1996 s.13 reference
+  - Amount + date wages due
+  - 14-day payment demand
+  - ET deadline warning
+  - lawapp does NOT send/file this letter
+
+et1_support_notes_wages:
+  - Claim type + statute reference
+  - Parties + dates
+  - Details of claim template
+  - Remedy = gross wages (Delaney v Staples)
+  - Critical deadline section
+  - "lawapp does not file, submit, or represent"
+
+Both types: LEGAL_BOUNDARY_NOTICE at top and bottom, safety_check() passes.
+
+═══════════════════════════════════════════════════════════════════════════════
+UI CHANGES
+═══════════════════════════════════════════════════════════════════════════════
+
+intake.html:
+  - Claim type selector (radio: unfair dismissal / unpaid wages) at top
+  - UPW fields: wages_due_date, unpaid_amount, pay_frequency, worker_status,
+                is_series_of_deductions, employer_explanation, ACAS EC dates
+  - JS: show/hide sections based on selected claim type
+  - Form submission routes to correct API query based on claim type
+
+═══════════════════════════════════════════════════════════════════════════════
+LEGAL ACCURACY FIXTURES (8 UPW patterns)
+═══════════════════════════════════════════════════════════════════════════════
+
+  UPW1: Clear final salary                — deadline 2026-06-30
+  UPW2: Repeated underpayments (series)   — routes to seek_solicitor
+  UPW3: Disputed/authorized deduction     — has_viable_claim=uncertain
+  UPW4: Missing wages_due_date            — missing_wages_date status
+  UPW5: Stale claim                       — expired deadline
+  UPW6: Self-employed claimant            — excluded (has_viable_claim=no)
+  UPW7: Missing unpaid amount             — weakness flagged
+  UPW8: Agency worker + series            — routes to seek_solicitor
+
+CI gate: scripts/run_legal_accuracy.py covers all UPW patterns.
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED
+═══════════════════════════════════════════════════════════════════════════════
+
+  ingestion/rules/seed_unpaid_wages.py           — 5 rules seeder
+  tests/integration/test_phase5b_unpaid_wages.py — 23 integration tests
+  reports/phase5b-unpaid-wages-report.txt        — this report
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES MODIFIED
+═══════════════════════════════════════════════════════════════════════════════
+
+  backend/engine/classify.py       — _UPW_KEYWORDS + unpaid_wages routing
+  backend/engine/assess_logic.py   — build_deterministic_context_wages()
+  backend/engine/pipeline.py       — claim-type-aware routing (date + rules)
+  backend/engine/documents.py      — letter_before_action + et1_support_notes_wages
+  backend/api/main.py              — DocumentRequest Literal + wages doc routing
+  client/public/pages/intake.html  — claim type selector + UPW fields
+  tests/legal_accuracy/fixtures.py — 8 UPW fact patterns + ALL_FACT_PATTERNS
+  tests/legal_accuracy/test_legal_accuracy.py — 12 UPW test cases
+
+═══════════════════════════════════════════════════════════════════════════════
+DATA-PROTECTION NOTES
+═══════════════════════════════════════════════════════════════════════════════
+
+  - Wages facts use the same deidentify.py pipeline (14 PII field types stripped)
+  - wages_due_date, unpaid_amount, pay_frequency, worker_status are NOT PII
+  - employer_explanation may contain PII if user includes names — deidentify
+    strips employer_name and claimant_name before model boundary
+  - No additional Art.9 data collected by wages intake
+  - wages_due_date stored in case.key_dates (not cases.facts_encrypted)
+  - Same DP gaps as Phase 5A (no encryption at rest — Phase 5B+ required)
+
+═══════════════════════════════════════════════════════════════════════════════
+END PHASE 5B
+═══════════════════════════════════════════════════════════════════════════════

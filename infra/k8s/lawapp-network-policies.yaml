@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-api-to-rag
+  namespace: lawapp-rag
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          lawapp.role: api
+    - namespaceSelector:
+        matchLabels:
+          lawapp.role: ai
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-external-rag
+  namespace: lawapp-rag
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress

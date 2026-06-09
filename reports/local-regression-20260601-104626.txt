@@ -1,0 +1,4 @@
+LawApp local regression
+Date: 2026-06-01T10:46:26+01:00
+
+=== Python ===

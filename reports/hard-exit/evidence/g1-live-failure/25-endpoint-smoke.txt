@@ -1,0 +1,2 @@
+/health -> 200 {"status":"ok","service":"lawapp-backend","db":"connected","auth_mode":"jwt","payment_mode":"disabled","ai_provider":{"provider":"ollama","active":true,"backend":"ollama_local","base_url":"http://llm-
+/livez -> ERR HTTP Error 404: Not Found

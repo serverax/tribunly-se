@@ -1,0 +1,16 @@
+=== apply provenance-spine migrations (additive) to lawapp-rag ===
+OK   026_corpus_content_hash
+OK   028_legal_sources_registry
+OK   029_legal_provenance_columns
+OK   030_acas_guidance_unique
+OK   031_legal_data_spine
+OK   032_corpus_chunks_and_audits
+OK   033_seed_required_rules
+OK   034_corpus_quality_views
+OK   036_verification_status_canonical
+OK   037_core_workspace_ingestion_errors
+OK   038_feedback_registry
+OK   039_corpus_chunks_ingestion_run_id
+legal_sources_registry|f
+corpus_chunks|t
+raw_source_records|f

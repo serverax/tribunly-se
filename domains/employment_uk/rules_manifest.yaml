@@ -1,0 +1,38 @@
+# employment_uk — deterministic rules manifest (rules table is source of truth).
+# Declares the rule_keys that MUST exist + cited + effective-dated. The corpus
+# AIA / proof fails if a required rule is missing or uncited.
+domain: employment_uk
+country_code: GB
+jurisdiction: EW
+
+required_rules:
+  - rule_key: unfair_dismissal.time_limit_months
+    claim_type: unfair_dismissal
+    authority_ref: ERA 1996 s.111(2)
+  - rule_key: unfair_dismissal.qualifying_period
+    claim_type: unfair_dismissal
+    authority_ref: ERA 1996 s.108
+  - rule_key: unfair_dismissal.weeks_pay_cap_amount
+    claim_type: unfair_dismissal
+    authority_ref: ERA 1996 s.227
+  - rule_key: unfair_dismissal.compensatory_cap_amount
+    claim_type: unfair_dismissal
+    authority_ref: ERA 1996 s.124
+  - rule_key: unfair_dismissal.compensatory_cap_weeks_pay
+    claim_type: unfair_dismissal
+    authority_ref: ERA 1996 s.124(1ZA)(b)
+  - rule_key: unfair_dismissal.basic_award_formula
+    claim_type: unfair_dismissal
+    authority_ref: ERA 1996 s.119
+  - rule_key: unfair_dismissal.basic_award_min_automatic
+    claim_type: unfair_dismissal
+    authority_ref: ERA 1996 s.120
+
+rule_field_requirements:
+  - rule_key
+  - claim_type
+  - jurisdiction
+  - authority_ref
+  - effective_from
+  - last_verified_at
+  - value_numeric_or_text

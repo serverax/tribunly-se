@@ -1,0 +1,115 @@
+---
+# lawapp PostgreSQL StatefulSet — namespace: lawapp-api
+# Reason: DB placed in lawapp-api for tight coupling with backend service.
+# DNS: lawapp-postgres.lawapp-api.svc.cluster.local:5432
+# PVC: 10Gi, storageClass local-path (Talos/Hetzner default)
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawapp-postgres-headless
+  namespace: lawapp-api
+  labels:
+    app: lawapp-postgres
+    part-of: lawapp
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None
+  selector:
+    app: lawapp-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawapp-postgres
+  namespace: lawapp-api
+  labels:
+    app: lawapp-postgres
+    part-of: lawapp
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  selector:
+    app: lawapp-postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lawapp-postgres
+  namespace: lawapp-api
+  labels:
+    app: lawapp-postgres
+    part-of: lawapp
+spec:
+  serviceName: "lawapp-postgres-headless"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lawapp-postgres
+  template:
+    metadata:
+      labels:
+        app: lawapp-postgres
+        part-of: lawapp
+    spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+      containers:
+      - name: postgres
+        image: pgvector/pgvector:pg16
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: lawapp-postgres-secret
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: lawapp-postgres-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: lawapp-postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        readinessProbe:
+          exec:
+            command: ["sh", "-c", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          failureThreshold: 6
+        livenessProbe:
+          exec:
+            command: ["sh", "-c", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "local-path"
+      resources:
+        requests:
+          storage: 10Gi

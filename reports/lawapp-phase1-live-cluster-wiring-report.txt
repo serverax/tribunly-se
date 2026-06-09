@@ -1,0 +1,83 @@
+================================================================================
+PHASE 1 — LIVE CLUSTER WIRING REPORT
+lawapp | namespace: iterlaw-ai | 2026-06-02
+================================================================================
+
+CLUSTER STATE
+  Context:    admin@ordinox-talos (Talos/K3s Hetzner)
+  Nodes:      3 × Ready (control-plane)
+  Namespace:  iterlaw-ai Active
+
+PODS
+  lawapp-backend    1/1 Running  ghcr.io/serverax/lawapp/backend:latest
+  lawapp-postgres   1/1 Running  pgvector/pgvector:pg16
+
+SERVICES
+  lawapp-backend    ClusterIP 10.104.194.17  :80
+  lawapp-postgres   ClusterIP 10.109.37.31   :5432
+
+SECRETS (key names only — no values)
+  lawapp-secrets     Opaque  10 keys
+  ghcr-pull-secret   dockerconfigjson
+
+CONFIGMAPS
+  lawapp-config   10 keys
+  kube-root-ca.crt
+
+IMAGE
+  ghcr.io/serverax/lawapp/backend:latest
+
+LIVE SMOKE TESTS (all via kubectl exec -n iterlaw-ai)
+────────────────────────────────────────────────────
+
+1. /health
+   Command: curl http://localhost:8000/health
+   Response: {"status":"ok","db":"connected"}
+   PASS ✓
+
+2. /rules/unfair_dismissal
+   Command: curl http://localhost:8000/rules/unfair_dismissal
+   Response: 11 rules returned, first: unfair_dismissal.basic_award_formula
+   PASS ✓
+
+3. /freshness
+   Command: curl http://localhost:8000/freshness
+   Response:
+     acas_guidance:    26
+     bills:             0
+     case_law:          0
+     legislation:      80
+     official_guidance: 4
+     rules:            19
+   PASS ✓
+
+4. /api/diagnosis — unfair dismissal
+   Facts: edt=2026-03-01, service_start_date=2023-01-01, conduct, £600/wk, EW
+   Response:
+     status:           insufficient_grounding
+     claim_type:       unfair_dismissal
+     deadline_source:  rules (ERA 1996 s.111(2))
+     PII_in_output:    []
+     model_provider:   StubReasoningModel (no ANTHROPIC_API_KEY in cluster)
+   Notes:
+     - claim correctly classified ✓
+     - deadline from rules ✓
+     - PII stripped ✓
+     - insufficient_grounding is HONEST BEHAVIOUR (stub mode), not an error
+   PASS ✓
+
+5. /api/diagnosis — out-of-scope
+   Query: "My landlord is evicting me"
+   Response: {"status":"not_supported","matter_type":"out_of_scope"}
+   PASS ✓
+
+6. /documents/generate
+   document_type: particulars_of_claim
+   Response: payment_required=True, preview_chars=2512
+   Notes: preview returned correctly; full doc requires payment_token
+   PASS ✓
+
+NON-LAWAPP NAMESPACES TOUCHED: NONE
+
+PHASE 1 VERDICT: PASS
+================================================================================

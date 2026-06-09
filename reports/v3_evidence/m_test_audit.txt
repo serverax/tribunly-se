@@ -1,0 +1,20 @@
+--- M. TEST SUITE AUDIT ---
+timeout: failed to run command ‘python’: No such file or directory
+PYTEST TIMED OUT OR FAILED
+npm error code ENOENT
+npm error syscall open
+npm error path /mnt/f/lawapp/client/package.json
+npm error errno -2
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/mnt/f/lawapp/client/package.json'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm error A complete log of this run can be found in: /home/kalshafee/.npm/_logs/2026-06-04T05_48_28_607Z-debug-0.log
+NPM TEST TIMED OUT OR FAILED
+--- M. ADDITIONAL TESTS ---
+timeout: failed to run command ‘python’: No such file or directory
+timeout: failed to run command ‘python’: No such file or directory
+timeout: failed to run command ‘python’: No such file or directory
+timeout: failed to run command ‘python’: No such file or directory
+timeout: failed to run command ‘python’: No such file or directory
+timeout: failed to run command ‘python’: No such file or directory
+timeout: failed to run command ‘python’: No such file or directory

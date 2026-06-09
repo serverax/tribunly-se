@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deadline calculator — lawapp</title>
+  <meta name="description" content="Work out your employment tribunal time limit. Deterministic and grounded in the Employment Rights Act 1996.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
+  <script src="/js/a11y.js"></script>
+</head>
+<body>
+
+<div class="legal-notice" role="note">
+  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="nav-links" id="navlinks">
+    <a href="/">Home</a>
+    <a href="/#tools">Tools</a>
+  </div>
+</nav>
+
+<main class="page" id="main">
+  <div class="tool-head">
+    <span class="eyebrow">Free tool · Deadline calculator</span>
+    <h1>When is my tribunal deadline?</h1>
+    <p>Employment tribunal time limits are strict and unforgiving. Enter the date and type of event, and we'll work out your base limitation date.</p>
+  </div>
+
+  <div class="tool-layout">
+    <form id="deadlineForm" class="form-section" novalidate>
+      <div class="form-group">
+        <label for="event_type">What happened?</label>
+        <select id="event_type">
+          <option value="dismissal">I was dismissed</option>
+          <option value="constructive_dismissal">I resigned (constructive dismissal)</option>
+          <option value="redundancy">I was made redundant</option>
+          <option value="discrimination">Discrimination</option>
+          <option value="unpaid_wages">Unpaid wages / unlawful deduction</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="event_date">When did it happen? <span class="hint">(the effective date of the event)</span></label>
+        <input type="date" id="event_date" required>
+      </div>
+
+      <div id="form-error" class="form-section" style="display:none;background:var(--warn-bg);border-color:var(--warn-bd);padding:1rem;margin-bottom:1rem;">
+        <p id="form-error-text" style="color:var(--warn);font-size:.9rem;margin:0;"></p>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;">Calculate my deadline</button>
+    </form>
+
+    <div id="spinner" class="spinner" hidden></div>
+
+    <section id="resultPanel" class="result-panel" hidden aria-live="polite">
+      <div id="deadlineCard" class="deadline-card">
+        <div>
+          <div class="days" id="dl-days">—</div>
+          <div class="label" id="dl-days-label">days left</div>
+        </div>
+        <div>
+          <div class="label">Your base tribunal deadline</div>
+          <div class="date" id="dl-date">—</div>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom:.75rem;">Your timeline</h3>
+      <div class="deadline-calendar" id="calendar"></div>
+
+      <div class="assessment-wrap">
+        <div class="assessment-body">
+          <div class="assessment-section" style="margin-bottom:1rem;">
+            <h3>How this was worked out</h3>
+            <ul class="citation-list" id="dl-detail"></ul>
+          </div>
+          <div class="assessment-section">
+            <h3>Authority</h3>
+            <ul class="citation-list"><li id="dl-authority"></li></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="grounding-alert" id="dl-note" style="margin-top:1rem;"></div>
+
+      <div id="save-banner" class="gate-banner" hidden>
+        <div class="gate-text">
+          <strong>Save this deadline to your case</strong>
+          <span>Log in and we'll track it, apply the ACAS pause, and remind you before it runs out.</span>
+        </div>
+        <a id="save-login" class="btn btn-accent" href="/pages/login.html">Log in to save</a>
+      </div>
+      <div id="saved-note" class="form-ok" hidden>Logged in — open your <a href="/pages/dashboard.html">dashboard</a> to save this to a case.</div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script>
+(function () {
+  var form = document.getElementById("deadlineForm");
+  var spinner = document.getElementById("spinner");
+  var resultPanel = document.getElementById("resultPanel");
+  var errBox = document.getElementById("form-error");
+  var errText = document.getElementById("form-error-text");
+
+  function fmtDate(iso) {
+    if (!iso) return "—";
+    var parts = String(iso).split("T")[0].split("-");
+    if (parts.length !== 3) return iso;
+    var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    return parseInt(parts[2], 10) + " " + (months[parseInt(parts[1], 10) - 1] || "") + " " + parts[0];
+  }
+
+  function calRow(date, title, sub, cls) {
+    var row = document.createElement("div");
+    row.className = "cal-row" + (cls ? " " + cls : "");
+    var d = document.createElement("div"); d.className = "cal-date"; d.textContent = fmtDate(date);
+    var l = document.createElement("div"); l.className = "cal-label";
+    var s = document.createElement("strong"); s.textContent = title; l.appendChild(s);
+    if (sub) l.appendChild(document.createTextNode(sub));
+    row.appendChild(d); row.appendChild(l);
+    return row;
+  }
+
+  function detailRow(text) { var li = document.createElement("li"); li.textContent = text; return li; }
+
+  function render(data) {
+    var days = data.days_remaining;
+    document.getElementById("dl-date").textContent = fmtDate(data.deadline);
+    if (days < 0) {
+      document.getElementById("dl-days").textContent = Math.abs(days);
+      document.getElementById("dl-days-label").textContent = "days ago (passed)";
+    } else {
+      document.getElementById("dl-days").textContent = days;
+      document.getElementById("dl-days-label").textContent = "days left";
+    }
+    document.getElementById("deadlineCard").classList.toggle("deadline-urgent", days <= 14);
+
+    var cal = document.getElementById("calendar");
+    cal.textContent = "";
+    cal.appendChild(calRow(data.event_date, "Event date", " — when time starts running", "is-start"));
+    cal.appendChild(calRow(data.deadline, "Base tribunal deadline", " — claim must be submitted by this date", "is-deadline"));
+
+    var detail = document.getElementById("dl-detail");
+    detail.textContent = "";
+    detail.appendChild(detailRow("Claim type: " + String(data.claim_type || "").replace(/_/g, " ")));
+    detail.appendChild(detailRow("Jurisdiction: " + (data.jurisdiction || "")));
+    if (data.basis) detail.appendChild(detailRow("Basis: " + data.basis));
+
+    document.getElementById("dl-authority").textContent = data.authority || "Employment Rights Act 1996, s.111(2)";
+
+    var note = document.getElementById("dl-note");
+    note.textContent = "";
+    var h = document.createElement("h3"); h.textContent = "Important";
+    var p = document.createElement("p"); p.textContent = data.note || "This is the base limitation date. The ACAS Early Conciliation stop-clock can extend it — check before you rely on this date.";
+    note.appendChild(h); note.appendChild(p);
+
+    if (LAWAPP_API.isLoggedIn()) {
+      document.getElementById("saved-note").hidden = false;
+      document.getElementById("save-banner").hidden = true;
+    } else {
+      document.getElementById("save-banner").hidden = false;
+      document.getElementById("saved-note").hidden = true;
+      document.getElementById("save-login").href =
+        "/pages/login.html?gate=1&next=" + encodeURIComponent("/pages/intake.html");
+    }
+    resultPanel.hidden = false;
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    errBox.style.display = "none";
+    var edt = document.getElementById("event_date").value;
+    if (!edt) { errText.textContent = "Please enter the date the event happened."; errBox.style.display = "block"; return; }
+
+    var btn = form.querySelector("button[type=submit]");
+    btn.disabled = true; spinner.hidden = false; resultPanel.hidden = true;
+    try {
+      var data = await LAWAPP_API.toolsDeadline({
+        event_date: edt,
+        event_type: document.getElementById("event_type").value,
+        jurisdiction: "EW",
+      });
+      render(data);
+    } catch (err) {
+      // 503 = statutory rule missing (fail-closed); 422 = bad input.
+      errText.textContent = (err && err.message) || "Could not calculate the deadline. Check your date and try again.";
+      errBox.style.display = "block";
+    } finally {
+      btn.disabled = false; spinner.hidden = true;
+    }
+  });
+
+  (function () {
+    var t = document.querySelector('.nav-toggle'), n = document.getElementById('navlinks');
+    if (!t || !n) return;
+    t.addEventListener('click', function () { n.classList.toggle('open'); });
+  })();
+})();
+</script>
+
+</body>
+</html>

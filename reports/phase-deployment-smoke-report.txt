@@ -1,0 +1,42 @@
+================================================================================
+DEPLOYMENT SMOKE REPORT — iterlaw-ai
+Date: 2026-06-02
+Context: admin@ordinox-talos
+================================================================================
+
+PODS
+  lawapp-backend  1/1  Running  image: ghcr.io/serverax/lawapp/backend:latest
+  lawapp-postgres 1/1  Running  image: pgvector/pgvector:pg16
+
+SERVICES
+  lawapp-backend  ClusterIP 10.104.194.17 :80
+  lawapp-postgres ClusterIP 10.109.37.31  :5432
+
+SMOKE TESTS
+  1. Health endpoint       PASS  {"status":"ok","db":"connected"}
+  2. DB connected          PASS  postgresql://lawapp:***@lawapp-postgres:5432/lawapp
+  3. Rules lookup          PASS  19 rules (11 UD + 8 UPW)
+  4. OOS rejection         PASS  status=not_supported matter_type=out_of_scope
+  5. Ambiguous conservative PASS status=not_supported matter_type=ambiguous
+  6. UD deadline from rules PASS  deadline.source=rules
+  7. PII boundary          PASS  pii_in_output=[]
+  8. Readiness flags       PASS  controlled_beta_ready=False production_ready=False
+
+DB SCHEMA VERIFIED (19 rules seeded)
+  legislation       0 rows (corpus not yet ingested)
+  case_law          0 rows (corpus not yet ingested)
+  acas_guidance     0 rows (corpus not yet ingested)
+  rules             19 rows (UD + UPW)
+  All 13 migrations applied (001–013)
+  Extensions: vector ✓  pgcrypto ✓
+
+PORT-FORWARD DEMO
+  kubectl port-forward -n iterlaw-ai svc/lawapp-backend 8080:80
+  curl http://localhost:8080/health
+
+IMAGE
+  ghcr.io/serverax/lawapp/backend:latest (pushed by CI run 26801489256)
+  ghcr.io/serverax/lawapp/backend:4a62263245e919544ab120c7f5fe4b4a658909b9
+
+OVERALL: PASS
+================================================================================

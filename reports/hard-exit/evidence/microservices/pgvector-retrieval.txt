@@ -1,0 +1,7 @@
+ source_id | source_type |                       source_url                       |                                       snip                                       | cos_dist 
+-----------+-------------+--------------------------------------------------------+----------------------------------------------------------------------------------+----------
+        10 | legislation | http://www.legislation.gov.uk/ukpga/2010/15/section/13 | Direct discrimination 13 1 A person (A) discriminates against another (B) if, be |   0.0000
+        10 | legislation | http://www.legislation.gov.uk/ukpga/2010/15/section/14 | Combined discrimination: dual characteristics 14 1 A person (A) discriminates ag |   0.1232
+        10 | legislation | http://www.legislation.gov.uk/ukpga/2010/15/section/19 | Indirect discrimination 19 1 A person (A) discriminates against another (B) if A |   0.1384
+(3 rows)
+

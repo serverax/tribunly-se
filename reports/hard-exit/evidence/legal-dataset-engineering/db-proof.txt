@@ -1,0 +1,26 @@
+=== T-003 FINAL DB PROOF ===
+--- BEFORE (captured pre-insert) ---
+legal_sources=8  corpus_chunks=92
+--- AFTER ---
+ legal_sources_total | legal_sources_t003 | corpus_chunks_total | corpus_chunks_t003 
+---------------------+--------------------+---------------------+--------------------
+                  17 |                  9 |                 890 |                798
+(1 row)
+
+--- GLOBAL ORPHAN CHECK (entire corpus_chunks table) ---
+ global_null_source_id | global_null_chunk_hash | global_null_source_url 
+-----------------------+------------------------+------------------------
+                     0 |                      0 |                      0
+(1 row)
+
+ global_chunks_with_dangling_source_id 
+---------------------------------------
+                                     0
+(1 row)
+
+--- embedding status (T-004 will populate; expect all T-003 chunks NULL) ---
+ t003_embedding_null | t003_embedding_set 
+---------------------+--------------------
+                 798 |                  0
+(1 row)
+

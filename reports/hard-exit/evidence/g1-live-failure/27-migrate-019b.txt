@@ -1,0 +1,8 @@
+CREATE TABLE
+NOTICE:  relation "safety_boundary_checks" already exists, skipping
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+DO

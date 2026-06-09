@@ -1,0 +1,18 @@
+=== T-003 chunk linkage (every chunk must link source_id + source_url + chunk_hash) ===
+ total_t003_chunks | with_source_id | with_source_url | with_chunk_hash | with_authority_ref 
+-------------------+----------------+-----------------+-----------------+--------------------
+               798 |            798 |             798 |             798 |                798
+(1 row)
+
+=== every chunk joins to a real legal_sources row (FK) ===
+ chunks_joined_to_legal_sources 
+--------------------------------
+                            798
+(1 row)
+
+=== chunk source_url is the parent legal_sources base_url OR a section-URI under it ===
+ chunks_url_matches_parent 
+---------------------------
+                       798
+(1 row)
+

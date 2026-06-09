@@ -1,0 +1,29 @@
+===== REPO SERVICE INVENTORY (services/**) =====
+Generated: Sun Jun  7 15:21:03 UTC 2026
+
+--- service dirs with app.py + create_service usage ---
+lawapp-brain  (no app.py/main.py)
+lawapp-citation-guard  (no app.py/main.py)
+lawapp-document-service  (no app.py/main.py)
+lawapp-llm-gateway  (no app.py/main.py)
+lawapp-rag-retrieval  (no app.py/main.py)
+lawapp-rules-engine  (no app.py/main.py)
+lawapp_brain  app=app.py  create_service=Y  routes=2  [create_service("lawapp-brain", needs_db=True)]
+lawapp_citation_guard  app=app.py  create_service=Y  routes=1  [create_service("lawapp-citation-guard", needs_db=True)]
+lawapp_crawler  app=app.py  create_service=Y  routes=1  [create_service("lawapp-crawler", needs_db=False)]
+lawapp_document_service  app=app.py  create_service=Y  routes=2  [create_service("lawapp-document-service", needs_db=False)]
+lawapp_llm_gateway  app=app.py  create_service=Y  routes=1  [create_service("lawapp-llm-gateway", needs_db=False)]
+lawapp_rag_ingestion  app=app.py  create_service=Y  routes=1  [create_service("lawapp-rag-ingestion", needs_db=True)]
+lawapp_rag_retrieval  app=app.py  create_service=Y  routes=1  [create_service("lawapp-rag-retrieval", needs_db=True)]
+lawapp_rules_engine  app=app.py  create_service=Y  routes=3  [create_service("lawapp-rules-engine", needs_db=True)]
+lawapp_worker  app=app.py  create_service=N  routes=0  []
+
+--- services/_common.py create_service signature ---
+37:def create_service(service_name: str, *, needs_db: bool = True) -> FastAPI:
+
+--- FINDINGS ---
+[OK]   8 HTTP services use services._common.create_service (shared factory): brain, citation_guard, crawler, document_service, llm_gateway, rag_ingestion, rag_retrieval, rules_engine.
+[OK]   lawapp_worker: background sleep-loop worker (no HTTP routes) — matches deployment with no ports/probes. Trivial placeholder body (sleeps WORKER_SLEEP_SECONDS); NO real work loop. Classify: REAL-process / NO-OP-BODY.
+[DEAD] services/lawapp-brain, lawapp-citation-guard, lawapp-document-service, lawapp-llm-gateway, lawapp-rag-retrieval, lawapp-rules-engine (HYPHEN dirs) are EMPTY leftovers — DEAD-CODE-DIR, not deployed.
+[DRIFT] Deployed lawapp-brain Deployment runs image ghcr.io/serverax/lawapp/backend:latest on port 8000 serving the full backend main.py (NOT services.lawapp_brain.app:8080 from its Dockerfile). The slim brain service code exists but the LIVE brain is the full backend image.
+[DRIFT] Deployed lawapp-citation-guard image (b13c59d…) returns {valid:true} for the all-zeros fake UUID and for empty citations, and omits claimed/valid_uuids/reason fields present in current services/lawapp_citation_guard/app.py source. Deployed image is STALE / divergent and validates permissively (effective stub).

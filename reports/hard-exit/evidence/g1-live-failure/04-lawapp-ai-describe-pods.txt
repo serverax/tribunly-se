@@ -1,0 +1,865 @@
+Name:             lawapp-brain-6597567bdc-5wtsh
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Sat, 06 Jun 2026 18:43:35 +0100
+Labels:           app=lawapp-brain
+                  part-of=lawapp
+                  pod-template-hash=6597567bdc
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-06T18:43:35+01:00
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.244.4.203
+IPs:
+  IP:           10.244.4.203
+Controlled By:  ReplicaSet/lawapp-brain-6597567bdc
+Containers:
+  brain:
+    Container ID:   containerd://e95d2a043b655ba1d8c7da54eb48c14eb844a3b1620b54c08a18dfdf885899ed
+    Image:          ghcr.io/serverax/lawapp/backend:latest
+    Image ID:       ghcr.io/serverax/lawapp/backend@sha256:4c88929dfda178ae565ec8efa5b4f40cc0d443a59e8f5cc97850de948f141932
+    Port:           8000/TCP (http)
+    Host Port:      0/TCP (http)
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Sun, 07 Jun 2026 14:57:06 +0100
+      Finished:     Sun, 07 Jun 2026 14:59:06 +0100
+    Ready:          False
+    Restart Count:  273
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      250m
+      memory:   512Mi
+    Liveness:   http-get http://:8000/health delay=30s timeout=5s period=30s #success=1 #failure=3
+    Readiness:  http-get http://:8000/health delay=15s timeout=5s period=10s #success=1 #failure=3
+    Environment Variables from:
+      lawapp-ai-config   ConfigMap  Optional: false
+      lawapp-ai-secrets  Secret     Optional: false
+    Environment:
+      POSTGRES_HOST:  lawapp-postgres.lawapp-api.svc.cluster.local
+      POSTGRES_PORT:  5432
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-khkxn (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-khkxn:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node-role.kubernetes.io/control-plane:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-brain-746f75b56b-qmd5l
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Sat, 06 Jun 2026 22:26:47 +0100
+Labels:           app=lawapp-brain
+                  part-of=lawapp
+                  pod-template-hash=746f75b56b
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-06T22:26:47+01:00
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.244.4.235
+IPs:
+  IP:           10.244.4.235
+Controlled By:  ReplicaSet/lawapp-brain-746f75b56b
+Containers:
+  brain:
+    Container ID:   containerd://86dec0dce05d025b150f73c0fdf9a29e8f3d2821392ea8271d0df904c37c73d5
+    Image:          ghcr.io/serverax/lawapp/backend:latest
+    Image ID:       ghcr.io/serverax/lawapp/backend@sha256:4c88929dfda178ae565ec8efa5b4f40cc0d443a59e8f5cc97850de948f141932
+    Port:           8000/TCP (http)
+    Host Port:      0/TCP (http)
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Sun, 07 Jun 2026 14:55:49 +0100
+      Finished:     Sun, 07 Jun 2026 14:57:48 +0100
+    Ready:          False
+    Restart Count:  223
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      250m
+      memory:   512Mi
+    Liveness:   http-get http://:8000/health delay=30s timeout=5s period=30s #success=1 #failure=3
+    Readiness:  http-get http://:8000/health delay=15s timeout=5s period=10s #success=1 #failure=3
+    Environment Variables from:
+      lawapp-ai-config   ConfigMap  Optional: false
+      lawapp-ai-secrets  Secret     Optional: false
+    Environment:
+      POSTGRES_HOST:  lawapp-postgres.lawapp-api.svc.cluster.local
+      POSTGRES_PORT:  5432
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-4gzx5 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-4gzx5:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node-role.kubernetes.io/control-plane:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-document-service-b88c5f49b-k6cs2
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             talos-h93-b9x/148.251.247.56
+Start Time:       Sat, 06 Jun 2026 14:23:18 +0100
+Labels:           app=lawapp-document-service
+                  component=lawapp-document-service
+                  part-of=lawapp
+                  pod-template-hash=b88c5f49b
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.55
+IPs:
+  IP:           10.244.0.55
+Controlled By:  ReplicaSet/lawapp-document-service-b88c5f49b
+Containers:
+  lawapp-document-service:
+    Container ID:  containerd://def448d9660c4da60fe8387e9ccd5a833ed7eb187bbbb3de1319d76633e91f25
+    Image:         ghcr.io/serverax/lawapp-document-service:b13c59d01e73e861b35498cac2b37d566609c262
+    Image ID:      ghcr.io/serverax/lawapp-document-service@sha256:f27289881a0b5bd7deffad62992a697ab7a57cf50b769f17b1c1bd06665f962d
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Command:
+      uvicorn
+    Args:
+      services.lawapp_document_service.app:app
+      --host
+      0.0.0.0
+      --port
+      8080
+    State:          Running
+      Started:      Sat, 06 Jun 2026 14:23:19 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=10s timeout=3s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/ready delay=5s timeout=3s period=5s #success=1 #failure=12
+    Environment Variables from:
+      lawapp-ai-config   ConfigMap  Optional: true
+      lawapp-ai-secrets  Secret     Optional: true
+    Environment:
+      SERVICE_NAME:  lawapp-document-service
+      LOG_FORMAT:    json
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-hs67k (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-hs67k:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-llm-gateway-75fdbcbb64-hxrsk
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Sat, 06 Jun 2026 15:06:37 +0100
+Labels:           app=lawapp-llm-gateway
+                  component=lawapp-llm-gateway
+                  part-of=lawapp
+                  pod-template-hash=75fdbcbb64
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-06T14:43:29+01:00
+Status:           Running
+IP:               10.244.5.44
+IPs:
+  IP:           10.244.5.44
+Controlled By:  ReplicaSet/lawapp-llm-gateway-75fdbcbb64
+Containers:
+  lawapp-llm-gateway:
+    Container ID:  containerd://28c89841330e3b5d95d856ff152a0db42291b03cc156b27522b70de08ef0ee3d
+    Image:         ghcr.io/serverax/lawapp-llm-gateway:b13c59d01e73e861b35498cac2b37d566609c262
+    Image ID:      ghcr.io/serverax/lawapp-llm-gateway@sha256:242f3d15e81c61286c9bae32cf546b44d24341cc5f0843ca528db70dda71442f
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Command:
+      uvicorn
+    Args:
+      services.lawapp_llm_gateway.app:app
+      --host
+      0.0.0.0
+      --port
+      8080
+    State:          Running
+      Started:      Sat, 06 Jun 2026 15:06:40 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=10s timeout=3s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/health delay=5s timeout=3s period=5s #success=1 #failure=12
+    Environment Variables from:
+      lawapp-ai-config   ConfigMap  Optional: true
+      lawapp-ai-secrets  Secret     Optional: true
+    Environment:
+      SERVICE_NAME:  lawapp-llm-gateway
+      LOG_FORMAT:    json
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-6ddc8 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-6ddc8:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node-role.kubernetes.io/control-plane:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-reasoning-worker-55c9fd4db6-mccj4
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           app=lawapp-reasoning-worker
+                  part-of=lawapp
+                  pod-template-hash=55c9fd4db6
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-05T13:12:35Z
+Status:           Pending
+SeccompProfile:   RuntimeDefault
+IP:               
+IPs:              <none>
+Controlled By:    ReplicaSet/lawapp-reasoning-worker-55c9fd4db6
+Containers:
+  reasoning:
+    Image:      ghcr.io/serverax/lawapp/backend:latest
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      python
+      -m
+      backend.core.pipeline
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:     200m
+      memory:  512Mi
+    Environment Variables from:
+      lawapp-ai-config   ConfigMap  Optional: false
+      lawapp-ai-secrets  Secret     Optional: false
+    Environment:         <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-8fq8m (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False 
+Volumes:
+  kube-api-access-8fq8m:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-rules-engine-86b796c974-r78vb
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             talos-h93-b9x/148.251.247.56
+Start Time:       Sat, 06 Jun 2026 14:37:07 +0100
+Labels:           app=lawapp-rules-engine
+                  component=lawapp-rules-engine
+                  part-of=lawapp
+                  pod-template-hash=86b796c974
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.71
+IPs:
+  IP:           10.244.0.71
+Controlled By:  ReplicaSet/lawapp-rules-engine-86b796c974
+Containers:
+  lawapp-rules-engine:
+    Container ID:  containerd://dbd8bc6ca8f2544e176fd5fcc6007cdf46ce83a29521b84740ed9be442267c69
+    Image:         ghcr.io/serverax/lawapp-rules-engine:b13c59d01e73e861b35498cac2b37d566609c262
+    Image ID:      ghcr.io/serverax/lawapp-rules-engine@sha256:762b40a566ca5c64782e7f27a1ebe000d4cca5622ffb2bea238b04b2e08463e1
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Command:
+      uvicorn
+    Args:
+      services.lawapp_rules_engine.app:app
+      --host
+      0.0.0.0
+      --port
+      8080
+    State:          Running
+      Started:      Sat, 06 Jun 2026 14:37:10 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=10s timeout=3s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/ready delay=5s timeout=3s period=5s #success=1 #failure=12
+    Environment Variables from:
+      lawapp-ai-config   ConfigMap  Optional: true
+      lawapp-ai-secrets  Secret     Optional: true
+    Environment:
+      SERVICE_NAME:  lawapp-rules-engine
+      LOG_FORMAT:    json
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-t2qzw (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-t2qzw:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             lawapp-rules-engine-f7755b979-vqfh2
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           app=lawapp-rules-engine
+                  component=lawapp-rules-engine
+                  part-of=lawapp
+                  pod-template-hash=f7755b979
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-06-06T14:43:29+01:00
+Status:           Pending
+IP:               
+IPs:              <none>
+Controlled By:    ReplicaSet/lawapp-rules-engine-f7755b979
+Containers:
+  lawapp-rules-engine:
+    Image:      ghcr.io/serverax/lawapp-rules-engine:b13c59d01e73e861b35498cac2b37d566609c262
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Command:
+      uvicorn
+    Args:
+      services.lawapp_rules_engine.app:app
+      --host
+      0.0.0.0
+      --port
+      8080
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://:8080/health delay=10s timeout=3s period=10s #success=1 #failure=6
+    Readiness:  http-get http://:8080/health delay=5s timeout=3s period=5s #success=1 #failure=12
+    Environment Variables from:
+      lawapp-ai-config   ConfigMap  Optional: true
+      lawapp-ai-secrets  Secret     Optional: true
+    Environment:
+      SERVICE_NAME:  lawapp-rules-engine
+      LOG_FORMAT:    json
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-hmrgn (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False 
+Volumes:
+  kube-api-access-hmrgn:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+
+
+Name:             ollama-inference-6gj24
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             talos-138-201-202-174/138.201.202.174
+Start Time:       Fri, 05 Jun 2026 21:30:36 +0100
+Labels:           app.kubernetes.io/name=ollama-inference
+                  controller-revision-hash=556b6647c5
+                  pod-template-generation=1
+Annotations:      <none>
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.244.5.55
+IPs:
+  IP:           10.244.5.55
+Controlled By:  DaemonSet/ollama-inference
+Init Containers:
+  copy-busybox-taskset:
+    Container ID:    containerd://0db50ccbe3dc45b37025a4384d77ab85b255d862e73ad193d36974840b7e6ad5
+    Image:           busybox:1.36
+    Image ID:        docker.io/library/busybox@sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662
+    Port:            <none>
+    Host Port:       <none>
+    SeccompProfile:  RuntimeDefault
+    Command:
+      /bin/sh
+      -lc
+      set -e
+      cp /bin/busybox /tools/busybox
+      chmod +x /tools/busybox
+      /tools/busybox taskset --help >/dev/null
+      
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Fri, 05 Jun 2026 21:30:37 +0100
+      Finished:     Fri, 05 Jun 2026 21:30:37 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /tools from tools (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-lpld2 (ro)
+Containers:
+  ollama:
+    Container ID:    containerd://6d66ed10862c190ef7cebc63a42bcb1a8fa3e27115f209e8d4893e5dfd29261f
+    Image:           ollama/ollama:latest
+    Image ID:        docker.io/ollama/ollama@sha256:72c60eb9e115e24078864c00274dc067fff2217b105918409856031cca7a7e92
+    Port:            11434/TCP (http)
+    Host Port:       0/TCP (http)
+    SeccompProfile:  RuntimeDefault
+    Command:
+      /bin/sh
+      -lc
+      set -e
+      
+      echo "Starting temporary Ollama server..."
+      ollama serve &
+      PID="$!"
+      
+      for i in $(seq 1 180); do
+        if ollama list >/dev/null 2>&1; then
+          break
+        fi
+        echo "Waiting for Ollama server..."
+        sleep 2
+      done
+      
+      echo "Pulling model: ${OLLAMA_MODEL}"
+      ollama pull "${OLLAMA_MODEL}"
+      
+      echo "Stopping temporary Ollama server..."
+      kill "${PID}" || true
+      wait "${PID}" || true
+      
+      echo "Starting pinned Ollama server on CPU set ${CPUSET}"
+      exec /tools/busybox taskset -c "${CPUSET}" ollama serve
+      
+    State:          Running
+      Started:      Fri, 05 Jun 2026 21:32:14 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     4
+      memory:  10Gi
+    Requests:
+      cpu:      2
+      memory:   4Gi
+    Liveness:   http-get http://:11434/api/tags delay=180s timeout=3s period=30s #success=1 #failure=5
+    Readiness:  http-get http://:11434/api/tags delay=20s timeout=3s period=10s #success=1 #failure=90
+    Environment:
+      OLLAMA_HOST:               0.0.0.0:11434
+      OLLAMA_MODELS:             /root/.ollama/models
+      OLLAMA_KEEP_ALIVE:         24h
+      OLLAMA_NUM_PARALLEL:       1
+      OLLAMA_MAX_LOADED_MODELS:  1
+      OLLAMA_MODEL:              <set to the key 'OLLAMA_MODEL' of config map 'lawapp-inference-policy'>  Optional: false
+      CPUSET:                    <set to the key 'CPUSET' of config map 'lawapp-inference-policy'>        Optional: false
+    Mounts:
+      /root/.ollama from ollama-data (rw)
+      /tools from tools (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-lpld2 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  ollama-data:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  tools:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-lpld2:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 op=Exists
+                             node.kubernetes.io/disk-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/memory-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists
+                             node.kubernetes.io/pid-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/unreachable:NoExecute op=Exists
+                             node.kubernetes.io/unschedulable:NoSchedule op=Exists
+
+
+Name:             ollama-inference-cm2s7
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             talos-h93-b9x/148.251.247.56
+Start Time:       Fri, 05 Jun 2026 21:30:36 +0100
+Labels:           app.kubernetes.io/name=ollama-inference
+                  controller-revision-hash=556b6647c5
+                  pod-template-generation=1
+Annotations:      <none>
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.244.0.170
+IPs:
+  IP:           10.244.0.170
+Controlled By:  DaemonSet/ollama-inference
+Init Containers:
+  copy-busybox-taskset:
+    Container ID:    containerd://c7cdea16c90ecbbcfae4d96e42f2b6fb703bfde04e2bdc8e2e5a4c3ebccea15c
+    Image:           busybox:1.36
+    Image ID:        docker.io/library/busybox@sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662
+    Port:            <none>
+    Host Port:       <none>
+    SeccompProfile:  RuntimeDefault
+    Command:
+      /bin/sh
+      -lc
+      set -e
+      cp /bin/busybox /tools/busybox
+      chmod +x /tools/busybox
+      /tools/busybox taskset --help >/dev/null
+      
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Fri, 05 Jun 2026 21:30:37 +0100
+      Finished:     Fri, 05 Jun 2026 21:30:37 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /tools from tools (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-db9wv (ro)
+Containers:
+  ollama:
+    Container ID:    containerd://697283ae40e617d1e116be8169f67948e0eeb8796a7a9ffbe7c39cc46541547c
+    Image:           ollama/ollama:latest
+    Image ID:        docker.io/ollama/ollama@sha256:72c60eb9e115e24078864c00274dc067fff2217b105918409856031cca7a7e92
+    Port:            11434/TCP (http)
+    Host Port:       0/TCP (http)
+    SeccompProfile:  RuntimeDefault
+    Command:
+      /bin/sh
+      -lc
+      set -e
+      
+      echo "Starting temporary Ollama server..."
+      ollama serve &
+      PID="$!"
+      
+      for i in $(seq 1 180); do
+        if ollama list >/dev/null 2>&1; then
+          break
+        fi
+        echo "Waiting for Ollama server..."
+        sleep 2
+      done
+      
+      echo "Pulling model: ${OLLAMA_MODEL}"
+      ollama pull "${OLLAMA_MODEL}"
+      
+      echo "Stopping temporary Ollama server..."
+      kill "${PID}" || true
+      wait "${PID}" || true
+      
+      echo "Starting pinned Ollama server on CPU set ${CPUSET}"
+      exec /tools/busybox taskset -c "${CPUSET}" ollama serve
+      
+    State:          Running
+      Started:      Fri, 05 Jun 2026 21:31:26 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     4
+      memory:  10Gi
+    Requests:
+      cpu:      2
+      memory:   4Gi
+    Liveness:   http-get http://:11434/api/tags delay=180s timeout=3s period=30s #success=1 #failure=5
+    Readiness:  http-get http://:11434/api/tags delay=20s timeout=3s period=10s #success=1 #failure=90
+    Environment:
+      OLLAMA_HOST:               0.0.0.0:11434
+      OLLAMA_MODELS:             /root/.ollama/models
+      OLLAMA_KEEP_ALIVE:         24h
+      OLLAMA_NUM_PARALLEL:       1
+      OLLAMA_MAX_LOADED_MODELS:  1
+      OLLAMA_MODEL:              <set to the key 'OLLAMA_MODEL' of config map 'lawapp-inference-policy'>  Optional: false
+      CPUSET:                    <set to the key 'CPUSET' of config map 'lawapp-inference-policy'>        Optional: false
+    Mounts:
+      /root/.ollama from ollama-data (rw)
+      /tools from tools (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-db9wv (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  ollama-data:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  tools:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-db9wv:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 op=Exists
+                             node.kubernetes.io/disk-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/memory-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists
+                             node.kubernetes.io/pid-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/unreachable:NoExecute op=Exists
+                             node.kubernetes.io/unschedulable:NoSchedule op=Exists
+
+
+Name:             ollama-inference-d485m
+Namespace:        lawapp-ai
+Priority:         0
+Service Account:  default
+Node:             talos-5h3-83r/138.201.253.245
+Start Time:       Fri, 05 Jun 2026 21:30:36 +0100
+Labels:           app.kubernetes.io/name=ollama-inference
+                  controller-revision-hash=556b6647c5
+                  pod-template-generation=1
+Annotations:      <none>
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.244.4.38
+IPs:
+  IP:           10.244.4.38
+Controlled By:  DaemonSet/ollama-inference
+Init Containers:
+  copy-busybox-taskset:
+    Container ID:    containerd://b45354d16c675dffd746480ffa1f16911788f630d15aafdcf63f9c7bed6e5885
+    Image:           busybox:1.36
+    Image ID:        docker.io/library/busybox@sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662
+    Port:            <none>
+    Host Port:       <none>
+    SeccompProfile:  RuntimeDefault
+    Command:
+      /bin/sh
+      -lc
+      set -e
+      cp /bin/busybox /tools/busybox
+      chmod +x /tools/busybox
+      /tools/busybox taskset --help >/dev/null
+      
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Fri, 05 Jun 2026 21:30:39 +0100
+      Finished:     Fri, 05 Jun 2026 21:30:39 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /tools from tools (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-2jp8p (ro)
+Containers:
+  ollama:
+    Container ID:    containerd://3cc7cf8116d18fb5adb15dc115e179c8186c67ca47eadf9153c0f461c0e908df
+    Image:           ollama/ollama:latest
+    Image ID:        docker.io/ollama/ollama@sha256:72c60eb9e115e24078864c00274dc067fff2217b105918409856031cca7a7e92
+    Port:            11434/TCP (http)
+    Host Port:       0/TCP (http)
+    SeccompProfile:  RuntimeDefault
+    Command:
+      /bin/sh
+      -lc
+      set -e
+      
+      echo "Starting temporary Ollama server..."
+      ollama serve &
+      PID="$!"
+      
+      for i in $(seq 1 180); do
+        if ollama list >/dev/null 2>&1; then
+          break
+        fi
+        echo "Waiting for Ollama server..."
+        sleep 2
+      done
+      
+      echo "Pulling model: ${OLLAMA_MODEL}"
+      ollama pull "${OLLAMA_MODEL}"
+      
+      echo "Stopping temporary Ollama server..."
+      kill "${PID}" || true
+      wait "${PID}" || true
+      
+      echo "Starting pinned Ollama server on CPU set ${CPUSET}"
+      exec /tools/busybox taskset -c "${CPUSET}" ollama serve
+      
+    State:          Running
+      Started:      Fri, 05 Jun 2026 21:32:01 +0100
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     4
+      memory:  10Gi
+    Requests:
+      cpu:      2
+      memory:   4Gi
+    Liveness:   http-get http://:11434/api/tags delay=180s timeout=3s period=30s #success=1 #failure=5
+    Readiness:  http-get http://:11434/api/tags delay=20s timeout=3s period=10s #success=1 #failure=90
+    Environment:
+      OLLAMA_HOST:               0.0.0.0:11434
+      OLLAMA_MODELS:             /root/.ollama/models
+      OLLAMA_KEEP_ALIVE:         24h
+      OLLAMA_NUM_PARALLEL:       1
+      OLLAMA_MAX_LOADED_MODELS:  1
+      OLLAMA_MODEL:              <set to the key 'OLLAMA_MODEL' of config map 'lawapp-inference-policy'>  Optional: false
+      CPUSET:                    <set to the key 'CPUSET' of config map 'lawapp-inference-policy'>        Optional: false
+    Mounts:
+      /root/.ollama from ollama-data (rw)
+      /tools from tools (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-2jp8p (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  ollama-data:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  tools:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-2jp8p:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 op=Exists
+                             node.kubernetes.io/disk-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/memory-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists
+                             node.kubernetes.io/pid-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/unreachable:NoExecute op=Exists
+                             node.kubernetes.io/unschedulable:NoSchedule op=Exists

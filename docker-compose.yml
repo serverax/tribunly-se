@@ -1,0 +1,430 @@
+services:
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lawapp} -d ${POSTGRES_DB:-lawapp}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    command: ["postgres", "-c", "shared_buffers=256MB", "-c", "max_connections=100"]
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      # DB — POSTGRES_HOST=db routes to the compose service, not localhost
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      # LOCAL OLLAMA ONLY — no external LLM providers for lawapp legal routes.
+      LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
+      LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://ollama-inference.lawapp-ai.svc.cluster.local:11434}
+      LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      # Auth/security — jwt for proper user isolation; mock also works for dev
+      LAWAPP_AUTH_MODE: ${LAWAPP_AUTH_MODE:-jwt}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required (set it in .env or the environment; no insecure default)}
+      JWT_ISSUER: ${JWT_ISSUER:-lawapp-issuer}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-lawapp-audience}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-placeholder-dev-key-replace-in-production}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?ADMIN_API_KEY is required (set it in .env or the environment; no insecure default)}
+      # Local default: fail closed. Set stripe_test/stripe_live with Stripe
+      # secrets when exercising paid checkout; never default to a fake unlock path.
+      PAYMENT_MODE: ${PAYMENT_MODE:-disabled}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      # Rate limiting — Redis backend (in-memory fallback if Redis unavailable)
+      RATELIMIT_STORAGE_URI: ${RATELIMIT_STORAGE_URI:-redis://redis:6379}
+      # External LLM gateways (OpenRouter/Anthropic/OpenAI) are FORBIDDEN for lawapp
+      # legal routes — inference is local Ollama only (see backend/core/inference_policy.py).
+      RULES_SERVICE_URL: ${RULES_SERVICE_URL:-http://lawapp-rules-service:8016}
+      RAG_SERVICE_URL: ${RAG_SERVICE_URL:-http://lawapp-rag-service:8017}
+      GRAPH_RAG_SERVICE_URL: ${GRAPH_RAG_SERVICE_URL:-http://lawapp-graph-rag-service:8018}
+      AUDIT_SERVICE_URL: ${AUDIT_SERVICE_URL:-http://lawapp-audit-service:8020}
+      REDACTION_SERVICE_URL: ${REDACTION_SERVICE_URL:-http://lawapp-redaction-service:8019}
+    volumes:
+      # Serve the static frontend (HTML/CSS/JS) from source — read-only.
+      # The monolith mounts /css, /js and serves pages from /app/client/public
+      # (backend/api/main.py:144). Bind-mounting keeps the served UI in sync with
+      # the repo without an image rebuild. Presentation assets only; no app logic.
+      - ./client/public:/app/client/public:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
+  # db-init: ONE-TIME database initialization (fresh schema setup).
+  # Drops existing database, creates fresh, loads schema, seeds modules.
+  # Usage:
+  #   docker compose run --rm db-init
+  db-init:
+    build:
+      context: .
+      dockerfile: Dockerfile.ingestion
+    working_dir: /app
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    command: ["bash", "/app/scripts/docker-init-db.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - init
+
+  # db-bootstrap: runs once after DB is healthy to ingest legislation + ACAS.
+  # Idempotent: running twice is safe (ingestion scripts use upsert logic).
+  # Run separately if needed:
+  #   docker compose run --rm db-bootstrap
+  db-bootstrap:
+    build:
+      context: .
+      dockerfile: Dockerfile.ingestion
+    working_dir: /app
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-1536}
+    command: >
+      bash -c "
+        echo 'Starting lawapp legal data bootstrap...' &&
+        python -m backend.ingestion.seeds.employment_law_modules &&
+        python -m backend.ingestion.seeds.legislation_seed &&
+        python -m ingestion.legislation.ingest &&
+        python -m ingestion.acas.ingest &&
+        python -m ingestion.embeddings.embedder &&
+        echo 'Bootstrap complete.'
+      "
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - bootstrap
+
+  # One-shot ingestion / test runner.
+  # Usage:
+  #   docker compose run --rm ingestion python -m ingestion.legislation.ingest
+  #   docker compose run --rm ingestion python -m pytest tests/ -v
+  ingestion:
+    build:
+      context: .
+      dockerfile: Dockerfile.ingestion
+    working_dir: /app
+    volumes:
+      - .:/app   # live-mount repo so edits don't require a rebuild
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      # LOCAL OLLAMA ONLY — no external LLM providers.
+      LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
+      LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://ollama-inference.lawapp-ai.svc.cluster.local:11434}
+      LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-1536}
+      LEGISLATION_REQUESTS_PER_SECOND: ${LEGISLATION_REQUESTS_PER_SECOND:-1}
+      FCL_REQUESTS_PER_SECOND: ${FCL_REQUESTS_PER_SECOND:-1}
+      FCL_BULK_LICENCE_GRANTED: ${FCL_BULK_LICENCE_GRANTED:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - ingestion
+
+  # Bulk acts ingestion from legislation.gov.uk (3,243+ acts).
+  # Usage:
+  #   docker compose run --rm bulk-acts-ingest python -m ingestion.legislation.ingest_bulk_acts
+  #   docker compose run --rm bulk-acts-ingest python -m ingestion.legislation.ingest_bulk_acts --max-acts 100
+  bulk-acts-ingest:
+    build:
+      context: .
+      dockerfile: Dockerfile.ingestion
+    working_dir: /app
+    volumes:
+      - .:/app   # live-mount repo so edits don't require a rebuild
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      LEGISLATION_REQUESTS_PER_SECOND: ${LEGISLATION_REQUESTS_PER_SECOND:-1}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      FASTEMBED_CACHE_PATH: /app/fastembed_cache
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - ingestion
+
+  # outbox-worker: consumer side of the transactional outbox (order §17).
+  # Claims pending events with FOR UPDATE SKIP LOCKED and drives
+  # pending → processing → processed / dead_letter. The Brain publishes events
+  # (brain.py Step 18b); this worker delivers them out-of-band.
+  #   docker compose up -d outbox-worker
+  #   docker compose run --rm outbox-worker python -m backend.core.outbox_worker --once
+  outbox-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    working_dir: /app
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+    command: ["python", "-m", "backend.core.outbox_worker"]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "from ingestion.db import get_connection; conn=get_connection(); conn.close(); import backend.core.outbox_worker"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  # ────────────────────────────────────────────────────────────────
+  # TIER 1 SERVICES (no dependencies, horizontal scaling)
+  # ────────────────────────────────────────────────────────────────
+
+  lawapp-rules-service:
+    build:
+      context: ./backend/services/lawapp-rules-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${RULES_SERVICE_PORT:-8016}:8016"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      REDIS_URL: "redis://redis:6379"
+      PORT: "8016"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      CACHE_TTL_SECONDS: "3600"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8016/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  lawapp-audit-service:
+    build:
+      context: ./backend/services/lawapp-audit-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${AUDIT_SERVICE_PORT:-8020}:8020"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      REDIS_URL: "redis://redis:6379"
+      PORT: "8020"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8020/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  lawapp-redaction-service:
+    build:
+      context: ./backend/services/lawapp-redaction-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${REDACTION_SERVICE_PORT:-8019}:8019"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      PORT: "8019"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8019/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  # ────────────────────────────────────────────────────────────────
+  # RAG SERVICES (Phase 1 — 3 core modules)
+  # ────────────────────────────────────────────────────────────────
+
+  lawapp-rag-service:
+    build:
+      context: ./backend/services/lawapp-rag-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${RAG_SERVICE_PORT:-8017}:8017"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      REDIS_URL: "redis://redis:6379"
+      PORT: "8017"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8017/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  lawapp-graph-rag-service:
+    build:
+      context: .
+      dockerfile: ./backend/services/lawapp-graph-rag-service/Dockerfile.root
+    restart: unless-stopped
+    ports:
+      - "${GRAPH_RAG_SERVICE_PORT:-8018}:8018"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      PORT: "8018"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8018/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  # ────────────────────────────────────────────────────────────────
+  # APPLICATION SERVICES (case, admin, notifications)
+  # ────────────────────────────────────────────────────────────────
+
+  lawapp-admin-service:
+    build:
+      context: ./backend/services/lawapp-admin-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${ADMIN_SERVICE_PORT:-8007}:8007"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      PORT: "8007"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-admin_secret_change_in_prod}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8007/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  lawapp-case-service:
+    build:
+      context: ./backend/services/lawapp-case-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${CASE_SERVICE_PORT:-8008}:8008"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      PORT: "8008"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8008/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  lawapp-notification-service:
+    build:
+      context: ./backend/services/lawapp-notification-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT:-8009}:8009"
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      REDIS_URL: "redis://redis:6379"
+      PORT: "8009"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8009/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+volumes:
+  pgdata:

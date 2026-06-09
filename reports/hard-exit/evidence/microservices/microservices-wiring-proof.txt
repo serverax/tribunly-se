@@ -1,0 +1,41 @@
+
+=== 1. backend /health == 200, db:connected ===
+[32mbackend /health ok, db connected[0m
+
+=== 2. backend /cases unauthenticated == 401 ===
+[32mbackend /cases unauth = 401[0m
+
+=== 3. brain /health == 200 ===
+[32mbrain /health = 200[0m
+
+=== 4+5. brain trace persists AND shows RAG + citation stages ===
+  trace_id=03158126-f0ec-4edc-9d71-5da6c9fc4087 rag_sources=['hybrid', 'legal_graph'] sources=10 citations_verified=10
+[32mbrain trace persisted (9 -> 10) with RAG + citation stages[0m
+
+=== 6. pgvector retrieval returns a real chunk with source_id ===
+[32mpgvector nearest-neighbour returned real chunk source_id=10[0m
+
+=== 7. every lawapp-* k8s Service has endpoints (except known dead/scaled-0) ===
+  ok: lawapp-ai/lawapp-brain -> 10.244.4.241:8000
+  ok: lawapp-ai/lawapp-document-service -> 10.244.0.55:8080
+  ok: lawapp-ai/lawapp-llm-gateway -> 10.244.5.44:8080
+  ok: lawapp-ai/lawapp-rules-engine -> 10.244.4.240:8080
+  ALLOWED-EMPTY: lawapp-ai/llm-inference-service (known DEAD-SERVICE, documented)
+  ok: lawapp-ai/ollama-inference -> 10.244.0.170:11434,10.244.4.38:11434,10.244.5.55:11434
+  ok: lawapp-api/lawapp-backend -> 10.244.5.177:8000
+  ok: lawapp-api/lawapp-postgres -> 10.244.4.40:5432
+  ok: lawapp-api/lawapp-postgres-headless -> 10.244.4.40:5432
+  ok: lawapp-rag/lawapp-crawler -> 10.244.5.178:8080
+  ok: lawapp-rag/lawapp-postgres -> 10.244.5.67:5432
+  ok: lawapp-rag/lawapp-postgres-headless -> 10.244.5.67:5432
+  ok: lawapp-rag/lawapp-rag-ingestion -> 10.244.5.48:8080
+  ok: lawapp-rag/lawapp-rag-retrieval -> 10.244.5.45:8080
+  ok: lawapp-security/lawapp-citation-guard -> 10.244.5.50:8080
+[32mall required services have endpoints[0m
+
+=== 8+9. no CrashLoopBackOff / unexpected Pending in critical namespaces ===
+[32mno CrashLoop / unexpected Pending in critical namespaces[0m
+
+=== RESULT ===
+[32mSA-014 microservices wiring: ALL CRITICAL ASSERTIONS PASSED[0m
+(Known/allowed exclusions: llm-inference-service DEAD-SERVICE, lawapp-reasoning-worker SCALED-0.)

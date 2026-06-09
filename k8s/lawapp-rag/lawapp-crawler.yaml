@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lawapp-crawler
+  namespace: lawapp-rag
+  labels:
+    app: lawapp-crawler
+    component: lawapp-crawler
+    part-of: lawapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lawapp-crawler
+  template:
+    metadata:
+      labels:
+        app: lawapp-crawler
+        component: lawapp-crawler
+        part-of: lawapp
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: lawapp-crawler
+          image: ghcr.io/serverax/lawapp-crawler:b13c59d01e73e861b35498cac2b37d566609c262
+          imagePullPolicy: Always
+          command: ["uvicorn"]
+          args: ["services.lawapp_crawler.app:app", "--host", "0.0.0.0", "--port", "8080"]
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVICE_NAME
+              value: "lawapp-crawler"
+            - name: LOG_FORMAT
+              value: "json"
+          envFrom:
+            - configMapRef:
+                name: lawapp-rag-config
+                optional: true
+            - secretRef:
+                name: lawapp-rag-secrets
+                optional: true
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawapp-crawler
+  namespace: lawapp-rag
+  labels:
+    app: lawapp-crawler
+    part-of: lawapp
+spec:
+  selector:
+    app: lawapp-crawler
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

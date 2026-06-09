@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up — lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
+  <script src="/js/a11y.js"></script>
+</head>
+<body>
+
+<div class="legal-notice" role="note">
+  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+</div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="nav-links" id="navlinks">
+    <a href="/">Home</a>
+    <a href="/pages/login.html">Login</a>
+  </div>
+</nav>
+
+<main class="page-narrow" style="padding-top:3rem;">
+  <div class="form-section">
+    <h1 style="color:var(--primary);margin-bottom:1rem;">Create your account</h1>
+    <p style="color:var(--muted);margin-bottom:1.5rem;font-size:.9rem;">
+      Save your situation check, track your deadline, and prepare draft documents — all in one place.
+    </p>
+
+    <form id="registerForm" novalidate>
+      <div class="form-group">
+        <label for="name">Your name <span class="hint">(optional)</span></label>
+        <input type="text" id="name" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="new-password" required minlength="8">
+        <span class="hint">At least 8 characters.</span>
+      </div>
+      <div class="form-group">
+        <label for="password-confirm">Confirm password</label>
+        <input type="password" id="password-confirm" autocomplete="new-password" required>
+      </div>
+
+      <div id="error-summary" class="form-section" style="display:none;background:var(--warn-bg);border-color:var(--warn-bd);padding:1rem;margin-bottom:1rem;">
+        <p id="error-text" style="color:var(--warn);font-size:.9rem;margin:0;"></p>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;">Create account</button>
+    </form>
+
+    <p style="margin-top:1.5rem;font-size:.9rem;text-align:center;">
+      Already have an account? <a href="/pages/login.html">Login here</a>.
+    </p>
+  </div>
+</main>
+
+<footer>
+  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script>
+(function () {
+  var form = document.getElementById("registerForm");
+  var errDiv = document.getElementById("error-summary");
+  var errText = document.getElementById("error-text");
+
+  function showError(msg) { errText.textContent = msg; errDiv.style.display = "block"; }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    errDiv.style.display = "none";
+
+    var name = document.getElementById("name").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var password = document.getElementById("password").value;
+    var confirm = document.getElementById("password-confirm").value;
+
+    if (!email || !password) { showError("Email and password are required."); return; }
+    if (password.length < 8) { showError("Your password must be at least 8 characters."); return; }
+    if (password !== confirm) { showError("The two passwords don't match."); return; }
+
+    var btn = form.querySelector("button[type=submit]");
+    btn.disabled = true; btn.textContent = "Creating your account…";
+    try {
+      // /api/auth/register returns a session bundle (access_token) and signs the
+      // user in immediately — no separate login call needed.
+      await LAWAPP_API.register(email, password, name || null);
+      // New account → run onboarding (which creates the first case, then routes
+      // to the dashboard; it self-skips to the dashboard if already onboarded).
+      window.location.href = "/pages/onboarding.html";
+    } catch (err) {
+      var msg = (err && err.message) || "Registration failed. Please try again.";
+      // Surface the common case clearly.
+      if (err && (err.status === 409 || /exist|already|taken|registered/i.test(msg))) {
+        msg = "An account with that email already exists. Try logging in instead.";
+      }
+      showError(msg);
+      btn.disabled = false; btn.textContent = "Create account";
+    }
+  });
+})();
+</script>
+<script>
+  (function () {
+    var t = document.querySelector('.nav-toggle'), n = document.getElementById('navlinks');
+    if (!t || !n) return;
+    t.addEventListener('click', function () {
+      var open = n.classList.toggle('open');
+      t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      t.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    n.addEventListener('click', function (e) { if (e.target.closest('a')) { n.classList.remove('open'); t.setAttribute('aria-expanded','false'); } });
+  })();
+</script>
+
+</body>
+</html>

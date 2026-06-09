@@ -1,0 +1,40 @@
+---
+# IterLaw — source freshness check CronJob
+# Runs weekly; reports stale sources via GET /freshness endpoint.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: source-freshness-check
+  namespace: iterlaw-rag
+  labels:
+    project: iterlaw
+spec:
+  schedule: "0 6 * * 1"   # Every Monday at 06:00 UTC
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: freshness
+              image: ghcr.io/serverax/lawapp/backend:${GIT_SHA}
+              command: ["python", "-m", "ingestion.freshness.report"]
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: ["ALL"]
+              envFrom:
+                - secretRef:
+                    name: lawapp-secrets
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 128Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
