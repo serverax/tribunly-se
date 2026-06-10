@@ -8,10 +8,18 @@ metadata:
     part-of: lawapp
 spec:
   schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
   jobTemplate:
     spec:
       template:
         spec:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
           securityContext:
             runAsNonRoot: true
             runAsUser: 10001
@@ -21,8 +29,26 @@ spec:
               type: RuntimeDefault
           containers:
           - name: smoke-test
-            image: ghcr.io/serverax/lawapp/backend:0fec3d8
-            command: ["bash", "scripts/smoke-iterlaw-ai.sh"]
+            image: ghcr.io/serverax/lawapp/backend:970b95c60d1dbce57474a02909b22c5e9f7f75a0
+            # Inline E2E smoke: deterministic diagnosis must return a rules-sourced
+            # deadline with no PII in output. (scripts/smoke-iterlaw-ai.sh does not
+            # exist in the image — it required kubectl anyway.)
+            command:
+              - python
+              - -c
+              - |
+                import urllib.request, json
+                body = json.dumps({"query": "I was dismissed",
+                                   "facts": {"jurisdiction": "EW", "edt": "2026-01-01",
+                                             "service_start_date": "2023-01-01"}}).encode()
+                req = urllib.request.Request(
+                    "http://lawapp-backend.lawapp-api.svc.cluster.local/api/diagnosis",
+                    data=body, headers={"Content-Type": "application/json"})
+                d = json.load(urllib.request.urlopen(req, timeout=120))
+                assert d.get("claim_type") == "unfair_dismissal", d.get("claim_type")
+                assert (d.get("deadline_info") or {}).get("source") == "rules"
+                assert d.get("boundary_log", {}).get("pii_in_output") == []
+                print("SMOKE PASS")
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:
@@ -49,10 +75,18 @@ metadata:
     part-of: lawapp
 spec:
   schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
   jobTemplate:
     spec:
       template:
         spec:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
           securityContext:
             runAsNonRoot: true
             runAsUser: 10001
@@ -62,7 +96,7 @@ spec:
               type: RuntimeDefault
           containers:
           - name: accuracy-check
-            image: ghcr.io/serverax/lawapp/backend:0fec3d8
+            image: ghcr.io/serverax/lawapp/backend:970b95c60d1dbce57474a02909b22c5e9f7f75a0
             command: ["python", "scripts/run_legal_accuracy.py"]
             securityContext:
               allowPrivilegeEscalation: false

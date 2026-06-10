@@ -187,3 +187,28 @@
     }
   };
 })();
+
+// ── Controlled-beta notice (remove at public launch) ─────────────────────────
+// Injected site-wide so the beta warning stays visible on every page that
+// loads auth.js. Safe DOM construction only — no innerHTML.
+(function () {
+  function addBetaBanner() {
+    if (document.getElementById('beta-banner')) return;
+    var bar = document.createElement('div');
+    bar.id = 'beta-banner';
+    bar.setAttribute('role', 'note');
+    bar.style.cssText = 'background:#fef3c7;color:#78350f;padding:8px 16px;' +
+      'font-size:14px;text-align:center;border-bottom:1px solid #f59e0b;';
+    var strong = document.createElement('strong');
+    strong.textContent = 'Beta service — not legal advice. ';
+    bar.appendChild(strong);
+    bar.appendChild(document.createTextNode(
+      'This tool provides legal information to help you prepare. Do not enter real names, ' +
+      'addresses, NI numbers, medical details or other sensitive personal data during the beta. ' +
+      'Tribunal deadlines are strict — verify dates with ACAS or a qualified adviser.'));
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addBetaBanner);
+  } else { addBetaBanner(); }
+})();

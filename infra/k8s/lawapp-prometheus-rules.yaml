@@ -1,0 +1,60 @@
+# Lawapp alert rules for the cluster's kube-prometheus stack.
+# NOTE: the shared Prometheus (ordinox-monitoring) is currently CrashLoopBackOff
+# (permission-denied on its data PVC — owner action to heal). These rules are
+# picked up automatically once Prometheus runs. Until then, operational
+# monitoring is provided by the lawapp-monitoring CronJobs (health probe 5m,
+# smoke test 15m, freshness daily, legal accuracy daily).
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: lawapp-alerts
+  namespace: lawapp-monitoring
+  labels:
+    release: ordinox-monitoring   # kube-prometheus ruleSelector match
+    part-of: lawapp
+spec:
+  groups:
+    - name: lawapp.availability
+      rules:
+        - alert: LawappPodNotReady
+          expr: |
+            sum by (namespace, pod) (
+              kube_pod_status_ready{condition="false", namespace=~"lawapp-.*|iterlaw-ai"}
+            ) > 0
+          for: 10m
+          labels: {severity: critical, project: lawapp}
+          annotations:
+            summary: "lawapp pod not Ready >10m: {{ $labels.namespace }}/{{ $labels.pod }}"
+        - alert: LawappPodCrashLooping
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace=~"lawapp-.*|iterlaw-ai"}[30m]) > 3
+          for: 5m
+          labels: {severity: critical, project: lawapp}
+          annotations:
+            summary: "lawapp container restarting: {{ $labels.namespace }}/{{ $labels.pod }}"
+    - name: lawapp.errors
+      rules:
+        - alert: LawappHigh5xxRate
+          expr: |
+            sum(rate(nginx_ingress_controller_requests{status=~"5..", exported_namespace=~"lawapp-api|iterlaw-ai"}[5m])) > 0.2
+          for: 10m
+          labels: {severity: warning, project: lawapp}
+          annotations:
+            summary: "lawapp ingress 5xx rate above 0.2/s for 10m"
+    - name: lawapp.capacity
+      rules:
+        - alert: LawappNodePodCapacity
+          expr: |
+            sum by (node) (kubelet_running_pods) / sum by (node) (kube_node_status_capacity{resource="pods"}) > 0.95
+          for: 15m
+          labels: {severity: warning, project: lawapp}
+          annotations:
+            summary: "node {{ $labels.node }} above 95% pod capacity (lawapp rollouts will block)"
+        - alert: LawappPostgresDiskGrowth
+          expr: |
+            predict_linear(kubelet_volume_stats_used_bytes{namespace=~"lawapp-.*|iterlaw-ai"}[6h], 7*24*3600)
+              > kubelet_volume_stats_capacity_bytes{namespace=~"lawapp-.*|iterlaw-ai"}
+          for: 30m
+          labels: {severity: warning, project: lawapp}
+          annotations:
+            summary: "lawapp volume {{ $labels.persistentvolumeclaim }} projected full within 7 days"

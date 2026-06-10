@@ -26,6 +26,10 @@ spec:
     spec:
       template:
         spec:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
           restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true
@@ -33,7 +37,7 @@ spec:
             runAsGroup: 10001
           containers:
           - name: freshness
-            image: ghcr.io/serverax/lawapp/backend:latest
+            image: ghcr.io/serverax/lawapp/backend:970b95c60d1dbce57474a02909b22c5e9f7f75a0
             imagePullPolicy: Always
             command: ["python", "-m", "ingestion.freshness.report"]
             env:
@@ -76,6 +80,10 @@ spec:
     spec:
       template:
         spec:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
           restartPolicy: OnFailure
           containers:
           - name: probe
@@ -84,7 +92,8 @@ spec:
             - /bin/sh
             - -c
             - |
-              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://lawapp-backend.lawapp-api.svc.cluster.local:8000/health)
+              # Service port is 80 (targetPort 8000)
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://lawapp-backend.lawapp-api.svc.cluster.local/health)
               echo "Health check status: $STATUS"
               [ "$STATUS" = "200" ] || exit 1
             resources:

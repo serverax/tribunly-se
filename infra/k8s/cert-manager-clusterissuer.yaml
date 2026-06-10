@@ -1,0 +1,18 @@
+# ClusterIssuer referenced by lawapp ingress/Certificate resources
+# (cert-manager.io/cluster-issuer: "letsencrypt-prod").
+# HTTP-01 via the default nginx ingress class. Certificates only issue once
+# the hostname has public DNS pointing at the ingress (owner action).
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: serverax@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx

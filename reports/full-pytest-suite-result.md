@@ -1,12 +1,12 @@
 # Full Pytest Suite — Result
 
-- Timestamp: 2026-06-10T15:30:45Z
+- Timestamp: 2026-06-10T22:40:09Z
 - Command: `docker compose run --rm ingestion python -m pytest tests/ -q`
 - Image: Dockerfile.ingestion (deps baked in — no ad-hoc pip)
 - Exit code: 0
 
 ```
-1647 passed, 48 skipped, 6 warnings in 804.56s (0:13:24)
+1647 passed, 48 skipped, 6 warnings in 1526.24s (0:25:26)
 ```
 
 ## Tail of run
@@ -35,5 +35,5 @@ tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::tes
     decoded = self.decode_complete(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-1647 passed, 48 skipped, 6 warnings in 804.56s (0:13:24)
+1647 passed, 48 skipped, 6 warnings in 1526.24s (0:25:26)
 ```

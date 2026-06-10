@@ -20,6 +20,10 @@ spec:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: ingress-nginx
+    # lawapp's own namespaces (e.g. lawapp-monitoring health probes/smoke tests)
+    - namespaceSelector:
+        matchLabels:
+          part-of: lawapp
     ports:
     - port: 8000
   egress:
