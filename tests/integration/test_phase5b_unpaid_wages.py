@@ -56,6 +56,7 @@ from backend.api.main import app
 from backend.core.classify import classify
 from backend.core.pipeline import assess
 from backend.core.models import StubReasoningModel
+from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
 STUB = StubReasoningModel()
@@ -95,6 +96,28 @@ _PROHIBITED = [
     "guaranteed to win", "guaranteed outcome", "guaranteed success",
     "you will win", "as your solicitor",
 ]   # "guaranteed" alone is NOT prohibited — the legal notice says "No outcome is guaranteed"
+
+
+def _make_paid_wages_case() -> str:
+    resp = client.post("/cases", json={
+        "claim_type": "unpaid_wages",
+        "jurisdiction": "EW",
+        "assessment": _UPW_ASSESSMENT,
+        "key_dates": {"wages_due_date": "2026-03-31", "deadline_date": "2026-06-30"},
+    })
+    assert resp.status_code == 201
+    case_id = resp.json()["case_id"]
+    mark_case_paid(case_id)
+    return case_id
+
+
+def _generate_paid_wages_document(doc_type: str):
+    return client.post("/documents/generate", json={
+        "document_type": doc_type,
+        "assessment": _UPW_ASSESSMENT,
+        "facts": _UPW_FACTS,
+        "case_id": _make_paid_wages_case(),
+    })
 
 
 # ── 1-3. Classification ────────────────────────────────────────────────────────
@@ -204,12 +227,7 @@ def test_unpaid_wages_self_employed_no_viable():
 # ── 13-16. Document generation ────────────────────────────────────────────────
 
 def test_letter_before_action_generates():
-    resp = client.post("/documents/generate", json={
-        "document_type": "letter_before_action",
-        "assessment": _UPW_ASSESSMENT,
-        "facts": _UPW_FACTS,
-        "payment_token": "test-paid",
-    })
+    resp = _generate_paid_wages_document("letter_before_action")
     assert resp.status_code == 200
     data = resp.json()
     assert data["safety_check"]["passed"] is True
@@ -217,24 +235,14 @@ def test_letter_before_action_generates():
 
 
 def test_et1_support_notes_wages_generates():
-    resp = client.post("/documents/generate", json={
-        "document_type": "et1_support_notes_wages",
-        "assessment": _UPW_ASSESSMENT,
-        "facts": _UPW_FACTS,
-        "payment_token": "test-paid",
-    })
+    resp = _generate_paid_wages_document("et1_support_notes_wages")
     assert resp.status_code == 200
     assert resp.json()["safety_check"]["passed"] is True
 
 
 def test_wages_documents_include_legal_boundary():
     for doc_type in ["letter_before_action", "et1_support_notes_wages"]:
-        resp = client.post("/documents/generate", json={
-            "document_type": doc_type,
-            "assessment": _UPW_ASSESSMENT,
-            "facts": _UPW_FACTS,
-            "payment_token": "test-paid",
-        })
+        resp = _generate_paid_wages_document(doc_type)
         content = resp.json()["content"]
         assert "NOT legal advice" in content, f"Legal boundary missing from {doc_type}"
         assert "not a solicitor or law firm" in content.lower()
@@ -242,12 +250,7 @@ def test_wages_documents_include_legal_boundary():
 
 def test_wages_documents_no_prohibited_phrases():
     for doc_type in ["letter_before_action", "et1_support_notes_wages"]:
-        resp = client.post("/documents/generate", json={
-            "document_type": doc_type,
-            "assessment": _UPW_ASSESSMENT,
-            "facts": _UPW_FACTS,
-            "payment_token": "test-paid",
-        })
+        resp = _generate_paid_wages_document(doc_type)
         content = resp.json()["content"].lower()
         for phrase in _PROHIBITED:
             assert phrase.lower() not in content, \
@@ -255,23 +258,13 @@ def test_wages_documents_no_prohibited_phrases():
 
 
 def test_letter_before_action_includes_amount():
-    resp = client.post("/documents/generate", json={
-        "document_type": "letter_before_action",
-        "assessment": _UPW_ASSESSMENT,
-        "facts": _UPW_FACTS,
-        "payment_token": "test-paid",
-    })
+    resp = _generate_paid_wages_document("letter_before_action")
     content = resp.json()["content"]
     assert "2,500" in content or "2500" in content, "Letter must include unpaid amount"
 
 
 def test_et1_notes_wages_do_not_say_we_will_file():
-    resp = client.post("/documents/generate", json={
-        "document_type": "et1_support_notes_wages",
-        "assessment": _UPW_ASSESSMENT,
-        "facts": _UPW_FACTS,
-        "payment_token": "test-paid",
-    })
+    resp = _generate_paid_wages_document("et1_support_notes_wages")
     content = resp.json()["content"].lower()
     assert "we will file" not in content
     assert "we will submit" not in content

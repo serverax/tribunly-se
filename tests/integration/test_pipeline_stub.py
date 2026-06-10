@@ -141,14 +141,14 @@ def test_prospective_time_limit_not_in_pipeline_assessment():
 
 def test_stub_governance_routes_to_insufficient_grounding():
     """
-    The stub model deliberately returns insufficient_grounding=True and no citations.
-    The governance gate must route this to the insufficient_grounding path.
-    This proves the governance gate fires correctly — it's not a bug.
+    The stub path may either fail closed or be rescued by the deterministic,
+    cited fallback. A successful response must still be grounded.
     """
     result = assess("I was dismissed without warning", _STANDARD_FACTS, model=STUB)
-    # Stub has no real reasoning → governance routes to insufficient_grounding
-    assert result["status"] == "insufficient_grounding", \
-        f"Expected insufficient_grounding, got {result['status']}"
+    assert result["status"] in ("insufficient_grounding", "ok")
+    if result["status"] == "ok":
+        assert result.get("citations"), "Grounded fallback must include citations"
+        assert result.get("insufficient_grounding") is False
 
 
 # ── PENDING: items blocked by missing embeddings / model choice ───────────────

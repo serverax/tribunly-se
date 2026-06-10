@@ -353,6 +353,11 @@ def is_auth_production_ready() -> dict:
             blockers.append(
                 "LAWAPP_AUTH_MODE=jwt but neither JWT_JWKS_URL nor JWT_SECRET is set."
             )
+    else:
+        blockers.append(
+            f"LAWAPP_AUTH_MODE='{mode}' is not allowed in production. "
+            "Set LAWAPP_AUTH_MODE=jwt with JWT_JWKS_URL + JWT_ISSUER + JWT_AUDIENCE."
+        )
 
     return {"ready": len(blockers) == 0, "blockers": blockers}
 

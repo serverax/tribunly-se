@@ -41,7 +41,31 @@ BEGIN
     EXECUTE format('ALTER TABLE IF EXISTS %I ADD COLUMN IF NOT EXISTS applies_to_england_wales BOOLEAN DEFAULT false', t);
     EXECUTE format('ALTER TABLE IF EXISTS %I ADD COLUMN IF NOT EXISTS applies_to_gb BOOLEAN DEFAULT false', t);
   END LOOP;
+  ALTER TABLE IF EXISTS legislation ADD COLUMN IF NOT EXISTS content_hash TEXT;
   ALTER TABLE IF EXISTS rules ADD COLUMN IF NOT EXISTS is_current BOOLEAN DEFAULT true;
+  ALTER TABLE IF EXISTS user_legal_profiles ADD COLUMN IF NOT EXISTS jurisdiction_code TEXT;
+  ALTER TABLE IF EXISTS deadline_calculation_audit ADD COLUMN IF NOT EXISTS jurisdiction_code TEXT;
+END $$;
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='deadline_calculation_audit' AND column_name='jurisdiction'
+  ) THEN
+    EXECUTE 'ALTER TABLE deadline_calculation_audit ALTER COLUMN jurisdiction DROP NOT NULL';
+    EXECUTE '
+      UPDATE deadline_calculation_audit
+      SET jurisdiction_code = COALESCE(NULLIF(jurisdiction_code, ''''), NULLIF(jurisdiction, ''''), ''GB'')
+      WHERE jurisdiction_code IS NULL OR jurisdiction_code = ''''
+    ';
+  ELSE
+    EXECUTE '
+      UPDATE deadline_calculation_audit
+      SET jurisdiction_code = COALESCE(NULLIF(jurisdiction_code, ''''), ''GB'')
+      WHERE jurisdiction_code IS NULL OR jurisdiction_code = ''''
+    ';
+  END IF;
 END $$;
 
 INSERT INTO rules
@@ -136,6 +160,74 @@ SET jurisdiction_code = COALESCE(jurisdiction_code, 'GB'),
     last_verified_at = COALESCE(last_verified_at, now())
 WHERE claim_type IN ('unfair_dismissal', 'unpaid_wages');
 
+INSERT INTO legislation
+  (act_title, leg_type, year, chapter, section_ref, jurisdiction, heading,
+   body_text, chunk_index, source_url, effective_from, last_verified_at,
+   content_hash, country_code, domain, source_type, licence_status,
+   parser_type, parent_source_id, jurisdiction_code, legal_system,
+   applies_to_gb, applies_to_england_wales, applies_to_scotland, applies_to_ni)
+VALUES
+ ('Employment Rights Act 1996','primary',1996,'18','13','EW',
+  'Right not to suffer unauthorised deductions',
+  'A worker has the right not to suffer unauthorised deductions from wages. This section is the core unlawful deduction from wages protection.',
+  0,'https://www.legislation.gov.uk/ukpga/1996/18/section/13',
+  DATE '1996-08-22', now(),
+  encode(sha256('ERA 1996 s13 unpaid wages'::bytea), 'hex'),
+  'GB','employment_uk','primary_legislation','GRANTED','seeded_text','legislation_gov_uk',
+  'GB','Great Britain',true,true,true,false),
+ ('Employment Rights Act 1996','primary',1996,'18','23','EW',
+  'Complaints to employment tribunals',
+  'A worker may present a complaint to an employment tribunal that an employer has made an unauthorised deduction from wages.',
+  0,'https://www.legislation.gov.uk/ukpga/1996/18/section/23',
+  DATE '1996-08-22', now(),
+  encode(sha256('ERA 1996 s23 wages complaint'::bytea), 'hex'),
+  'GB','employment_uk','primary_legislation','GRANTED','seeded_text','legislation_gov_uk',
+  'GB','Great Britain',true,true,true,false),
+ ('Employment Rights Act 1996','primary',1996,'18','24','EW',
+  'Determination of complaints',
+  'Where an unlawful deduction complaint is well founded, the employment tribunal may make a declaration and order repayment of the amount deducted.',
+  0,'https://www.legislation.gov.uk/ukpga/1996/18/section/24',
+  DATE '1996-08-22', now(),
+  encode(sha256('ERA 1996 s24 wages remedy'::bytea), 'hex'),
+  'GB','employment_uk','primary_legislation','GRANTED','seeded_text','legislation_gov_uk',
+  'GB','Great Britain',true,true,true,false),
+ ('Employment Rights Act 1996','primary',1996,'18','124','EW',
+  'Compensatory award',
+  'Section 124 sets out the calculation and statutory cap for the compensatory award in unfair dismissal claims.',
+  0,'https://www.legislation.gov.uk/ukpga/1996/18/section/124',
+  DATE '1996-08-22', now(),
+  encode(sha256('ERA 1996 s124 compensatory award'::bytea), 'hex'),
+  'GB','employment_uk','primary_legislation','GRANTED','seeded_text','legislation_gov_uk',
+  'GB','Great Britain',true,true,true,false),
+ ('Employment Rights Act 1996','primary',1996,'18','227','EW',
+  'Maximum amount of a week''s pay',
+  'Section 227 defines the statutory limit on a week''s pay used in employment tribunal award calculations.',
+  0,'https://www.legislation.gov.uk/ukpga/1996/18/section/227',
+  DATE '1996-08-22', now(),
+  encode(sha256('ERA 1996 s227 weeks pay cap'::bytea), 'hex'),
+  'GB','employment_uk','primary_legislation','GRANTED','seeded_text','legislation_gov_uk',
+  'GB','Great Britain',true,true,true,false)
+ON CONFLICT (source_url, chunk_index) DO UPDATE SET
+  act_title=EXCLUDED.act_title,
+  section_ref=EXCLUDED.section_ref,
+  heading=EXCLUDED.heading,
+  body_text=EXCLUDED.body_text,
+  effective_from=EXCLUDED.effective_from,
+  last_verified_at=now(),
+  content_hash=EXCLUDED.content_hash,
+  country_code=EXCLUDED.country_code,
+  domain=EXCLUDED.domain,
+  source_type=EXCLUDED.source_type,
+  licence_status=EXCLUDED.licence_status,
+  parser_type=EXCLUDED.parser_type,
+  parent_source_id=EXCLUDED.parent_source_id,
+  jurisdiction_code=EXCLUDED.jurisdiction_code,
+  legal_system=EXCLUDED.legal_system,
+  applies_to_gb=EXCLUDED.applies_to_gb,
+  applies_to_england_wales=EXCLUDED.applies_to_england_wales,
+  applies_to_scotland=EXCLUDED.applies_to_scotland,
+  applies_to_ni=EXCLUDED.applies_to_ni;
+
 UPDATE legislation
 SET jurisdiction_code = COALESCE(NULLIF(jurisdiction_code, ''), 'GB'),
     domain = COALESCE(NULLIF(domain, ''), 'employment_uk'),
@@ -203,6 +295,43 @@ SET is_current = (
     AND effective_from <= CURRENT_DATE
     AND (effective_to IS NULL OR effective_to >= CURRENT_DATE)
 );
+
+DROP VIEW IF EXISTS source_freshness;
+CREATE VIEW source_freshness AS
+WITH base AS (
+  SELECT 'legislation' AS source_name, 'legislation' AS source_type, 'legislation' AS run_src, jurisdiction_code, last_verified_at FROM legislation
+  UNION ALL SELECT 'acas_guidance','acas','acas', jurisdiction_code, last_verified_at FROM acas_guidance
+  UNION ALL SELECT 'official_guidance','govuk','govuk', jurisdiction_code, last_verified_at FROM official_guidance
+  UNION ALL SELECT 'rules','rules','limits_orders', jurisdiction_code, last_verified_at FROM rules
+  UNION ALL SELECT 'case_law_documents','case_law','case_law', jurisdiction_code, last_verified_at FROM case_law_documents
+)
+SELECT b.source_name, b.source_type, b.jurisdiction_code,
+       count(*) AS rows_count,
+       count(*) AS rows,
+       min(b.last_verified_at) AS oldest_verified_at,
+       min(b.last_verified_at) AS oldest_verified,
+       max(b.last_verified_at) AS newest_verified_at,
+       count(*) FILTER (WHERE b.last_verified_at < now() - interval '120 days') AS stale_rows_count,
+       (SELECT r.status FROM corpus_ingestion_runs r WHERE r.source_id = b.run_src ORDER BY r.created_at DESC LIMIT 1) AS last_ingestion_status,
+       (SELECT COALESCE(r.finished_at, r.completed_at) FROM corpus_ingestion_runs r WHERE r.source_id = b.run_src ORDER BY r.created_at DESC LIMIT 1) AS last_ingestion_finished_at
+FROM base b
+GROUP BY b.source_name, b.source_type, b.jurisdiction_code, b.run_src;
+
+DROP VIEW IF EXISTS corpus_quality_report;
+CREATE VIEW corpus_quality_report AS
+SELECT
+   c.source_type, c.domain, c.claim_type, c.jurisdiction_code,
+   count(*) AS total_chunks,
+   count(*) FILTER (WHERE c.embedding IS NOT NULL) AS chunks_with_embedding,
+   count(*) FILTER (WHERE c.embedding IS NULL) AS chunks_without_embedding,
+   count(*) FILTER (WHERE c.source_url IS NOT NULL AND c.source_url <> '') AS chunks_with_source_url,
+   count(*) FILTER (WHERE c.source_url IS NULL OR c.source_url = '') AS chunks_without_source_url,
+   round(avg(c.quality_score), 3) AS avg_quality_score,
+   (SELECT count(*) FROM rules WHERE verification_status NOT IN ('verified','case_law_verified')) AS unverified_rules_count,
+   (SELECT count(*) FROM rules WHERE is_prospective) AS prospective_rows_count,
+   (count(*) - count(DISTINCT c.chunk_hash)) AS duplicate_hash_count
+FROM corpus_chunks c
+GROUP BY c.source_type, c.domain, c.claim_type, c.jurisdiction_code;
 
 DROP MATERIALIZED VIEW IF EXISTS mv_current_employment_legal_chunks;
 CREATE MATERIALIZED VIEW mv_current_employment_legal_chunks AS

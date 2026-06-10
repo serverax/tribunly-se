@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def main() -> int:
     print("=" * 70)
-    print("LAWAPP — CONTROLLED-BETA READINESS CHECK")
+    print("LAWAPP - CONTROLLED-BETA READINESS CHECK")
     print("=" * 70)
 
     blockers: list[str] = []
@@ -47,7 +47,7 @@ def main() -> int:
             "priority": 1,
             "type": "human_review_required",
             "action": "DPIA DPO review",
-            "detail": "See docs/dpia-review-checklist.md → update docs/compliance-signoff.json",
+            "detail": "See docs/dpia-review-checklist.md -> update docs/compliance-signoff.json",
         })
     else:
         ok_items.append("DPIA reviewed by DPO with evidence")
@@ -58,7 +58,7 @@ def main() -> int:
             "priority": 2,
             "type": "human_review_required",
             "action": "Privacy notice legal review",
-            "detail": "See docs/privacy-review-checklist.md → update docs/compliance-signoff.json",
+            "detail": "See docs/privacy-review-checklist.md -> update docs/compliance-signoff.json",
         })
     else:
         ok_items.append("Privacy notice legally reviewed with evidence")
@@ -76,7 +76,7 @@ def main() -> int:
                 "priority": 3,
                 "type": "configuration",
                 "action": f"Set {var}",
-                "detail": f"See docs/env-production.template — {desc}",
+                "detail": f"See docs/env-production.template - {desc}",
             })
         else:
             ok_items.append(f"{var} configured")
@@ -84,7 +84,7 @@ def main() -> int:
     # ── 3. Auth mode ───────────────────────────────────────────────────────────
     auth_mode = os.getenv("LAWAPP_AUTH_MODE", "none")
     if auth_mode not in ("jwt", "mock"):
-        blockers.append(f"LAWAPP_AUTH_MODE='{auth_mode}' — set to 'jwt' for beta")
+        blockers.append(f"LAWAPP_AUTH_MODE='{auth_mode}' - set to 'jwt' for beta")
         next_steps.append({
             "priority": 4,
             "type": "configuration",
@@ -120,14 +120,14 @@ def main() -> int:
             blockers.append(f"scripts/{script} missing")
 
     # ── Report ─────────────────────────────────────────────────────────────────
-    print(f"\n{'✓ OK'} items ({len(ok_items)}):")
+    print(f"\nOK items ({len(ok_items)}):")
     for item in ok_items:
-        print(f"  ✓  {item}")
+        print(f"  [OK] {item}")
 
     if blockers:
-        print(f"\n{'✗ BLOCKERS'} ({len(blockers)}):")
+        print(f"\nBLOCKERS ({len(blockers)}):")
         for b in blockers:
-            print(f"  ✗  {b}")
+            print(f"  [BLOCKER] {b}")
 
     if next_steps:
         print(f"\nOrdered next steps to reach controlled beta:")
@@ -144,7 +144,7 @@ def main() -> int:
     print("Note: This check is configuration-based only.")
     print("For full report, use GET /admin/production-readiness with X-Admin-Key.")
     print("=" * 70)
-    return 0   # always exits 0 — reporting only
+    return 0   # always exits 0 - reporting only
 
 
 if __name__ == "__main__":

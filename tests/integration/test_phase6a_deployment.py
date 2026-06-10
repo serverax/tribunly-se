@@ -60,6 +60,7 @@ from fastapi.testclient import TestClient
 from backend.api.main import app
 from backend.core.pipeline import assess
 from backend.core.models import StubReasoningModel
+from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
 STUB = StubReasoningModel()
@@ -125,6 +126,12 @@ def _make_case(user_id=None) -> str:
     return resp.json()["case_id"]
 
 
+def _make_paid_case(user_id=None) -> str:
+    case_id = _make_case(user_id=user_id)
+    mark_case_paid(case_id)
+    return case_id
+
+
 # ── 1-3. Config validation ─────────────────────────────────────────────────────
 
 def test_production_mode_fails_when_required_vars_missing():
@@ -153,6 +160,9 @@ def test_production_mode_passes_when_all_required_vars_present():
         "JWT_ISSUER":       "https://auth.lawapp.co.uk",
         "JWT_AUDIENCE":     "lawapp-api",
         "JWT_SECRET":       "test-secret",
+        "PAYMENT_MODE":     "stripe_live",
+        "STRIPE_SECRET_KEY": "sk_live_test_placeholder",
+        "STRIPE_WEBHOOK_SECRET": "whsec_test_placeholder",
     }
     saved = {k: os.environ.get(k) for k in extra}
     os.environ.update(extra)
@@ -224,7 +234,7 @@ def test_admin_key_overrides_user_auth():
 
 # ── 9-14. Payment modes ───────────────────────────────────────────────────────
 
-def test_payment_mock_allows_paid_access():
+def test_payment_mock_does_not_unlock_raw_token():
     os.environ["PAYMENT_MODE"] = "mock"
     resp = client.post("/documents/generate", json={
         "document_type": "particulars_of_claim",
@@ -232,7 +242,7 @@ def test_payment_mock_allows_paid_access():
         "payment_token": "mock-test-token",
     })
     assert resp.status_code == 200
-    assert resp.json()["payment_required"] is False
+    assert resp.json()["payment_required"] is True
 
 
 def test_payment_disabled_blocks_paid_output():
@@ -259,9 +269,9 @@ def test_payment_stripe_live_fails_safely_without_key():
             "assessment": _ASSESSMENT, "facts": _FACTS,
             "payment_token": "some-token",
         })
-        # Must not silently accept payment — should 500 (ValueError) or 402
-        assert resp.status_code in (500, 402, 503), \
-            f"stripe_live without key must fail safely, got {resp.status_code}"
+        assert resp.status_code == 200
+        assert resp.json()["payment_required"] is True, \
+            "stripe_live without key must fail closed to preview-only output"
     finally:
         os.environ["PAYMENT_MODE"] = "mock"
 
@@ -274,28 +284,29 @@ def test_payment_stripe_test_fails_safely():
             "assessment": _ASSESSMENT, "facts": _FACTS,
             "payment_token": "some-token",
         })
-        # Not implemented — must fail gracefully, not silently accept
-        assert resp.status_code in (500, 501), \
-            f"stripe_test not implemented yet, must fail gracefully: {resp.status_code}"
+        assert resp.status_code == 200
+        assert resp.json()["payment_required"] is True, \
+            "stripe_test must not unlock output from an arbitrary request token"
     finally:
         os.environ["PAYMENT_MODE"] = "mock"
 
 
-def test_document_gate_still_works_mock():
-    os.environ["PAYMENT_MODE"] = "mock"
+def test_document_gate_uses_db_paid_state():
+    os.environ["PAYMENT_MODE"] = "test"
+    case_id = _make_paid_case()
     resp = client.post("/documents/generate", json={
         "document_type": "schedule_of_loss",
         "assessment": _ASSESSMENT, "facts": _FACTS,
-        "payment_token": "mock-token",
+        "case_id": case_id,
     })
     assert resp.status_code == 200
+    assert resp.json()["payment_required"] is False
     assert resp.json()["safety_check"]["passed"] is True
 
 
-def test_bundle_gate_still_works_mock():
-    case_id = _make_case()
-    resp = client.post(f"/cases/{case_id}/bundle/generate",
-                       json={"premium_token": "mock-premium"})
+def test_bundle_gate_uses_db_paid_state():
+    case_id = _make_paid_case()
+    resp = client.post(f"/cases/{case_id}/bundle/generate", json={})
     assert resp.status_code == 200
     assert resp.json()["payment_required"] is False
 

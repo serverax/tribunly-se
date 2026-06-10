@@ -34,7 +34,51 @@ os.environ.setdefault("JWT_SECRET",        "dev-jwt-secret-replace-in-production
 # payment record (cases.payment_status='paid'); they do not use fake tokens.
 os.environ.setdefault("PAYMENT_MODE",      "disabled")
 
+# Some integration suites intentionally mutate process-wide env vars to prove
+# fail-closed paths. The full pytest run is one process, so restore critical
+# defaults after each test to avoid one suite poisoning later auth/login gates.
+_TEST_ENCRYPTION_KEY = "w8sahfTvTWZIPpQHm7f0RbvBoixo74MnMPeakhuXuZQ="
+
+
+def _ensure_test_env_defaults() -> None:
+    os.environ.setdefault("POSTGRES_PASSWORD", "lawapp")
+    os.environ.setdefault("ENCRYPTION_KEY", _TEST_ENCRYPTION_KEY)
+
+
+_ensure_test_env_defaults()
+
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def _restore_mutable_env_after_test():
+    _ensure_test_env_defaults()
+    keys = (
+        "POSTGRES_PASSWORD",
+        "ENCRYPTION_KEY",
+        "DATABASE_URL",
+        "LAWAPP_AUTH_MODE",
+        "PAYMENT_MODE",
+        "DEPLOYMENT_MODE",
+        "APP_BASE_URL",
+        "JWT_SECRET",
+        "JWT_ISSUER",
+        "JWT_AUDIENCE",
+        "JWT_JWKS_URL",
+        "KEY_MANAGEMENT_MODE",
+        "KMS_KEY_ID",
+        "AWS_KMS_KEY_ARN",
+        "STRIPE_SECRET_KEY",
+        "STRIPE_WEBHOOK_SECRET",
+    )
+    before = {k: os.environ.get(k) for k in keys}
+    yield
+    for key, value in before.items():
+        if value is None:
+            os.environ.pop(key, None)
+        else:
+            os.environ[key] = value
+    _ensure_test_env_defaults()
 
 
 @pytest.fixture(autouse=True, scope="session")

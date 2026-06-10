@@ -47,6 +47,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.api.main import app
+from tests.integration.extraction_helpers import seed_extracted_facts
+from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
 
@@ -123,6 +125,12 @@ def _make_case(assessment=None, key_dates=None) -> str:
     return resp.json()["case_id"]
 
 
+def _make_paid_case(assessment=None, key_dates=None) -> str:
+    case_id = _make_case(assessment=assessment, key_dates=key_dates)
+    mark_case_paid(case_id)
+    return case_id
+
+
 # ── 1. Timeline generated ─────────────────────────────────────────────────────
 
 def test_timeline_generated_for_case():
@@ -190,10 +198,9 @@ def test_timeline_includes_uploaded_document_event():
 # ── 6. Timeline includes generated-document event ─────────────────────────────
 
 def test_timeline_includes_generated_document_event():
-    case_id = _make_case()
+    case_id = _make_paid_case()
     # Generate a document (bundle component is saved to documents table)
-    client.post(f"/cases/{case_id}/bundle/generate",
-                json={"premium_token": "timeline-test"})
+    client.post(f"/cases/{case_id}/bundle/generate", json={})
     resp = client.get(f"/cases/{case_id}/timeline")
     types = [e["event_type"] for e in resp.json()["events"]]
     assert "document_generated" in types
@@ -273,6 +280,9 @@ def test_timeline_excludes_unconfirmed_extracted_facts():
         files={"file": ("c.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
     ).json()["upload_id"]
     client.post(f"/cases/{case_id}/uploads/{upload_id}/extract")
+    seed_extracted_facts(upload_id, {
+        "edt_candidate": {"status": "extracted_unconfirmed", "value": "[Extracted from uploaded document]"},
+    })
 
     tl = client.get(f"/cases/{case_id}/timeline").json()
     full_text = str(tl)
@@ -288,11 +298,14 @@ def test_timeline_excludes_rejected_extracted_facts():
         files={"file": ("dl.pdf", io.BytesIO(_MOCK_PDF), "application/pdf")},
     ).json()["upload_id"]
     client.post(f"/cases/{case_id}/uploads/{upload_id}/extract")
-    # Reject all facts
-    from_extract = client.post(f"/cases/{case_id}/uploads/{upload_id}/extract").json()["extracted_facts"]
+    seeded_facts = {
+        "edt_candidate": {"status": "extracted_unconfirmed", "value": "2026-03-15"},
+        "employer_name": {"status": "extracted_unconfirmed", "value": "Example Ltd"},
+    }
+    seed_extracted_facts(upload_id, seeded_facts)
     client.patch(
         f"/cases/{case_id}/uploads/{upload_id}/facts",
-        json={"facts": {f: {"status": "rejected"} for f in from_extract}},
+        json={"facts": {field: {"status": "rejected"} for field in seeded_facts}},
     )
 
     tl = client.get(f"/cases/{case_id}/timeline").json()
@@ -385,9 +398,8 @@ def test_saved_case_page_loads_after_phase4c():
 # ── 19-23. Regressions ────────────────────────────────────────────────────────
 
 def test_phase4b_bundle_regression():
-    case_id = _make_case()
-    resp = client.post(f"/cases/{case_id}/bundle/generate",
-                       json={"premium_token": "regression-4b"})
+    case_id = _make_paid_case()
+    resp = client.post(f"/cases/{case_id}/bundle/generate", json={})
     assert resp.status_code == 200
     assert resp.json()["payment_required"] is False
 
@@ -404,11 +416,12 @@ def test_phase4a_upload_regression():
 
 def test_phase3c_document_generation_regression():
     from tests.integration.test_phase4b_bundle import _ASSESSMENT
+    case_id = _make_paid_case()
     resp = client.post("/documents/generate", json={
         "document_type": "schedule_of_loss",
         "assessment": _ASSESSMENT,
         "facts": {"edt": "2026-04-01", "service_start_date": "2023-04-01", "jurisdiction": "EW"},
-        "payment_token": "regression-test",
+        "case_id": case_id,
     })
     assert resp.status_code == 200
     assert resp.json()["safety_check"]["passed"] is True

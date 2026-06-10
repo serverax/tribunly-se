@@ -40,6 +40,36 @@ INSERT INTO legislation (
     '1996-08-22', now()
 ),
 (
+    'Employment Rights Act 1996', 'primary', 1996, '124', 'EW',
+    'Section 124 sets out the calculation and statutory cap for the compensatory award in unfair dismissal claims.',
+    'https://www.legislation.gov.uk/ukpga/1996/18/section/124',
+    '1996-08-22', now()
+),
+(
+    'Employment Rights Act 1996', 'primary', 1996, '227', 'EW',
+    'Section 227 defines the statutory limit on a week''s pay used in employment tribunal award calculations.',
+    'https://www.legislation.gov.uk/ukpga/1996/18/section/227',
+    '1996-08-22', now()
+),
+(
+    'Employment Rights Act 1996', 'primary', 1996, '13', 'EW',
+    'A worker has the right not to suffer unauthorised deductions from wages. This section is the core unlawful deduction from wages protection.',
+    'https://www.legislation.gov.uk/ukpga/1996/18/section/13',
+    '1996-08-22', now()
+),
+(
+    'Employment Rights Act 1996', 'primary', 1996, '23', 'EW',
+    'A worker may present a complaint to an employment tribunal that an employer has made an unauthorised deduction from wages.',
+    'https://www.legislation.gov.uk/ukpga/1996/18/section/23',
+    '1996-08-22', now()
+),
+(
+    'Employment Rights Act 1996', 'primary', 1996, '24', 'EW',
+    'Where an unlawful deduction complaint is well founded, the employment tribunal may make a declaration and order repayment of the amount deducted.',
+    'https://www.legislation.gov.uk/ukpga/1996/18/section/24',
+    '1996-08-22', now()
+),
+(
     'Employment Tribunals Act 1996', 'primary', 1996, '18A', 'EW',
     'Before a person institutes relevant proceedings, the person must send relevant information to ACAS in the prescribed manner.',
     'https://www.legislation.gov.uk/ukpga/1996/17/section/18A',

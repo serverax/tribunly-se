@@ -31,6 +31,7 @@ from fastapi.testclient import TestClient
 
 from backend.api.main import app
 from ingestion.db import get_connection
+from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
 
@@ -97,8 +98,25 @@ _FACTS = {
 }
 
 _POC_UNPAID = {"document_type": "particulars_of_claim", "assessment": _ASSESSMENT, "facts": _FACTS}
-_POC_PAID   = {**_POC_UNPAID, "payment_token": "test_mock-paid-2026"}
-_SOL_PAID   = {"document_type": "schedule_of_loss", "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "test_mock-paid-2026"}
+_POC_PAID   = {**_POC_UNPAID}
+_SOL_PAID   = {"document_type": "schedule_of_loss", "assessment": _ASSESSMENT, "facts": _FACTS}
+
+
+@pytest.fixture(scope="module", autouse=True)
+def paid_case_for_document_generation():
+    """Paid-path assertions use DB-backed paid state, never raw tokens."""
+    resp = client.post("/cases", json={
+        "claim_type": "unfair_dismissal",
+        "jurisdiction": "EW",
+        "assessment": _ASSESSMENT,
+        "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
+    })
+    assert resp.status_code == 201
+    case_id = resp.json()["case_id"]
+    mark_case_paid(case_id)
+    _POC_PAID["case_id"] = case_id
+    _SOL_PAID["case_id"] = case_id
+    yield
 
 
 # ── 1. Unpaid returns preview ──────────────────────────────────────────────────

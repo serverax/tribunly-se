@@ -52,6 +52,7 @@ from fastapi.testclient import TestClient
 
 from backend.api.main import app
 from backend.domains.employment.reminders import compute_urgency
+from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
 
@@ -373,18 +374,7 @@ def test_full_mvp_journey():
     assert "PREVIEW ENDS HERE" in preview_resp.json()["content"] or \
            "requires payment" in preview_resp.json()["content"].lower()
 
-    # 3. Full document (mock paid)
-    full_resp = client.post("/documents/generate", json={
-        "document_type": "particulars_of_claim",
-        "assessment": assessment,
-        "facts": _FACTS,
-        "payment_token": "test_mvp-journey-test",
-    })
-    assert full_resp.status_code == 200
-    assert full_resp.json()["payment_required"] is False
-    assert "STATEMENT OF TRUTH" in full_resp.json()["content"]
-
-    # 4. Save case
+    # 3. Save case, then mark the saved case paid (verified-webhook end-state)
     save_resp = client.post("/cases", json={
         "claim_type": "unfair_dismissal",
         "jurisdiction": "EW",
@@ -393,6 +383,18 @@ def test_full_mvp_journey():
     })
     assert save_resp.status_code == 201
     case_id = save_resp.json()["case_id"]
+    mark_case_paid(case_id)
+
+    # 4. Full document (DB-backed paid case)
+    full_resp = client.post("/documents/generate", json={
+        "document_type": "particulars_of_claim",
+        "assessment": assessment,
+        "facts": _FACTS,
+        "case_id": case_id,
+    })
+    assert full_resp.status_code == 200
+    assert full_resp.json()["payment_required"] is False
+    assert "STATEMENT OF TRUTH" in full_resp.json()["content"]
 
     # 5. Reload saved case
     reload_resp = client.get(f"/cases/{case_id}")
@@ -444,11 +446,13 @@ def test_phase3b_rules_api_regression():
 
 
 def test_phase3c_document_generation_regression():
+    case_id = _save_case()
+    mark_case_paid(case_id)
     resp = client.post("/documents/generate", json={
         "document_type": "schedule_of_loss",
         "assessment": _ASSESSMENT,
         "facts": _FACTS,
-        "payment_token": "test_regression-test",
+        "case_id": case_id,
     })
     assert resp.status_code == 200
     assert resp.json()["safety_check"]["passed"] is True

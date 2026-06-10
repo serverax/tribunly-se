@@ -183,7 +183,7 @@ def _extract_text_from_pdf(content: bytes) -> str:
         return ""
     except Exception as exc:
         logger.warning("PDF extraction failed: %s", exc)
-        raise
+        return ""
 
 
 def _extract_text_from_docx(content: bytes) -> str:

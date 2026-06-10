@@ -30,6 +30,7 @@ from fastapi.testclient import TestClient
 
 from backend.api.main import app
 from backend.core.documents import safety_check, LEGAL_BOUNDARY_NOTICE
+from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
 
@@ -88,9 +89,27 @@ _FACTS = {
     "jurisdiction": "EW",
 }
 
-# payment_token="test_mock-paid-test" → full document returned (Phase 3D mock mode)
-_POC_REQUEST = {"document_type": "particulars_of_claim", "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "test_mock-paid-test"}
-_SOL_REQUEST = {"document_type": "schedule_of_loss",     "assessment": _ASSESSMENT, "facts": _FACTS, "payment_token": "test_mock-paid-test"}
+_POC_REQUEST = {"document_type": "particulars_of_claim", "assessment": _ASSESSMENT, "facts": _FACTS}
+_SOL_REQUEST = {"document_type": "schedule_of_loss",     "assessment": _ASSESSMENT, "facts": _FACTS}
+_PAID_CASE_ID: str | None = None
+
+
+@pytest.fixture(scope="module", autouse=True)
+def paid_case_for_document_generation():
+    """Full-document assertions use DB-backed paid state, never raw tokens."""
+    global _PAID_CASE_ID
+    resp = client.post("/cases", json={
+        "claim_type": "unfair_dismissal",
+        "jurisdiction": "EW",
+        "assessment": _ASSESSMENT,
+        "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
+    })
+    assert resp.status_code == 201
+    _PAID_CASE_ID = resp.json()["case_id"]
+    mark_case_paid(_PAID_CASE_ID)
+    _POC_REQUEST["case_id"] = _PAID_CASE_ID
+    _SOL_REQUEST["case_id"] = _PAID_CASE_ID
+    yield
 
 
 # ── 1. Particulars of Claim endpoint ─────────────────────────────────────────
@@ -252,7 +271,7 @@ def test_empty_facts_does_not_crash():
         "document_type": "particulars_of_claim",
         "assessment": _ASSESSMENT,
         "facts": {},
-        "payment_token": "test_mock-paid-test",
+        "case_id": _PAID_CASE_ID,
     })
     assert resp.status_code == 200
     content = resp.json()["content"]

@@ -409,6 +409,7 @@ def assess(
         "fallback_used": _fallback_used,
         "source": _source,
         "governed_result": "accepted" if not _fallback_used else "fallback",
+        "rules_retrieved": len(getattr(bundle, "exact_rules", []) or []),
     }
 
     if not gov_result.passes:
@@ -429,6 +430,7 @@ def assess(
         "reasoning_summary":     a.reasoning_summary,
         "value_range":           a.value_range.model_dump() if a.value_range else None,
         "key_weaknesses":        a.key_weaknesses,
+        "employer_arguments":    a.employer_arguments,
         "deadline":              a.deadline.model_dump() if a.deadline else None,
         "recommended_next_step": a.recommended_next_step,
         "citations":             [c.model_dump() for c in a.citations],

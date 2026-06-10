@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
 from dataclasses import dataclass
 from typing import Callable, Optional
 
@@ -23,13 +24,25 @@ _model = None
 def _embed(text: str) -> list[float]:
     global _model
     if _model is None:
-        import os
         from fastembed import TextEmbedding
         _model = TextEmbedding(
             model_name=_EMBED_MODEL,
-            cache_dir=os.environ.get("FASTEMBED_CACHE_PATH", "/app/fastembed_cache"),
+            cache_dir=_resolve_cache_dir(),
         )
     return list(_model.embed([text]))[0].tolist()
+
+
+def _resolve_cache_dir() -> str:
+    explicit = os.environ.get("FASTEMBED_CACHE_PATH")
+    if explicit:
+        return explicit
+    baked = "/app/fastembed_cache"
+    if os.path.isdir(baked) and os.access(baked, os.W_OK):
+        return baked
+    return os.path.join(
+        os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache")),
+        "lawapp", "fastembed",
+    )
 
 
 def _vec_literal(vec: list[float]) -> str:
@@ -76,26 +89,55 @@ class CorpusEmbedder:
         conn = self._get_conn()
         try:
             with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT EXISTS (
+                        SELECT 1 FROM information_schema.columns
+                        WHERE table_schema='public'
+                          AND table_name='corpus_chunks'
+                          AND column_name='jurisdiction'
+                    )
+                    """
+                )
+                has_legacy_jurisdiction = bool(cur.fetchone()[0])
                 for idx, body in enumerate(chunks):
                     h = _chunk_hash(source_url, idx, body)
                     hashes.append(h)
                     emb = _vec_literal(_embed(body)) if embed else None
-                    cur.execute(
-                        """
-                        INSERT INTO corpus_chunks
-                            (source_table, source_url, authority_ref, jurisdiction_code,
-                             domain, claim_type, title, body_text, chunk_index, chunk_hash,
-                             tokens_estimate, embedding, embedding_model, embedding_created_at,
-                             is_current, source_type, ingestion_run_id)
-                        VALUES (%s,%s,%s,%s,'employment_uk','unfair_dismissal',%s,%s,%s,%s,%s,
-                                %s::vector, %s, now(), true, %s, %s::uuid)
-                        ON CONFLICT (chunk_hash) DO NOTHING
-                        """,
-                        ("autonomous_ingest", source_url, authority_ref, jurisdiction_code,
-                         title, body, idx, h, max(1, len(body) // 4),
-                         emb, (_EMBED_MODEL if embed else None), source_type,
-                         ingestion_run_id),
-                    )
+                    if has_legacy_jurisdiction:
+                        cur.execute(
+                            """
+                            INSERT INTO corpus_chunks
+                                (source_table, source_url, authority_ref, jurisdiction, jurisdiction_code,
+                                 domain, claim_type, title, body_text, chunk_index, chunk_hash,
+                                 tokens_estimate, embedding, embedding_model, embedding_created_at,
+                                 is_current, source_type, ingestion_run_id)
+                            VALUES (%s,%s,%s,%s,%s,'employment_uk','unfair_dismissal',%s,%s,%s,%s,%s,
+                                    %s::vector, %s, now(), true, %s, %s::uuid)
+                            ON CONFLICT (chunk_hash) DO NOTHING
+                            """,
+                            ("autonomous_ingest", source_url, authority_ref, jurisdiction_code, jurisdiction_code,
+                             title, body, idx, h, max(1, len(body) // 4),
+                             emb, (_EMBED_MODEL if embed else None), source_type,
+                             ingestion_run_id),
+                        )
+                    else:
+                        cur.execute(
+                            """
+                            INSERT INTO corpus_chunks
+                                (source_table, source_url, authority_ref, jurisdiction_code,
+                                 domain, claim_type, title, body_text, chunk_index, chunk_hash,
+                                 tokens_estimate, embedding, embedding_model, embedding_created_at,
+                                 is_current, source_type, ingestion_run_id)
+                            VALUES (%s,%s,%s,%s,'employment_uk','unfair_dismissal',%s,%s,%s,%s,%s,
+                                    %s::vector, %s, now(), true, %s, %s::uuid)
+                            ON CONFLICT (chunk_hash) DO NOTHING
+                            """,
+                            ("autonomous_ingest", source_url, authority_ref, jurisdiction_code,
+                             title, body, idx, h, max(1, len(body) // 4),
+                             emb, (_EMBED_MODEL if embed else None), source_type,
+                             ingestion_run_id),
+                        )
                     written += cur.rowcount
             conn.commit()
         finally:

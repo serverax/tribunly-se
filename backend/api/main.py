@@ -502,6 +502,58 @@ class AssessRequest(BaseModel):
     client_deadline: Optional[str] = None  # YYYY-MM-DD supplied by client-side calc
 
 
+def _backend_deadline_for_mismatch(req: AssessRequest, result: dict) -> Optional[str]:
+    """Return the backend-authoritative deadline for client mismatch reporting."""
+    deadline_info = result.get("deadline_info") or result.get("deadline") or {}
+    if isinstance(deadline_info, dict) and deadline_info.get("limitation_date"):
+        return str(deadline_info["limitation_date"])
+
+    facts = req.facts or {}
+    edt_raw = (
+        facts.get("edt")
+        or facts.get("dismissal_date")
+        or facts.get("effective_date_of_termination")
+    )
+    if not edt_raw:
+        return None
+
+    try:
+        from backend.domains.employment.deadline import compute_limitation_date
+
+        edt = _dt.date.fromisoformat(str(edt_raw))
+        months_raw = facts.get("time_limit_months", 3)
+        months = int(months_raw or 3)
+        ec_day_a = facts.get("ec_day_a")
+        ec_day_b = facts.get("ec_day_b")
+        ec_a = _dt.date.fromisoformat(str(ec_day_a)) if ec_day_a else None
+        ec_b = _dt.date.fromisoformat(str(ec_day_b)) if ec_day_b else None
+        computed = compute_limitation_date(edt, months, ec_a, ec_b)
+        return computed.get("limitation_date")
+    except Exception:
+        logger.debug("Unable to compute deadline mismatch field", exc_info=True)
+        return None
+
+
+def _apply_deadline_mismatch(req: AssessRequest, result: dict) -> dict:
+    """Attach Phase 3B client/backend deadline comparison when requested."""
+    if not req.client_deadline:
+        return result
+
+    backend_deadline = _backend_deadline_for_mismatch(req, result)
+    if not backend_deadline:
+        return result
+
+    client_deadline = str(req.client_deadline)
+    mismatch = client_deadline != backend_deadline
+    result["deadline_mismatch"] = mismatch
+    if mismatch:
+        result["deadline_mismatch_detail"] = {
+            "client": client_deadline,
+            "backend": backend_deadline,
+        }
+    return result
+
+
 def _assess_factual(req: "AssessRequest", decision) -> dict:
     """FACTUAL lane (ADR): deterministic rules-table answer ONLY.
 
@@ -572,7 +624,7 @@ def assess_endpoint(request: Request, req: AssessRequest) -> dict:
         # FACTUAL: deterministic rules-only, no LLM, cited, fail-closed.
         result = _assess_factual(req, _decision)
         result.setdefault("trace_id", trace_id)
-        return result
+        return _apply_deadline_mismatch(req, result)
 
     # REASONING: the full governed pipeline (retrieval -> deidentify -> reason ->
     # score -> govern). Generation NEVER runs before retrieval, and the response
@@ -580,6 +632,23 @@ def assess_endpoint(request: Request, req: AssessRequest) -> dict:
     #
     # Engineering Order: Institutionalise CitationGuard Across lawapp.
     # All generative work must pass through the governed orchestrator.
+    if req.use_model is False:
+        from backend.core.models import StubReasoningModel
+        from backend.core.pipeline import assess as _pipeline_assess
+
+        result = _pipeline_assess(
+            req.query,
+            req.facts,
+            model=StubReasoningModel(),
+            jurisdiction=req.jurisdiction,
+        )
+        result["intent"] = _decision.intent
+        result["lane"] = _decision.lane
+        result["invokes_llm"] = False
+        result["result_type"] = "final_governed_assessment"
+        result.setdefault("trace_id", trace_id)
+        return _apply_deadline_mismatch(req, result)
+
     from backend.core.brain import orchestrator as _orch
     
     result = _orchestrator_assess(req)
@@ -589,7 +658,7 @@ def assess_endpoint(request: Request, req: AssessRequest) -> dict:
     result["result_type"] = "final_governed_assessment"
     result.setdefault("trace_id", trace_id)
 
-    return result
+    return _apply_deadline_mismatch(req, result)
 
 def _orchestrator_assess(req: AssessRequest) -> dict:
     from backend.core.brain import orchestrator

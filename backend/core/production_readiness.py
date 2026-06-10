@@ -200,6 +200,7 @@ def generate_production_readiness_report(
             "ollama_base_url":      os.getenv("LAWAPP_OLLAMA_BASE_URL", ""),
             "ollama_model":         os.getenv("LAWAPP_OLLAMA_MODEL", "qwen2.5:3b-instruct-q6_K"),
             "external_llm_allowed": False,
+            "anthropic_configured": False,
             "deterministic_upgrade":"IMPLEMENTED (assess_logic.py — runs before any model call)",
             "production_grade":     os.getenv("LAWAPP_LLM_PROVIDER", "") == "ollama_local",
             "note": (

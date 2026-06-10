@@ -63,6 +63,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.api.main import app
+from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
 
@@ -86,6 +87,19 @@ _ASSESSMENT = {
 
 _FACTS = {"edt": "2026-04-01", "service_start_date": "2023-04-01",
           "reason_for_dismissal": "conduct", "weekly_pay": 600, "jurisdiction": "EW"}
+
+
+def _make_paid_case() -> str:
+    resp = client.post("/cases", json={
+        "claim_type": "unfair_dismissal",
+        "jurisdiction": "EW",
+        "assessment": _ASSESSMENT,
+        "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
+    })
+    assert resp.status_code == 201
+    case_id = resp.json()["case_id"]
+    mark_case_paid(case_id)
+    return case_id
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -370,10 +384,11 @@ def test_ci_yml_has_production_readiness_job():
 # ── 25-28. Regressions ────────────────────────────────────────────────────────
 
 def test_payment_gate_still_works():
+    case_id = _make_paid_case()
     resp = client.post("/documents/generate", json={
         "document_type": "particulars_of_claim",
         "assessment": _ASSESSMENT, "facts": _FACTS,
-        "payment_token": "test-paid",
+        "case_id": case_id,
     })
     assert resp.status_code == 200
     assert resp.json()["payment_required"] is False

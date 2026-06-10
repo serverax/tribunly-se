@@ -109,6 +109,39 @@ def _verify_case_in_db(neutral_citation: str) -> bool:
         return False
 
 
+def _verify_acas_in_db(cite: str) -> bool:
+    """Check ACAS guidance citations against the local acas_guidance table."""
+    needle = (
+        cite.replace("ACAS Guidance:", "")
+        .replace("ACAS Code:", "")
+        .strip()
+    )
+    if not needle:
+        needle = cite.strip()
+    try:
+        from ingestion.db import get_connection
+        conn = get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT 1
+                      FROM acas_guidance
+                     WHERE doc_title ILIKE %s
+                        OR section_ref ILIKE %s
+                        OR source_url ILIKE %s
+                     LIMIT 1
+                    """,
+                    (f"%{needle}%", f"%{needle}%", f"%{needle.lower().replace(' ', '-')}%"),
+                )
+                return cur.fetchone() is not None
+        finally:
+            conn.close()
+    except Exception as exc:
+        logger.debug("ACAS guidance DB check failed: %s", exc)
+        return False
+
+
 def verify_citation(cite: str, source_type: str | None = None) -> dict:
     """
     Verify a single citation string.
@@ -119,6 +152,15 @@ def verify_citation(cite: str, source_type: str | None = None) -> dict:
     cite = (cite or "").strip()
     if not cite:
         return {"cite": cite, "verified": False, "reason": "empty_citation", "method": "none"}
+
+    if source_type in ("acas", "acas_guidance") or cite.lower().startswith("acas "):
+        verified = _verify_acas_in_db(cite)
+        return {
+            "cite": cite,
+            "verified": verified,
+            "reason": None if verified else "not_in_acas_guidance_db",
+            "method": "acas_guidance_db",
+        }
 
     if source_type in ("legislation",) or _LEGISLATION_RE.search(cite):
         act, section = _parse_legislation_cite(cite)

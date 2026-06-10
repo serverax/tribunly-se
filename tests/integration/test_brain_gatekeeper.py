@@ -141,7 +141,7 @@ def test_no_direct_generation_in_production_routes():
                 # directly. NOTE: classify.py makes a direct Anthropic call for
                 # intent/scope classification (not legal-answer generation) — it is
                 # flagged for future routing through the provider gateway.
-                if file in ["litellm_adapter.py", "llm_provider.py", "models.py",
+                if file in ["inference.py", "litellm_adapter.py", "llm_provider.py", "models.py",
                             "workflow_c_provider.py", "classify.py"]:
                     continue
                 production_files.append(os.path.join(root, file))

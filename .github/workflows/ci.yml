@@ -105,6 +105,11 @@ jobs:
         run: python -c "from ingestion.acas.ingest import ingest_acas_code; ingest_acas_code()"
         continue-on-error: true
 
+      - name: Embed seeded legal corpus for retrieval proof
+        run: |
+          python -m ingestion.embeddings.embedder --table legislation
+          python -m ingestion.embeddings.embedder --table acas_guidance
+
       - name: Run full pytest suite (same selection as scripts/prove_full_pytest_suite.sh)
         # CI and local proof MUST use the same test command. The official local runner
         # is scripts/prove_full_pytest_suite.sh (Dockerfile.ingestion image); CI runs the
