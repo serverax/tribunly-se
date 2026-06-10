@@ -202,7 +202,11 @@ def generate_production_readiness_report(
             "external_llm_allowed": False,
             "anthropic_configured": False,
             "deterministic_upgrade":"IMPLEMENTED (assess_logic.py — runs before any model call)",
-            "production_grade":     os.getenv("LAWAPP_LLM_PROVIDER", "") == "ollama_local",
+            "production_grade": (
+                os.getenv("LAWAPP_LLM_PROVIDER", "") == "ollama_local"
+                and bool(os.getenv("LAWAPP_OLLAMA_BASE_URL", "").strip())
+                and bool(os.getenv("LAWAPP_OLLAMA_MODEL", "").strip())
+            ),
             "note": (
                 "Local Ollama only. No external LLM (OpenAI/Anthropic/OpenRouter). "
                 "Order: RULES -> GRAPHRAG -> local Ollama (last resort) -> CitationGuard. "

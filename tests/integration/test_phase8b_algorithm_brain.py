@@ -32,7 +32,7 @@ Tests:
 
   Production readiness:
   21.  reasoning_model section present in readiness report
-  22.  production_grade reflects API key presence
+  22.  production_grade reflects local Ollama runtime configuration
 
   Regressions:
   23.  Full regression (tested separately — confirmed 655 passed)

@@ -20,6 +20,8 @@ _DB_PATCH = "ingestion.db.get_connection"
 UID_A = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 UID_B = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 CASE_1 = "11111111-1111-1111-1111-111111111111"
+JWT_ISSUER = "lawapp-issuer"
+JWT_AUDIENCE = "lawapp-audience"
 
 
 def _make_conn(owner_id):
@@ -69,9 +71,22 @@ class TestRequireCaseOwnerDependency:
             import jwt
             import time
             orig = os.environ.get("LAWAPP_AUTH_MODE")
+            orig_issuer = os.environ.get("JWT_ISSUER")
+            orig_audience = os.environ.get("JWT_AUDIENCE")
             os.environ["LAWAPP_AUTH_MODE"] = "jwt"
             os.environ["JWT_SECRET"] = "test-secret"
-            token = jwt.encode({"sub": UID_B, "exp": int(time.time()) + 3600}, "test-secret", algorithm="HS256")
+            os.environ["JWT_ISSUER"] = JWT_ISSUER
+            os.environ["JWT_AUDIENCE"] = JWT_AUDIENCE
+            token = jwt.encode(
+                {
+                    "sub": UID_B,
+                    "exp": int(time.time()) + 3600,
+                    "iss": JWT_ISSUER,
+                    "aud": JWT_AUDIENCE,
+                },
+                "test-secret",
+                algorithm="HS256",
+            )
             try:
                 with pytest.raises(HTTPException) as exc:
                     _require_case_owner(
@@ -86,6 +101,14 @@ class TestRequireCaseOwnerDependency:
                     os.environ["LAWAPP_AUTH_MODE"] = orig
                 else:
                     os.environ.pop("LAWAPP_AUTH_MODE", None)
+                if orig_issuer:
+                    os.environ["JWT_ISSUER"] = orig_issuer
+                else:
+                    os.environ.pop("JWT_ISSUER", None)
+                if orig_audience:
+                    os.environ["JWT_AUDIENCE"] = orig_audience
+                else:
+                    os.environ.pop("JWT_AUDIENCE", None)
 
     def test_dependency_allows_correct_user(self):
         with patch(_DB_PATCH, return_value=_make_conn(UID_A)):
@@ -93,9 +116,22 @@ class TestRequireCaseOwnerDependency:
             import jwt
             import time
             orig = os.environ.get("LAWAPP_AUTH_MODE")
+            orig_issuer = os.environ.get("JWT_ISSUER")
+            orig_audience = os.environ.get("JWT_AUDIENCE")
             os.environ["LAWAPP_AUTH_MODE"] = "jwt"
             os.environ["JWT_SECRET"] = "test-secret"
-            token = jwt.encode({"sub": UID_A, "exp": int(time.time()) + 3600}, "test-secret", algorithm="HS256")
+            os.environ["JWT_ISSUER"] = JWT_ISSUER
+            os.environ["JWT_AUDIENCE"] = JWT_AUDIENCE
+            token = jwt.encode(
+                {
+                    "sub": UID_A,
+                    "exp": int(time.time()) + 3600,
+                    "iss": JWT_ISSUER,
+                    "aud": JWT_AUDIENCE,
+                },
+                "test-secret",
+                algorithm="HS256",
+            )
             try:
                 uid = _require_case_owner(
                     case_id=CASE_1,
@@ -109,6 +145,14 @@ class TestRequireCaseOwnerDependency:
                     os.environ["LAWAPP_AUTH_MODE"] = orig
                 else:
                     os.environ.pop("LAWAPP_AUTH_MODE", None)
+                if orig_issuer:
+                    os.environ["JWT_ISSUER"] = orig_issuer
+                else:
+                    os.environ.pop("JWT_ISSUER", None)
+                if orig_audience:
+                    os.environ["JWT_AUDIENCE"] = orig_audience
+                else:
+                    os.environ.pop("JWT_AUDIENCE", None)
 
 
 class TestAllCaseEndpointsProtected:

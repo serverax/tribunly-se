@@ -562,8 +562,23 @@ def _write_retrieval_audit(
                 ])
                 cur.execute(
                     """
+                    SELECT column_name
+                    FROM information_schema.columns
+                    WHERE table_schema = 'public'
+                      AND table_name = 'legal_retrieval_audit'
+                      AND column_name IN ('jurisdiction_code', 'jurisdiction')
+                    """
+                )
+                audit_columns = {row[0] for row in cur.fetchall()}
+                jurisdiction_column = (
+                    "jurisdiction_code"
+                    if "jurisdiction_code" in audit_columns
+                    else "jurisdiction"
+                )
+                cur.execute(
+                    f"""
                     INSERT INTO legal_retrieval_audit
-                        (query_text, query_hash, domain, claim_type, jurisdiction,
+                        (query_text, query_hash, domain, claim_type, {jurisdiction_column},
                          retrieved_bundle, exact_rules, grounding_score, retrieval_model, embedding_model)
                     VALUES (%s, md5(%s), %s, %s, %s,
                             %s::jsonb, %s::jsonb, %s, 'hybrid', 'bge-small-en-v1.5')
