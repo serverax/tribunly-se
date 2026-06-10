@@ -13,6 +13,7 @@ import pytest
 from backend.core import llm_provider as P
 from backend.core.agentic import aia_validators as V
 from backend.core.agentic.errors import PolicyViolation
+from backend.core.inference_policy import ExternalLLMForbidden
 
 
 # ── provider plug ─────────────────────────────────────────────────────────────
@@ -40,7 +41,7 @@ def test_openrouter_not_available_when_disabled(monkeypatch):
 
 def test_openrouter_call_failsclosed_when_unavailable(monkeypatch):
     monkeypatch.setenv("OPENROUTER_ENABLED", "false")
-    with pytest.raises(PolicyViolation):
+    with pytest.raises(ExternalLLMForbidden):
         P.OpenRouterProvider().complete_json(system_prompt="x", payload={}, trace_id="t", case_id="c")
 
 

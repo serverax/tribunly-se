@@ -180,11 +180,17 @@ def upsert_legislation(cur: Any, row: dict) -> None:
     the row dict so future domains/countries reuse the same writer."""
     row = {
         "country_code": "GB",
+        "jurisdiction_code": "GB",
         "domain": "employment_uk",
         "source_type": "primary_legislation",
         "licence_status": "GRANTED",
         "parser_type": "clml_xml",
         "parent_source_id": "legislation_gov_uk",
+        "legal_system": "Great Britain",
+        "applies_to_gb": True,
+        "applies_to_england_wales": True,
+        "applies_to_scotland": True,
+        "applies_to_ni": False,
         **row,
     }
     cur.execute(
@@ -194,7 +200,8 @@ def upsert_legislation(cur: Any, row: dict) -> None:
             heading, body_text, chunk_index, source_url, version_date,
             effective_from, effective_to, is_prospective, last_verified_at,
             content_hash, country_code, domain, source_type, licence_status,
-            parser_type, parent_source_id
+            parser_type, parent_source_id, jurisdiction_code, legal_system,
+            applies_to_gb, applies_to_england_wales, applies_to_scotland, applies_to_ni
         ) VALUES (
             %(act_title)s, %(leg_type)s, %(year)s, %(chapter)s, %(section_ref)s,
             %(jurisdiction)s, %(heading)s, %(body_text)s, %(chunk_index)s,
@@ -202,7 +209,8 @@ def upsert_legislation(cur: Any, row: dict) -> None:
             %(is_prospective)s, now(),
             encode(sha256(coalesce(%(body_text)s, '')::bytea), 'hex'),
             %(country_code)s, %(domain)s, %(source_type)s, %(licence_status)s,
-            %(parser_type)s, %(parent_source_id)s
+            %(parser_type)s, %(parent_source_id)s, %(jurisdiction_code)s, %(legal_system)s,
+            %(applies_to_gb)s, %(applies_to_england_wales)s, %(applies_to_scotland)s, %(applies_to_ni)s
         )
         ON CONFLICT (source_url, chunk_index) DO UPDATE SET
             act_title        = EXCLUDED.act_title,
@@ -218,7 +226,13 @@ def upsert_legislation(cur: Any, row: dict) -> None:
             source_type      = EXCLUDED.source_type,
             licence_status   = EXCLUDED.licence_status,
             parser_type      = EXCLUDED.parser_type,
-            parent_source_id = EXCLUDED.parent_source_id
+            parent_source_id = EXCLUDED.parent_source_id,
+            jurisdiction_code = EXCLUDED.jurisdiction_code,
+            legal_system = EXCLUDED.legal_system,
+            applies_to_gb = EXCLUDED.applies_to_gb,
+            applies_to_england_wales = EXCLUDED.applies_to_england_wales,
+            applies_to_scotland = EXCLUDED.applies_to_scotland,
+            applies_to_ni = EXCLUDED.applies_to_ni
         """,
         row,
     )
@@ -299,11 +313,17 @@ def upsert_acas_guidance(cur: Any, row: dict) -> None:
     row = {
         "country_code": "GB",
         "jurisdiction": "EW",
+        "jurisdiction_code": "GB",
         "domain": "employment_uk",
         "source_type": "official_guidance",
         "licence_status": "GRANTED",
         "parser_type": "html",
         "parent_source_id": "acas",
+        "legal_system": "Great Britain",
+        "applies_to_gb": True,
+        "applies_to_england_wales": True,
+        "applies_to_scotland": True,
+        "applies_to_ni": False,
         "edition": None,
         "section_ref": None,
         "effective_from": None,
@@ -315,15 +335,38 @@ def upsert_acas_guidance(cur: Any, row: dict) -> None:
             doc_title, edition, section_ref, body_text, chunk_index,
             source_url, effective_from, last_verified_at, content_hash,
             country_code, jurisdiction, domain, source_type, licence_status,
-            parser_type, parent_source_id
+            parser_type, parent_source_id, jurisdiction_code, legal_system,
+            applies_to_gb, applies_to_england_wales, applies_to_scotland, applies_to_ni
         ) VALUES (
             %(doc_title)s, %(edition)s, %(section_ref)s, %(body_text)s,
             %(chunk_index)s, %(source_url)s, %(effective_from)s, now(),
             encode(sha256(coalesce(%(body_text)s, '')::bytea), 'hex'),
             %(country_code)s, %(jurisdiction)s, %(domain)s, %(source_type)s,
-            %(licence_status)s, %(parser_type)s, %(parent_source_id)s
+            %(licence_status)s, %(parser_type)s, %(parent_source_id)s,
+            %(jurisdiction_code)s, %(legal_system)s, %(applies_to_gb)s,
+            %(applies_to_england_wales)s, %(applies_to_scotland)s, %(applies_to_ni)s
         )
-        ON CONFLICT DO NOTHING
+        ON CONFLICT (source_url, chunk_index) DO UPDATE SET
+            doc_title        = EXCLUDED.doc_title,
+            edition          = EXCLUDED.edition,
+            section_ref      = EXCLUDED.section_ref,
+            body_text        = EXCLUDED.body_text,
+            effective_from   = EXCLUDED.effective_from,
+            last_verified_at = now(),
+            content_hash     = EXCLUDED.content_hash,
+            country_code     = EXCLUDED.country_code,
+            jurisdiction     = EXCLUDED.jurisdiction,
+            domain           = EXCLUDED.domain,
+            source_type      = EXCLUDED.source_type,
+            licence_status   = EXCLUDED.licence_status,
+            parser_type      = EXCLUDED.parser_type,
+            parent_source_id = EXCLUDED.parent_source_id,
+            jurisdiction_code = EXCLUDED.jurisdiction_code,
+            legal_system = EXCLUDED.legal_system,
+            applies_to_gb = EXCLUDED.applies_to_gb,
+            applies_to_england_wales = EXCLUDED.applies_to_england_wales,
+            applies_to_scotland = EXCLUDED.applies_to_scotland,
+            applies_to_ni = EXCLUDED.applies_to_ni
         """,
         row,
     )

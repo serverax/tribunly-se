@@ -50,6 +50,7 @@ RUN pip install --no-cache-dir --upgrade pip \
        "opentelemetry-exporter-otlp-proto-http>=1.27" \
        "litellm>=1.44" \
        "PyYAML>=6.0" \
+       "networkx>=3.4" \
        "pytest>=7.4" \
        "pytest-asyncio>=0.23" \
        "pytest-cov>=4.1" \

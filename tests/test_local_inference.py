@@ -39,6 +39,7 @@ def test_select_model_prefers_local_inference_when_enabled(monkeypatch):
 
 def test_select_model_falls_back_to_stub_when_local_disabled(monkeypatch):
     monkeypatch.delenv("AI_PROVIDER", raising=False)
+    monkeypatch.delenv("LAWAPP_LLM_PROVIDER", raising=False)
 
     class _Off(_Settings):
         local_inference_enabled = False

@@ -580,7 +580,15 @@
     h3.textContent = 'Uploaded documents';
     const notice = document.createElement('div');
     notice.style.cssText = 'background:#fff8e1;border:1px solid #f9a825;border-radius:6px;padding:.75rem 1rem;margin:.5rem 0 .75rem;font-size:.82rem;';
-    notice.innerHTML = '<strong>Document upload and extraction — Phase 4A.</strong> PDF and DOCX files can be uploaded. Text extraction runs locally (no third-party AI). Extracted facts require your review before use. <em>Note: uploaded files use temporary local storage — production requires object storage configuration.</em>';
+    const noticeStrong = document.createElement('strong');
+    noticeStrong.textContent = 'Document upload and extraction — Phase 4A.';
+    const noticeEm = document.createElement('em');
+    noticeEm.textContent = 'Note: uploaded files use temporary local storage — production requires object storage configuration.';
+    notice.append(
+      noticeStrong,
+      document.createTextNode(' PDF and DOCX files can be uploaded. Text extraction runs locally (no third-party AI). Extracted facts require your review before use. '),
+      noticeEm
+    );
     const p = document.createElement('p');
     p.style.fontSize = '.875rem'; p.style.color = 'var(--muted)'; p.style.margin = '.5rem 0 .75rem';
     p.textContent = 'Uploads are stored safely. lawapp does not send uploaded documents to any third-party service.';

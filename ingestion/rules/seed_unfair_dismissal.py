@@ -213,7 +213,28 @@ ROWS = [
         "is_prospective": True,
     },
 
-    # ── 4a. Week's pay cap — prior year (£719, to 5 April 2026) ────────────
+    # ── 4a. Week's pay cap — 2024/25 (£700, to 5 April 2025) ───────────────
+    {
+        "rule_key":       "unfair_dismissal.weeks_pay_cap_amount",
+        "claim_type":     "unfair_dismissal",
+        "jurisdiction":   "EW",
+        "value_numeric":  700,
+        "value_text":     None,
+        "unit":           "GBP",
+        "description":    (
+            "Maximum week's pay for basic award (ERA 1996 s.227(1)), SI 2024/213. "
+            "Applies where EDT is on or after 6 April 2024 and before 6 April 2025. "
+            "Does NOT apply to the 52-week Limb B comparator in the compensatory cap."
+        ),
+        "authority_type": "legislation",
+        "authority_ref":  "ERA 1996 s.227(1) + SI 2024/213",
+        "authority_url":  "https://www.legislation.gov.uk/uksi/2024/213/schedule/made",
+        "effective_from": date(2024, 4, 6),
+        "effective_to":   date(2025, 4, 5),
+        "is_prospective": False,
+    },
+
+    # ── 4b. Week's pay cap — prior year (£719, to 5 April 2026) ────────────
     {
         "rule_key":       "unfair_dismissal.weeks_pay_cap_amount",
         "claim_type":     "unfair_dismissal",
@@ -234,7 +255,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 4b. Week's pay cap — current (£751, from 6 April 2026) ──────────────
+    # ── 4c. Week's pay cap — current (£751, from 6 April 2026) ──────────────
     # SI 2026/310 schedule: s.227(1) £719 -> £751. Confirmed 2026-05-31.
     {
         "rule_key":       "unfair_dismissal.weeks_pay_cap_amount",
@@ -257,7 +278,29 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 5a. Compensatory cap — prior year (£118,223, to 5 April 2026) ───────
+    # ── 5a. Compensatory cap — 2024/25 (£115,115, to 5 April 2025) ──────────
+    {
+        "rule_key":       "unfair_dismissal.compensatory_cap_amount",
+        "claim_type":     "unfair_dismissal",
+        "jurisdiction":   "EW",
+        "value_numeric":  115115,
+        "value_text":     None,
+        "unit":           "GBP",
+        "description":    (
+            "Limb A statutory compensatory cap (ERA 1996 s.124(1ZA)(a)), SI 2024/213. "
+            "Applies where EDT is on or after 6 April 2024 and before 6 April 2025. "
+            "Award = min(Limb A, Limb B). Limb B = 52 x actual gross weekly pay "
+            "(NOT s.227-capped). Cap disapplied for certain auto-unfair categories."
+        ),
+        "authority_type": "legislation",
+        "authority_ref":  "ERA 1996 s.124(1ZA)(a) + SI 2024/213",
+        "authority_url":  "https://www.legislation.gov.uk/uksi/2024/213/schedule/made",
+        "effective_from": date(2024, 4, 6),
+        "effective_to":   date(2025, 4, 5),
+        "is_prospective": False,
+    },
+
+    # ── 5b. Compensatory cap — prior year (£118,223, to 5 April 2026) ───────
     {
         "rule_key":       "unfair_dismissal.compensatory_cap_amount",
         "claim_type":     "unfair_dismissal",
@@ -279,7 +322,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 5b. Compensatory cap — current (£123,543, from 6 April 2026) ────────
+    # ── 5c. Compensatory cap — current (£123,543, from 6 April 2026) ────────
     # SI 2026/310 schedule: s.124(1ZA)(a) £118,223 -> £123,543. Confirmed 2026-05-31.
     {
         "rule_key":       "unfair_dismissal.compensatory_cap_amount",
@@ -303,7 +346,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 5c. Compensatory cap — prospective removal (ERA 2025 s.25) ──────────
+    # ── 5d. Compensatory cap — prospective removal (ERA 2025 s.25) ──────────
     # ERA 2025 s.25(3): "Omit section 124." Verified from enacted text 2026-05-31.
     # NOT YET IN FORCE. effective_from = 2027-01-01 PROVISIONAL.
     {
@@ -441,12 +484,18 @@ UPSERT = """
 INSERT INTO rules (
     rule_key, claim_type, jurisdiction, value_numeric, value_text, unit,
     description, authority_type, authority_ref, authority_url,
-    effective_from, effective_to, is_prospective, last_verified_at
+    effective_from, effective_to, is_prospective, last_verified_at,
+    jurisdiction_code, domain, country_code, legal_system,
+    applies_to_gb, applies_to_england_wales, applies_to_scotland, applies_to_ni,
+    is_current
 ) VALUES (
     %(rule_key)s, %(claim_type)s, %(jurisdiction)s, %(value_numeric)s,
     %(value_text)s, %(unit)s, %(description)s, %(authority_type)s,
     %(authority_ref)s, %(authority_url)s,
-    %(effective_from)s, %(effective_to)s, %(is_prospective)s, now()
+    %(effective_from)s, %(effective_to)s, %(is_prospective)s, now(),
+    %(jurisdiction_code)s, %(domain)s, %(country_code)s, %(legal_system)s,
+    %(applies_to_gb)s, %(applies_to_england_wales)s, %(applies_to_scotland)s,
+    %(applies_to_ni)s, %(is_current)s
 )
 ON CONFLICT (rule_key, jurisdiction, effective_from) DO UPDATE SET
     value_numeric    = EXCLUDED.value_numeric,
@@ -456,6 +505,15 @@ ON CONFLICT (rule_key, jurisdiction, effective_from) DO UPDATE SET
     authority_url    = EXCLUDED.authority_url,
     effective_to     = EXCLUDED.effective_to,
     is_prospective   = EXCLUDED.is_prospective,
+    jurisdiction_code = EXCLUDED.jurisdiction_code,
+    domain           = EXCLUDED.domain,
+    country_code     = EXCLUDED.country_code,
+    legal_system     = EXCLUDED.legal_system,
+    applies_to_gb = EXCLUDED.applies_to_gb,
+    applies_to_england_wales = EXCLUDED.applies_to_england_wales,
+    applies_to_scotland = EXCLUDED.applies_to_scotland,
+    applies_to_ni = EXCLUDED.applies_to_ni,
+    is_current = EXCLUDED.is_current,
     last_verified_at = now()
 """
 
@@ -473,10 +531,14 @@ VERIFICATION_STATUSES = {
         ("verified", "Confirmed from legislation.gov.uk/ukpga/1996/18/section/108 on 2026-05-31. SI 2012/989 text confirmed."),
     ("unfair_dismissal.qualifying_period", date(2027, 1, 1)):
         ("prospective", "ERA 2025 s.25(2). No commencement SI as of 2026-05-31."),
+    ("unfair_dismissal.weeks_pay_cap_amount", date(2024, 4, 6)):
+        ("verified", "SI 2024/213 schedule confirmed from legislation.gov.uk."),
     ("unfair_dismissal.weeks_pay_cap_amount", date(2025, 4, 6)):
         ("verified", "SI 2025/348 schedule confirmed from legislation.gov.uk on 2026-05-31."),
     ("unfair_dismissal.weeks_pay_cap_amount", date(2026, 4, 6)):
         ("verified", "SI 2026/310 schedule confirmed from legislation.gov.uk on 2026-05-31."),
+    ("unfair_dismissal.compensatory_cap_amount", date(2024, 4, 6)):
+        ("verified", "SI 2024/213 schedule confirmed from legislation.gov.uk."),
     ("unfair_dismissal.compensatory_cap_amount", date(2025, 4, 6)):
         ("verified", "SI 2025/348 schedule confirmed from legislation.gov.uk on 2026-05-31."),
     ("unfair_dismissal.compensatory_cap_amount", date(2026, 4, 6)):
@@ -516,6 +578,22 @@ def seed() -> None:
     try:
         with conn.cursor() as cur:
             for row in ROWS:
+                row = {
+                    **row,
+                    "jurisdiction_code": "GB",
+                    "domain": "employment_uk",
+                    "country_code": "GB",
+                    "legal_system": "Great Britain",
+                    "applies_to_gb": True,
+                    "applies_to_england_wales": True,
+                    "applies_to_scotland": True,
+                    "applies_to_ni": False,
+                    "is_current": (
+                        row["is_prospective"] is False
+                        and row["effective_from"] <= date.today()
+                        and (row["effective_to"] is None or row["effective_to"] >= date.today())
+                    ),
+                }
                 cur.execute(UPSERT, row)
                 log.info(
                     "upserted %s effective_from=%s is_prospective=%s",

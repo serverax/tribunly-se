@@ -265,8 +265,9 @@ def test_deterministic_context_citations_all_have_url():
 
 # ── OpenRouter gate tests (no real API call needed) ───────────────────────────
 
-def test_openrouter_disabled_by_default():
+def test_openrouter_disabled_by_default(monkeypatch):
     """OPENROUTER_ENABLED defaults to False — OpenRouter must not be selected."""
+    monkeypatch.delenv("LAWAPP_LLM_PROVIDER", raising=False)
     from ingestion.config import Settings, SettingsConfigDict
     # Create a fresh settings with OpenRouter explicitly disabled
     class _TestSettings:

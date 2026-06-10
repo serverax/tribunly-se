@@ -17,6 +17,7 @@ from backend.core.agentic import litellm_adapter as A
 from backend.core.agentic import pii as PII
 from backend.core.agentic.errors import PIIBoundaryViolation, PolicyViolation
 from backend.core.agentic.schemas import AEEOutput, AgentName
+from backend.core.inference_policy import ExternalLLMForbidden
 
 _CLOUD_ROUTE = "lawapp-reasoning-heavy"
 
@@ -94,7 +95,7 @@ def test_call_model_cloud_payload_is_scrubbed_before_send(monkeypatch):
 
 
 def test_call_model_cloud_disabled_by_default():
-    with pytest.raises(PolicyViolation):
+    with pytest.raises(ExternalLLMForbidden):
         A.call_model(
             agent_name=AgentName.AEE, model_route=_CLOUD_ROUTE,
             system_prompt="x", payload={"reason_for_dismissal": "conduct"},

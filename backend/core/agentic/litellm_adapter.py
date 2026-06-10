@@ -104,6 +104,7 @@ def call_model(
 
     is_cloud = model_route != _LOCAL_ROUTE
     if is_cloud:
+        _pii_chokepoint(payload)
         # LOCAL OLLAMA ONLY (hard mandate): any non-local (cloud) route is forbidden.
         from backend.core.inference_policy import ExternalLLMForbidden
         raise ExternalLLMForbidden(

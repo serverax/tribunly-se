@@ -39,6 +39,11 @@ jobs:
       LAWAPP_LLM_PROVIDER: ollama_local
       ADMIN_API_KEY: ci-admin-key-test
       DEPLOYMENT_MODE: development
+      APP_BASE_URL: "http://localhost:8000"
+      JWT_SECRET: ci-jwt-secret-test
+      JWT_ISSUER: lawapp-issuer
+      JWT_AUDIENCE: lawapp-audience
+      ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY || 'w8sahfTvTWZIPpQHm7f0RbvBoixo74MnMPeakhuXuZQ=' }}
 
     steps:
       - name: Checkout
@@ -101,8 +106,6 @@ jobs:
         continue-on-error: true
 
       - name: Run full pytest suite (same selection as scripts/prove_full_pytest_suite.sh)
-        env:
-          ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
         # CI and local proof MUST use the same test command. The official local runner
         # is scripts/prove_full_pytest_suite.sh (Dockerfile.ingestion image); CI runs the
         # identical pytest selection on the host runner with the same deps installed above.
@@ -146,6 +149,11 @@ jobs:
       PYTHONPATH: .
       # NOTE: legal accuracy gate uses StubReasoningModel only.
       # Real-model/quota skips are NOT treated as pass evidence.
+      APP_BASE_URL: "http://localhost:8000"
+      JWT_SECRET: ci-jwt-secret-test
+      JWT_ISSUER: lawapp-issuer
+      JWT_AUDIENCE: lawapp-audience
+      ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY || 'w8sahfTvTWZIPpQHm7f0RbvBoixo74MnMPeakhuXuZQ=' }}
 
     steps:
       - name: Checkout

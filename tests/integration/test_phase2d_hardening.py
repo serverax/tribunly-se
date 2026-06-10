@@ -298,8 +298,9 @@ def test_openrouter_disabled_by_default():
         "OpenRouter must not be selected when OPENROUTER_ENABLED=false"
 
 
-def test_no_key_fallback_returns_stub():
+def test_no_key_fallback_returns_stub(monkeypatch):
     """When no external keys are configured, engine falls back to Stub — never crashes."""
+    monkeypatch.delenv("LAWAPP_LLM_PROVIDER", raising=False)
     class _NoKeys:
         openrouter_enabled    = False
         openrouter_api_key    = "placeholder"
@@ -319,8 +320,9 @@ def test_no_key_fallback_returns_stub():
     assert "boundary_log" in result
 
 
-def test_engine_works_without_openrouter_key():
+def test_engine_works_without_openrouter_key(monkeypatch):
     """Engine completes a full pipeline with no OpenRouter key configured."""
+    monkeypatch.delenv("LAWAPP_LLM_PROVIDER", raising=False)
     class _OnlyAnthropicPlaceholder:
         openrouter_enabled    = True          # enabled but key is placeholder
         openrouter_api_key    = "placeholder"  # -> should fall through to next
