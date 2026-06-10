@@ -1,39 +1,39 @@
 # Full Pytest Suite — Result
 
-- Timestamp: 2026-06-05T14:41:28Z
+- Timestamp: 2026-06-10T15:30:45Z
 - Command: `docker compose run --rm ingestion python -m pytest tests/ -q`
 - Image: Dockerfile.ingestion (deps baked in — no ad-hoc pip)
-- Exit code: 1
+- Exit code: 0
 
 ```
-21 failed, 1255 passed, 42 skipped, 2 warnings in 782.67s (0:13:02)
+1647 passed, 48 skipped, 6 warnings in 804.56s (0:13:24)
 ```
 
 ## Tail of run
 ```
+........................................................................ [ 89%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+...............s.......................                                  [100%]
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+backend/core/models.py:662
+  /app/backend/core/models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_blocks_wrong_user
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_allows_correct_user
+  /usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_blocks_wrong_user
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_allows_correct_user
+  /usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========================== short test summary info ============================
-FAILED tests/integration/test_api_smoke.py::test_assess_ud_returns_correct_shape
-FAILED tests/integration/test_phase3e_mvp_close.py::test_full_mvp_journey - a...
-FAILED tests/integration/test_phase4b_bundle.py::test_preview_content_is_truncated
-FAILED tests/integration/test_phase4b_bundle.py::test_full_bundle_with_premium_token_returns_full_content
-FAILED tests/integration/test_phase4b_bundle.py::test_witness_statement_contains_employment_dates
-FAILED tests/integration/test_phase4b_bundle.py::test_evidence_checklist_contains_expected_categories
-FAILED tests/integration/test_phase4b_bundle.py::test_et1_support_notes_generated
-FAILED tests/integration/test_phase4b_bundle.py::test_bundle_uses_confirmed_corrected_facts
-FAILED tests/integration/test_phase4b_bundle.py::test_bundle_does_not_use_rejected_facts
-FAILED tests/integration/test_phase4b_bundle.py::test_bundle_metadata_saved_after_premium_generate
-FAILED tests/integration/test_phase4b_bundle.py::test_bundle_status_lists_all_components
-FAILED tests/integration/test_phase4c_timeline.py::test_timeline_includes_generated_document_event
-FAILED tests/integration/test_phase4c_timeline.py::test_timeline_excludes_rejected_extracted_facts
-FAILED tests/integration/test_phase4c_timeline.py::test_phase4b_bundle_regression
-FAILED tests/integration/test_phase5b_unpaid_wages.py::test_letter_before_action_includes_amount
-FAILED tests/integration/test_phase6a_deployment.py::test_payment_stripe_live_fails_safely_without_key
-FAILED tests/integration/test_phase6a_deployment.py::test_payment_stripe_test_fails_safely
-FAILED tests/integration/test_phase7b_kms.py::test_legal_accuracy_gate_regression
-FAILED tests/integration/test_phase7b_kms.py::test_rules_verification_gate_regression
-FAILED tests/integration/test_phase7c_aws_kms.py::test_legal_accuracy_gate_regression
-FAILED tests/test_xss_protection.py::test_no_unsafe_inner_html - AssertionErr...
-21 failed, 1255 passed, 42 skipped, 2 warnings in 782.67s (0:13:02)
+1647 passed, 48 skipped, 6 warnings in 804.56s (0:13:24)
 ```

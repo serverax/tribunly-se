@@ -4,9 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: "Image tag to deploy"
-        required: false
-        default: "latest"
+        description: "Immutable image tag to deploy (commit SHA or sha256 digest — never 'latest')"
+        required: true
 
 jobs:
   deploy:
@@ -50,10 +49,20 @@ jobs:
           done
 
       - name: Set image and rollout
+        env:
+          TAG: ${{ inputs.image_tag }}
         run: |
-          TAG="${{ inputs.image_tag }}"
+          # Immutable deploys only: a commit SHA tag or a sha256 digest.
+          if [ "$TAG" = "latest" ] || ! echo "$TAG" | grep -qE '^([0-9a-f]{40}|sha256:[0-9a-f]{64})$'; then
+            echo "REFUSED: image_tag must be a 40-char commit SHA or sha256:<digest>, got '$TAG'"
+            exit 1
+          fi
+          case "$TAG" in
+            sha256:*) IMAGE="ghcr.io/serverax/lawapp/backend@${TAG}" ;;
+            *)        IMAGE="ghcr.io/serverax/lawapp/backend:${TAG}" ;;
+          esac
           kubectl set image deployment/lawapp-backend \
-            backend=ghcr.io/serverax/lawapp/backend:${TAG} \
+            "backend=${IMAGE}" \
             -n iterlaw-ai
           kubectl rollout status deployment/lawapp-backend \
             -n iterlaw-ai --timeout=180s

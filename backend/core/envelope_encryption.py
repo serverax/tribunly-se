@@ -35,7 +35,10 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Optional, Tuple
+from typing import TYPE_CHECKING, Optional, Tuple
+
+if TYPE_CHECKING:
+    from backend.core.kms import EncryptedKeyBundle
 
 logger = logging.getLogger(__name__)
 

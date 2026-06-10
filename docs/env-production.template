@@ -62,14 +62,19 @@ PAYMENT_MODE=disabled
 # ── Logging ───────────────────────────────────────────────────────────────────
 LOG_LEVEL=WARNING
 
-# ── AI model (optional) ───────────────────────────────────────────────────────
-# If not set, engine falls back to StubReasoningModel (returns insufficient_grounding).
-ANTHROPIC_API_KEY=<optional: sk-ant-...>
-WORKHORSE_MODEL_ID=claude-haiku-4-5-20251001
+# ── AI model (LOCAL OLLAMA ONLY) ──────────────────────────────────────────────
+# Policy: inference runs exclusively on the in-cluster Ollama service. External
+# LLM providers (Anthropic/OpenAI) are DISABLED — do not set any external API key.
+# If the local provider is unreachable, the engine fails closed
+# (insufficient_grounding); it never falls back to an external provider.
+LAWAPP_LLM_PROVIDER=ollama_local
+LAWAPP_OLLAMA_BASE_URL=http://ollama-inference.lawapp-ai.svc.cluster.local:11434
+LAWAPP_OLLAMA_MODEL=qwen2.5:3b-instruct-q6_K
 
-# ── Embedding (optional) ──────────────────────────────────────────────────────
-# Required for pgvector semantic search. Without it, BM25 fallback is active.
-# OPENAI_API_KEY=<optional: sk-...>
+# ── Embedding ─────────────────────────────────────────────────────────────────
+# Embeddings are computed locally (fastembed BAAI/bge-small-en-v1.5, baked into
+# the ingestion image). No external embedding API key is required; without the
+# local model, BM25 fallback is active.
 
 # ── Phase 7 placeholders (do not configure until implemented) ─────────────────
 # STRIPE_SECRET_KEY=<Phase 7: live payment>

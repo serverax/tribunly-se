@@ -22,8 +22,9 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+# Repo root is four levels up: backend/domains/employment/compliance.py → <root>
 _SIGNOFF_PATH = (
-    Path(__file__).resolve().parent.parent.parent / "docs" / "compliance-signoff.json"
+    Path(__file__).resolve().parents[3] / "docs" / "compliance-signoff.json"
 )
 
 

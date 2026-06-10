@@ -326,13 +326,22 @@ def test_readiness_has_reasoning_model_section():
     assert "reasoning_model" in data, "reasoning_model section must be in readiness report"
 
 
-def test_readiness_reasoning_model_reflects_api_key():
+def test_readiness_reasoning_model_reflects_local_only_policy():
+    """Local-Ollama-only policy: no external key is ever configured, and
+    production_grade tracks the LOCAL backend, not an external API key."""
     saved = os.environ.pop("ANTHROPIC_API_KEY", None)
     try:
         resp = client.get("/admin/production-readiness", headers=_ADMIN_HDR)
         rm = resp.json().get("reasoning_model", {})
         assert rm.get("anthropic_configured") is False
-        assert rm.get("production_grade") is False
+        assert rm.get("external_llm_allowed") is False
+        if rm.get("backend") == "ollama_local":
+            # Local inference backend configured — production grade without
+            # any external key (the policy-compliant state).
+            assert rm.get("production_grade") is True
+        else:
+            # No local backend configured (stub) — must NOT claim production grade.
+            assert rm.get("production_grade") is False
     finally:
         if saved:
             os.environ["ANTHROPIC_API_KEY"] = saved

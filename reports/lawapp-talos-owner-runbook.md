@@ -44,7 +44,8 @@ cd /mnt/f/lawapp
 export POSTGRES_PASSWORD='your-secure-db-password'
 export JWT_SECRET="$(openssl rand -base64 32)"
 export ENCRYPTION_KEY="$(python3 -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')"
-export ANTHROPIC_API_KEY='sk-ant-your-real-key'
+# NOTE: inference is LOCAL OLLAMA ONLY — no external LLM API key is used.
+# LAWAPP_LLM_PROVIDER/LAWAPP_OLLAMA_* are set in deployment manifests/config.
 export STRIPE_SECRET_KEY='sk_test_your_stripe_key_or_placeholder'
 export STRIPE_PUBLIC_KEY='pk_test_your_stripe_key_or_placeholder'
 export ADMIN_API_KEY="$(openssl rand -base64 16)"
@@ -103,7 +104,6 @@ kubectl -n lawapp-api create secret generic lawapp-app-secrets \
   --from-literal=JWT_ISSUER="lawapp-issuer" \
   --from-literal=JWT_AUDIENCE="lawapp-audience" \
   --from-literal=ENCRYPTION_KEY="$ENCRYPTION_KEY" \
-  --from-literal=ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
   --from-literal=STRIPE_SECRET_KEY="$STRIPE_SECRET_KEY" \
   --from-literal=STRIPE_PUBLIC_KEY="$STRIPE_PUBLIC_KEY" \
   --from-literal=ADMIN_API_KEY="$ADMIN_API_KEY" \
@@ -116,7 +116,6 @@ kubectl -n lawapp-ai create secret generic lawapp-app-secrets \
   --from-literal=JWT_ISSUER="lawapp-issuer" \
   --from-literal=JWT_AUDIENCE="lawapp-audience" \
   --from-literal=ENCRYPTION_KEY="$ENCRYPTION_KEY" \
-  --from-literal=ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
   --dry-run=client -o yaml | kubectl apply -f -
 
 # RAG secrets (lawapp-rag)
@@ -277,7 +276,7 @@ curl -s -X POST http://localhost:8000/api/brain/trace \
 After successful deploy:
 ```
 READY FOR TALOS INTERNAL DEMO: YES (if all pods Running and smoke test passes)
-READY FOR PUBLIC STAGING: NO until ingress/TLS + real AI key + payment decision
+READY FOR PUBLIC STAGING: NO until ingress/TLS + local Ollama inference healthy + payment decision
 READY FOR PRODUCTION: NO
 ```
 
@@ -285,7 +284,7 @@ READY FOR PRODUCTION: NO
 
 ## Important Notes
 
-1. **Do not set `ANTHROPIC_API_KEY=placeholder`** — use a real key for AI reasoning. Without it, complex assessments return `insufficient_grounding` (correct safety behaviour but poor demo experience for complex cases).
+1. **Inference is LOCAL OLLAMA ONLY** — do not set `ANTHROPIC_API_KEY` or any external LLM key. The brain routes to the in-cluster Ollama service (`LAWAPP_LLM_PROVIDER=ollama_local`, `LAWAPP_OLLAMA_BASE_URL`, `LAWAPP_OLLAMA_MODEL`). If Ollama is unreachable, assessments fail closed with `insufficient_grounding` (correct safety behaviour) — fix the Ollama deployment, do not add an external key.
 
 2. **JWT_ISSUER and JWT_AUDIENCE must match** — both `_create_jwt` and `_verify_jwt_hs256` use these. They're set in lawapp-app-secrets and lawapp-ai-secrets above.
 
@@ -293,4 +292,4 @@ READY FOR PRODUCTION: NO
 
 4. **Never print secret values** — the secret creation commands above use env vars only. Do not add values to YAML files or commit to git.
 
-5. **Backend image tag** — update `infra/k8s/lawapp-backend.yaml` image tag to the latest GHCR image before deploying. Build and push with: `docker build -t ghcr.io/serverax/lawapp/backend:latest . && docker push ghcr.io/serverax/lawapp/backend:latest`
+5. **Backend image tag** — deploy by the immutable commit-SHA tag (or sha256 digest) published by the canonical CI workflow (`ci.yml` build-push job), never by `latest`. Update `infra/k8s/lawapp-backend.yaml` to `ghcr.io/serverax/lawapp/backend:<release-commit-sha>` so the deployed artifact maps to the exact commit that passed CI.

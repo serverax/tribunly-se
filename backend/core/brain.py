@@ -762,7 +762,7 @@ def run_brain(
     })
 
     # ── Cost governor (before LLM call) ──────────────────────────────────────
-    routing_path = routing_decision.path if 'routing_decision' in dir() else "full_legal_pipeline"
+    routing_path = routing_decision.path
     try:
         from backend.core.cost_governor import check as _cost_check
         _cost = _cost_check(user_id=user_id, route=routing_path, trace_id=trace_id)
@@ -774,8 +774,8 @@ def run_brain(
                 "trace": trace.to_dict(),
                 "assessment": {"status": "quota_exceeded",
                                "message": "Daily usage quota exceeded. Please try again later."},
-                "agents_selected": agents_selected if 'agents_selected' in dir() else [],
-                "missing_facts": missing_facts if 'missing_facts' in dir() else [],
+                "agents_selected": agents,
+                "missing_facts": missing_facts,
                 "urgency": urgency, "days_remaining": days_remaining,
                 "evaluation": {"required": False, "passed": None, "reason": "quota_exceeded"},
                 "safety": {"passed": True, "blocked": False, "failures": []},

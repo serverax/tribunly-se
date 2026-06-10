@@ -18,12 +18,40 @@ spec:
         component: inference
         part-of: lawapp
     spec:
+      # All cluster nodes are control-plane (Talos 3-node cluster); without this
+      # toleration the DaemonSet is only eligible for untainted nodes.
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       containers:
         - name: ollama
           image: ollama/ollama:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 11434
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0:11434"
+            - name: LAWAPP_OLLAMA_MODEL
+              value: "qwen2.5:3b-instruct-q6_K"
+          # Idempotent per-pod model preload: waits for the server, then pulls.
+          # `ollama pull` is a no-op if the blob already exists in the volume.
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - |
+                    # No wget/curl in the ollama image — retry the pull itself
+                    # until the server is up. `ollama pull` is idempotent.
+                    MODEL="${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}"
+                    for i in $(seq 1 60); do
+                      ollama pull "$MODEL" && exit 0
+                      sleep 5
+                    done
+                    echo "preload: pull failed for $MODEL" >&2
           readinessProbe:
             httpGet:
               path: /api/tags
@@ -43,6 +71,15 @@ spec:
             limits:
               cpu: "4000m"
               memory: "16Gi"
+          volumeMounts:
+            - name: ollama-models
+              mountPath: /root/.ollama
+      # PodSecurity baseline forbids hostPath; emptyDir keeps the pod admissible.
+      # The postStart preload re-pulls the model after a pod restart.
+      volumes:
+        - name: ollama-models
+          emptyDir:
+            sizeLimit: 12Gi
 ---
 apiVersion: v1
 kind: Service

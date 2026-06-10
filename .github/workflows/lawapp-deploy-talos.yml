@@ -1,9 +1,9 @@
 name: LawApp Deploy to Talos
 
+# Deploys are manual-only: never auto-deploy on push. Use deploy-staging.yml
+# (immutable tag/digest) as the canonical deploy path.
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
 
 permissions:
   contents: read

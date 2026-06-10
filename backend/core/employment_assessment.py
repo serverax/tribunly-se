@@ -130,7 +130,8 @@ def assess_unfair_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dic
 
     qualifying_years = rules.get("qualifying_period_months", 24) / 12
     if years_service < qualifying_years:
-        deadline = (edt + relativedelta(months=rules.get("time_limit_months", 3))).date().isoformat()
+        # s.111(2): period "begins with" the EDT, so deadline = +months − 1 day
+        deadline = (edt + relativedelta(months=rules.get("time_limit_months", 3)) - timedelta(days=1)).date().isoformat()
         deadline_info = {
             "limitation_date": deadline,
             "source": "rules",
@@ -154,9 +155,10 @@ def assess_unfair_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dic
             ],
         }
 
-    # Deadline (3 or 6 months per rules) - use calendar months, not fixed 30 days
+    # Deadline (3 or 6 months per rules) - use calendar months, not fixed 30 days.
+    # s.111(2): the period "begins with" the EDT, so deadline = +months − 1 day.
     months = rules.get("time_limit_months", 3)
-    deadline = (edt + relativedelta(months=months)).date().isoformat()
+    deadline = (edt + relativedelta(months=months) - timedelta(days=1)).date().isoformat()
     deadline_info = {
         "limitation_date": deadline,
         "source": "rules",
@@ -169,7 +171,12 @@ def assess_unfair_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dic
     week_cap = rules.get("weeks_pay_cap_amount", 751)
     basic = years_for_award * multiplier * min(gross_weekly, week_cap)
     basic = max(basic, rules.get("basic_award_min", 9157))
-    comp = min(gross_weekly * 52, rules.get("compensatory_cap_amount", 123543))
+    # Statutory compensatory cap MUST come from the rules table — fail closed
+    # rather than fall back to a hardcoded legal value.
+    comp_cap = rules.get("compensatory_cap_amount")
+    if comp_cap is None:
+        raise ValueError("compensatory cap rule missing — fail closed (no hardcoded cap)")
+    comp = min(gross_weekly * 52, comp_cap)
 
     return {
         "viable_claim": True,
@@ -242,8 +249,8 @@ def assess_discrimination(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[
             "allowed": allowed_chars,
         }
 
-    # 3-month deadline - use calendar months for accuracy
-    deadline = (discriminatory_event_date + relativedelta(months=3)).isoformat()
+    # 3-month deadline — EqA 2010 s.123: period "begins with" the act, so −1 day
+    deadline = (discriminatory_event_date + relativedelta(months=3) - timedelta(days=1)).isoformat()
 
     return {
         "viable_claim": True,
@@ -276,8 +283,8 @@ def assess_constructive_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) 
             "reason": f"Does not meet qualifying period",
         }
 
-    # Deadline from resignation (not EDT) - 3 months calendar deadline
-    deadline = (resignation_date + relativedelta(months=3)).isoformat()
+    # Deadline from resignation (not EDT) — period "begins with" it, so −1 day
+    deadline = (resignation_date + relativedelta(months=3) - timedelta(days=1)).isoformat()
 
     return {
         "viable_claim": True,

@@ -1,3 +1,5 @@
+> **STALE — HISTORICAL ONLY (banner added 2026-06-10).** This document predates the current release state. The active source of truth is [docs/GO_LIVE_HANDOFF_2026-06-10.md](../docs/GO_LIVE_HANDOFF_2026-06-10.md) and branch `release/lawapp-clean-snapshot`. Do not use this file for release decisions.
+
 # LawApp — Project Status
 
 **Updated:** 2026-06-06

@@ -1,10 +1,9 @@
 name: LawApp CI
 
+# DEPRECATED (2026-06-10): superseded by ci.yml ("lawapp CI — Test, Build, Push"),
+# the canonical release workflow. Kept manual-only for ad-hoc diagnostics.
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  workflow_dispatch:
 
 permissions:
   contents: read

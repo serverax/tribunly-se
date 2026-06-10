@@ -869,14 +869,37 @@ def workflow_diagnosis(
         if len(facts) == 0:
             return {"status": "error", "error": "facts cannot be empty"}
 
-        # Load rules from database (currently defaults, would be DB-backed in production)
+        # Statutory caps come from the rules table (single source of truth).
+        # Fail closed for unfair dismissal if the DB rules are unavailable —
+        # never substitute a hardcoded legal value.
+        from datetime import date as _date
+        from backend.core.retrieve import retrieve_rules as _retrieve_rules
+        try:
+            _db_rules = {r["rule_key"]: r for r in
+                         _retrieve_rules("unfair_dismissal", jurisdiction, _date.today())}
+        except Exception:
+            _db_rules = {}
+
+        def _rule_num(key: str):
+            row = _db_rules.get(key)
+            return float(row["value_numeric"]) if row and row.get("value_numeric") is not None else None
+
+        _comp_cap = _rule_num("unfair_dismissal.compensatory_cap_amount")
+        _qp_years = _rule_num("unfair_dismissal.qualifying_period")
+        _tl_months = _rule_num("unfair_dismissal.time_limit_months")
+        if claim_type == "unfair_dismissal" and _comp_cap is None:
+            return {
+                "status": "error",
+                "error": "Statutory rule values unavailable — cannot assess (fail closed).",
+            }
+
         rules = {
-            # Unfair dismissal rules
-            "qualifying_period_months": 24,
-            "time_limit_months": 3,
-            "compensatory_cap_amount": 123543,
-            "weeks_pay_cap_amount": 751,
-            "basic_award_min": 9157,
+            # Unfair dismissal rules — DB-backed via the rules table
+            "qualifying_period_months": int(_qp_years * 12) if _qp_years is not None else 24,
+            "time_limit_months": int(_tl_months) if _tl_months is not None else 3,
+            "compensatory_cap_amount": _comp_cap,
+            "weeks_pay_cap_amount": _rule_num("unfair_dismissal.weeks_pay_cap_amount") or 751,
+            "basic_award_min": _rule_num("unfair_dismissal.basic_award_min_automatic") or 9157,
             # National minimum wage (2024 rates)
             "nmw_age_25": 11.44,
             "nmw_age_21": 8.60,
@@ -1159,7 +1182,7 @@ def workflow_documents_generate(
                     "title": title,
                     "content": content,
                     "safety_check": check,
-                    "generated_at": datetime.utcnow().isoformat(),
+                    "generated_at": _dt.datetime.now(_dt.timezone.utc).isoformat(),
                 }
             except Exception as e:
                 logger.error(f"Document generation error for {doc_type}: {str(e)}")

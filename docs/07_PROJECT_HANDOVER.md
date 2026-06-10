@@ -1,3 +1,5 @@
+> **STALE — HISTORICAL ONLY (banner added 2026-06-10).** This document predates the current release state. The active source of truth is [docs/GO_LIVE_HANDOFF_2026-06-10.md](../docs/GO_LIVE_HANDOFF_2026-06-10.md) and branch `release/lawapp-clean-snapshot`. Do not use this file for release decisions.
+
 # PROJECT HANDOVER - UK Employment Claim Co-Pilot
 
 **What this is:** the single document to open a fresh conversation or a new Claude Code session with. It carries full context so nobody re-derives decisions already made. Read this top to bottom, then the spec docs it points to (00 to 08, in order).

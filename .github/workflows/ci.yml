@@ -2,7 +2,7 @@ name: lawapp CI — Test, Build, Push
 
 on:
   push:
-    branches: [master, main]
+    branches: [master, main, "release/**"]
   pull_request:
     branches: [master, main]
   workflow_dispatch:
@@ -254,7 +254,14 @@ jobs:
   build-push:
     name: Build and push to GHCR
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    # Release artifacts are published ONLY after the full gate chain
+    # (integration tests → legal accuracy → rules verification) is green,
+    # from master or a release/** branch. The commit-SHA tag is the canonical
+    # immutable release artifact; `latest` is a convenience alias on master only.
+    needs: rules-verification-gate
+    if: |
+      github.event_name != 'pull_request' &&
+      (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/release/'))
     permissions:
       contents: read
       packages: write
@@ -269,18 +276,30 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push backend image
+      - name: Build and push backend image (immutable SHA tag)
         uses: docker/build-push-action@v5
         with:
           context: .
           file: Dockerfile
           push: true
-          tags: |
-            ghcr.io/serverax/lawapp/backend:${{ github.sha }}
-            ghcr.io/serverax/lawapp/backend:latest
+          tags: ghcr.io/serverax/lawapp/backend:${{ github.sha }}
 
-      - name: Verify image
-        run: docker pull ghcr.io/serverax/lawapp/backend:latest && echo "PUSH VERIFIED"
+      - name: Tag latest (master only)
+        if: github.ref == 'refs/heads/master'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ghcr.io/serverax/lawapp/backend:latest
+
+      - name: Verify image by immutable tag and record digest
+        run: |
+          docker pull ghcr.io/serverax/lawapp/backend:${{ github.sha }}
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/serverax/lawapp/backend:${{ github.sha }})
+          echo "RELEASE_ARTIFACT_COMMIT=${{ github.sha }}"
+          echo "RELEASE_ARTIFACT_DIGEST=${DIGEST}"
+          echo "PUSH VERIFIED"
 
   production-readiness-check:
     name: Production Readiness Report (reporting only)

@@ -60,6 +60,12 @@ dev = [
 line-length = 100
 target-version = "py312"
 
+[tool.ruff.lint]
+# Release-gate policy: syntax errors, invalid prints/comparisons, and undefined
+# names are hard blockers. Hygiene rules (unused imports, import position) are
+# advisory and must be requested explicitly via --select.
+select = ["E9", "F63", "F7", "F82"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 

@@ -29,8 +29,18 @@ spec:
         - name: reasoning
           image: ghcr.io/serverax/lawapp/backend:latest
           imagePullPolicy: Always
-          # Placeholder command — assuming the same backend image handles workers
-          command: ["python", "-m", "backend.core.pipeline"] 
+          # Long-lived outbox worker (drains the transactional outbox queue;
+          # clean SIGTERM shutdown). backend.core.pipeline is a library module,
+          # not a daemon — running it here caused a restart loop.
+          command: ["python", "-m", "backend.core.outbox_worker"]
+          env:
+            # Same DB credential source as lawapp-brain — the POSTGRES_* values
+            # in lawapp-ai-secrets do not match the lawapp-postgres instance.
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: lawapp-brain-db
+                  key: DATABASE_URL
           envFrom:
             - configMapRef:
                 name: lawapp-ai-config

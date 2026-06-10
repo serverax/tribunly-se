@@ -76,16 +76,30 @@
   <script>
     const API_BASE = '';
     const actsEl = document.getElementById('acts');
+    function safeHttpUrl(raw) {
+      if (!raw) return null;
+      try {
+        const u = new URL(raw, window.location.origin);
+        return (u.protocol === 'https:' || u.protocol === 'http:') ? u.href : null;
+      } catch { return null; }
+    }
     function addAct(date = '', event = '', kind = 'implied_mtc') {
       const row = document.createElement('div');
       row.className = 'cd-act';
-      row.innerHTML =
-        `<input type="date" class="a-date" value="${date}">
-         <input type="text" class="a-event" placeholder="e.g. unilateral pay cut" value="${event}">
-         <select class="a-kind">
-           <option value="express"${kind==='express'?' selected':''}>Express breach</option>
-           <option value="implied_mtc"${kind==='implied_mtc'?' selected':''}>Implied (trust &amp; confidence)</option>
-         </select>`;
+      const dateInput = document.createElement('input');
+      dateInput.type = 'date'; dateInput.className = 'a-date'; dateInput.value = date;
+      const eventInput = document.createElement('input');
+      eventInput.type = 'text'; eventInput.className = 'a-event';
+      eventInput.placeholder = 'e.g. unilateral pay cut'; eventInput.value = event;
+      const kindSelect = document.createElement('select');
+      kindSelect.className = 'a-kind';
+      [['express', 'Express breach'], ['implied_mtc', 'Implied (trust & confidence)']].forEach(([value, label]) => {
+        const opt = document.createElement('option');
+        opt.value = value; opt.textContent = label;
+        if (kind === value) opt.selected = true;
+        kindSelect.appendChild(opt);
+      });
+      row.append(dateInput, eventInput, kindSelect);
       actsEl.appendChild(row);
     }
     addAct();
@@ -145,23 +159,44 @@
       rk.className = 'risk-' + (ar.risk_level || 'low');
       document.getElementById('r-mitigation').textContent = ar.mitigation || '';
 
-      const tl = document.getElementById('r-timeline'); tl.innerHTML = '';
+      const tl = document.getElementById('r-timeline'); tl.replaceChildren();
       (r.repudiatory_acts || []).forEach(a => {
         const d = document.createElement('div');
-        d.innerHTML = `<strong>${a.date}</strong> — ${a.event || '(no detail)'} ` +
-          `<em>[${a.breach_kind}]</em> ${a.weight === 'last_straw' ? '<span class="tl tl-low">LAST STRAW</span>' : ''}`;
+        const dateEl = document.createElement('strong');
+        dateEl.textContent = a.date || '';
+        d.appendChild(dateEl);
+        d.appendChild(document.createTextNode(` — ${a.event || '(no detail)'} `));
+        const kindEl = document.createElement('em');
+        kindEl.textContent = `[${a.breach_kind}]`;
+        d.appendChild(kindEl);
+        if (a.weight === 'last_straw') {
+          const badge = document.createElement('span');
+          badge.className = 'tl tl-low';
+          badge.textContent = 'LAST STRAW';
+          d.appendChild(document.createTextNode(' '));
+          d.appendChild(badge);
+        }
         tl.appendChild(d);
       });
 
-      const w = document.getElementById('r-weaknesses'); w.innerHTML = '';
+      const w = document.getElementById('r-weaknesses'); w.replaceChildren();
       (r.key_weaknesses || []).forEach(x => { const li=document.createElement('li'); li.textContent=x; w.appendChild(li); });
 
       document.getElementById('r-action').textContent = (r.recommended_action || '').replace(/_/g,' ');
 
-      const c = document.getElementById('r-citations'); c.innerHTML = '';
+      const c = document.getElementById('r-citations'); c.replaceChildren();
       (r.citations || []).forEach(ct => {
         const li = document.createElement('li');
-        li.innerHTML = `<a href="${ct.url}" target="_blank" rel="noopener">${ct.cite}</a> — ${ct.note || ''}`;
+        const safeUrl = safeHttpUrl(ct.url);
+        if (safeUrl) {
+          const link = document.createElement('a');
+          link.href = safeUrl; link.target = '_blank'; link.rel = 'noopener';
+          link.textContent = ct.cite || safeUrl;
+          li.appendChild(link);
+        } else {
+          li.appendChild(document.createTextNode(ct.cite || ''));
+        }
+        li.appendChild(document.createTextNode(` — ${ct.note || ''}`));
         c.appendChild(li);
       });
       document.getElementById('r-boundary').textContent = r.legal_boundary || '';

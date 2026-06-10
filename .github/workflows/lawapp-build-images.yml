@@ -1,15 +1,9 @@
 name: lawapp build images
 
+# DEPRECATED (2026-06-10): image publication now happens in ci.yml build-push,
+# gated on the full test chain. Kept manual-only for service-image rebuilds.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "services/**"
-      - "backend/**"
-      - "client/**"
-      - "k8s/**"
-      - ".github/workflows/lawapp-build-images.yml"
 
 permissions:
   contents: read

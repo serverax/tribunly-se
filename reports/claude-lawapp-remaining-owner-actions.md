@@ -11,7 +11,7 @@ These are the ONLY remaining items that require owner action. All other items ha
 
 | # | Item | Severity | Command/URL |
 |---|---|---|---|
-| 1 | Set real `ANTHROPIC_API_KEY` in .env and K8s secret | HIGH | `echo "ANTHROPIC_API_KEY=sk-ant-YOUR_KEY" >> .env` |
+| 1 | ~~Set real `ANTHROPIC_API_KEY`~~ SUPERSEDED (2026-06-10): inference is local-Ollama-only; no external LLM key is used. Ensure the in-cluster Ollama deployment is healthy instead. | — | `kubectl -n lawapp-ai get deploy ollama-inference` |
 | 2 | Set real Stripe keys | HIGH | Get from dashboard.stripe.com → set STRIPE_SECRET_KEY, STRIPE_PUBLIC_KEY, STRIPE_WEBHOOK_SECRET in .env |
 | 3 | Run legal content ingestion | HIGH | `docker compose run --rm ingestion python -m ingestion.legislation.ingest` and `python -m ingestion.acas.ingest` |
 | 4 | Apply for FCL bulk licence | MEDIUM | https://caselaw.nationalarchives.gov.uk/computational_access |
