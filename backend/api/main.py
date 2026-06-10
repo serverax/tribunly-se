@@ -1936,7 +1936,15 @@ _UPLOAD_DIR = _Path(
         str(_Path(__file__).resolve().parent.parent.parent / ".local" / "lawapp_uploads"),
     )
 )
-_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+# Never crash the whole API at import because the upload dir is unwritable
+# (read-only rootfs / non-root pods): uploads fail closed via 503 instead.
+try:
+    _UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    _UPLOADS_AVAILABLE = True
+except OSError as _upload_exc:
+    logger.error("Upload dir %s not writable (%s) — uploads disabled (fail closed). "
+                 "Set LAWAPP_UPLOAD_DIR to a writable volume.", _UPLOAD_DIR, _upload_exc)
+    _UPLOADS_AVAILABLE = False
 
 _SUPPORTED_CONTENT_TYPES: frozenset[str] = frozenset({
     "application/pdf",
@@ -1999,6 +2007,11 @@ def upload_document(
             logger.error("Upload file encryption failed — storing plaintext: %s", exc)
 
     # Store to local filesystem (NOT production-ready — no HSM key management)
+    if not _UPLOADS_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Document upload storage is not available on this deployment.",
+        )
     case_dir = _UPLOAD_DIR / case_id
     case_dir.mkdir(parents=True, exist_ok=True)
     storage_path = case_dir / upload_id
