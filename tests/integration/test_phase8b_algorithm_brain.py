@@ -335,13 +335,14 @@ def test_readiness_reasoning_model_reflects_local_only_policy():
         rm = resp.json().get("reasoning_model", {})
         assert rm.get("anthropic_configured") is False
         assert rm.get("external_llm_allowed") is False
-        if rm.get("backend") == "ollama_local":
-            # Local inference backend configured — production grade without
-            # any external key (the policy-compliant state).
-            assert rm.get("production_grade") is True
-        else:
-            # No local backend configured (stub) — must NOT claim production grade.
-            assert rm.get("production_grade") is False
+        # production_grade tracks the LOCAL provider configuration only —
+        # never an external API key (production_readiness.py contract).
+        local_configured = (
+            os.environ.get("LAWAPP_LLM_PROVIDER", "") == "ollama_local"
+            and bool(os.environ.get("LAWAPP_OLLAMA_BASE_URL", "").strip())
+            and bool(os.environ.get("LAWAPP_OLLAMA_MODEL", "").strip())
+        )
+        assert rm.get("production_grade") is local_configured
     finally:
         if saved:
             os.environ["ANTHROPIC_API_KEY"] = saved
