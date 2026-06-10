@@ -16,17 +16,37 @@ DB_NAME="${POSTGRES_DB:-lawapp}"
 DB_USER="${POSTGRES_USER:-lawapp}"
 DB_PASSWORD="${POSTGRES_PASSWORD:-}"
 
-if [ -z "$DB_PASSWORD" ]; then
+if [ -z "${DATABASE_URL:-}" ] && [ -z "$DB_PASSWORD" ]; then
     echo "⚠️  POSTGRES_PASSWORD not set, using PGPASSWORD from environment"
 fi
 
 MIGRATIONS_DIR="$(dirname "$0")/migrations"
 
+run_pg_isready() {
+    if [ -n "${DATABASE_URL:-}" ]; then
+        pg_isready -d "$DATABASE_URL"
+    else
+        PGPASSWORD="$DB_PASSWORD" pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER"
+    fi
+}
+
+run_psql() {
+    if [ -n "${DATABASE_URL:-}" ]; then
+        psql "$DATABASE_URL" "$@"
+    else
+        PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" "$@"
+    fi
+}
+
 echo "════════════════════════════════════════════════════════════"
 echo "LAWAPP MIGRATION RUNNER"
 echo "════════════════════════════════════════════════════════════"
-echo "Database: $DB_NAME"
-echo "Host: $DB_HOST:$DB_PORT"
+if [ -n "${DATABASE_URL:-}" ]; then
+    echo "Database: DATABASE_URL"
+else
+    echo "Database: $DB_NAME"
+    echo "Host: $DB_HOST:$DB_PORT"
+fi
 echo "Migrations: $MIGRATIONS_DIR"
 echo ""
 
@@ -36,7 +56,7 @@ max_attempts=30
 attempt=0
 
 while [ $attempt -lt $max_attempts ]; do
-    if PGPASSWORD="$DB_PASSWORD" pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" > /dev/null 2>&1; then
+    if run_pg_isready > /dev/null 2>&1; then
         echo "✅ PostgreSQL is ready"
         break
     fi
@@ -52,8 +72,7 @@ fi
 
 # Create migrations tracking table if not exists
 echo "▸ Ensuring migrations tracking table exists..."
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-    -c "CREATE TABLE IF NOT EXISTS _migrations (
+run_psql -c "CREATE TABLE IF NOT EXISTS _migrations (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL UNIQUE,
         applied_at TIMESTAMPTZ DEFAULT now()
@@ -70,19 +89,16 @@ for migration_file in $(find "$MIGRATIONS_DIR" -maxdepth 1 -name "[0-9][0-9][0-9
     migration_name=$(basename "$migration_file")
 
     # Check if migration already applied
-    already_applied=$(PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-        -t -c "SELECT COUNT(*) FROM _migrations WHERE name = '$migration_name';" 2>/dev/null || echo "0")
+    already_applied=$(run_psql -t -A -c "SELECT COUNT(*) FROM _migrations WHERE name = '$migration_name';" 2>/dev/null || echo "0")
 
-    if [ "$already_applied" -eq "0" ]; then
+    if [ "${already_applied:-0}" = "0" ]; then
         echo "▸ Applying: $migration_name"
 
         # Apply migration
-        if PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-            -f "$migration_file" > /dev/null 2>&1; then
+        if run_psql -f "$migration_file" > /dev/null 2>&1; then
 
             # Mark as applied
-            PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-                -c "INSERT INTO _migrations (name) VALUES ('$migration_name');" 2>/dev/null || true
+            run_psql -c "INSERT INTO _migrations (name) VALUES ('$migration_name');" 2>/dev/null || true
 
             echo "  ✅ Applied"
             applied_count=$((applied_count + 1))
@@ -106,8 +122,7 @@ echo ""
 
 # Verify schema
 echo "▸ Verifying schema..."
-table_count=$(PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-    -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema');" 2>/dev/null || echo "0")
+table_count=$(run_psql -t -A -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema');" 2>/dev/null || echo "0")
 
 echo "✅ Database has $table_count tables"
 echo ""

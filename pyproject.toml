@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     # HTTP
     "httpx>=0.27",
+    "requests>=2.32",
     "tenacity>=8.3",
     # XML parsing (CLML + Akoma Ntoso/LegalDocML)
     "lxml>=5.2",
@@ -19,6 +20,13 @@ dependencies = [
     "slowapi>=0.1.9",
     "redis[hiredis]>=5.0",
     "stripe>=10.0",
+    "anthropic>=0.28",
+    "aiofiles>=23.2",
+    "boto3>=1.34",
+    "pypdf>=4.0",
+    "python-docx>=1.1",
+    "litellm>=1.44",
+    "PyYAML>=6.0",
     # Web / API
     "fastapi>=0.111",
     "uvicorn[standard]>=0.30",

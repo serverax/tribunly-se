@@ -20,6 +20,7 @@ COPY pyproject.toml ./
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir \
        "httpx[http2]>=0.27" \
+       "requests>=2.32" \
        "tenacity>=8.3" \
        "lxml>=5.2" \
        "psycopg2-binary>=2.9" \
@@ -48,6 +49,7 @@ RUN pip install --no-cache-dir --upgrade pip \
        "opentelemetry-instrumentation-fastapi>=0.48b0" \
        "opentelemetry-exporter-otlp-proto-http>=1.27" \
        "litellm>=1.44" \
+       "PyYAML>=6.0" \
        "pytest>=7.4" \
        "pytest-asyncio>=0.23" \
        "pytest-cov>=4.1" \
