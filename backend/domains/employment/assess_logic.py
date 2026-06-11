@@ -42,6 +42,46 @@ def _rule(rules: list[dict], key: str) -> Optional[dict]:
     return next((r for r in rules if r["rule_key"] == key), None)
 
 
+# ── Day-one / automatic-unfair detection ──────────────────────────────────────
+# Keyword families that indicate a dismissal category needing NO qualifying
+# period. Matched case-insensitively against the user's free-text description
+# and selected facts. Deliberately recall-biased: a false positive produces a
+# "needs review" flag; a false negative wrongly discourages a protected user.
+_DAY_ONE_INDICATORS: list[tuple[str, str, tuple[str, ...]]] = [
+    ("pregnancy or maternity", "ERA 1996 s.99",
+     ("pregnan", "maternity", "antenatal", "ante-natal", "expecting a baby",
+      "paternity", "parental leave", "adoption leave")),
+    ("whistleblowing / protected disclosure", "ERA 1996 s.103A",
+     ("whistleblow", "whistle-blow", "blew the whistle", "protected disclosure",
+      "reported wrongdoing", "reported safety breaches", "reported to the hse",
+      "reported to the regulator", "raised concerns about illegal")),
+    ("health and safety activity", "ERA 1996 s.100",
+     ("health and safety", "health & safety", "unsafe working", "refused unsafe",
+      "safety concern", "safety breach", "dangerous condition")),
+    ("trade union membership or activity", "TULRCA 1992 s.152",
+     ("trade union", "union member", "union rep", "union activit",
+      "joined a union", "joining a union")),
+    ("asserting a statutory right", "ERA 1996 s.104",
+     ("statutory right", "minimum wage complaint", "asked for my holiday pay",
+      "national minimum wage", "working time complaint", "asserted my rights")),
+]
+
+
+def detect_day_one_exception(query: str, safe_facts: dict) -> Optional[dict]:
+    """Return {label, authority} if the free text / facts mention an
+    automatic-unfair (day-one) dismissal category, else None."""
+    haystack = " ".join([
+        str(query or ""),
+        str(safe_facts.get("brief_facts") or ""),
+        str(safe_facts.get("reason_for_dismissal") or ""),
+        str(safe_facts.get("dismissal_context") or ""),
+    ]).lower()
+    for label, authority, needles in _DAY_ONE_INDICATORS:
+        if any(n in haystack for n in needles):
+            return {"label": label, "authority": authority}
+    return None
+
+
 def compute_value_range(rules: list[dict], safe_facts: dict) -> dict:
     """
     Compute the compensation value range deterministically from rules.
@@ -119,6 +159,11 @@ def build_deterministic_context(
     meets_qp = qualifying_check and qualifying_check.get("meets_qualifying_period")
     qp_row   = _rule(bundle_rules, _QP_KEY)
 
+    # Day-one / automatic-unfair indicators: these claims need NO qualifying
+    # period (ERA 1996 ss.99/100/103A/104, TULRCA 1992 s.152). A short-service
+    # claimant who mentions them must NEVER be told "no claim" on service alone.
+    day_one_exception = detect_day_one_exception(query, safe_facts)
+
     if qualifying_check:
         months = qualifying_check.get("service_months_approx", 0)
         if not meets_qp:
@@ -126,12 +171,23 @@ def build_deterministic_context(
                 f"{qp_row['value_numeric']} {qp_row['unit']}"
                 if qp_row and qp_row.get("value_numeric") else "2 years"
             )
-            weaknesses.append(
-                f"Qualifying period not met: {months:.1f} months service, "
-                f"{qp_required} required for ordinary unfair dismissal. "
-                f"Day-one exceptions (discrimination, whistleblowing, health & safety) "
-                f"not applicable unless specifically indicated."
-            )
+            if day_one_exception:
+                weaknesses.append(
+                    f"Possible day-one exception — needs review: your description "
+                    f"mentions {day_one_exception['label']}. Dismissal for this reason "
+                    f"can be AUTOMATICALLY UNFAIR ({day_one_exception['authority']}) and "
+                    f"does NOT require {qp_required} service. Although your "
+                    f"{months:.1f} months falls short of the ordinary qualifying period, "
+                    f"do not be discouraged — this category of claim should be reviewed "
+                    f"by an adviser as a priority."
+                )
+            else:
+                weaknesses.append(
+                    f"Qualifying period not met: {months:.1f} months service, "
+                    f"{qp_required} required for ordinary unfair dismissal. "
+                    f"Day-one exceptions (discrimination, whistleblowing, health & safety) "
+                    f"not applicable unless specifically indicated."
+                )
             if qp_row:
                 citations.append({"cite": qp_row["authority_ref"],
                                    "url":  qp_row["authority_url"]})
@@ -265,7 +321,13 @@ def build_deterministic_context(
         )
 
     # ── Viability determination ───────────────────────────────────────────────
-    if not meets_qp and qualifying_check:
+    if not meets_qp and qualifying_check and day_one_exception:
+        # Short service BUT a possible automatic-unfair category was indicated:
+        # never "no" on service alone — flag for priority review instead.
+        has_viable_claim = "uncertain"
+        strength = "uncertain"
+        next_step = "seek_solicitor"
+    elif not meets_qp and qualifying_check:
         has_viable_claim = "no"
         strength = "low"
         next_step = "free_diagnosis_only"
@@ -300,6 +362,8 @@ def build_deterministic_context(
         "recommended_next_step": next_step,
         "citations":          citations,
         "tribunal_elements":  elements,
+        "day_one_exception_possible": bool(day_one_exception),
+        "day_one_exception": day_one_exception,
         "reasoning_notes":    (
             f"Qualifying period met: {meets_qp}. "
             f"Procedure followed: {procedure_followed}. "

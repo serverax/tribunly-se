@@ -532,6 +532,10 @@ def assess(
         "confidence_score":      a.confidence_score,
         "insufficient_grounding": a.insufficient_grounding,
         "tribunal_elements":      det_ctx.get("tribunal_elements", []),
+        # Day-one / automatic-unfair flag (beta blocker C): surfaced so the UI
+        # and tests can see when short service does NOT defeat the claim.
+        "day_one_exception_possible": det_ctx.get("day_one_exception_possible", False),
+        "day_one_exception":      det_ctx.get("day_one_exception"),
         "model_boundary_payload": model.get_boundary_payload(),
     }
 
