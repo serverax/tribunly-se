@@ -95,6 +95,59 @@ def _write_deadline_audit(claim_type, jurisdiction, edt, deadline_info, time_lim
         logger.debug("deadline_calculation_audit write skipped: %s", exc)
 
 
+def _validate_fact_dates(facts: dict) -> Optional[dict]:
+    """Field-level date validation, run before classification.
+
+    Returns an {"status": "invalid_date", "field_errors": {...}} response dict
+    when a supplied date is malformed or impossible, else None.
+    Only validates keys that are present — absence is handled downstream.
+    """
+    today = date.today()
+
+    def _parse(key_label: str, raw) -> tuple[Optional[date], Optional[dict]]:
+        try:
+            return date.fromisoformat(str(raw)), None
+        except ValueError:
+            return None, {
+                "status": "invalid_date",
+                "field_errors": {key_label: f"'{raw}' is not a valid date — use YYYY-MM-DD."},
+                "message": f"Could not parse date: {raw}",
+            }
+
+    edt_raw = (facts.get("edt") or facts.get("effective_date_of_termination")
+               or facts.get("dismissal_date"))
+    edt_val = None
+    if edt_raw:
+        edt_val, err = _parse("edt", edt_raw)
+        if err:
+            return err
+        if edt_val > today:
+            return {"status": "invalid_date",
+                    "field_errors": {"edt": (
+                        f"Dismissal date {edt_val.isoformat()} is in the future. "
+                        f"Enter the date your employment actually ended.")},
+                    "message": "Dismissal date cannot be in the future."}
+
+    svc_raw = facts.get("service_start_date") or facts.get("employment_start_date")
+    if svc_raw:
+        svc_val, err = _parse("service_start_date", svc_raw)
+        if err:
+            return err
+        if edt_val and svc_val >= edt_val:
+            return {"status": "invalid_date",
+                    "field_errors": {"service_start_date": (
+                        f"Employment start date {svc_val.isoformat()} must be before "
+                        f"the dismissal date {edt_val.isoformat()}.")},
+                    "message": "Employment start date must be before the dismissal date."}
+
+    for ec_key in ("ec_day_a", "ec_day_b"):
+        if facts.get(ec_key):
+            _, err = _parse(ec_key, facts[ec_key])
+            if err:
+                return err
+    return None
+
+
 def assess(
     query: str,
     facts: dict,
@@ -116,6 +169,14 @@ def assess(
     (all stages run, governance gate exercises correctly) and to work correctly
     once a real model is configured.
     """
+
+    # ── Stage 0: Date sanity (BEFORE classification) ───────────────────────
+    # A malformed/impossible date must come back as a field-level error, never
+    # as "out of scope" — vague queries with broken dates would otherwise be
+    # refused by the classifier before the user learns their date is wrong.
+    _early = _validate_fact_dates(facts)
+    if _early is not None:
+        return _early
 
     # ── Stage 1: Classify ──────────────────────────────────────────────────
     classification = classify(query, facts)

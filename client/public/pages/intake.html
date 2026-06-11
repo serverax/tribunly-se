@@ -350,6 +350,17 @@
 
     if (!edt) { errEdt.classList.add('visible'); ok = false; }
     if (!service) { errService.classList.add('visible'); ok = false; }
+
+    // Impossible-date checks (mirrors the server's invalid_date validation)
+    const today = new Date().toISOString().slice(0, 10);
+    if (edt && edt > today) {
+      errEdt.textContent = 'Dismissal date cannot be in the future — enter the date your employment actually ended.';
+      errEdt.classList.add('visible'); ok = false;
+    }
+    if (edt && service && service >= edt) {
+      errService.textContent = 'Employment start date must be before the dismissal date.';
+      errService.classList.add('visible'); ok = false;
+    }
     if (!validateAcasDates()) ok = false;
 
     if (ok) nextStep();
@@ -463,6 +474,23 @@
       });
       if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
       const data = await resp.json();
+      // Field-level validation errors come back as status=invalid_date with
+      // field_errors — show them on the form instead of a generic failure.
+      if (data.status === 'invalid_date' && data.field_errors) {
+        form.style.display = 'block';
+        document.getElementById('loading').style.display = 'none';
+        const map = { edt: 'err-edt', service_start_date: 'err-service' };
+        let shown = false;
+        for (const [field, msg] of Object.entries(data.field_errors)) {
+          const el = document.getElementById(map[field] || '');
+          if (el) { el.textContent = msg; el.classList.add('visible'); shown = true; }
+        }
+        if (!shown) alert(data.message || 'Please check the dates you entered.');
+        currentStep = 1;  // back to the dates step
+        updateWizard();
+        window.scrollTo(0, 0);
+        return;
+      }
       sessionStorage.setItem('assessment_result', JSON.stringify(data));
       sessionStorage.setItem('assessment_facts_full', JSON.stringify(facts));
       window.location.href = '/pages/assessment.html';
