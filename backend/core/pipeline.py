@@ -256,6 +256,39 @@ def assess(
 
     deadline_info = compute_limitation_date(ref_date, time_limit_months, ec_day_a, ec_day_b)
 
+    # ── Deadline urgency (beta blocker #2): compare to today, warn clearly ───
+    _lim_str = deadline_info.get("limitation_date")
+    if _lim_str:
+        _today = date.today()
+        _lim = date.fromisoformat(str(_lim_str))
+        _days_left = (_lim - _today).days
+        deadline_info["deadline_passed"] = _days_left < 0
+        deadline_info["days_remaining"] = _days_left
+        if _days_left < 0:
+            deadline_info["urgency_level"] = "expired"
+            deadline_info["deadline_warning"] = (
+                f"⚠ This deadline appears to have PASSED ({abs(_days_left)} days ago, "
+                f"on {_lim.isoformat()}). Out-of-time claims are only accepted in "
+                f"limited circumstances — seek advice from ACAS or a solicitor "
+                f"IMMEDIATELY if you still wish to claim."
+            )
+        elif _days_left <= 14:
+            deadline_info["urgency_level"] = "critical"
+            deadline_info["deadline_warning"] = (
+                f"⚠ URGENT: only {_days_left} day(s) left until the deadline on "
+                f"{_lim.isoformat()}. You must notify ACAS (Early Conciliation) "
+                f"before a tribunal claim — act now."
+            )
+        elif _days_left <= 42:
+            deadline_info["urgency_level"] = "urgent"
+            deadline_info["deadline_warning"] = (
+                f"Time is short: {_days_left} days until the deadline on "
+                f"{_lim.isoformat()}. Start ACAS Early Conciliation soon."
+            )
+        else:
+            deadline_info["urgency_level"] = "normal"
+            deadline_info["deadline_warning"] = None
+
     # ── Deadline audit: prove the deadline came from rules, not the model ───────
     _write_deadline_audit(claim_type, jurisdiction, ref_date, deadline_info,
                           time_limit_rule, ec_day_a, ec_day_b)
