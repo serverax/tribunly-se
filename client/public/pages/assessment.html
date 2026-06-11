@@ -453,8 +453,13 @@
     if (!dl) return document.createDocumentFragment();
     const dt = dl.limitation_date || dl.date;
     const authority = dl.authority || '';
-    const isUrgent = dt && daysUntil(dt) <= 30;
-    
+    // Prefer the backend's authoritative urgency fields (deadline_passed /
+    // urgency_level / deadline_warning); fall back to the local 30-day check
+    // for older saved assessments that predate them.
+    const passed = dl.deadline_passed === true;
+    const isUrgent = passed || ['expired', 'critical', 'urgent'].includes(dl.urgency_level) ||
+                     (dt && daysUntil(dt) <= 30);
+
     const card = document.createElement('div');
     card.className = `deadline-card ${isUrgent ? 'urgent' : ''}`;
     
@@ -468,13 +473,20 @@
     const col1 = document.createElement('div');
     const label = document.createElement('div');
     label.className = 'deadline-label';
-    label.textContent = 'Tribunal deadline';
+    label.textContent = passed ? 'Tribunal deadline — PASSED' : 'Tribunal deadline';
     const dateVal = document.createElement('div');
     dateVal.className = 'deadline-date';
     dateVal.textContent = formatDate(dt);
     col1.append(label, dateVal);
-    
-    if (isUrgent) {
+
+    if (dl.deadline_warning) {
+      const warn = document.createElement('div');
+      warn.style.marginTop = '.5rem';
+      warn.style.fontWeight = '700';
+      warn.setAttribute('role', 'alert');
+      warn.textContent = dl.deadline_warning;
+      col1.appendChild(warn);
+    } else if (isUrgent) {
       const warn = document.createElement('div');
       warn.style.marginTop = '.5rem';
       warn.style.fontWeight = '700';
@@ -1088,6 +1100,11 @@
     
     const params = new URLSearchParams(window.location.search);
     const caseId = params.get('case_id');
+    if (!caseId) {
+      document.getElementById('doc-error').textContent = 'Please save the case first before generating documents.';
+      document.getElementById('doc-error').style.display = 'block';
+      return;
+    }
 
     document.getElementById('doc-loading').style.display = 'block';
     document.getElementById('doc-error').style.display = 'none';
@@ -1096,22 +1113,27 @@
     document.getElementById('btn-sol').disabled = true;
 
     try {
-      const body = {document_type: docType, assessment, facts};
-      if (caseId) body.case_id = caseId;
-
-      const resp = await fetch(`${API_BASE}/documents/generate`, {
+      const resp = await fetch(`${API_BASE}/api/documents/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...LAWAPP_AUTH.getAuthHeaders()
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          case_id: caseId,
+          document_type: docType,
+          confirmed_facts: facts,
+        }),
       });
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const data = await resp.json();
+      const docUrl = `${API_BASE}${data.download_url || `/api/documents/${data.document_id}`}`;
+      const docResp = await LAWAPP_AUTH.fetchWithAuth(docUrl);
+      if (!docResp.ok) throw new Error(`HTTP ${docResp.status}`);
+      const docText = await docResp.text();
 
       document.getElementById('doc-title').textContent = data.title || 'Draft document';
-      document.getElementById('doc-content').value = data.content || '';
+      document.getElementById('doc-content').value = docText || '';
       document.getElementById('doc-output').style.display = 'block';
 
       const payNotice = document.getElementById('doc-payment-notice');
