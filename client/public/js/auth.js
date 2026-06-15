@@ -200,7 +200,7 @@
     bar.style.cssText = 'background:#fef3c7;color:#78350f;padding:8px 16px;' +
       'font-size:14px;text-align:center;border-bottom:1px solid #f59e0b;';
     var strong = document.createElement('strong');
-    strong.textContent = 'Beta service — not legal advice. ';
+    strong.textContent = 'Controlled beta — 11 employment topics. Not legal advice. ';
     bar.appendChild(strong);
     bar.appendChild(document.createTextNode(
       'This tool provides legal information to help you prepare. Do not enter real names, ' +
