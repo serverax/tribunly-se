@@ -50,15 +50,21 @@ ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS revoked_reason text;
 ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS rotated_to uuid REFERENCES auth_sessions(id) ON DELETE SET NULL;
 ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS mfa_satisfied boolean NOT NULL DEFAULT true;
 ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS ip_hash text;
-UPDATE auth_sessions
-   SET refresh_token_hash = COALESCE(refresh_token_hash, session_token_hash)
- WHERE refresh_token_hash IS NULL
-   AND EXISTS (
+DO $$
+BEGIN
+  IF EXISTS (
        SELECT 1 FROM information_schema.columns
        WHERE table_schema='public'
          AND table_name='auth_sessions'
          AND column_name='session_token_hash'
-   );
+  ) THEN
+    EXECUTE $sql$
+      UPDATE auth_sessions
+         SET refresh_token_hash = COALESCE(refresh_token_hash, session_token_hash)
+       WHERE refresh_token_hash IS NULL
+    $sql$;
+  END IF;
+END $$;
 CREATE UNIQUE INDEX IF NOT EXISTS auth_sessions_refresh_token_hash_uidx
     ON auth_sessions (refresh_token_hash)
     WHERE refresh_token_hash IS NOT NULL;

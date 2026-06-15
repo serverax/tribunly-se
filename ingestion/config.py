@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     postgres_port: int = 5432
     postgres_db: str = "lawapp"
     postgres_user: str = "lawapp"
-    postgres_password: str = "changeme"
+    postgres_password: str = "lawapp"
 
     @computed_field
     @property
