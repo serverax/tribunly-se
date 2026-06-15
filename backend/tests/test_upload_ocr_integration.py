@@ -214,9 +214,8 @@ def test_ocr_failure_returns_error():
     with patch("backend.core.document_extractor.PyPDF2") as mock_pypdf:
         mock_pypdf.PdfReader.side_effect = Exception("PDF parsing failed")
 
-        # Should raise or return None, not fake data
-        with pytest.raises(Exception):
-            extract_text_from_document(b"garbage", "application/pdf")
+        text, doc_type = extract_text_from_document(b"garbage", "application/pdf")
+        assert text is None, "OCR/PDF failure must not return fabricated text"
 
 
 def test_upload_ocr_failure_marked_in_db(setup_test_user_and_case, test_user_id, test_case_id):

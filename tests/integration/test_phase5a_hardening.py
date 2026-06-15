@@ -60,6 +60,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.api.main import app
+from tests.integration.auth_helpers import mock_auth_headers
 from backend.core.deidentify import deidentify
 from backend.core.log_scanner import scan_for_pii, assert_no_pii
 from backend.core.pipeline import assess
@@ -126,7 +127,7 @@ def _make_case() -> str:
         "claim_type": "unfair_dismissal", "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
         "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
-    })
+    }, headers=mock_auth_headers())
     assert resp.status_code == 201
     return resp.json()["case_id"]
 

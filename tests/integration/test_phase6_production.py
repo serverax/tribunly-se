@@ -10,6 +10,8 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from tests.integration.auth_helpers import mock_auth_headers
+
 from backend.api.main import app
 from backend.core.pipeline import assess
 from backend.core.models import StubReasoningModel
@@ -83,7 +85,7 @@ def _make_case() -> str:
         "claim_type": "unfair_dismissal", "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
         "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
-    })
+    }, headers=mock_auth_headers())
     assert resp.status_code == 201
     return resp.json()["case_id"]
 

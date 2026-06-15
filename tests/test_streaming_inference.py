@@ -7,19 +7,29 @@
 """
 from __future__ import annotations
 
+import os
 import pytest
 
 from backend.core.models import LocalInferenceReasoningModel
 from backend.core.path_splitter import sse_frames
 
-OLLAMA = "http://host.docker.internal:11434"
+OLLAMA = os.environ.get("LAWAPP_OLLAMA_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
 
 
 def _ollama_up() -> bool:
     import httpx
     try:
-        httpx.get(f"{OLLAMA}/api/tags", timeout=3.0).raise_for_status()
-        return True
+        r = httpx.get(f"{OLLAMA}/api/tags", timeout=3.0)
+        r.raise_for_status()
+        names = {m.get("name", "").split(":")[0] for m in r.json().get("models", [])}
+        if "qwen2.5" not in names and not any("qwen" in n for n in names):
+            return False
+        probe = httpx.post(
+            f"{OLLAMA}/v1/chat/completions",
+            json={"model": "qwen2.5:3b", "messages": [{"role": "user", "content": "hi"}], "max_tokens": 1},
+            timeout=10.0,
+        )
+        return probe.status_code == 200
     except Exception:
         return False
 

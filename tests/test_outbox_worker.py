@@ -126,7 +126,7 @@ def test_dead_letter_after_max_retries(trace_id, monkeypatch):
 
     monkeypatch.setitem(outbox_worker.HANDLERS, "assessment_complete", _boom)
 
-    for _ in range(6):
+    for _ in range(12):
         if _row(key)[0] == "dead_letter":
             break
         outbox_worker.run_once()

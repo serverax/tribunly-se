@@ -179,15 +179,28 @@ def test_dev_mode_allows_mock_auth():
 
 
 def test_jwt_mode_parses_bearer_token():
-    """JWT stub accepts a Bearer token and uses it as user identity."""
+    """JWT mode accepts a Bearer token from registration as user identity."""
+    import uuid
     os.environ["LAWAPP_AUTH_MODE"] = "jwt"
     try:
-        # Create a case (no user auth required for POST in jwt mode without token)
-        case_resp = client.post("/cases", headers=_LEGACY_AUTH, json={
-            "claim_type": "unfair_dismissal", "jurisdiction": "EW",
-            "assessment": _ASSESSMENT, "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
+        email = f"jwt_{uuid.uuid4().hex[:8]}@example.test"
+        reg = client.post("/api/auth/register", json={
+            "email": email,
+            "password": "Str0ngP@ssw0rd!",
         })
-        assert case_resp.status_code == 201
+        assert reg.status_code == 201, reg.text
+        bundle = reg.json()
+        case_resp = client.post(
+            "/cases",
+            headers={"Authorization": f"Bearer {bundle['access_token']}"},
+            json={
+                "claim_type": "unfair_dismissal",
+                "jurisdiction": "EW",
+                "assessment": _ASSESSMENT,
+                "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
+            },
+        )
+        assert case_resp.status_code == 201, case_resp.text
     finally:
         os.environ["LAWAPP_AUTH_MODE"] = "mock"
 

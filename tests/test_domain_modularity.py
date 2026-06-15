@@ -20,6 +20,7 @@ from datetime import date
 import pytest
 
 from backend.domains import registry
+from backend.domains.employment.modules import production_module_keys
 from backend.domains.registry import (
     domain_registry,
     get_domain,
@@ -50,8 +51,8 @@ def test_registry_baseline_employment_enabled():
     assert is_domain_enabled("employment") is True
     assert "employment" in enabled_domains()
     spec = get_domain("employment")
-    # matter_types reflect what classify.py actually emits (reality, not a subset)
-    assert set(spec["matter_types"]) == {"unfair_dismissal", "unpaid_wages"}
+    # matter_types reflect the production beta scope (11 modules), not partial placeholders.
+    assert set(spec["matter_types"]) == set(production_module_keys())
     assert spec["rules_pack"] == "employment_rules"
     assert "EW" in spec["jurisdiction"]
 
