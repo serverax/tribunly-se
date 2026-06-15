@@ -52,6 +52,18 @@ ACAS_GUIDANCE_PAGES: list[tuple[str, str]] = [
     ("ACAS — Settlement agreements", "https://www.acas.org.uk/settlement-agreements"),
     ("ACAS — Managing staff redundancies", "https://www.acas.org.uk/manage-staff-redundancies"),
     ("ACAS — Unfair dismissal", "https://www.acas.org.uk/dismissals/unfair-dismissal"),
+    ("ACAS — Discrimination at work", "https://www.acas.org.uk/discrimination-and-bullying/discrimination-at-work"),
+    ("ACAS — Whistleblowing", "https://www.acas.org.uk/whistleblowing"),
+    ("ACAS — Maternity leave and pay", "https://www.acas.org.uk/maternity-leave-and-pay"),
+    ("ACAS — Paternity leave and pay", "https://www.acas.org.uk/paternity-leave-and-pay"),
+    ("ACAS — Shared parental leave", "https://www.acas.org.uk/shared-parental-leave-and-pay"),
+    ("ACAS — Parental leave", "https://www.acas.org.uk/parental-leave"),
+    ("ACAS — National Minimum Wage", "https://www.acas.org.uk/national-minimum-wage"),
+    ("ACAS — TUPE transfers", "https://www.acas.org.uk/tupe-transfers"),
+    ("ACAS — Health and safety", "https://www.acas.org.uk/health-safety-and-wellbeing"),
+    ("ACAS — Constructive dismissal", "https://www.acas.org.uk/dismissals/constructive-dismissal"),
+    ("ACAS — Trade union recognition", "https://www.acas.org.uk/trade-union-recognition"),
+    ("ACAS — Equal pay", "https://www.acas.org.uk/equal-pay"),
 ]
 
 

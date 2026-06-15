@@ -45,7 +45,7 @@ legislation:
     base_url: https://www.legislation.gov.uk/ukpga/1992/52
     parser_type: clml_xml
     licence_type: open_government_licence
-    sections: ["207A"]
+    sections: ["146","147","148","149","152","153","154","155","156","188","192","193","194","195","196","197","198","199","200","201","202","203","204","205","206","207","207A","208","209","210"]
 
   - act_title: Equality Act 2010
     leg_type: ukpga
@@ -54,8 +54,70 @@ legislation:
     base_url: https://www.legislation.gov.uk/ukpga/2010/15
     parser_type: clml_xml
     licence_type: open_government_licence
-    active: false   # future-ready; discrimination workflow not active yet
-    sections: ["4","13","15","19","20","21","26","27","39","123"]
+    sections: ["4","13","15","19","20","21","26","27","39","55","56","57","60","64","65","66","67","69","70","77","78","79","80","81","82","83","123","157","158","159","160","161","162","165","199","216","217","218","223","224"]
+
+  - act_title: National Minimum Wage Act 1998
+    leg_type: ukpga
+    year: 1998
+    chapter: "39"
+    base_url: https://www.legislation.gov.uk/ukpga/1998/39
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["1","2","3","4","5","8","9","10","11","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54"]
+
+  - act_title: Maternity and Parental Leave etc. Act 1999
+    leg_type: ukpga
+    year: 1999
+    chapter: "26"
+    base_url: https://www.legislation.gov.uk/ukpga/1999/26
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["1","3","4","5","6","7","8","9","10","11","12","15","16","17","18","19","20","21","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79"]
+
+  - act_title: Paternity and Adoption Leave Act 2002
+    leg_type: ukpga
+    year: 2002
+    chapter: "15"
+    base_url: https://www.legislation.gov.uk/ukpga/2002/15
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["1","2","3","4","5","6","7","8","9","10","11","12"]
+
+  - act_title: Employment Rights Act 2025
+    leg_type: ukpga
+    year: 2025
+    chapter: "36"
+    base_url: https://www.legislation.gov.uk/ukpga/2025/36
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["25","152","159"]
+
+  - act_title: Health and Safety at Work etc. Act 1974
+    leg_type: ukpga
+    year: 1974
+    chapter: "37"
+    base_url: https://www.legislation.gov.uk/ukpga/1974/37
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["7","44","100"]
+
+  - act_title: Transfer of Undertakings (Protection of Employment) Regulations 2006
+    leg_type: uksi
+    year: 2006
+    chapter: "246"
+    base_url: https://www.legislation.gov.uk/uksi/2006/246
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["1","2","3","4","5","6","7","8","9","10","11","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"]
+
+  - act_title: Working Time Regulations 1998
+    leg_type: uksi
+    year: 1998
+    chapter: "1833"
+    base_url: https://www.legislation.gov.uk/uksi/1998/1833
+    parser_type: clml_xml
+    licence_type: open_government_licence
+    sections: ["2","4","5","6","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48"]
 
 # Statutory Instruments — annual Employment Rights (Increase of Limits) Orders.
 # These set the week's-pay cap, max compensatory award and min basic award. The
