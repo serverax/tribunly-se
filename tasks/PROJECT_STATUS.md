@@ -1,10 +1,23 @@
 # LawApp — Project Status
 
-**Updated:** 2026-06-14  
+**Updated:** 2026-06-15  
 **Branch:** `release/lawapp-clean-snapshot`  
-**HEAD:** `62b9146` fix(beta-B-ui): render backend deadline warnings on the assessment page  
+**HEAD:** `f38c22f` fix(go-live): wire RAG corpus, bootstrap, and beta QA gates
 **QA input:** [docs/qa/CURSOR_REPAIR_BACKLOG.md](../docs/qa/CURSOR_REPAIR_BACKLOG.md), [docs/qa/CURSOR_COMPLETION_DECISION.md](../docs/qa/CURSOR_COMPLETION_DECISION.md)  
 **Overall verdict:** 🟡 **NOT READY FOR GO-LIVE** — P0 RAG wiring repaired; P0 module gate fail-closed in API; full 24-module + test suite still open
+
+
+## Post-approval workflow (2026-06-15)
+
+| Check | Result |
+|-------|--------|
+| Commit | `f38c22f6806353f1110127d9b43a910d6f242875` — fix(go-live): wire RAG corpus, bootstrap, and beta QA gates |
+| Push | `origin/release/lawapp-clean-snapshot` (20650a0..f38c22f) |
+| Docker build | backend, db-bootstrap, ingestion — **OK**; backend + lawapp-rag-service recreated |
+| pytest --collect-only | **1833** tests collected (2 import errors: test_rules_engine_scale, test_service_tracing_integration) |
+| RAG `/api/rag/search` | **HTTP 200**, vector hits (ACAS + ERA) |
+| prove_database_integrity.sh (GO_LIVE_MODE=beta) | **PASS** |
+| prove_lawapp_full_workflows.sh | **PASS** |
 
 ---
 
