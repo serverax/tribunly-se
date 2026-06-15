@@ -183,7 +183,7 @@
     newA.href = '/pages/intake.html';
     newA.className = 'btn btn-outline';
     newA.textContent = 'Start new diagnosis';
-    btnRow.append(reopenA, newA);
+    btnRow.append(pocBtn, solBtn, reopenA, newA);
     nextSection.append(nH3, nP, btnRow);
     container.appendChild(nextSection);
 
@@ -201,23 +201,37 @@
 
   async function downloadDoc(caseObj, assessment, type) {
     try {
-      const resp = await LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/documents/generate`, {
+      // Canonical document generation: auth + ownership + payment gates enforced server-side.
+      const resp = await LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/api/documents/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          case_id: caseObj.case_id || caseObj.id,
           document_type: type,
-          assessment: assessment,
-          facts: caseObj.facts || {}
+          confirmed_facts: caseObj.facts || {}
         })
       });
-      if (!resp.ok) throw new Error('Generation failed');
+      if (resp.status === 402) {
+        alert('Payment is required before full documents can be generated. Open the assessment page to unlock documents.');
+        return;
+      }
+      if (!resp.ok) throw new Error(`Generation failed (HTTP ${resp.status})`);
       const data = await resp.json();
-      
-      const blob = new Blob([data.content], { type: 'text/markdown' });
+
+      const docUrl = `${API_BASE}${data.download_url || `/api/documents/${data.document_id}`}`;
+      const docResp = await LAWAPP_AUTH.fetchWithAuth(docUrl);
+      if (docResp.status === 402) {
+        alert('Payment is required before documents can be downloaded.');
+        return;
+      }
+      if (!docResp.ok) throw new Error(`Download failed (HTTP ${docResp.status})`);
+      const docText = await docResp.text();
+
+      const blob = new Blob([docText], { type: 'text/markdown' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${type}_${caseObj.case_id}.md`;
+      a.download = `${type}_${caseObj.case_id || caseObj.id}.md`;
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {

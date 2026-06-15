@@ -14,6 +14,7 @@ Expected to exit non-zero if:
 
 from __future__ import annotations
 
+import json
 import os
 import sys
 
@@ -26,6 +27,12 @@ def _fail(msg: str) -> int:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
     from backend.core.pipeline import assess
     from backend.core.models import StubReasoningModel
 
@@ -49,13 +56,14 @@ def main() -> int:
         },
         model=model,
     )
+    deadline_info = grounded.get("deadline_info") or {}
     print("Grounded case:")
     print(f"  status:              {grounded.get('status')}")
     print(f"  claim_type:          {grounded.get('claim_type')}")
     print(f"  citations:           {len(grounded.get('citations') or [])}")
     print(f"  grounding_score:     {grounded.get('grounding_score')}")
     print(f"  confidence_score:    {grounded.get('confidence_score')}")
-    print(f"  deadline_info:       {grounded.get('deadline_info')}")
+    print(f"  deadline_info:       {json.dumps(deadline_info, ensure_ascii=True)}")
     print(f"  recommended_next:    {grounded.get('recommended_next_step')}")
     print()
 
@@ -68,7 +76,6 @@ def main() -> int:
     if float(grounded.get("grounding_score") or 0) <= 0:
         return _fail("grounding_score was not positive")
 
-    deadline_info = grounded.get("deadline_info") or {}
     if deadline_info.get("source") != "rules":
         return _fail(f"deadline source was not rules: {deadline_info}")
     if not deadline_info.get("authority"):

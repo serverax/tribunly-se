@@ -24,9 +24,10 @@ os.environ.setdefault("POSTGRES_DB",       "lawapp")
 os.environ.setdefault("POSTGRES_USER",     "lawapp")
 os.environ.setdefault("POSTGRES_PASSWORD", "lawapp")
 
-# Auth mode: mock enables real user identity checks in tests via X-User-ID header
-# JWT mode would require a real JWT_SECRET; mock is correct for unit/integration tests
-os.environ.setdefault("LAWAPP_AUTH_MODE",  "mock")
+# Auth mode: mock enables real user identity checks in tests via X-User-ID header.
+# Hard-assign so docker-compose LAWAPP_AUTH_MODE=jwt does not break integration suites.
+# JWT-specific tests override this in module-scoped fixtures.
+os.environ["LAWAPP_AUTH_MODE"] = "mock"
 os.environ.setdefault("JWT_SECRET",        "dev-jwt-secret-replace-in-production")
 
 # Payment mode: real-only. Safe default = disabled (paid generation blocked).

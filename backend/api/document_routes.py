@@ -79,6 +79,15 @@ class DocumentStatusResponse(BaseModel):
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
+# Legacy frontend/shim names → canonical type names. Normalized BEFORE validation
+# so existing pages sending e.g. "particulars_of_claim" keep working.
+DOCUMENT_TYPE_ALIASES = {
+    "particulars_of_claim": "particulars",
+    "et1_support_notes": "et1_support",
+    "et1_support_notes_wages": "unpaid_wages_letter",
+    "letter_before_action": "grievance_letter",
+}
+
 VALID_DOCUMENT_TYPES = {
     "et1_support",
     "particulars",
@@ -257,7 +266,8 @@ def generate_document(
     except HTTPException:
         raise
 
-    # ── Validate document type ────────────────────────────────────────────
+    # ── Validate document type (normalizing legacy alias names first) ──────
+    req.document_type = DOCUMENT_TYPE_ALIASES.get(req.document_type, req.document_type)
     if req.document_type not in VALID_DOCUMENT_TYPES:
         raise HTTPException(
             status_code=400,

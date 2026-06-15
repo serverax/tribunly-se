@@ -52,10 +52,12 @@ from fastapi.testclient import TestClient
 
 from backend.api.main import app
 from backend.domains.employment.reminders import compute_urgency
+from tests.integration.auth_helpers import TEST_USER_ID, mock_auth_headers
 from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
 
+_LEGACY_AUTH = mock_auth_headers(TEST_USER_ID)
 
 @pytest.fixture(scope="module", autouse=True)
 def apply_migration_004_reminder_events():
@@ -123,7 +125,7 @@ def _save_case(**kwargs) -> str:
     body = {"claim_type": "unfair_dismissal", "jurisdiction": "EW",
             "assessment": _ASSESSMENT, "key_dates": _KEY_DATES}
     body.update(kwargs)
-    resp = client.post("/cases", json=body)
+    resp = client.post("/cases", headers=_LEGACY_AUTH, json=body)
     assert resp.status_code == 201
     return resp.json()["case_id"]
 
@@ -364,7 +366,7 @@ def test_full_mvp_journey():
     assert assessment.get("deadline_mismatch") is False
 
     # 2. Preview document (unpaid)
-    preview_resp = client.post("/documents/generate", json={
+    preview_resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "particulars_of_claim",
         "assessment": assessment,
         "facts": _FACTS,
@@ -375,7 +377,7 @@ def test_full_mvp_journey():
            "requires payment" in preview_resp.json()["content"].lower()
 
     # 3. Save case, then mark the saved case paid (verified-webhook end-state)
-    save_resp = client.post("/cases", json={
+    save_resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unfair_dismissal",
         "jurisdiction": "EW",
         "assessment": assessment,
@@ -386,7 +388,7 @@ def test_full_mvp_journey():
     mark_case_paid(case_id)
 
     # 4. Full document (DB-backed paid case)
-    full_resp = client.post("/documents/generate", json={
+    full_resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "particulars_of_claim",
         "assessment": assessment,
         "facts": _FACTS,
@@ -448,7 +450,7 @@ def test_phase3b_rules_api_regression():
 def test_phase3c_document_generation_regression():
     case_id = _save_case()
     mark_case_paid(case_id)
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "schedule_of_loss",
         "assessment": _ASSESSMENT,
         "facts": _FACTS,

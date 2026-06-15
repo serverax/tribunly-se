@@ -53,12 +53,18 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.api.main import app
+
+from tests.integration.auth_helpers import TEST_USER_ID, mock_auth_headers
 from backend.core.classify import classify
 from backend.core.pipeline import assess
 from backend.core.models import StubReasoningModel
 from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
+# Legacy /documents/generate fails closed (401) for anonymous callers; these tests
+# target payment/content behaviour, so authenticate with a mock identity.
+_LEGACY_AUTH = mock_auth_headers(TEST_USER_ID)
+
 STUB = StubReasoningModel()
 
 _UPW_FACTS = {
@@ -99,7 +105,7 @@ _PROHIBITED = [
 
 
 def _make_paid_wages_case() -> str:
-    resp = client.post("/cases", json={
+    resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unpaid_wages",
         "jurisdiction": "EW",
         "assessment": _UPW_ASSESSMENT,
@@ -112,7 +118,7 @@ def _make_paid_wages_case() -> str:
 
 
 def _generate_paid_wages_document(doc_type: str):
-    return client.post("/documents/generate", json={
+    return client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": doc_type,
         "assessment": _UPW_ASSESSMENT,
         "facts": _UPW_FACTS,
@@ -274,7 +280,7 @@ def test_et1_notes_wages_do_not_say_we_will_file():
 # ── 17. Saved case ─────────────────────────────────────────────────────────────
 
 def test_unpaid_wages_case_saved_and_retrieved():
-    save_resp = client.post("/cases", json={
+    save_resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unpaid_wages",
         "jurisdiction": "EW",
         "assessment": _UPW_ASSESSMENT,

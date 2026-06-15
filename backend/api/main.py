@@ -287,6 +287,16 @@ def _create_jwt(user_id: str) -> str:
     return _jwt.encode(payload, secret, algorithm="HS256")
 
 
+def _is_db_schema_not_ready(exc: Exception) -> bool:
+    """Return True for DB errors that mean migrations/schema are missing."""
+    try:
+        import psycopg2
+        from psycopg2 import errors as _pg_errors
+    except Exception:
+        return False
+    return isinstance(exc, (_pg_errors.UndefinedTable, _pg_errors.UndefinedColumn, psycopg2.ProgrammingError))
+
+
 @app.post("/auth/register", status_code=201)
 @_limiter.limit("10/minute")
 def register(request: Request, req: RegisterRequest) -> dict:
@@ -420,7 +430,7 @@ def freshness() -> dict:
     try:
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT source, rows, oldest_verified FROM source_freshness ORDER BY source"
+                "SELECT source_name, rows, oldest_verified FROM source_freshness ORDER BY source_name"
             )
             rows = cur.fetchall()
     finally:
@@ -521,8 +531,10 @@ def _backend_deadline_for_mismatch(req: AssessRequest, result: dict) -> Optional
         from backend.domains.employment.deadline import compute_limitation_date
 
         edt = _dt.date.fromisoformat(str(edt_raw))
-        months_raw = facts.get("time_limit_months", 3)
-        months = int(months_raw or 3)
+        months_raw = facts.get("time_limit_months")
+        if months_raw is None:
+            return None
+        months = int(months_raw)
         ec_day_a = facts.get("ec_day_a")
         ec_day_b = facts.get("ec_day_b")
         ec_a = _dt.date.fromisoformat(str(ec_day_a)) if ec_day_a else None
@@ -707,13 +719,16 @@ class DocumentRequest(BaseModel):
     payment_token: Optional[str] = None  # Deprecated; paid access is DB-backed only.
 
 
-@app.post("/documents/generate")
+@app.post("/documents/generate", deprecated=True)
 def generate_document(req: DocumentRequest, x_user_id: Optional[str] = Header(None, alias="X-User-ID"), authorization: Optional[str] = Header(None, alias="Authorization")) -> dict:
     """
-    Generate a self-help document draft (Particulars of Claim or Schedule of Loss).
+    DEPRECATED legacy self-help draft generator (Particulars of Claim / Schedule of Loss
+    preview). Prefer canonical POST /api/documents/generate for full paid documents.
 
-    Phase 6A/7: Real payment gating via DB.
-    GUARDRAIL: Must verify case ownership before generating document.
+    Phase 6A/7: Real payment gating via DB. Full content is delivered ONLY when the case
+    is paid (is_case_paid); unpaid callers receive a truncated preview.
+    GUARDRAIL: auth required — unauthenticated requests are rejected (401).
+    GUARDRAIL: case ownership verified before any document generation.
     """
     from backend.core.documents import (
         generate_particulars_of_claim,
@@ -723,9 +738,15 @@ def generate_document(req: DocumentRequest, x_user_id: Optional[str] = Header(No
     from backend.core.payment import get_payment_mode, preview_document
     from backend.core.user_auth import get_current_user, check_case_ownership
 
-    # CRITICAL: Verify case ownership BEFORE any document generation
+    # CRITICAL: Authenticate (fail closed) BEFORE any ownership/generation work.
     _uid = get_current_user(x_user_id, authorization)
-    check_case_ownership(req.case_id, _uid, admin_override=False)
+    if not _uid:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    # Ownership applies when the draft is linked to a saved case. A caseless draft
+    # has no resource to own; payment gating below still forces a truncated preview
+    # because is_case_paid(None) is always False.
+    if req.case_id:
+        check_case_ownership(req.case_id, _uid, admin_override=False)
 
     # Fail-closed grounding gate: never generate a legal document from an ungrounded
     # or unsupported assessment (insufficient_grounding / unsupported jurisdiction).
@@ -811,10 +832,11 @@ def generate_document(req: DocumentRequest, x_user_id: Optional[str] = Header(No
 
 # ── COMPLETE DIAGNOSIS WORKFLOW (END-TO-END) ────────────────────────────────
 class WorkflowDiagnosisRequest(BaseModel):
-    """End-to-end diagnosis request supporting all 26 employment modules"""
-    claim_type: str = "unfair_dismissal"  # unfair_dismissal, unpaid_wages, discrimination, etc.
+    """End-to-end diagnosis request for registry-backed employment modules."""
+    claim_type: str = "unfair_dismissal"
     facts: dict  # employment_start_date, dismissal_date, gross_weekly_pay, age, etc.
     jurisdiction: str = "EW"  # England & Wales
+    query: Optional[str] = None
 
 
 @app.post("/api/workflow/diagnosis")
@@ -825,38 +847,25 @@ def workflow_diagnosis(
     """
     FREE diagnosis: Multi-module employment law assessment.
 
-    Supports all 26 UK employment law claim types:
-    - unfair_dismissal, unpaid_wages, discrimination
-    - maternity_rights, paternity_rights, parental_leave
-    - flexible_working, equal_pay, national_minimum_wage
-    - redundancy, whistleblowing, health_and_safety
-    - ... and 13 more modules
-
-    Deterministic assessment, no LLM, fail-closed.
-    Input validation + audit logging required.
+    Scope is the enabled domain registry plus DB-backed rules/corpus, not a
+    marketing list. Modules without real server/DB support fail closed.
     """
     try:
-        from backend.core.employment_assessment import assess_case
-
-        # Validate claim_type
-        SUPPORTED_CLAIM_TYPES = [
-            "unfair_dismissal", "unpaid_wages", "discrimination",
-            "constructive_dismissal", "wrongful_dismissal",
-            "working_time_regulations", "maternity_rights", "paternity_rights",
-            "parental_leave", "shared_parental_leave", "flexible_working",
-            "equal_pay", "national_minimum_wage", "working_time_directive",
-            "pregnancy_discrimination", "part_time_workers", "fixed_term_workers",
-            "agency_workers", "redundancy", "transfer_of_undertaking",
-            "data_protection_employment", "whistleblowing", "health_and_safety",
-            "trade_union_rights", "strikes_and_lockouts", "employment_contracts",
-        ]
+        from backend.domains.registry import supported_matter_types
+        from backend.core.models import StubReasoningModel
+        from backend.core.pipeline import assess as _pipeline_assess
 
         claim_type = (req.claim_type or "unfair_dismissal").lower().strip()
-        if claim_type not in SUPPORTED_CLAIM_TYPES:
+        supported_types = supported_matter_types()
+        if claim_type not in supported_types:
             return {
-                "status": "error",
-                "error": f"Unsupported claim_type: {claim_type}",
-                "supported_types": SUPPORTED_CLAIM_TYPES,
+                "status": "not_supported",
+                "claim_type": claim_type,
+                "message": (
+                    "This employment module is not yet backed by verified server-side "
+                    "rules, corpus, workflow tests, and document templates."
+                ),
+                "supported_types": supported_types,
             }
 
         facts = req.facts or {}
@@ -869,50 +878,79 @@ def workflow_diagnosis(
         if len(facts) == 0:
             return {"status": "error", "error": "facts cannot be empty"}
 
-        # Statutory caps come from the rules table (single source of truth).
-        # Fail closed for unfair dismissal if the DB rules are unavailable —
-        # never substitute a hardcoded legal value.
-        from datetime import date as _date
-        from backend.core.retrieve import retrieve_rules as _retrieve_rules
-        try:
-            _db_rules = {r["rule_key"]: r for r in
-                         _retrieve_rules("unfair_dismissal", jurisdiction, _date.today())}
-        except Exception:
-            _db_rules = {}
+        if claim_type not in {"unfair_dismissal", "unpaid_wages"}:
+            from datetime import date
+            from backend.core.employment_assessment import ASSESSMENT_HANDLERS, assess_case as _employment_assess_case
+            from backend.core.retrieve import retrieve, retrieve_rules
 
-        def _rule_num(key: str):
-            row = _db_rules.get(key)
-            return float(row["value_numeric"]) if row and row.get("value_numeric") is not None else None
+            if claim_type not in ASSESSMENT_HANDLERS:
+                return {
+                    "status": "not_supported",
+                    "claim_type": claim_type,
+                    "message": "This employment module has no production assessment handler.",
+                    "supported_types": supported_types,
+                }
 
-        _comp_cap = _rule_num("unfair_dismissal.compensatory_cap_amount")
-        _qp_years = _rule_num("unfair_dismissal.qualifying_period")
-        _tl_months = _rule_num("unfair_dismissal.time_limit_months")
-        if claim_type == "unfair_dismissal" and _comp_cap is None:
-            return {
-                "status": "error",
-                "error": "Statutory rule values unavailable — cannot assess (fail closed).",
+            reference_value = (
+                facts.get("termination_date")
+                or facts.get("dismissal_date")
+                or facts.get("edt")
+                or date.today().isoformat()
+            )
+            reference_date = date.fromisoformat(str(reference_value))
+            exact_rules = retrieve_rules(claim_type, jurisdiction, reference_date)
+            rule_values = {
+                row["rule_key"].split(f"{claim_type}.", 1)[-1]: (
+                    row.get("value_numeric") if row.get("value_numeric") is not None else row.get("value_text")
+                )
+                for row in exact_rules
+            }
+            query = req.query or f"{claim_type.replace('_', ' ')} employment assessment"
+            retrieval_bundle = retrieve(query, claim_type, jurisdiction, reference_date)
+            assessment = _employment_assess_case(claim_type, facts, rule_values)
+            assessment["retrieval_proof"] = {
+                "exact_rule_count": len(exact_rules),
+                "authority_count": len(retrieval_bundle.authorities),
+                "insufficient_grounding": bool(
+                    assessment.get("insufficient_grounding")
+                    or (not exact_rules and retrieval_bundle.insufficient_grounding)
+                ),
+                "rule_keys": [row["rule_key"] for row in exact_rules],
             }
 
-        rules = {
-            # Unfair dismissal rules — DB-backed via the rules table
-            "qualifying_period_months": int(_qp_years * 12) if _qp_years is not None else 24,
-            "time_limit_months": int(_tl_months) if _tl_months is not None else 3,
-            "compensatory_cap_amount": _comp_cap,
-            "weeks_pay_cap_amount": _rule_num("unfair_dismissal.weeks_pay_cap_amount") or 751,
-            "basic_award_min": _rule_num("unfair_dismissal.basic_award_min_automatic") or 9157,
-            # National minimum wage (2024 rates)
-            "nmw_age_25": 11.44,
-            "nmw_age_21": 8.60,
-            "nmw_age_18": 6.40,
-            "nmw_age_under18": 5.28,
-            # Other rates
-            "max_hours_per_week": 48,
-            "min_daily_rest_hours": 11,
-            "min_weekly_rest_days": 1.43,
-        }
+            viable = assessment.get("viable_claim")
+            next_step = (
+                "Claim appears viable. Unlock tribunal-ready documents for £29.99"
+                if viable else (
+                    "Claim does not meet legal requirements. Seek specialist advice."
+                    if viable is False else "Unable to assess - insufficient facts provided"
+                )
+            )
+            return {
+                "status": "success",
+                "claim_type": claim_type,
+                "jurisdiction": jurisdiction,
+                "assessment": assessment,
+                "workflow": {
+                    "step": 1,
+                    "total_steps": 3,
+                    "description": "Diagnosis (FREE)",
+                    "next_step": next_step,
+                    "payment_required": viable if viable is not None else False,
+                    "payment_amount_gbp": 29.99 if viable else 0,
+                    "supported_types": supported_types,
+                },
+            }
 
-        # Route to appropriate assessment module
-        assessment = assess_case(claim_type, facts, rules)
+        pipeline_facts = dict(facts)
+        pipeline_facts.setdefault("claim_type", claim_type)
+        query = req.query or f"{claim_type.replace('_', ' ')} employment assessment"
+        assessment = _pipeline_assess(
+            query,
+            pipeline_facts,
+            model=StubReasoningModel(),
+            jurisdiction=jurisdiction,
+        )
 
         # Audit log (would write to DB in production)
         logger.info(
@@ -943,6 +981,7 @@ def workflow_diagnosis(
                 "next_step": next_step,
                 "payment_required": viable if viable is not None else False,
                 "payment_amount_gbp": 29.99 if viable else 0,
+                "supported_types": supported_types,
             },
         }
 
@@ -1234,11 +1273,13 @@ def save_case(
     from backend.core.user_auth import get_current_user, ensure_user_exists
     import json
     _uid = get_current_user(x_user_id, authorization)
+    if not _uid:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
     conn = get_connection()
     try:
         with conn.cursor() as cur:
-            if _uid:
-                ensure_user_exists(conn, _uid)
+            ensure_user_exists(conn, _uid)
 
             assessment_to_store = {
                 k: v for k, v in req.assessment.items()
@@ -1276,6 +1317,12 @@ def save_case(
         return {"case_id": str(row[0]), "created_at": row[1].isoformat()}
     except Exception as exc:
         conn.rollback()
+        if _is_db_schema_not_ready(exc):
+            logger.error("Case save failed: database schema not ready: %s", exc)
+            raise HTTPException(
+                status_code=503,
+                detail="Database schema is not ready. Run migrations before saving cases.",
+            )
         logger.error("Case save failed: %s", exc)
         raise HTTPException(status_code=500, detail="Case save failed")
     finally:
@@ -3255,7 +3302,7 @@ class PaymentSessionRequest(BaseModel):
     cancel_url: Optional[str] = None
 
 
-@app.post("/api/payment/create-session")
+@app.post("/api/payment/create-session", deprecated=True)
 @_limiter.limit("10/minute")
 def create_payment_session(
     request: Request,
@@ -3264,19 +3311,26 @@ def create_payment_session(
     authorization: Optional[str] = Header(None, alias="Authorization"),
 ) -> dict:
     """
-    Create a payment session for document generation access.
+    DEPRECATED legacy payment-session alias. Prefer canonical
+    POST /api/payments/create-session. Delegates to the canonical handler.
 
     PAYMENT_MODE=test: creates a DB-backed deterministic local checkout session.
     PAYMENT_MODE=stripe/stripe_test/stripe_live: redirects to Stripe checkout.
     PAYMENT_MODE=disabled: always returns payment_required=True.
 
+    GUARDRAIL: auth required — unauthenticated requests are rejected (401) BEFORE any
+               mode-specific response, matching canonical ordering.
     GUARDRAIL: Never charges without displaying price first.
     GUARDRAIL: raw tokens and simulator modes never unlock documents.
     """
     from backend.core.payment import get_payment_mode
     from backend.core.user_auth import get_current_user
 
+    # Authenticate first — parity with canonical /api/payments/create-session,
+    # which returns 401 before evaluating payment mode (incl. disabled).
     user_id = get_current_user(x_user_id, authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     mode = get_payment_mode()
 
     valid_doc_types = {
@@ -3326,10 +3380,22 @@ def create_payment_session(
     raise HTTPException(status_code=500, detail="Unknown payment mode.")
 
 
-@app.get("/api/payment/status")
-def get_payment_status() -> dict:
-    """Return the current payment mode (no values, mode name only)."""
+@app.get("/api/payment/status", deprecated=True)
+def get_payment_status(
+    x_user_id:     Optional[str] = Header(None, alias="X-User-ID"),
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+) -> dict:
+    """
+    DEPRECATED legacy alias. Return the current payment mode (mode name only, no per-user data).
+
+    GUARDRAIL: auth required — unauthenticated requests are rejected (401), matching
+    canonical GET /api/payments/status/{case_id} ordering.
+    """
     from backend.core.payment import get_payment_mode
+    from backend.core.user_auth import get_current_user
+
+    if not get_current_user(x_user_id, authorization):
+        raise HTTPException(status_code=401, detail="Not authenticated")
     mode = get_payment_mode()
     stripe_configured = bool(
         _os.getenv("STRIPE_SECRET_KEY", "") and
@@ -4138,7 +4204,7 @@ def api_documents_facts(
 
 class WasmDeadlineRequest(BaseModel):
     edt: str
-    time_limit_months: int = 3
+    time_limit_months: int
     ec_day_a: Optional[str] = None
     ec_day_b: Optional[str] = None
 
@@ -4300,9 +4366,14 @@ def api_deadline_calculate(request: Request, req: DeadlineCalcRequest) -> dict:
         from backend.core.retrieve import retrieve_rules
         rules = retrieve_rules(claim_type, jurisdiction, edt)
         tl_rule = next((r for r in rules if "time_limit_months" in r.get("rule_key", "")), None)
-        tl_months = int(tl_rule["value_numeric"]) if tl_rule else 3
-        authority = tl_rule["authority_ref"] if tl_rule else "ERA 1996 s.111(2)"
-        authority_url = tl_rule.get("authority_url", "") if tl_rule else ""
+        if not tl_rule or tl_rule.get("value_numeric") is None:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Required rule missing from rules table for {claim_type}: time_limit_months",
+            )
+        tl_months = int(tl_rule["value_numeric"])
+        authority = tl_rule["authority_ref"]
+        authority_url = tl_rule.get("authority_url", "")
 
         from backend.domains.employment.deadline import compute_limitation_date
         result = compute_limitation_date(edt, tl_months, ec_a, ec_b)
@@ -4322,8 +4393,9 @@ def api_deadline_calculate(request: Request, req: DeadlineCalcRequest) -> dict:
             "authority":       authority,
             "authority_url":   authority_url,
         }
+    except HTTPException:
+        raise
     except Exception as exc:
-        from fastapi import HTTPException
         raise HTTPException(status_code=400, detail=str(exc))
 
 
@@ -4408,7 +4480,7 @@ class PaymentWebhookRequest(BaseModel):
     stripe_signature: Optional[str] = None
 
 
-@app.post("/api/payment/webhook")
+@app.post("/api/payment/webhook", deprecated=True)
 async def api_payment_webhook(
     request: Request,
     stripe_signature: Optional[str] = Header(None, alias="Stripe-Signature"),
@@ -4460,7 +4532,7 @@ async def api_payment_webhook(
     raise HTTPException(status_code=503, detail="Webhook not supported in current payment mode.")
 
 
-@app.get("/api/documents/{document_id}/download")
+@app.get("/api/documents/{document_id}/download", deprecated=True)
 @_limiter.limit("30/minute")
 def api_document_download(
     document_id: str,
@@ -4469,14 +4541,21 @@ def api_document_download(
     authorization: Optional[str] = Header(None, alias="Authorization"),
 ) -> dict:
     """
-    Download a generated document by ID.
+    DEPRECATED legacy download alias. Retained for backwards compatibility;
+    prefer canonical GET /api/documents/{document_id}.
 
-    Returns the document content and metadata.
+    Enforces the SAME gates as the canonical route (parity required):
+    GUARDRAIL: auth required — unauthenticated requests are rejected (401).
     GUARDRAIL: ownership verified — user can only download their own documents.
-    GUARDRAIL: download only permitted for documents linked to a paid case.
+    GUARDRAIL: download only permitted for documents linked to a paid case (402).
     """
     from backend.core.user_auth import get_current_user
+    from backend.core.payment import is_case_paid as _is_case_paid
+
+    # ── Authenticate (fail closed: no anonymous access) ────────────────────
     user_id = get_current_user(x_user_id, authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
 
     conn = get_connection()
     try:
@@ -4501,9 +4580,13 @@ def api_document_download(
 
     doc_id, doc_type, storage_ref, filename, case_id, created_at, case_owner = row
 
-    # Ownership check
-    if user_id and case_owner and str(case_owner) != str(user_id):
+    # Ownership check (unconditional — user_id is guaranteed non-null by the auth gate above)
+    if str(case_owner) != str(user_id):
         raise HTTPException(status_code=403, detail="Access denied — document belongs to a different user.")
+
+    # Payment gate (parity with canonical GET /api/documents/{id}): no download on unpaid case.
+    if not _is_case_paid(case_id):
+        raise HTTPException(status_code=402, detail="Payment required to download documents.")
 
     # Storage check
     if not storage_ref:

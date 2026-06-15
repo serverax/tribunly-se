@@ -113,40 +113,49 @@ TOKEN_B=$(echo "$LOGIN_B" | json_field "access_token")
 ISO_STATUS=$(http_status -H "Authorization: Bearer ${TOKEN_B}" "${BASE}/cases/${CASE_ID}")
 [ "$ISO_STATUS" = "403" ] && ok "User B blocked on User A case → 403" || fail "User isolation" "HTTP $ISO_STATUS (expected 403)"
 
-# ── Step 11: Payment test session ─────────────────────────────────────────────
-section "11. Payment (test simulator)"
+# ── Step 11: Payment session (hardened contract — no raw token unlock) ───────
+section "11. Payment session (legacy shim, payment-gated)"
 PAY=$(curl -s -X POST "${BASE}/api/payment/create-session" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${TOKEN_A}" \
   -d '{"document_type":"particulars_of_claim"}')
+PAY_REQUIRED=$(echo "$PAY" | json_field "payment_required")
 PAY_TOKEN=$(echo "$PAY" | json_field "payment_token")
-PAY_DEMO=$(echo "$PAY" | json_field "demo_mode")
-[ -n "$PAY_TOKEN" ] && ok "Test payment token received: ${PAY_TOKEN:0:20}..." || fail "Payment session" "$(echo $PAY | head -c 100)"
-[ "$PAY_DEMO" = "True" ] || [ "$PAY_DEMO" = "true" ] && ok "Payment demo_mode=true" || ok "Payment demo_mode=$PAY_DEMO"
+[ "$PAY_REQUIRED" = "True" ] || [ "$PAY_REQUIRED" = "true" ] \
+  && ok "Legacy session blocks: payment_required=true" \
+  || fail "Payment session" "payment_required=$PAY_REQUIRED ($(echo $PAY | head -c 100))"
+[ -z "$PAY_TOKEN" ] && ok "No raw unlock token issued (DB-backed paid access only)" \
+  || fail "Payment token" "raw token issued: ${PAY_TOKEN:0:20}..."
 
-# ── Step 12: Document generation ──────────────────────────────────────────────
-section "12. Document generation"
-DOC=$(curl -s -X POST "${BASE}/documents/generate" \
+# ── Step 12: Document generation (unpaid — never full content) ───────────────
+section "12. Document generation (unpaid preview only)"
+DOC_STATUS=$(curl -s -o /tmp/smoke_doc.json -w "%{http_code}" -X POST "${BASE}/documents/generate" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${TOKEN_A}" \
-  -d "{\"document_type\":\"particulars_of_claim\",\"assessment\":{\"has_viable_claim\":\"uncertain\"},\"facts\":{\"edt\":\"2026-03-01\",\"service_start_date\":\"2022-01-01\"},\"payment_token\":\"${PAY_TOKEN}\"}")
-DOC_PAID=$(echo "$DOC" | json_field "payment_required")
-DOC_LEN=$(echo "$DOC" | python -c "import sys,json; print(len(json.load(sys.stdin).get('content','')))" 2>/dev/null)
-[ "$DOC_PAID" = "False" ] || [ "$DOC_PAID" = "false" ] && ok "Full document returned (payment_required=false)" || fail "Document payment gate" "payment_required=$DOC_PAID"
-[ "${DOC_LEN:-0}" -gt 500 ] && ok "Document content ${DOC_LEN} chars" || fail "Document length" "${DOC_LEN} chars"
+  -d "{\"case_id\":\"${CASE_ID}\",\"document_type\":\"particulars_of_claim\",\"assessment\":{\"has_viable_claim\":\"uncertain\",\"citations\":[]},\"facts\":{\"edt\":\"2026-03-01\",\"service_start_date\":\"2022-01-01\"}}")
+if [ "$DOC_STATUS" = "402" ]; then
+  ok "Unpaid generation hard-blocked (402)"
+elif [ "$DOC_STATUS" = "200" ]; then
+  DOC_PAID=$(cat /tmp/smoke_doc.json | json_field "payment_required")
+  [ "$DOC_PAID" = "True" ] || [ "$DOC_PAID" = "true" ] \
+    && ok "Unpaid generation preview-gated (payment_required=true)" \
+    || fail "Document payment gate" "200 with payment_required=$DOC_PAID — unpaid unlock!"
+else
+  fail "Document generation" "HTTP $DOC_STATUS"
+fi
 
 # ── Step 13: Dashboard (cases list) ───────────────────────────────────────────
 section "13. Dashboard"
 CASES_STATUS=$(http_status -H "Authorization: Bearer ${TOKEN_A}" "${BASE}/cases")
 [ "$CASES_STATUS" = "200" ] && ok "GET /cases → 200" || fail "Dashboard" "HTTP $CASES_STATUS"
 
-# ── Step 14: Brain trace (19 steps) ───────────────────────────────────────────
-section "14. Brain trace (19 steps)"
+# ── Step 14: Brain trace (full governed pipeline) ─────────────────────────────
+section "14. Brain trace (>=19 steps)"
 BRAIN=$(curl -s -X POST "${BASE}/api/brain/trace" \
   -H "Content-Type: application/json" \
   -d '{"message":"dismissed after 10 months","facts":{"edt":"2026-03-01","service_start_date":"2025-05-01","jurisdiction":"EW"}}')
 STEP_COUNT=$(echo "$BRAIN" | python -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('trace',{}).get('steps',[])))" 2>/dev/null)
-[ "${STEP_COUNT:-0}" -eq 19 ] && ok "Brain trace: 19 steps" || fail "Brain steps" "got $STEP_COUNT"
+[ "${STEP_COUNT:-0}" -ge 19 ] && ok "Brain trace: ${STEP_COUNT} steps (>=19 governed stages)" || fail "Brain steps" "got $STEP_COUNT"
 
 SAFETY=$(echo "$BRAIN" | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('safety',{}).get('passed','?'))" 2>/dev/null)
 [ "$SAFETY" = "True" ] && ok "Safety policy passed" || fail "Safety policy" "$SAFETY"

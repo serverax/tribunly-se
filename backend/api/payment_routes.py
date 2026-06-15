@@ -73,6 +73,10 @@ class PaymentStatusResponse(BaseModel):
     currency: str = "GBP"
 
 
+class ConfirmTestPaymentRequest(BaseModel):
+    session_id: str = Field(..., description="Deterministic test checkout session ID")
+
+
 # ── Pricing (centralized, fail-closed) ────────────────────────────────────
 
 def get_package_price_pence(package_id: str) -> int:
@@ -388,6 +392,26 @@ def create_payment_session(
             status_code=503,
             detail="Payment service unavailable",
         )
+
+
+@router.post("/confirm-test")
+def confirm_test_payment(
+    req: ConfirmTestPaymentRequest,
+    x_user_id: Optional[str] = Header(None, alias="X-User-ID"),
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+):
+    """
+    Confirm a deterministic local test payment.
+
+    This route exists only for PAYMENT_MODE=test release proof. It is disabled in
+    disabled/stripe modes and still requires an authenticated user. The DB-backed
+    helper verifies that the session belongs to the caller before marking the case
+    paid.
+    """
+    uid = get_current_user(x_user_id, authorization)
+    if not uid:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return confirm_test_payment_session(req.session_id, uid)
 
 
 # ── Webhook reception ──────────────────────────────────────────────────────────

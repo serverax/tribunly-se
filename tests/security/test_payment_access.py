@@ -18,19 +18,24 @@ def client():
 
 
 class TestPaymentGatingIntegrity:
-    def test_no_token_returns_payment_required(self, client):
+    """
+    Fail-closed contract: anonymous callers (no verifiable identity — including
+    LAWAPP_AUTH_MODE=none) are rejected with 401 BEFORE any payment logic runs.
+    Paid/unpaid gating with real identities is covered by tests/test_legacy_route_parity.py
+    against seeded DB cases.
+    """
+
+    def test_anonymous_caller_rejected_before_payment_logic(self, client):
         with patch.dict(os.environ, {"PAYMENT_MODE": "stripe_test", "LAWAPP_AUTH_MODE": "none"}):
             r = client.post("/documents/generate", json={
                 "document_type": "particulars_of_claim",
                 "assessment": {"has_viable_claim": "uncertain"},
                 "facts": {"edt": "2026-01-01"},
             })
-        assert r.status_code in (200, 402, 422)
-        if r.status_code == 200:
-            assert r.json().get("payment_required") is not False
+        assert r.status_code == 401, "anonymous generate must fail closed (401)"
 
     def test_raw_token_does_not_bypass_gate(self, client):
-        """A raw request token (test_/anything) must NOT unlock the full document."""
+        """A raw request token (test_/anything) must NOT unlock anything for an anonymous caller."""
         with patch.dict(os.environ, {"PAYMENT_MODE": "stripe_test", "LAWAPP_AUTH_MODE": "none"}):
             r = client.post("/documents/generate", json={
                 "document_type": "particulars_of_claim",
@@ -38,9 +43,7 @@ class TestPaymentGatingIntegrity:
                 "facts": {"edt": "2026-01-01"},
                 "payment_token": "test_validtoken123",
             })
-        assert r.status_code in (200, 402, 422)
-        if r.status_code == 200:
-            assert r.json().get("payment_required") is not False, "raw token unlocked the document"
+        assert r.status_code == 401, "raw token must never substitute for identity"
 
     def test_disabled_mode_always_blocks(self, client):
         with patch.dict(os.environ, {"PAYMENT_MODE": "disabled", "LAWAPP_AUTH_MODE": "none"}):
@@ -50,9 +53,7 @@ class TestPaymentGatingIntegrity:
                 "facts": {"edt": "2026-01-01"},
                 "payment_token": "test_anything",
             })
-        assert r.status_code in (200, 402, 422)
-        if r.status_code == 200:
-            assert r.json().get("payment_required") is not False
+        assert r.status_code == 401, "disabled payment mode must not weaken the auth gate"
 
 
 class TestPaymentStatusNotFromBody:
@@ -89,7 +90,12 @@ class TestPaymentWebhook:
 
 class TestCreateSessionEndpointSecurity:
     def test_create_session_requires_valid_doc_type(self, client):
-        r = client.post("/api/payment/create-session", json={"document_type": "not_a_real_document"})
+        # Authenticated caller (auth gate runs first); invalid doc type → 400.
+        r = client.post(
+            "/api/payment/create-session",
+            headers={"X-User-ID": "00000000-0000-0000-0000-000000000001"},
+            json={"document_type": "not_a_real_document"},
+        )
         assert r.status_code == 400
 
     def test_create_session_grants_no_demo_unlock(self, client):
@@ -102,7 +108,12 @@ class TestCreateSessionEndpointSecurity:
             assert not tok.startswith("test_")
             assert data.get("paid") is not True
 
-    def test_payment_status_endpoint_exists(self, client):
+    def test_payment_status_requires_auth(self, client):
+        # Auth parity with canonical /api/payments/status/{case_id}: no header → 401.
         r = client.get("/api/payment/status")
+        assert r.status_code == 401
+
+    def test_payment_status_endpoint_exists(self, client):
+        r = client.get("/api/payment/status", headers={"X-User-ID": "00000000-0000-0000-0000-000000000001"})
         assert r.status_code == 200
         assert "mode" in r.json()

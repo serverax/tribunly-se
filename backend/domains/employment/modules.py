@@ -1,0 +1,69 @@
+"""Server-side UK employment-law module catalogue.
+
+This is the product scope target, not a production-support claim. A module is
+production-supported only when it has DB-backed rules/sources, workflow proof,
+templates where relevant, and tests. Until then it must fail closed.
+"""
+
+from __future__ import annotations
+
+from typing import TypedDict
+
+
+class EmploymentModule(TypedDict):
+    key: str
+    label: str
+    status: str
+    db_backed_required: bool
+
+
+REQUIRED_EMPLOYMENT_MODULES: tuple[EmploymentModule, ...] = (
+    {"key": "unfair_dismissal", "label": "Unfair dismissal", "status": "production", "db_backed_required": True},
+    {"key": "unpaid_wages", "label": "Unpaid wages / unlawful deduction", "status": "production", "db_backed_required": True},
+    {"key": "constructive_dismissal", "label": "Constructive dismissal", "status": "partial", "db_backed_required": True},
+    {"key": "wrongful_dismissal", "label": "Wrongful dismissal / notice pay", "status": "production", "db_backed_required": True},
+    {"key": "redundancy", "label": "Redundancy rights and pay", "status": "production", "db_backed_required": True},
+    {"key": "discrimination", "label": "Discrimination", "status": "partial", "db_backed_required": True},
+    {"key": "pregnancy_maternity_discrimination", "label": "Pregnancy and maternity discrimination", "status": "partial", "db_backed_required": True},
+    {"key": "equal_pay", "label": "Equal pay", "status": "partial", "db_backed_required": True},
+    {"key": "whistleblowing", "label": "Whistleblowing detriment/dismissal", "status": "partial", "db_backed_required": True},
+    {"key": "health_and_safety", "label": "Health and safety detriment/dismissal", "status": "partial", "db_backed_required": True},
+    {"key": "trade_union_rights", "label": "Trade union rights", "status": "partial", "db_backed_required": True},
+    {"key": "flexible_working", "label": "Flexible working", "status": "production", "db_backed_required": True},
+    {"key": "maternity_rights", "label": "Maternity rights", "status": "partial", "db_backed_required": True},
+    {"key": "paternity_rights", "label": "Paternity rights", "status": "partial", "db_backed_required": True},
+    {"key": "parental_leave", "label": "Parental leave", "status": "partial", "db_backed_required": True},
+    {"key": "shared_parental_leave", "label": "Shared parental leave", "status": "partial", "db_backed_required": True},
+    {"key": "holiday_pay", "label": "Holiday pay and annual leave", "status": "production", "db_backed_required": True},
+    {"key": "working_time", "label": "Working time and rest breaks", "status": "production", "db_backed_required": True},
+    {"key": "national_minimum_wage", "label": "National Minimum Wage", "status": "partial", "db_backed_required": True},
+    {"key": "part_time_workers", "label": "Part-time worker rights", "status": "production", "db_backed_required": True},
+    {"key": "fixed_term_workers", "label": "Fixed-term worker rights", "status": "production", "db_backed_required": True},
+    {"key": "agency_workers", "label": "Agency worker rights", "status": "production", "db_backed_required": True},
+    {"key": "tupe", "label": "TUPE transfers", "status": "partial", "db_backed_required": True},
+    {"key": "employment_contracts", "label": "Employment contracts / written particulars", "status": "production", "db_backed_required": True},
+)
+
+
+PRODUCTION_EMPLOYMENT_MODULES: tuple[str, ...] = tuple(
+    module["key"] for module in REQUIRED_EMPLOYMENT_MODULES if module["status"] == "production"
+)
+
+
+def module_keys() -> list[str]:
+    return [module["key"] for module in REQUIRED_EMPLOYMENT_MODULES]
+
+
+def production_module_keys() -> list[str]:
+    return list(PRODUCTION_EMPLOYMENT_MODULES)
+
+
+def module_coverage() -> dict:
+    total = len(REQUIRED_EMPLOYMENT_MODULES)
+    production = len(PRODUCTION_EMPLOYMENT_MODULES)
+    return {
+        "required_total": total,
+        "production_total": production,
+        "remaining_total": total - production,
+        "modules": list(REQUIRED_EMPLOYMENT_MODULES),
+    }

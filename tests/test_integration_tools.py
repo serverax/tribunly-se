@@ -34,6 +34,11 @@ import uuid
 import pytest
 from fastapi.testclient import TestClient
 
+# Legacy /documents/generate fails closed (401) for anonymous callers; these tests
+# target payment/content behaviour, so authenticate with a mock identity.
+_LEGACY_AUTH = {"X-User-ID": "00000000-0000-0000-0000-00000000000a"}
+
+
 _TOOL = "employment_rights_check"
 _ANSWERS = {
     "what_happened": "I was dismissed without warning after raising a safety concern.",
@@ -150,7 +155,7 @@ class TestAllFourToolsEndToEnd:
         assert r.json()["limitation_date"]
 
     def test_compensation(self, client):
-        r = client.post("/documents/generate",
+        r = client.post("/documents/generate", headers=_LEGACY_AUTH,
                         json={"document_type": "schedule_of_loss",
                               "assessment": {"status": "ok", "claim_type": "unfair_dismissal",
                                              "citations": []},

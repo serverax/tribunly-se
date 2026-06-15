@@ -75,6 +75,7 @@ COPY --chown=lawapp:lawapp client ./client
 COPY --chown=lawapp:lawapp scripts ./scripts
 COPY --chown=lawapp:lawapp docs ./docs
 COPY --chown=lawapp:lawapp docker-compose.yml ./docker-compose.yml
+COPY --chown=lawapp:lawapp tests ./tests
 
 EXPOSE 8000
 

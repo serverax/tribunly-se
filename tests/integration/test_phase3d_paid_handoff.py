@@ -33,7 +33,11 @@ from backend.api.main import app
 from ingestion.db import get_connection
 from tests.integration.payment_helpers import mark_case_paid
 
+from tests.integration.auth_helpers import TEST_USER_ID, mock_auth_headers
+
 client = TestClient(app, raise_server_exceptions=True)
+
+_LEGACY_AUTH = mock_auth_headers(TEST_USER_ID)
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -105,7 +109,7 @@ _SOL_PAID   = {"document_type": "schedule_of_loss", "assessment": _ASSESSMENT, "
 @pytest.fixture(scope="module", autouse=True)
 def paid_case_for_document_generation():
     """Paid-path assertions use DB-backed paid state, never raw tokens."""
-    resp = client.post("/cases", json={
+    resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unfair_dismissal",
         "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
@@ -122,15 +126,15 @@ def paid_case_for_document_generation():
 # ── 1. Unpaid returns preview ──────────────────────────────────────────────────
 
 def test_unpaid_document_returns_payment_required_true():
-    resp = client.post("/documents/generate", json=_POC_UNPAID)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_UNPAID)
     assert resp.status_code == 200
     data = resp.json()
     assert data["payment_required"] is True, "Unpaid request must set payment_required=True"
 
 
 def test_unpaid_document_content_is_truncated():
-    resp_unpaid = client.post("/documents/generate", json=_POC_UNPAID)
-    resp_paid   = client.post("/documents/generate", json=_POC_PAID)
+    resp_unpaid = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_UNPAID)
+    resp_paid   = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_PAID)
     assert resp_unpaid.status_code == 200
     assert resp_paid.status_code == 200
     unpaid_len = len(resp_unpaid.json()["content"])
@@ -140,7 +144,7 @@ def test_unpaid_document_content_is_truncated():
 
 
 def test_unpaid_preview_contains_preview_notice():
-    resp = client.post("/documents/generate", json=_POC_UNPAID)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_UNPAID)
     content = resp.json()["content"]
     assert "PREVIEW ENDS HERE" in content or "requires payment" in content.lower(), \
         "Preview must include payment gate notice"
@@ -149,13 +153,13 @@ def test_unpaid_preview_contains_preview_notice():
 # ── 2. Paid returns full content ──────────────────────────────────────────────
 
 def test_paid_document_returns_payment_required_false():
-    resp = client.post("/documents/generate", json=_POC_PAID)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_PAID)
     assert resp.status_code == 200
     assert resp.json()["payment_required"] is False
 
 
 def test_paid_document_returns_full_content():
-    resp = client.post("/documents/generate", json=_POC_PAID)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_PAID)
     content = resp.json()["content"]
     # Full doc should contain the statement of truth and the footer notice
     assert "STATEMENT OF TRUTH" in content or "statement of truth" in content.lower()
@@ -163,7 +167,7 @@ def test_paid_document_returns_full_content():
 
 
 def test_paid_sol_returns_full_content():
-    resp = client.post("/documents/generate", json=_SOL_PAID)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_SOL_PAID)
     assert resp.status_code == 200
     data = resp.json()
     assert data["payment_required"] is False
@@ -173,7 +177,7 @@ def test_paid_sol_returns_full_content():
 # ── 3. Legal boundary in preview ─────────────────────────────────────────────
 
 def test_preview_contains_legal_boundary_notice():
-    resp = client.post("/documents/generate", json=_POC_UNPAID)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_UNPAID)
     content = resp.json()["content"]
     # The legal boundary notice is near the top so must be in the preview
     assert "NOT legal advice" in content, "Legal boundary notice must appear in preview"
@@ -182,7 +186,7 @@ def test_preview_contains_legal_boundary_notice():
 # ── 4. Case saving ────────────────────────────────────────────────────────────
 
 def test_case_save_returns_case_id():
-    resp = client.post("/cases", json={
+    resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unfair_dismissal",
         "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
@@ -198,7 +202,7 @@ def test_case_save_returns_case_id():
 
 def test_case_save_and_retrieve():
     # Save
-    save_resp = client.post("/cases", json={
+    save_resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unfair_dismissal",
         "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
@@ -296,7 +300,7 @@ def test_handoff_missing_name_returns_422():
 # ── 7. Phase 3C regression ────────────────────────────────────────────────────
 
 def test_phase3c_document_generation_still_works():
-    resp = client.post("/documents/generate", json=_POC_PAID)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_PAID)
     assert resp.status_code == 200
     assert resp.json()["safety_check"]["passed"] is True
 

@@ -1,72 +1,64 @@
-> **STALE — HISTORICAL ONLY (banner added 2026-06-10).** This document predates the current release state. The active source of truth is [docs/GO_LIVE_HANDOFF_2026-06-10.md](../docs/GO_LIVE_HANDOFF_2026-06-10.md) and branch `release/lawapp-clean-snapshot`. Do not use this file for release decisions.
-
 # LawApp — Project Status
 
-**Updated:** 2026-06-06
-**Branch:** `recovery/lawapp-autonomous-stabilisation`
-**Current freeze:** [001-current-state-freeze-and-status](review/001-current-state-freeze-and-status.md)
-**Overall verdict:** 🔴 **REJECT CURRENT STATE** (not releasable; blockers below)
+**Updated:** 2026-06-14  
+**Branch:** `release/lawapp-clean-snapshot`  
+**HEAD:** `62b9146` fix(beta-B-ui): render backend deadline warnings on the assessment page  
+**QA input:** [docs/qa/CURSOR_REPAIR_BACKLOG.md](../docs/qa/CURSOR_REPAIR_BACKLOG.md), [docs/qa/CURSOR_COMPLETION_DECISION.md](../docs/qa/CURSOR_COMPLETION_DECISION.md)  
+**Overall verdict:** 🟡 **NOT READY FOR GO-LIVE** — P0 RAG wiring repaired; P0 module gate fail-closed in API; full 24-module + test suite still open
 
 ---
 
-## Headline
+## Recovery session (2026-06-14)
 
-Architecture is real and largely wired — not a stub farm. But the live production brain is down (DB password mismatch), credentials remain in git history, CI gates are red, and the legal-data provenance chain is not proven end-to-end. **Not acceptable for release.**
-
----
-
-## Blockers (must clear to move toward ACCEPT)
-
-| # | Blocker | Severity | Autonomy |
-|---|---|---|---|
-| G1 | Brain `/health` 503 — **re-diagnosed: deployed monolith image stale** (NOT a password issue: rules-engine works with same creds; HEAD source connects locally). Source hardened (/livez). | BLOCKER | **Owner/CI** (rebuild+redeploy monolith from HEAD) |
-| G2 | Leaked GitHub PATs in git history | HIGH | Working tree clean + scanner gate proven; **Owner** (rotate PAT + history rewrite/force-push) |
-| G3 | CI red: WASM integrity + pip-audit-local | ✅ **FIXED & PROVEN** | confirm on next CI run |
-| G10 | Legal data provenance chain | 🟡 runtime chain PROVEN (provenance + retrieval + CitationGuard fail-closed); embeddings=0 + fresh 007a–d pending | **Agent-actionable** |
-
-## Open (non-blocking)
-
-G4 worker stub · G5 document_service GET 501 · G6 client XSS sweep · G7 non-home UI verify · G8 10k load test · G9 live corpus reconfirm (after G1).
+| Item | Before | After | Status |
+|------|--------|-------|--------|
+| QA-001 RAG search | 0 hits (wrong table `legal_corpus`) | 5 hits for "unfair dismissal" (ACAS + ERA s.98/111) | 🟡 **PARTIAL** |
+| QA-001 corpus size | 28 chunks | 323 chunks, 315 embedded | 🟡 below >>1000 target |
+| QA-002 partial modules | 13/24 partial | 13/24 partial; API fail-closed for non-production | 🟡 **PARTIAL** (scope-cut UX) |
+| Docker health | 12/12 | 12/12 | ✅ |
+| Rules in DB | 125 | 125 | ✅ |
 
 ---
 
-## Solid (do not regress)
+## P0 blockers
 
-- LOCAL OLLAMA ONLY enforced — 30 policy/sovereign tests green.
-- 8 real+wired services; 7/8 live HTTP 200.
-- Rules-first, fail-closed retrieval; CitationGuard vs real corpus UUIDs; no hardcoded legal values.
-- Security suite: 134 passed. Ownership + payment integrity + PII de-id.
-- Professional home UI live. docker compose valid. build-images CI green.
+| ID | Blocker | Owner | Status |
+|----|---------|-------|--------|
+| QA-001 | RAG corpus + search | db-rag-ingestion-agent | 🟡 Search **FIXED**; corpus 323 (needs more ingest for >>1000) |
+| QA-002 | 13 partial employment modules | legal-rule-engine-agent | 🟡 Fail-closed in `/api/workflow/diagnosis` + registry; DB go-live gate still fails |
+
+---
+
+## P1 (unchanged)
+
+QA-003 container pytest parity · QA-004 59 test failures · QA-005 k6 load · QA-006 K8s deploy · QA-015 prod secrets
+
+---
+
+## Legal-data pipeline (binding)
+
+Delegation sequence unchanged:
+
+`uk-employment-law-scraper-agent → legal-data-engineer-agent → db-rag-ingestion-agent → ai-brain-citationguard-agent → qa-release-gatekeeper`
+
+Bootstrap run 2026-06-14: legislation + ACAS ingested, 288 embeddings, corpus sync **295 rows added** after `jurisdiction` NOT NULL fix.
+
+---
+
+## Next (ordered)
+
+1. Rebuild `db-bootstrap` image so `ingestion.sync_corpus_chunks` is included (bootstrap exited 1 on missing module in image).
+2. Expand corpus toward >>1000 chunks (full domain pack ingest + case law where licensed).
+3. QA-002: either promote next modules via migrations 062–068 + legal review, or enforce UI hide for partial modules in intake picker.
+4. QA-004: auth fixtures on integration tests.
+5. Owner: G2 leaked PAT rotation (not agent-performed).
 
 ---
 
 ## Task ledger
 
 | Task | State |
-|---|---|
-| 001-current-state-freeze-and-status | ✅ done → REJECT verdict (in `review/`) |
-| 007a-uk-employment-law-source-fetch-plan | 📋 backlog |
-| 007b-uk-employment-law-source-fetch-proof | 📋 backlog |
-| 007c-legal-data-engineering-transform-proof | 📋 backlog |
-| 007d-rag-index-and-citationguard-proof | 📋 backlog |
-
----
-
-## Data pipeline acceptance rule (binding)
-
-No legal-data task is accepted unless it passes the full chain:
-
-`source URL → HTTP fetch proof → raw content hash → raw source record → parsed legal row → corpus_chunk → embedding/index → retrieval result → CitationGuard real UUID validation`
-
-`qa-release-gatekeeper` **must reject** any ingestion claim that skips a stage.
-
-Delegation sequence for legal data work:
-`uk-employment-law-scraper-agent → legal-data-engineer-agent → db-rag-ingestion-agent → ai-brain-citationguard-agent → qa-release-gatekeeper`
-
----
-
-## Next
-
-1. **Owner:** reconcile live DB password (G1) → unblocks 8/8 smoke + G9.
-2. **Agent:** repair CI gates (G3); draft history-scrub plan (G2).
-3. **Agent:** execute 007a–007d legal-data provenance chain (G10).
+|------|-------|
+| QA-001 RAG wiring + bootstrap | 🟡 in progress — search proven, corpus partial |
+| QA-002 module fail-closed | 🟡 API proven; full promotion backlog |
+| 007a–007d legal-data provenance | 📋 backlog |

@@ -106,16 +106,14 @@ class TestProtectedEndpoints:
         assert r.status_code in (200, 401, 403)
 
     def test_create_case_requires_auth_in_jwt_mode(self, client):
-        """In jwt mode, creating a case without token associates case with null user_id."""
+        """Creating a case without a caller identity must fail closed."""
         r = client.post("/cases", json={
             "claim_type": "unfair_dismissal",
             "jurisdiction": "EW",
             "assessment": {},
             "key_dates": {},
         })
-        # jwt/mock mode: succeeds but case has null user_id (no ownership)
-        # Should succeed (201) or require auth
-        assert r.status_code in (201, 401, 403, 422)
+        assert r.status_code in (401, 403)
 
     def test_invalid_token_rejected(self, client):
         r = client.get("/cases", headers={"Authorization": "Bearer definitely.not.a.valid.jwt"})

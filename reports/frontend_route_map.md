@@ -1,0 +1,178 @@
+# Frontend Route Map
+
+## Static Pages
+- `/design-preview.html`
+- `/index.html`
+- `/pages/acas-prep.html`
+- `/pages/assessment.html`
+- `/pages/cancel.html`
+- `/pages/case_detail.html`
+- `/pages/claim-checker.html`
+- `/pages/compensation.html`
+- `/pages/constructive_dismissal.html`
+- `/pages/dashboard.html`
+- `/pages/deadline.html`
+- `/pages/intake.html`
+- `/pages/login.html`
+- `/pages/onboarding.html`
+- `/pages/register.html`
+- `/pages/saved_case.html`
+- `/pages/success.html`
+
+## Backend OpenAPI Paths
+- `GET /admin/compliance-status`
+- `GET /admin/dp-report`
+- `GET /admin/production-readiness`
+- `GET /admin/retention-status`
+- `GET /admin/rules-verification`
+- `GET /api/agents`
+- `POST /api/auth/apple`
+- `POST /api/auth/google`
+- `POST /api/auth/linkedin`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `POST /api/auth/magic-link`
+- `GET /api/auth/me`
+- `POST /api/auth/microsoft`
+- `POST /api/auth/password-reset`
+- `GET /api/auth/providers`
+- `POST /api/auth/refresh`
+- `POST /api/auth/register`
+- `POST /api/auth/verify-email`
+- `POST /api/brain/trace`
+- `POST /api/cache/test`
+- `GET /api/cases`
+- `GET /api/cases/{case_id}/documents`
+- `POST /api/chat/continue-workflow`
+- `GET /api/chat/conversations/{conversation_id}`
+- `POST /api/chat/conversations/{conversation_id}/save-to-case`
+- `POST /api/chat/feedback`
+- `POST /api/chat/message`
+- `POST /api/chat/missing-facts`
+- `POST /api/chat/stream`
+- `POST /api/context/compress`
+- `POST /api/deadline/calculate`
+- `GET /api/debug/agents`
+- `GET /api/debug/mcp-tools`
+- `POST /api/diagnosis`
+- `POST /api/documents/facts`
+- `POST /api/documents/generate`
+- `POST /api/documents/upload`
+- `GET /api/documents/{document_id}`
+- `GET /api/documents/{document_id}/download`
+- `POST /api/evaluate`
+- `POST /api/free-tool/full-result`
+- `POST /api/free-tool/resume`
+- `POST /api/free-tool/teaser`
+- `POST /api/kg/entity`
+- `GET /api/mcp/tools`
+- `POST /api/memory/get`
+- `POST /api/memory/save`
+- `POST /api/payment/create-session`
+- `GET /api/payment/status`
+- `POST /api/payment/webhook`
+- `POST /api/payments/create-session`
+- `GET /api/payments/status/{case_id}`
+- `POST /api/payments/webhook`
+- `POST /api/rag/graph`
+- `POST /api/rag/hybrid-search`
+- `POST /api/router/test`
+- `GET /api/rules/{claim_type}`
+- `GET /api/security/cross-user-test`
+- `GET /api/sources/freshness`
+- `POST /api/test/cache`
+- `POST /api/test/citation-verify`
+- `POST /api/test/conflict-detect`
+- `POST /api/test/evaluate`
+- `POST /api/test/hybrid-search`
+- `POST /api/test/legal-graph`
+- `POST /api/test/mcp-call`
+- `POST /api/test/memory/get`
+- `POST /api/test/memory/save`
+- `POST /api/test/ollama-smoke`
+- `POST /api/test/route-agent`
+- `POST /api/test/router`
+- `POST /api/test/wasm-deadline`
+- `POST /api/tools/acas-prep`
+- `POST /api/tools/claim-checker`
+- `POST /api/tools/compensation-estimate`
+- `POST /api/tools/deadline-calculator`
+- `GET /api/uploads/status/{file_id}`
+- `POST /api/uploads/upload`
+- `POST /api/uploads/{file_id}/confirm-facts`
+- `POST /api/v1/lawapp/ingest`
+- `POST /api/v1/lawapp/query`
+- `POST /api/workflow/diagnosis`
+- `POST /api/workflow/documents/generate`
+- `POST /api/workflow/payment/confirm`
+- `POST /api/workflow/payment/create`
+- `POST /api/workflows/constructive-dismissal`
+- `POST /assess`
+- `GET /auth/me`
+- `POST /auth/register`
+- `POST /auth/token`
+- `GET, POST /cases`
+- `DELETE, GET /cases/{case_id}`
+- `GET /cases/{case_id}/bundle`
+- `POST /cases/{case_id}/bundle/generate`
+- `POST /cases/{case_id}/bundle/preview`
+- `GET /cases/{case_id}/deadline`
+- `GET /cases/{case_id}/escalation`
+- `GET /cases/{case_id}/funnel`
+- `GET, POST /cases/{case_id}/reminders`
+- `GET /cases/{case_id}/timeline`
+- `POST /cases/{case_id}/timeline/events`
+- `PATCH /cases/{case_id}/timeline/events/{event_id}`
+- `GET, POST /cases/{case_id}/uploads`
+- `POST /cases/{case_id}/uploads/{upload_id}/apply-confirmed`
+- `POST /cases/{case_id}/uploads/{upload_id}/extract`
+- `PATCH /cases/{case_id}/uploads/{upload_id}/facts`
+- `POST /documents/generate`
+- `GET /freshness`
+- `POST /funnel/events`
+- `POST /handoff/leads`
+- `DELETE /handoff/leads/{lead_id}`
+- `GET /health`
+- `POST /onboarding/complete`
+- `GET /onboarding/status`
+- `POST /reasoning/route`
+- `POST /reasoning/stream`
+- `GET /rules/{claim_type}`
+
+## Frontend API References Observed
+- `/api/auth/apple`
+- `/api/auth/google`
+- `/api/auth/linkedin`
+- `/api/auth/login`
+- `/api/auth/logout`
+- `/api/auth/magic-link`
+- `/api/auth/me`
+- `/api/auth/microsoft`
+- `/api/auth/providers`
+- `/api/auth/refresh`
+- `/api/auth/register`
+- `/api/cases/`
+- `/api/documents/${data.document_id}`
+- `/api/tools/acas-prep`
+- `/api/tools/claim-checker`
+- `/api/tools/compensation-estimate`
+- `/api/tools/deadline-calculator`
+- `/apply-confirmed`
+- `/auth/me`
+- `/bundle`
+- `/bundle/generate`
+- `/bundle/preview`
+- `/cases`
+- `/cases/`
+- `/deadline`
+- `/documents`
+- `/extract`
+- `/js/auth.js`
+- `/onboarding/complete`
+- `/onboarding/status`
+- `/uploads`
+- `/uploads/`
+
+## Notes
+- `client/src` and `frontend` directories were requested but are absent in this checkout.
+- Full API parity requires dynamic template literal normalization; raw scan saved at `reports/frontend_api_call_scan.txt`.

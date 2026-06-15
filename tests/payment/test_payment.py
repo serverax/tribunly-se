@@ -14,6 +14,11 @@ import pytest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 
+# Legacy /documents/generate fails closed (401) for anonymous callers; these tests
+# target payment/content behaviour, so authenticate with a mock identity.
+_LEGACY_AUTH = {"X-User-ID": "00000000-0000-0000-0000-00000000000a"}
+
+
 
 @pytest.fixture(scope="module")
 def client():
@@ -171,14 +176,21 @@ class TestCreateSessionEndpoint:
             assert not tok.startswith("test_")
 
     def test_create_session_invalid_doc_type(self, client):
-        r = client.post("/api/payment/create-session", json={"document_type": "fake_document"})
+        with patch.dict(os.environ, {"LAWAPP_AUTH_MODE": "mock"}):
+            from tests.integration.auth_helpers import mock_auth_headers
+            r = client.post(
+                "/api/payment/create-session",
+                headers=mock_auth_headers(),
+                json={"document_type": "fake_document"},
+            )
         assert r.status_code == 400
 
 
 class TestDocumentPaymentGating:
     def test_no_token_returns_preview(self, client):
-        with patch.dict(os.environ, {"PAYMENT_MODE": "disabled", "LAWAPP_AUTH_MODE": "none"}):
-            r = client.post("/documents/generate", json={
+        from tests.integration.auth_helpers import mock_auth_headers
+        with patch.dict(os.environ, {"PAYMENT_MODE": "disabled", "LAWAPP_AUTH_MODE": "mock"}):
+            r = client.post("/documents/generate", headers=mock_auth_headers(), json={
                 "document_type": "particulars_of_claim",
                 "assessment": {"has_viable_claim": "uncertain"},
                 "facts": {"edt": "2026-03-01", "service_start_date": "2022-01-01"},
@@ -190,8 +202,9 @@ class TestDocumentPaymentGating:
 
     def test_raw_token_does_not_unlock_full_doc(self, client):
         """A raw request token must NOT unlock the full document (no DB entitlement)."""
-        with patch.dict(os.environ, {"PAYMENT_MODE": "stripe_test", "LAWAPP_AUTH_MODE": "none"}):
-            r = client.post("/documents/generate", json={
+        from tests.integration.auth_helpers import mock_auth_headers
+        with patch.dict(os.environ, {"PAYMENT_MODE": "stripe_test", "LAWAPP_AUTH_MODE": "mock"}):
+            r = client.post("/documents/generate", headers=mock_auth_headers(), json={
                 "document_type": "particulars_of_claim",
                 "assessment": {"has_viable_claim": "uncertain"},
                 "facts": {"edt": "2026-03-01", "service_start_date": "2022-01-01"},

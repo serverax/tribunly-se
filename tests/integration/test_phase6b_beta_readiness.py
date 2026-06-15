@@ -63,9 +63,15 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.api.main import app
+
+from tests.integration.auth_helpers import TEST_USER_ID, mock_auth_headers
 from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
+
+# Legacy /documents/generate fails closed (401) for anonymous callers; these tests
+# target payment/content behaviour, so authenticate with a mock identity.
+_LEGACY_AUTH = mock_auth_headers(TEST_USER_ID)
 
 _ADMIN_KEY = "test-admin-6b"
 _ADMIN_HDR = {"X-Admin-Key": _ADMIN_KEY}
@@ -90,7 +96,7 @@ _FACTS = {"edt": "2026-04-01", "service_start_date": "2023-04-01",
 
 
 def _make_paid_case() -> str:
-    resp = client.post("/cases", json={
+    resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unfair_dismissal",
         "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
@@ -177,7 +183,7 @@ def test_jwt_mode_parses_bearer_token():
     os.environ["LAWAPP_AUTH_MODE"] = "jwt"
     try:
         # Create a case (no user auth required for POST in jwt mode without token)
-        case_resp = client.post("/cases", json={
+        case_resp = client.post("/cases", headers=_LEGACY_AUTH, json={
             "claim_type": "unfair_dismissal", "jurisdiction": "EW",
             "assessment": _ASSESSMENT, "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
         })
@@ -190,10 +196,12 @@ def test_jwt_mode_parses_bearer_token():
 
 def test_case_owner_protection_regression():
     os.environ["LAWAPP_AUTH_MODE"] = "mock"
-    case_resp = client.post("/cases", json={
+    hdrs = dict(_LEGACY_AUTH)
+    hdrs["X-User-ID"] = _USER_A
+    case_resp = client.post("/cases", headers=hdrs, json={
         "claim_type": "unfair_dismissal", "jurisdiction": "EW",
         "assessment": _ASSESSMENT, "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
-    }, headers={"X-User-ID": _USER_A})
+    })
     case_id = case_resp.json()["case_id"]
     assert client.get(f"/cases/{case_id}", headers={"X-User-ID": _USER_B}).status_code == 403
     assert client.get(f"/cases/{case_id}", headers={"X-User-ID": _USER_A}).status_code == 200
@@ -385,7 +393,7 @@ def test_ci_yml_has_production_readiness_job():
 
 def test_payment_gate_still_works():
     case_id = _make_paid_case()
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "particulars_of_claim",
         "assessment": _ASSESSMENT, "facts": _FACTS,
         "case_id": case_id,

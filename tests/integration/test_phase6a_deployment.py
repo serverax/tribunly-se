@@ -58,11 +58,17 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.api.main import app
+
+from tests.integration.auth_helpers import TEST_USER_ID, mock_auth_headers
 from backend.core.pipeline import assess
 from backend.core.models import StubReasoningModel
 from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
+# Legacy /documents/generate fails closed (401) for anonymous callers; these tests
+# target payment/content behaviour, so authenticate with a mock identity.
+_LEGACY_AUTH = mock_auth_headers(TEST_USER_ID)
+
 STUB = StubReasoningModel()
 
 _ADMIN_KEY = "test-admin-6a"
@@ -114,14 +120,14 @@ def phase6a_env():
 
 
 def _make_case(user_id=None) -> str:
-    hdrs = {}
+    hdrs = dict(_LEGACY_AUTH)
     if user_id:
         hdrs["X-User-ID"] = user_id
-    resp = client.post("/cases", json={
+    resp = client.post("/cases", headers=hdrs, json={
         "claim_type": "unfair_dismissal", "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
         "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
-    }, headers=hdrs)
+    })
     assert resp.status_code == 201
     return resp.json()["case_id"]
 
@@ -236,7 +242,7 @@ def test_admin_key_overrides_user_auth():
 
 def test_payment_mock_does_not_unlock_raw_token():
     os.environ["PAYMENT_MODE"] = "mock"
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "particulars_of_claim",
         "assessment": _ASSESSMENT, "facts": _FACTS,
         "payment_token": "mock-test-token",
@@ -248,7 +254,7 @@ def test_payment_mock_does_not_unlock_raw_token():
 def test_payment_disabled_blocks_paid_output():
     os.environ["PAYMENT_MODE"] = "disabled"
     try:
-        resp = client.post("/documents/generate", json={
+        resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
             "document_type": "particulars_of_claim",
             "assessment": _ASSESSMENT, "facts": _FACTS,
             "payment_token": "any-token",
@@ -264,7 +270,7 @@ def test_payment_stripe_live_fails_safely_without_key():
     os.environ["PAYMENT_MODE"] = "stripe_live"
     os.environ.pop("STRIPE_SECRET_KEY", None)
     try:
-        resp = client.post("/documents/generate", json={
+        resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
             "document_type": "particulars_of_claim",
             "assessment": _ASSESSMENT, "facts": _FACTS,
             "payment_token": "some-token",
@@ -279,7 +285,7 @@ def test_payment_stripe_live_fails_safely_without_key():
 def test_payment_stripe_test_fails_safely():
     os.environ["PAYMENT_MODE"] = "stripe_test"
     try:
-        resp = client.post("/documents/generate", json={
+        resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
             "document_type": "particulars_of_claim",
             "assessment": _ASSESSMENT, "facts": _FACTS,
             "payment_token": "some-token",
@@ -294,7 +300,7 @@ def test_payment_stripe_test_fails_safely():
 def test_document_gate_uses_db_paid_state():
     os.environ["PAYMENT_MODE"] = "test"
     case_id = _make_paid_case()
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "schedule_of_loss",
         "assessment": _ASSESSMENT, "facts": _FACTS,
         "case_id": case_id,

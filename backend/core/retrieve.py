@@ -72,8 +72,9 @@ def jurisdiction_supported(jurisdiction: str) -> bool:
     """A jurisdiction is supported only if at least one CURRENT verified rule exists
     for its jurisdiction set. NI has no ingested rules => unsupported => fail-closed."""
     codes = juris_codes(jurisdiction)
-    conn = get_connection()
+    conn = None
     try:
+        conn = get_connection()
         with conn.cursor() as cur:
             # Effective-dating (NOT a lazy is_current flag, which does not exist on `rules`).
             # "Current" = in force today: effective_from <= today, not yet ended, not prospective.
@@ -86,13 +87,14 @@ def jurisdiction_supported(jurisdiction: str) -> bool:
                 (list(codes),),
             )
             return cur.fetchone()[0] > 0
-    except psycopg2.Error as exc:
+    except Exception as exc:
         logging.getLogger(__name__).warning(
             "jurisdiction_supported failed closed for %s: %s", jurisdiction, exc
         )
         return False
     finally:
-        conn.close()
+        if conn is not None:
+            conn.close()
 
 
 def retrieve_rules(

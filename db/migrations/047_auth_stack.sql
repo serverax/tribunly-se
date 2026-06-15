@@ -44,6 +44,24 @@ CREATE TABLE IF NOT EXISTS auth_sessions (
     ip_hash            text,                                 -- salted SHA-256 of client IP (no raw PII)
     created_at         timestamptz NOT NULL DEFAULT now()
 );
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS refresh_token_hash text;
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS issued_at timestamptz NOT NULL DEFAULT now();
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS revoked_reason text;
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS rotated_to uuid REFERENCES auth_sessions(id) ON DELETE SET NULL;
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS mfa_satisfied boolean NOT NULL DEFAULT true;
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS ip_hash text;
+UPDATE auth_sessions
+   SET refresh_token_hash = COALESCE(refresh_token_hash, session_token_hash)
+ WHERE refresh_token_hash IS NULL
+   AND EXISTS (
+       SELECT 1 FROM information_schema.columns
+       WHERE table_schema='public'
+         AND table_name='auth_sessions'
+         AND column_name='session_token_hash'
+   );
+CREATE UNIQUE INDEX IF NOT EXISTS auth_sessions_refresh_token_hash_uidx
+    ON auth_sessions (refresh_token_hash)
+    WHERE refresh_token_hash IS NOT NULL;
 CREATE INDEX IF NOT EXISTS auth_sessions_user_idx   ON auth_sessions (user_id);
 CREATE INDEX IF NOT EXISTS auth_sessions_active_idx ON auth_sessions (user_id) WHERE revoked_at IS NULL;
 

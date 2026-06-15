@@ -1,126 +1,128 @@
+"""Production-scoped employment assessment dispatcher.
+
+This module is intentionally small. LawApp's real legal scope comes from the
+domain registry, DB-backed rules, and retrieved authorities. It must not contain
+or expose aspirational employment-law modules that are not DB-proven.
 """
-Multi-Module Employment Law Assessment Framework
-Supports all 26 employment modules with generic assessment engine.
-Rules loaded from database, never hardcoded.
-"""
+
+from __future__ import annotations
 
 from datetime import datetime, timedelta
+from typing import Any
+
 from dateutil.relativedelta import relativedelta
-from typing import Dict, List, Optional, Any
-import logging
 
-logger = logging.getLogger(__name__)
+from backend.domains.employment.modules import production_module_keys
 
 
-# Module-specific assessment logic (all 26 modules implemented)
 ASSESSMENT_HANDLERS = {
     "unfair_dismissal": "assess_unfair_dismissal",
     "unpaid_wages": "assess_unpaid_wages",
-    "discrimination": "assess_discrimination",
-    "constructive_dismissal": "assess_constructive_dismissal",
     "wrongful_dismissal": "assess_wrongful_dismissal",
-    "working_time_regulations": "assess_working_time_regulations",
-    "maternity_rights": "assess_maternity_rights",
-    "paternity_rights": "assess_paternity_rights",
-    "parental_leave": "assess_parental_leave",
-    "shared_parental_leave": "assess_shared_parental_leave",
-    "flexible_working": "assess_flexible_working",
-    "equal_pay": "assess_equal_pay",
-    "national_minimum_wage": "assess_national_minimum_wage",
-    "working_time_directive": "assess_working_time_directive",
-    "pregnancy_discrimination": "assess_pregnancy_discrimination",
-    "part_time_workers": "assess_part_time_workers",
-    "fixed_term_workers": "assess_fixed_term_workers",
-    "agency_workers": "assess_agency_workers",
     "redundancy": "assess_redundancy",
-    "transfer_of_undertaking": "assess_transfer_of_undertaking",
-    "data_protection_employment": "assess_data_protection_employment",
-    "whistleblowing": "assess_whistleblowing",
-    "health_and_safety": "assess_health_and_safety",
-    "trade_union_rights": "assess_trade_union_rights",
-    "strikes_and_lockouts": "assess_strikes_and_lockouts",
+    "working_time": "assess_working_time",
+    "holiday_pay": "assess_holiday_pay",
+    "flexible_working": "assess_flexible_working",
     "employment_contracts": "assess_employment_contracts",
+    "fixed_term_workers": "assess_fixed_term_workers",
+    "part_time_workers": "assess_part_time_workers",
+    "agency_workers": "assess_agency_workers",
 }
+assert sorted(ASSESSMENT_HANDLERS) == sorted(production_module_keys())
 
 
-def assess_case(
-    claim_type: str,
-    facts: Dict[str, Any],
-    rules: Dict[str, Any],
-) -> Dict[str, Any]:
-    """
-    Generic employment law assessment dispatcher.
+def _missing_rules(claim_type: str, keys: list[str]) -> dict[str, Any]:
+    return {
+        "viable_claim": None,
+        "claim_type": claim_type,
+        "reason": "Required rules missing from DB-backed authority bundle",
+        "missing_rules": keys,
+        "confidence": 0.0,
+        "confidence_score": 0.0,
+        "grounding_score": 0.0,
+        "insufficient_grounding": True,
+        "citations": [],
+    }
 
-    Args:
-        claim_type: Module name (unfair_dismissal, unpaid_wages, etc.)
-        facts: User-provided case facts
-        rules: Rules loaded from database for this claim_type
 
-    Returns:
-        Structured assessment with viability, strength, damages, deadline, citations
-    """
+def _require_rules(claim_type: str, rules: dict[str, Any], keys: tuple[str, ...]) -> dict[str, float] | dict[str, Any]:
+    missing = [key for key in keys if rules.get(key) is None]
+    if missing:
+        return _missing_rules(claim_type, missing)
+    return {key: float(rules[key]) for key in keys}
 
-    logger.info(f"Assessing {claim_type}")
 
-    # Validate facts is a dict
+def _require_present_rules(claim_type: str, rules: dict[str, Any], keys: tuple[str, ...]) -> dict[str, Any]:
+    missing = [key for key in keys if rules.get(key) is None]
+    if missing:
+        return _missing_rules(claim_type, missing)
+    return {key: rules[key] for key in keys}
+
+
+def _years_service(facts: dict[str, Any], end_date: datetime) -> float:
+    if facts.get("years_service") is not None:
+        return max(0.0, float(facts["years_service"]))
+    start_value = facts.get("employment_start_date") or facts.get("service_start_date")
+    if not start_value:
+        raise ValueError("years_service or employment_start_date required")
+    start_date = datetime.fromisoformat(str(start_value))
+    return max(0.0, (end_date.date() - start_date.date()).days / 365.2425)
+
+
+def _citation(cite: str, url: str) -> dict[str, str]:
+    return {"cite": cite, "url": url}
+
+
+def assess_case(claim_type: str, facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
     if facts is None or not isinstance(facts, dict):
-        return {
-            "viable_claim": None,
-            "claim_type": claim_type,
-            "error": "facts must be a non-empty dictionary",
-        }
+        return {"viable_claim": None, "claim_type": claim_type, "error": "facts must be a non-empty dictionary"}
+    if not facts:
+        return {"viable_claim": None, "claim_type": claim_type, "error": "facts cannot be empty"}
 
-    if len(facts) == 0:
-        return {
-            "viable_claim": None,
-            "claim_type": claim_type,
-            "error": "facts cannot be empty",
-        }
-
-    # Validate claim_type is supported
-    if claim_type not in ASSESSMENT_HANDLERS:
+    handler_name = ASSESSMENT_HANDLERS.get(claim_type)
+    if not handler_name:
         return {
             "viable_claim": None,
             "claim_type": claim_type,
             "error": f"Claim type '{claim_type}' not supported yet",
-            "supported_types": list(ASSESSMENT_HANDLERS.keys()),
+            "supported_types": production_module_keys(),
         }
 
-    # Route to module-specific handler
-    handler_name = ASSESSMENT_HANDLERS[claim_type]
-    handler = globals().get(handler_name)
-
-    if not handler:
-        return {
-            "viable_claim": None,
-            "error": f"Handler for {claim_type} not implemented",
-        }
-
-    # Call handler with facts + rules
-    return handler(facts, rules)
+    return globals()[handler_name](facts, rules)
 
 
-def assess_unfair_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Unfair dismissal (ERA 1996 s.94)"""
+def assess_unfair_dismissal(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    required = _require_rules(
+        "unfair_dismissal",
+        rules,
+        (
+            "qualifying_period_months",
+            "time_limit_months",
+            "weeks_pay_cap_amount",
+            "basic_award_min",
+            "compensatory_cap_amount",
+        ),
+    )
+    if "missing_rules" in required:
+        return required
 
     try:
-        edt = datetime.fromisoformat(facts.get("dismissal_date", ""))
-        years_service_value = facts.get("years_service")
-        if years_service_value is None:
-            start_value = facts.get("employment_start_date") or facts.get("service_start_date")
-            if not start_value:
-                raise ValueError("years_service or employment_start_date required")
+        edt = datetime.fromisoformat(str(facts.get("dismissal_date", "")))
+        start_value = facts.get("employment_start_date") or facts.get("service_start_date")
+        if facts.get("years_service") is not None:
+            years_service = float(facts["years_service"])
+        elif start_value:
             start_date = datetime.fromisoformat(str(start_value))
             years_service = max(0.0, (edt.date() - start_date.date()).days / 365.2425)
         else:
-            years_service = float(years_service_value)
-        gross_weekly = float(facts.get("gross_weekly_pay", 1000))
-        age = int(facts.get("age", 30))
-    except (ValueError, TypeError) as e:
+            raise ValueError("years_service or employment_start_date required")
+        gross_weekly = float(facts.get("gross_weekly_pay", 0))
+        age = int(facts.get("age", 0))
+    except (TypeError, ValueError) as exc:
         return {
             "viable_claim": False,
             "claim_type": "unfair_dismissal",
-            "reason": f"Invalid facts: {str(e)}",
+            "reason": f"Invalid facts: {exc}",
             "confidence": 0.0,
             "confidence_score": 0.0,
             "grounding_score": 0.0,
@@ -128,19 +130,19 @@ def assess_unfair_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dic
             "citations": [],
         }
 
-    qualifying_years = rules.get("qualifying_period_months", 24) / 12
+    qualifying_years = required["qualifying_period_months"] / 12
+    deadline = (
+        edt
+        + relativedelta(months=int(required["time_limit_months"]))
+        - timedelta(days=1)
+    ).date().isoformat()
+    deadline_info = {"limitation_date": deadline, "source": "rules", "authority": "ERA 1996 s.111(2)"}
+
     if years_service < qualifying_years:
-        # s.111(2): period "begins with" the EDT, so deadline = +months − 1 day
-        deadline = (edt + relativedelta(months=rules.get("time_limit_months", 3)) - timedelta(days=1)).date().isoformat()
-        deadline_info = {
-            "limitation_date": deadline,
-            "source": "rules",
-            "authority": "ERA 1996 s.111(2)",
-        }
         return {
             "viable_claim": False,
             "claim_type": "unfair_dismissal",
-            "reason": f"Does not meet qualifying period ({qualifying_years} years required)",
+            "reason": f"Does not meet qualifying period ({qualifying_years:g} years required)",
             "confidence": 0.95,
             "confidence_score": 0.95,
             "grounding_score": 0.9,
@@ -155,28 +157,11 @@ def assess_unfair_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dic
             ],
         }
 
-    # Deadline (3 or 6 months per rules) - use calendar months, not fixed 30 days.
-    # s.111(2): the period "begins with" the EDT, so deadline = +months − 1 day.
-    months = rules.get("time_limit_months", 3)
-    deadline = (edt + relativedelta(months=months) - timedelta(days=1)).date().isoformat()
-    deadline_info = {
-        "limitation_date": deadline,
-        "source": "rules",
-        "authority": "ERA 1996 s.111(2)",
-    }
-
-    # Damages
     years_for_award = min(int(years_service), 20)
     multiplier = 1.5 if age >= 41 else (1.0 if age >= 22 else 0.5)
-    week_cap = rules.get("weeks_pay_cap_amount", 751)
-    basic = years_for_award * multiplier * min(gross_weekly, week_cap)
-    basic = max(basic, rules.get("basic_award_min", 9157))
-    # Statutory compensatory cap MUST come from the rules table — fail closed
-    # rather than fall back to a hardcoded legal value.
-    comp_cap = rules.get("compensatory_cap_amount")
-    if comp_cap is None:
-        raise ValueError("compensatory cap rule missing — fail closed (no hardcoded cap)")
-    comp = min(gross_weekly * 52, comp_cap)
+    basic = years_for_award * multiplier * min(gross_weekly, required["weeks_pay_cap_amount"])
+    basic = max(basic, required["basic_award_min"])
+    comp = min(gross_weekly * 52, required["compensatory_cap_amount"])
 
     return {
         "viable_claim": True,
@@ -202,1129 +187,655 @@ def assess_unfair_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dic
     }
 
 
-def assess_unpaid_wages(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Unpaid wages (ERA 1996 s.23)"""
+def assess_unpaid_wages(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    required = _require_rules("unpaid_wages", rules, ("time_limit_months",))
+    if "missing_rules" in required:
+        return required
 
     try:
         amount_owed = float(facts.get("amount_owed", 0))
-        last_payment_date = datetime.fromisoformat(facts.get("last_payment_date", ""))
-    except (ValueError, TypeError) as e:
-        return {"viable_claim": False, "reason": f"Invalid facts: {str(e)}", "confidence": 0.0}
+        last_payment_date = datetime.fromisoformat(str(facts.get("last_payment_date", "")))
+    except (TypeError, ValueError) as exc:
+        return {
+            "viable_claim": False,
+            "claim_type": "unpaid_wages",
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
+        }
 
-    # 2-year limitation (s.23) - use calendar years for accuracy
-    time_limit_years = rules.get("time_limit_years", 2)
-    deadline = (last_payment_date + relativedelta(years=time_limit_years)).isoformat()
-
+    deadline = (
+        last_payment_date
+        + relativedelta(months=int(required["time_limit_months"]))
+        - timedelta(days=1)
+    ).date().isoformat()
     return {
         "viable_claim": amount_owed > 0,
         "claim_type": "unpaid_wages",
         "jurisdiction": "EW",
         "strength": "strong" if amount_owed >= 5000 else "moderate",
         "confidence": 0.9,
+        "confidence_score": 0.9,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
         "amount_owed": amount_owed,
         "deadline": deadline,
-        "citations": ["ERA 1996 s.23", "ERA 1996 s.227"],
+        "deadline_info": {"limitation_date": deadline, "source": "rules", "authority": "ERA 1996 s.23"},
+        "citations": [{"cite": "ERA 1996 s.13"}, {"cite": "ERA 1996 s.23"}],
     }
 
 
-def assess_discrimination(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Discrimination (Equality Act 2010)"""
+def assess_wrongful_dismissal(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    required = _require_rules(
+        "wrongful_dismissal",
+        rules,
+        (
+            "notice_qualifying_period_months",
+            "max_statutory_notice_weeks",
+            "et_time_limit_months",
+        ),
+    )
+    if "missing_rules" in required:
+        return required
 
     try:
-        protected_characteristic = facts.get("protected_characteristic", "")
-        discriminatory_event_date = datetime.fromisoformat(facts.get("discriminatory_event_date", ""))
-    except (ValueError, TypeError) as e:
-        return {"viable_claim": False, "reason": f"Invalid facts: {str(e)}", "confidence": 0.0}
-
-    allowed_chars = rules.get("protected_characteristics", [
-        "age", "disability", "gender_reassignment", "marriage",
-        "pregnancy", "race", "religion", "sex", "sexual_orientation"
-    ])
-
-    if protected_characteristic not in allowed_chars:
+        termination = datetime.fromisoformat(
+            str(facts.get("termination_date") or facts.get("dismissal_date") or facts.get("edt") or "")
+        )
+        years_service = _years_service(facts, termination)
+        weekly_pay = float(facts.get("gross_weekly_pay") or facts.get("weekly_pay") or 0)
+        notice_given = float(facts.get("notice_given_weeks") or 0)
+        contractual_notice = facts.get("contractual_notice_weeks")
+        contractual_notice_weeks = float(contractual_notice) if contractual_notice is not None else None
+    except (TypeError, ValueError) as exc:
         return {
             "viable_claim": False,
-            "claim_type": "discrimination",
-            "reason": f"'{protected_characteristic}' is not a protected characteristic",
-            "allowed": allowed_chars,
+            "claim_type": "wrongful_dismissal",
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
         }
 
-    # 3-month deadline — EqA 2010 s.123: period "begins with" the act, so −1 day
-    deadline = (discriminatory_event_date + relativedelta(months=3) - timedelta(days=1)).isoformat()
+    service_months = years_service * 12
+    if service_months < required["notice_qualifying_period_months"]:
+        statutory_notice = 0.0
+    elif years_service < 2:
+        statutory_notice = 1.0
+    else:
+        statutory_notice = min(float(int(years_service)), required["max_statutory_notice_weeks"])
+
+    required_notice = max(statutory_notice, contractual_notice_weeks or 0.0)
+    shortfall_weeks = max(0.0, required_notice - notice_given)
+    estimated_notice_pay = round(shortfall_weeks * weekly_pay, 2)
+    deadline = (
+        termination
+        + relativedelta(months=int(required["et_time_limit_months"]))
+        - timedelta(days=1)
+    ).date().isoformat()
 
     return {
-        "viable_claim": True,
-        "claim_type": "discrimination",
+        "viable_claim": shortfall_weeks > 0,
+        "claim_type": "wrongful_dismissal",
         "jurisdiction": "EW",
-        "protected_characteristic": protected_characteristic,
-        "strength": "moderate",
-        "confidence": 0.75,
+        "strength": "strong" if shortfall_weeks >= 2 else ("moderate" if shortfall_weeks > 0 else "low"),
+        "confidence": 0.86,
+        "confidence_score": 0.86,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "service_years": round(years_service, 2),
+        "statutory_notice_weeks": statutory_notice,
+        "required_notice_weeks": required_notice,
+        "notice_given_weeks": notice_given,
+        "notice_shortfall_weeks": shortfall_weeks,
+        "estimated_notice_pay": estimated_notice_pay,
         "deadline": deadline,
-        "citations": ["Equality Act 2010 s.123", "EHRC Code of Practice"],
+        "deadline_info": {
+            "limitation_date": deadline,
+            "source": "rules",
+            "authority": "Employment Tribunals Extension of Jurisdiction Order 1994 arts.3,7",
+        },
+        "reason": (
+            "Potential notice-pay shortfall based on statutory/contractual notice."
+            if shortfall_weeks > 0
+            else "No notice-pay shortfall appears from the supplied facts."
+        ),
+        "citations": [
+            _citation("ERA 1996 s.86", "https://www.legislation.gov.uk/ukpga/1996/18/section/86"),
+            _citation("Employment Tribunals Extension of Jurisdiction Order 1994 arts.3,7", "https://www.legislation.gov.uk/uksi/1994/1623"),
+        ],
     }
 
 
-def assess_constructive_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Constructive dismissal (ERA 1996 s.95(1)(c))"""
+def assess_redundancy(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    required = _require_rules(
+        "redundancy",
+        rules,
+        (
+            "qualifying_period_years",
+            "time_limit_months",
+            "weeks_pay_cap_amount",
+            "max_years_counted",
+            "multiplier_under_22",
+            "multiplier_22_to_40",
+            "multiplier_41_plus",
+        ),
+    )
+    if "missing_rules" in required:
+        return required
 
     try:
-        breach_type = facts.get("breach_type", "")
-        resignation_date = datetime.fromisoformat(facts.get("resignation_date", ""))
-        years_service = float(facts.get("years_service", 0))
-    except (ValueError, TypeError) as e:
-        return {"viable_claim": False, "reason": f"Invalid facts: {str(e)}", "confidence": 0.0}
+        dismissal = datetime.fromisoformat(str(facts.get("dismissal_date") or facts.get("edt") or ""))
+        years_service = _years_service(facts, dismissal)
+        age = int(facts.get("age", 0))
+        weekly_pay = float(facts.get("gross_weekly_pay") or facts.get("weekly_pay") or 0)
+    except (TypeError, ValueError) as exc:
+        return {
+            "viable_claim": False,
+            "claim_type": "redundancy",
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
+        }
 
-    # Constructive dismissal = qualifying period same as unfair dismissal
-    qualifying_years = rules.get("qualifying_period_months", 24) / 12
+    qualifying_years = required["qualifying_period_years"]
+    deadline = (
+        dismissal
+        + relativedelta(months=int(required["time_limit_months"]))
+        - timedelta(days=1)
+    ).date().isoformat()
+    deadline_info = {"limitation_date": deadline, "source": "rules", "authority": "ERA 1996 s.164"}
+
     if years_service < qualifying_years:
         return {
             "viable_claim": False,
-            "claim_type": "constructive_dismissal",
-            "reason": f"Does not meet qualifying period",
+            "claim_type": "redundancy",
+            "jurisdiction": "EW",
+            "strength": "low",
+            "confidence": 0.92,
+            "confidence_score": 0.92,
+            "grounding_score": 0.9,
+            "insufficient_grounding": False,
+            "service_years": round(years_service, 2),
+            "deadline": deadline,
+            "deadline_info": deadline_info,
+            "reason": f"Does not meet statutory redundancy-payment qualifying period ({qualifying_years:g} years required).",
+            "citations": [
+                _citation("ERA 1996 s.155", "https://www.legislation.gov.uk/ukpga/1996/18/section/155"),
+                _citation("ERA 1996 s.164", "https://www.legislation.gov.uk/ukpga/1996/18/section/164"),
+            ],
         }
 
-    # Deadline from resignation (not EDT) — period "begins with" it, so −1 day
-    deadline = (resignation_date + relativedelta(months=3) - timedelta(days=1)).isoformat()
-
-    return {
-        "viable_claim": True,
-        "claim_type": "constructive_dismissal",
-        "jurisdiction": "EW",
-        "breach_type": breach_type,
-        "strength": "moderate",
-        "confidence": 0.7,
-        "deadline": deadline,
-        "citations": ["ERA 1996 s.95(1)(c)", "ERA 1996 s.94"],
-    }
-
-
-def assess_wrongful_dismissal(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Wrongful dismissal (common law contract breach)"""
-
-    try:
-        notice_period_days = int(facts.get("notice_period_days", 0))
-        dismissal_date = datetime.fromisoformat(facts.get("dismissal_date", ""))
-        gross_weekly = float(facts.get("gross_weekly_pay", 1000))
-    except (ValueError, TypeError) as e:
-        return {"viable_claim": False, "reason": f"Invalid facts: {str(e)}", "confidence": 0.0}
-
-    # Damages = notice period pay
-    damages = (gross_weekly * (notice_period_days / 7))
-
-    # 6-year limitation (Limitation Act 1980 s.5) - use calendar years
-    deadline = (dismissal_date + relativedelta(years=6)).isoformat()
-
-    return {
-        "viable_claim": damages > 0,
-        "claim_type": "wrongful_dismissal",
-        "jurisdiction": "EW",
-        "notice_period_days": notice_period_days,
-        "estimated_damages": round(damages, 2),
-        "strength": "strong" if damages >= 10000 else "moderate",
-        "confidence": 0.85,
-        "deadline": deadline,
-        "citations": ["Limitation Act 1980 s.5"],
-    }
-
-
-def assess_working_time_regulations(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Working Time Regulations 1998 - 48-hour week, rest breaks, annual leave"""
-    try:
-        hours_worked = float(facts.get("hours_worked_weekly", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    max_hours = rules.get("max_hours_per_week", 48)
-    if hours_worked > max_hours:
-        return {
-            "viable_claim": True,
-            "claim_type": "working_time_regulations",
-            "strength": "strong",
-            "confidence": 0.9,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Working Time Regulations 1998 reg.4"],
-        }
-    return {"viable_claim": False, "claim_type": "working_time_regulations", "confidence": 0.85}
-
-
-def assess_maternity_rights(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Maternity Rights - pregnancy protection, maternity leave"""
-    try:
-        pregnancy_dismissal = facts.get("dismissal_reason") == "pregnancy"
-        weeks_pregnant = float(facts.get("weeks_pregnant", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if pregnancy_dismissal or weeks_pregnant > 0:
-        return {
-            "viable_claim": True,
-            "claim_type": "maternity_rights",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["ERA 1996 s.99", "Equality Act 2010 s.18"],
-        }
-    return {"viable_claim": False, "claim_type": "maternity_rights", "confidence": 0.85}
-
-
-def assess_paternity_rights(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Paternity Rights - paternity leave, parental responsibility"""
-    try:
-        denial_of_leave = facts.get("denied_paternity_leave", False)
-        months_since_birth = float(facts.get("months_since_birth", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if denial_of_leave and months_since_birth <= 12:
-        return {
-            "viable_claim": True,
-            "claim_type": "paternity_rights",
-            "strength": "moderate",
-            "confidence": 0.8,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Employment Rights Act 2002 s.80"],
-        }
-    return {"viable_claim": False, "claim_type": "paternity_rights", "confidence": 0.8}
-
-
-def assess_parental_leave(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Parental Leave - right to unpaid leave, protected reinstatement"""
-    try:
-        child_age = float(facts.get("child_age_years", 0))
-        leave_denied = facts.get("parental_leave_denied", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if leave_denied and child_age < 5:
-        return {
-            "viable_claim": True,
-            "claim_type": "parental_leave",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Maternity and Parental Leave Regulations 1999 reg.13"],
-        }
-    return {"viable_claim": False, "claim_type": "parental_leave", "confidence": 0.75}
-
-
-def assess_shared_parental_leave(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Shared Parental Leave - flexible leave sharing between parents"""
-    try:
-        spl_refused = facts.get("shared_parental_leave_refused", False)
-        child_months = float(facts.get("child_months", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if spl_refused and child_months < 52:
-        return {
-            "viable_claim": True,
-            "claim_type": "shared_parental_leave",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Children and Families Act 2014 s.112"],
-        }
-    return {"viable_claim": False, "claim_type": "shared_parental_leave", "confidence": 0.75}
-
-
-def assess_flexible_working(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Flexible Working - right to request, employer must consider seriously"""
-    try:
-        request_made = facts.get("flexible_working_request_made", False)
-        request_refused = facts.get("request_unreasonably_refused", False)
-        years_service = float(facts.get("years_service", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if request_made and request_refused and years_service >= 3:
-        return {
-            "viable_claim": True,
-            "claim_type": "flexible_working",
-            "strength": "moderate",
-            "confidence": 0.7,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["ERA 1996 s.80F"],
-        }
-    return {"viable_claim": False, "claim_type": "flexible_working", "confidence": 0.7}
-
-
-def assess_equal_pay(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Equal Pay Act 1970 - sex discrimination in pay"""
-    try:
-        comparator_pay = float(facts.get("comparator_pay", 0))
-        claimant_pay = float(facts.get("claimant_pay", 0))
-        same_work = facts.get("same_work_or_equivalent", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    pay_gap = comparator_pay - claimant_pay
-    if same_work and pay_gap > 0:
-        return {
-            "viable_claim": True,
-            "claim_type": "equal_pay",
-            "strength": "strong",
-            "confidence": 0.85,
-            "estimated_damages": pay_gap * 52,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Equal Pay Act 1970 s.1"],
-        }
-    return {"viable_claim": False, "claim_type": "equal_pay", "confidence": 0.85}
-
-
-def assess_national_minimum_wage(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """National Minimum Wage - below statutory minimum"""
-    try:
-        hourly_rate = float(facts.get("hourly_rate", 0))
-        hours_worked = float(facts.get("hours_worked", 0))
-        weeks_underpaid = float(facts.get("weeks_underpaid", 0))
-        age = int(facts.get("age", 25))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    nmw_rate = rules.get("nmw_rate", 11.44)
-    if hourly_rate < nmw_rate:
-        shortfall = (nmw_rate - hourly_rate) * hours_worked * weeks_underpaid
-        return {
-            "viable_claim": True,
-            "claim_type": "national_minimum_wage",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "estimated_damages": shortfall,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["National Minimum Wage Act 1998 s.31"],
-        }
-    return {"viable_claim": False, "claim_type": "national_minimum_wage", "confidence": 0.95}
-
-
-def assess_working_time_directive(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Working Time Directive - daily/weekly rest, holiday pay"""
-    try:
-        daily_hours = float(facts.get("daily_hours", 0))
-        weekly_rest_days = float(facts.get("weekly_rest_days", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if daily_hours > 13 or weekly_rest_days < 1:
-        return {
-            "viable_claim": True,
-            "claim_type": "working_time_directive",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Working Time Regulations 1998"],
-        }
-    return {"viable_claim": False, "claim_type": "working_time_directive", "confidence": 0.75}
-
-
-def assess_pregnancy_discrimination(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Pregnancy Discrimination - protected characteristic under Equality Act"""
-    try:
-        pregnant = facts.get("is_pregnant", False)
-        discriminatory_act = facts.get("discriminatory_action", "")
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if pregnant and discriminatory_act:
-        return {
-            "viable_claim": True,
-            "claim_type": "pregnancy_discrimination",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["Equality Act 2010 s.18"],
-        }
-    return {"viable_claim": False, "claim_type": "pregnancy_discrimination", "confidence": 0.9}
-
-
-def assess_part_time_workers(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Part-Time Workers - pro-rata rights, no less favourable treatment"""
-    try:
-        hours_pt = float(facts.get("part_time_hours", 0))
-        hours_ft = float(facts.get("full_time_hours", 40))
-        pay_pt = float(facts.get("part_time_pay", 0))
-        pay_ft = float(facts.get("full_time_pay", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if hours_pt > 0 and hours_ft > 0:
-        pt_hourly = pay_pt / hours_pt
-        ft_hourly = pay_ft / hours_ft
-        if pt_hourly < ft_hourly * 0.95:
-            return {
-                "viable_claim": True,
-                "claim_type": "part_time_workers",
-                "strength": "moderate",
-                "confidence": 0.75,
-                "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-                "citations": ["Part-time Workers Directive 97/81/EC"],
-            }
-    return {"viable_claim": False, "claim_type": "part_time_workers", "confidence": 0.75}
-
-
-def assess_fixed_term_workers(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Fixed-Term Workers - succession renewal, no less favourable treatment"""
-    try:
-        contract_type = facts.get("contract_type", "")
-        successive_renewals = float(facts.get("successive_renewals", 0))
-        duration_months = float(facts.get("total_duration_months", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if contract_type == "fixed_term" and successive_renewals >= 4 and duration_months >= 24:
-        return {
-            "viable_claim": True,
-            "claim_type": "fixed_term_workers",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Fixed-term Employees Regulations 2002"],
-        }
-    return {"viable_claim": False, "claim_type": "fixed_term_workers", "confidence": 0.75}
-
-
-def assess_agency_workers(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Agency Workers - equal treatment after 12 weeks"""
-    try:
-        weeks_assignment = float(facts.get("weeks_on_assignment", 0))
-        agency_pay = float(facts.get("agency_worker_pay", 0))
-        direct_pay = float(facts.get("direct_worker_pay", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if weeks_assignment >= 12 and agency_pay < direct_pay:
-        pay_gap = direct_pay - agency_pay
-        return {
-            "viable_claim": True,
-            "claim_type": "agency_workers",
-            "strength": "moderate",
-            "confidence": 0.8,
-            "estimated_damages": pay_gap * 4,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Agency Workers Regulations 2010 reg.5"],
-        }
-    return {"viable_claim": False, "claim_type": "agency_workers", "confidence": 0.8}
-
-
-def assess_redundancy(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Redundancy - eligibility, consultation, payment"""
-    try:
-        years_service = float(facts.get("years_service", 0))
-        weekly_pay = float(facts.get("gross_weekly_pay", 0))
-        age = int(facts.get("age", 30))
-        genuine_redundancy = facts.get("genuine_redundancy", True)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if years_service >= 2:
-        if not genuine_redundancy:
-            return {
-                "viable_claim": True,
-                "claim_type": "redundancy",
-                "strength": "moderate",
-                "confidence": 0.75,
-                "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-                "citations": ["ERA 1996 s.139"],
-            }
+    years_for_payment = min(int(years_service), int(required["max_years_counted"]))
+    capped_weekly_pay = min(weekly_pay, required["weeks_pay_cap_amount"])
+    redundancy_weeks = 0.0
+    for completed_year_offset in range(years_for_payment):
+        age_in_year = age - completed_year_offset
+        if age_in_year >= 41:
+            redundancy_weeks += required["multiplier_41_plus"]
+        elif age_in_year >= 22:
+            redundancy_weeks += required["multiplier_22_to_40"]
         else:
-            weeks_per_year = 0.5 if age < 22 else (1.0 if age < 41 else 1.5)
-            years_to_count = min(int(years_service), 20)
-            week_cap = rules.get("weeks_pay_cap", 751)
-            redundancy_payment = years_to_count * weeks_per_year * min(weekly_pay, week_cap)
-            return {
-                "viable_claim": True,
-                "claim_type": "redundancy",
-                "strength": "strong",
-                "confidence": 0.9,
-                "estimated_damages": redundancy_payment,
-                "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-                "citations": ["ERA 1996 s.135"],
-            }
-    return {"viable_claim": False, "claim_type": "redundancy", "confidence": 0.85}
+            redundancy_weeks += required["multiplier_under_22"]
+    statutory_payment = round(redundancy_weeks * capped_weekly_pay, 2)
+
+    return {
+        "viable_claim": statutory_payment > 0,
+        "claim_type": "redundancy",
+        "jurisdiction": "EW",
+        "strength": "moderate",
+        "confidence": 0.86,
+        "confidence_score": 0.86,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "service_years": round(years_service, 2),
+        "years_counted_for_payment": years_for_payment,
+        "redundancy_weeks": redundancy_weeks,
+        "weekly_pay_cap_amount": required["weeks_pay_cap_amount"],
+        "capped_weekly_pay": capped_weekly_pay,
+        "estimated_statutory_redundancy_payment": statutory_payment,
+        "deadline": deadline,
+        "deadline_info": deadline_info,
+        "reason": "Potential statutory redundancy payment based on age, service and capped weekly pay.",
+        "citations": [
+            _citation("ERA 1996 s.135", "https://www.legislation.gov.uk/ukpga/1996/18/section/135"),
+            _citation("ERA 1996 s.139", "https://www.legislation.gov.uk/ukpga/1996/18/section/139"),
+            _citation("ERA 1996 s.155", "https://www.legislation.gov.uk/ukpga/1996/18/section/155"),
+            _citation("ERA 1996 s.162", "https://www.legislation.gov.uk/ukpga/1996/18/section/162"),
+            _citation("ERA 1996 s.164", "https://www.legislation.gov.uk/ukpga/1996/18/section/164"),
+        ],
+    }
 
 
-def assess_transfer_of_undertaking(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Transfer of Undertaking (TUPE) - employment continuity, protection"""
+def assess_working_time(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    required = _require_rules(
+        "working_time",
+        rules,
+        (
+            "max_weekly_hours",
+            "daily_rest_hours",
+            "weekly_rest_hours",
+            "rest_break_minutes",
+            "rest_break_trigger_hours",
+        ),
+    )
+    if "missing_rules" in required:
+        return required
+
     try:
-        tupe_transfer = facts.get("tupe_transfer", False)
-        dismissal_connected = facts.get("dismissal_connected_to_transfer", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if tupe_transfer and dismissal_connected:
+        weekly_hours = float(facts.get("average_weekly_hours", 0))
+        daily_rest = float(facts.get("daily_rest_hours", required["daily_rest_hours"]))
+        weekly_rest = float(facts.get("weekly_rest_hours", required["weekly_rest_hours"]))
+        shift_hours = float(facts.get("shift_hours", 0))
+        break_minutes = float(facts.get("rest_break_minutes", required["rest_break_minutes"]))
+        opted_out = bool(facts.get("signed_48_hour_opt_out", False))
+    except (TypeError, ValueError) as exc:
         return {
-            "viable_claim": True,
-            "claim_type": "transfer_of_undertaking",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["Transfer of Undertakings Regulations 2006 reg.7"],
-        }
-    return {"viable_claim": False, "claim_type": "transfer_of_undertaking", "confidence": 0.9}
-
-
-def assess_data_protection_employment(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Data Protection in Employment - GDPR, privacy rights"""
-    try:
-        unlawful_processing = facts.get("unlawful_data_processing", False)
-        breach_type = facts.get("breach_type", "")
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if unlawful_processing and breach_type:
-        return {
-            "viable_claim": True,
-            "claim_type": "data_protection_employment",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["UK GDPR Article 82"],
-        }
-    return {"viable_claim": False, "claim_type": "data_protection_employment", "confidence": 0.75}
-
-
-def assess_whistleblowing(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Whistleblowing - Public Interest Disclosure Act protection"""
-    try:
-        disclosure_made = facts.get("protected_disclosure_made", False)
-        dismissal_follows = facts.get("dismissal_after_disclosure", False)
-        public_interest = facts.get("in_public_interest", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if disclosure_made and dismissal_follows and public_interest:
-        return {
-            "viable_claim": True,
-            "claim_type": "whistleblowing",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.103A"],
-        }
-    return {"viable_claim": False, "claim_type": "whistleblowing", "confidence": 0.9}
-
-
-def assess_health_and_safety(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Health & Safety - dismissal for raising concerns, right to refuse unsafe work"""
-    try:
-        safety_concern_raised = facts.get("safety_concern_raised", False)
-        dismissal_for_concern = facts.get("dismissal_for_safety_concern", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if (safety_concern_raised or dismissal_for_concern) and dismissal_for_concern:
-        return {
-            "viable_claim": True,
-            "claim_type": "health_and_safety",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.100"],
-        }
-    return {"viable_claim": False, "claim_type": "health_and_safety", "confidence": 0.9}
-
-
-def assess_trade_union_rights(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Trade Union Rights - membership, activities, time off"""
-    try:
-        union_member = facts.get("union_member", False)
-        dismissed_for_membership = facts.get("dismissed_for_union_membership", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if (dismissed_for_membership or union_member) and dismissed_for_membership:
-        return {
-            "viable_claim": True,
-            "claim_type": "trade_union_rights",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.152"],
-        }
-    return {"viable_claim": False, "claim_type": "trade_union_rights", "confidence": 0.9}
-
-
-def assess_strikes_and_lockouts(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Strikes & Lockouts - protection from dismissal, reinstatement rights"""
-    try:
-        participated_in_strike = facts.get("participated_in_strike", False)
-        dismissed_for_strike = facts.get("dismissed_for_strike", False)
-        days_since_strike = float(facts.get("days_since_strike_start", 100))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if participated_in_strike and dismissed_for_strike and days_since_strike < 12:
-        return {
-            "viable_claim": True,
-            "claim_type": "strikes_and_lockouts",
-            "strength": "strong",
-            "confidence": 0.85,
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.238"],
-        }
-    return {"viable_claim": False, "claim_type": "strikes_and_lockouts", "confidence": 0.85}
-
-
-def assess_employment_contracts(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Employment Contracts - breach, unfair terms, written statement"""
-    try:
-        written_statement = facts.get("written_statement_provided", True)
-        contract_breach = facts.get("contract_breach", False)
-        breach_amount = float(facts.get("breach_amount", 0))
-        employment_months = float(facts.get("employment_duration_months", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if not written_statement and employment_months > 2:
-        return {
-            "viable_claim": True,
-            "claim_type": "employment_contracts",
-            "strength": "moderate",
-            "confidence": 0.7,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["ERA 1996 s.1"],
+            "viable_claim": False,
+            "claim_type": "working_time",
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
         }
 
-    if contract_breach and breach_amount > 0:
+    violations: list[str] = []
+    if weekly_hours > required["max_weekly_hours"] and not opted_out:
+        violations.append("weekly_hours_above_48_without_opt_out")
+    if daily_rest < required["daily_rest_hours"]:
+        violations.append("daily_rest_below_required_hours")
+    if weekly_rest < required["weekly_rest_hours"]:
+        violations.append("weekly_rest_below_required_hours")
+    if shift_hours > required["rest_break_trigger_hours"] and break_minutes < required["rest_break_minutes"]:
+        violations.append("rest_break_below_required_minutes")
+
+    return {
+        "viable_claim": bool(violations),
+        "claim_type": "working_time",
+        "jurisdiction": "EW",
+        "strength": "moderate" if violations else "low",
+        "confidence": 0.84,
+        "confidence_score": 0.84,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "violations": violations,
+        "thresholds": {
+            "max_weekly_hours": required["max_weekly_hours"],
+            "daily_rest_hours": required["daily_rest_hours"],
+            "weekly_rest_hours": required["weekly_rest_hours"],
+            "rest_break_trigger_hours": required["rest_break_trigger_hours"],
+            "rest_break_minutes": required["rest_break_minutes"],
+        },
+        "reason": (
+            "Potential Working Time Regulations breach based on supplied hours/rest facts."
+            if violations else "No Working Time Regulations breach appears from the supplied hours/rest facts."
+        ),
+        "citations": [
+            _citation("Working Time Regulations 1998 reg.4", "https://www.legislation.gov.uk/uksi/1998/1833/regulation/4"),
+            _citation("Working Time Regulations 1998 reg.10", "https://www.legislation.gov.uk/uksi/1998/1833/regulation/10"),
+            _citation("Working Time Regulations 1998 reg.11", "https://www.legislation.gov.uk/uksi/1998/1833/regulation/11"),
+            _citation("Working Time Regulations 1998 reg.12", "https://www.legislation.gov.uk/uksi/1998/1833/regulation/12"),
+        ],
+    }
+
+
+def assess_holiday_pay(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    required = _require_rules(
+        "holiday_pay",
+        rules,
+        (
+            "annual_leave_weeks",
+            "additional_leave_weeks",
+            "total_annual_leave_weeks",
+        ),
+    )
+    if "missing_rules" in required:
+        return required
+
+    try:
+        leave_taken = float(facts.get("annual_leave_taken_weeks", 0))
+        weekly_pay = float(facts.get("weekly_pay") or facts.get("gross_weekly_pay") or 0)
+        untaken_leave = facts.get("untaken_leave_weeks")
+        untaken_leave_weeks = float(untaken_leave) if untaken_leave is not None else max(0.0, required["total_annual_leave_weeks"] - leave_taken)
+        employment_ended = bool(facts.get("employment_ended", False))
+    except (TypeError, ValueError) as exc:
         return {
-            "viable_claim": True,
-            "claim_type": "employment_contracts",
-            "strength": "moderate",
-            "confidence": 0.8,
-            "estimated_damages": breach_amount,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Breach of Contract claims"],
+            "viable_claim": False,
+            "claim_type": "holiday_pay",
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
         }
 
-    return {"viable_claim": False, "claim_type": "employment_contracts", "confidence": 0.75}
+    leave_shortfall = round(max(0.0, required["total_annual_leave_weeks"] - leave_taken), 2)
+    estimated_untaken_pay = round(untaken_leave_weeks * weekly_pay, 2) if weekly_pay else None
+    viable = leave_shortfall > 0 or (employment_ended and untaken_leave_weeks > 0)
+
+    return {
+        "viable_claim": viable,
+        "claim_type": "holiday_pay",
+        "jurisdiction": "EW",
+        "strength": "moderate" if viable else "low",
+        "confidence": 0.84,
+        "confidence_score": 0.84,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "annual_leave_entitlement_weeks": required["total_annual_leave_weeks"],
+        "regulation_13_leave_weeks": required["annual_leave_weeks"],
+        "additional_leave_weeks": required["additional_leave_weeks"],
+        "annual_leave_taken_weeks": leave_taken,
+        "leave_shortfall_weeks": leave_shortfall,
+        "untaken_leave_weeks": untaken_leave_weeks,
+        "estimated_untaken_holiday_pay": estimated_untaken_pay,
+        "reason": (
+            "Potential holiday-pay/annual-leave issue based on entitlement and leave taken."
+            if viable else "No holiday-pay/annual-leave shortfall appears from the supplied facts."
+        ),
+        "citations": [
+            _citation("Working Time Regulations 1998 reg.13", "https://www.legislation.gov.uk/uksi/1998/1833/regulation/13"),
+            _citation("Working Time Regulations 1998 reg.13A", "https://www.legislation.gov.uk/uksi/1998/1833/regulation/13A"),
+            _citation("Working Time Regulations 1998 reg.14", "https://www.legislation.gov.uk/uksi/1998/1833/regulation/14"),
+            _citation("Working Time Regulations 1998 reg.30", "https://www.legislation.gov.uk/uksi/1998/1833/regulation/30"),
+        ],
+    }
 
 
-def assess_working_time_regulations(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Working Time Regulations 1998 - 48-hour week, rest breaks, annual leave"""
+def assess_flexible_working(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    required = _require_rules(
+        "flexible_working",
+        rules,
+        (
+            "day_one_application_right",
+            "max_requests_per_12_months",
+            "decision_period_months",
+        ),
+    )
+    if "missing_rules" in required:
+        return required
+
     try:
-        hours_worked = float(facts.get("hours_worked_weekly", 0))
-        weeks_unpaid_leave = float(facts.get("weeks_unpaid_leave", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    max_hours = rules.get("max_hours_per_week", 48)
-    if hours_worked > max_hours:
+        requests_last_12_months = int(facts.get("requests_last_12_months", 0))
+        refused = bool(facts.get("refused", False))
+        consulted = bool(facts.get("consulted_before_refusal", True))
+        request_date_raw = facts.get("request_date")
+        decision_date_raw = facts.get("decision_date")
+        request_date = datetime.fromisoformat(str(request_date_raw)) if request_date_raw else None
+        decision_date = datetime.fromisoformat(str(decision_date_raw)) if decision_date_raw else None
+    except (TypeError, ValueError) as exc:
         return {
-            "viable_claim": True,
-            "claim_type": "working_time_regulations",
-            "strength": "strong",
-            "confidence": 0.9,
-            "issue": f"Working {hours_worked}h/week exceeds {max_hours}h limit",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Working Time Regulations 1998 reg.4", "ERA 1996 s.80A"],
-        }
-
-    return {"viable_claim": False, "claim_type": "working_time_regulations", "confidence": 0.85}
-
-
-def assess_maternity_rights(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Maternity Rights - pregnancy protection, maternity leave, redundancy during pregnancy"""
-    try:
-        pregnancy_related_dismissal = facts.get("dismissal_reason") == "pregnancy"
-        weeks_pregnant = float(facts.get("weeks_pregnant", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if pregnancy_related_dismissal or weeks_pregnant > 0:
-        return {
-            "viable_claim": True,
-            "claim_type": "maternity_rights",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "issue": "Dismissal related to pregnancy is automatically unfair",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "estimated_compensation": rules.get("avg_maternity_award", 15000),
-            "citations": ["ERA 1996 s.99", "Equality Act 2010 s.18"],
-        }
-
-    return {"viable_claim": False, "claim_type": "maternity_rights", "confidence": 0.85}
-
-
-def assess_paternity_rights(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Paternity Rights - paternity leave, parental responsibility"""
-    try:
-        months_since_birth = float(facts.get("months_since_birth", 0))
-        denial_of_leave = facts.get("denied_paternity_leave", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if denial_of_leave and months_since_birth <= 12:
-        return {
-            "viable_claim": True,
-            "claim_type": "paternity_rights",
-            "strength": "moderate",
-            "confidence": 0.8,
-            "issue": "Denial of statutory paternity leave",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Employment Rights Act 2002 s.80", "ERA 1996 Part 8A"],
-        }
-
-    return {"viable_claim": False, "claim_type": "paternity_rights", "confidence": 0.8}
-
-
-def assess_parental_leave(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Parental Leave - right to unpaid leave, protected reinstatement"""
-    try:
-        child_age = float(facts.get("child_age_years", 0))
-        leave_denied = facts.get("parental_leave_denied", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if leave_denied and child_age < 5:
-        return {
-            "viable_claim": True,
-            "claim_type": "parental_leave",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "issue": "Denial of statutory parental leave entitlement",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Maternity and Parental Leave Regulations 1999 reg.13", "ERA 1996 s.80A"],
-        }
-
-    return {"viable_claim": False, "claim_type": "parental_leave", "confidence": 0.75}
-
-
-def assess_shared_parental_leave(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Shared Parental Leave - flexible leave sharing between parents"""
-    try:
-        total_child_months = float(facts.get("child_months", 0))
-        spl_refused = facts.get("shared_parental_leave_refused", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if spl_refused and total_child_months < 52:
-        return {
-            "viable_claim": True,
-            "claim_type": "shared_parental_leave",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "issue": "Denial of shared parental leave entitlement",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Children and Families Act 2014 s.112", "Shared Parental Leave Regulations 2014"],
-        }
-
-    return {"viable_claim": False, "claim_type": "shared_parental_leave", "confidence": 0.75}
-
-
-def assess_flexible_working(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Flexible Working - right to request, employer must consider seriously"""
-    try:
-        request_made = facts.get("flexible_working_request_made", False)
-        request_refused = facts.get("request_unreasonably_refused", False)
-        employment_duration_years = float(facts.get("years_service", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if request_made and request_refused and employment_duration_years >= 3:
-        return {
-            "viable_claim": True,
+            "viable_claim": False,
             "claim_type": "flexible_working",
-            "strength": "moderate",
-            "confidence": 0.7,
-            "issue": "Failure to properly consider flexible working request",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["ERA 1996 s.80F", "Employment Rights Act 2002 s.47"],
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
         }
 
-    return {"viable_claim": False, "claim_type": "flexible_working", "confidence": 0.7}
+    eligible_to_apply = requests_last_12_months < required["max_requests_per_12_months"]
+    decision_due_date = None
+    decision_overdue = False
+    if request_date:
+        decision_due_date = (
+            request_date
+            + relativedelta(months=int(required["decision_period_months"]))
+            - timedelta(days=1)
+        ).date().isoformat()
+        if decision_date:
+            decision_overdue = decision_date.date().isoformat() > decision_due_date
+
+    breach_reasons: list[str] = []
+    if refused and not consulted:
+        breach_reasons.append("refused_without_required_consultation")
+    if decision_overdue:
+        breach_reasons.append("decision_outside_statutory_period")
+
+    return {
+        "viable_claim": bool(breach_reasons),
+        "claim_type": "flexible_working",
+        "jurisdiction": "EW",
+        "strength": "moderate" if breach_reasons else "low",
+        "confidence": 0.83,
+        "confidence_score": 0.83,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "eligible_to_apply": eligible_to_apply,
+        "requests_last_12_months": requests_last_12_months,
+        "max_requests_per_12_months": required["max_requests_per_12_months"],
+        "decision_period_months": required["decision_period_months"],
+        "decision_due_date": decision_due_date,
+        "breach_reasons": breach_reasons,
+        "reason": (
+            "Potential flexible-working procedure breach based on the supplied facts."
+            if breach_reasons else "No flexible-working procedure breach appears from the supplied facts."
+        ),
+        "citations": [
+            _citation("ERA 1996 s.80F", "https://www.legislation.gov.uk/ukpga/1996/18/section/80F"),
+            _citation("ERA 1996 s.80G", "https://www.legislation.gov.uk/ukpga/1996/18/section/80G"),
+            _citation("ERA 1996 s.80H", "https://www.legislation.gov.uk/ukpga/1996/18/section/80H"),
+        ],
+    }
 
 
-def assess_equal_pay(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Equal Pay Act 1970 - sex discrimination in pay"""
+def assess_employment_contracts(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    numeric = _require_rules("employment_contracts", rules, ("day_one_particulars_anchor",))
+    present = _require_present_rules(
+        "employment_contracts",
+        rules,
+        (
+            "written_particulars_right",
+            "tribunal_reference_route",
+            "section_38_award_anchor",
+        ),
+    )
+    if "missing_rules" in numeric:
+        return numeric
+    if "missing_rules" in present:
+        return present
+
+    received_statement = bool(facts.get("received_written_statement", False))
+    days_after_start = facts.get("days_after_start_received")
     try:
-        comparator_pay = float(facts.get("comparator_pay", 0))
-        claimant_pay = float(facts.get("claimant_pay", 0))
-        same_work = facts.get("same_work_or_equivalent", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    pay_gap = comparator_pay - claimant_pay
-    if same_work and pay_gap > 0:
-        estimated_arrears = pay_gap * 52  # 1 year estimate
+        days_after_start_received = float(days_after_start) if days_after_start is not None else None
+    except (TypeError, ValueError) as exc:
         return {
-            "viable_claim": True,
-            "claim_type": "equal_pay",
-            "strength": "strong",
-            "confidence": 0.85,
-            "issue": f"Pay gap of £{pay_gap:.2f}/week for same work",
-            "estimated_damages": min(estimated_arrears, rules.get("equal_pay_cap", 200000)),
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Equal Pay Act 1970 s.1", "Equality Act 2010 s.66"],
+            "viable_claim": False,
+            "claim_type": "employment_contracts",
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
         }
 
-    return {"viable_claim": False, "claim_type": "equal_pay", "confidence": 0.85}
+    breach_reasons: list[str] = []
+    if not received_statement:
+        breach_reasons.append("written_statement_not_received")
+    elif days_after_start_received is not None and days_after_start_received > numeric["day_one_particulars_anchor"]:
+        breach_reasons.append("written_statement_not_provided_day_one")
+
+    return {
+        "viable_claim": bool(breach_reasons),
+        "claim_type": "employment_contracts",
+        "jurisdiction": "EW",
+        "strength": "moderate" if breach_reasons else "low",
+        "confidence": 0.83,
+        "confidence_score": 0.83,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "breach_reasons": breach_reasons,
+        "day_one_particulars_anchor": numeric["day_one_particulars_anchor"],
+        "reason": (
+            "Potential written-particulars issue based on the supplied facts."
+            if breach_reasons else "No written-particulars breach appears from the supplied facts."
+        ),
+        "citations": [
+            _citation("ERA 1996 s.1", "https://www.legislation.gov.uk/ukpga/1996/18/section/1"),
+            _citation("ERA 1996 s.11", "https://www.legislation.gov.uk/ukpga/1996/18/section/11"),
+            _citation("Employment Act 2002 s.38", "https://www.legislation.gov.uk/ukpga/2002/22/section/38"),
+        ],
+    }
 
 
-def assess_national_minimum_wage(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """National Minimum Wage - below statutory minimum"""
+def assess_fixed_term_workers(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    numeric = _require_rules("fixed_term_workers", rules, ("successive_contracts_years",))
+    present = _require_present_rules(
+        "fixed_term_workers",
+        rules,
+        ("less_favourable_treatment_right", "objective_justification_anchor"),
+    )
+    if "missing_rules" in numeric:
+        return numeric
+    if "missing_rules" in present:
+        return present
+
     try:
-        hourly_rate = float(facts.get("hourly_rate", 0))
-        hours_worked = float(facts.get("hours_worked", 0))
-        weeks_underpaid = float(facts.get("weeks_underpaid", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    age = facts.get("age", 25)
-    nmw_rate = rules.get(f"nmw_age_{age}", 11.44)  # 2024 rate
-
-    if hourly_rate < nmw_rate:
-        shortfall_per_week = (nmw_rate - hourly_rate) * hours_worked
-        total_arrears = shortfall_per_week * weeks_underpaid
+        successive_years = float(facts.get("successive_fixed_term_contract_years", 0))
+    except (TypeError, ValueError) as exc:
         return {
-            "viable_claim": True,
-            "claim_type": "national_minimum_wage",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "issue": f"Paid £{hourly_rate}/h, NMW is £{nmw_rate}/h",
-            "estimated_damages": total_arrears,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["National Minimum Wage Act 1998 s.31", "Employment Rights Act 1996 s.193"],
-        }
-
-    return {"viable_claim": False, "claim_type": "national_minimum_wage", "confidence": 0.95}
-
-
-def assess_working_time_directive(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Working Time Directive - daily/weekly rest, holiday pay"""
-    try:
-        daily_hours = float(facts.get("daily_hours", 0))
-        weekly_rest_days = float(facts.get("weekly_rest_days", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    min_daily_rest = rules.get("min_daily_rest_hours", 11)
-    min_weekly_rest = rules.get("min_weekly_rest_days", 1.43)
-
-    violations = []
-    if daily_hours > 13:
-        violations.append(f"Daily hours {daily_hours}h exceeds safe limits")
-    if weekly_rest_days < min_weekly_rest:
-        violations.append(f"Weekly rest {weekly_rest_days} days below {min_weekly_rest}")
-
-    if violations:
-        return {
-            "viable_claim": True,
-            "claim_type": "working_time_directive",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "issues": violations,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Working Time Regulations 1998", "Council Directive 93/104/EC"],
-        }
-
-    return {"viable_claim": False, "claim_type": "working_time_directive", "confidence": 0.75}
-
-
-def assess_pregnancy_discrimination(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Pregnancy Discrimination - protected characteristic under Equality Act"""
-    try:
-        pregnant = facts.get("is_pregnant", False)
-        discriminatory_act = facts.get("discriminatory_action", "")
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if pregnant and discriminatory_act:
-        return {
-            "viable_claim": True,
-            "claim_type": "pregnancy_discrimination",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "issue": f"Pregnancy discrimination: {discriminatory_act}",
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["Equality Act 2010 s.18", "ERA 1996 s.99"],
-        }
-
-    return {"viable_claim": False, "claim_type": "pregnancy_discrimination", "confidence": 0.9}
-
-
-def assess_part_time_workers(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Part-Time Workers - pro-rata rights, no less favourable treatment"""
-    try:
-        hours_pt = float(facts.get("part_time_hours", 0))
-        hours_ft = float(facts.get("full_time_comparison_hours", 40))
-        pay_pt = float(facts.get("part_time_pay", 0))
-        pay_ft = float(facts.get("full_time_comparison_pay", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    pt_hourly = pay_pt / hours_pt if hours_pt > 0 else 0
-    ft_hourly = pay_ft / hours_ft if hours_ft > 0 else 0
-
-    if pt_hourly < ft_hourly * 0.95:  # 5% tolerance
-        return {
-            "viable_claim": True,
-            "claim_type": "part_time_workers",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "issue": "Part-time workers paid less per hour than comparable full-time",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Part-time Workers Directive 97/81/EC", "Employment Rights Act 1996 s.47B"],
-        }
-
-    return {"viable_claim": False, "claim_type": "part_time_workers", "confidence": 0.75}
-
-
-def assess_fixed_term_workers(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Fixed-Term Workers - succession renewal, no less favourable treatment"""
-    try:
-        contract_type = facts.get("contract_type", "")
-        successive_renewals = float(facts.get("successive_renewals", 0))
-        duration_months = float(facts.get("total_duration_months", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if contract_type == "fixed_term" and successive_renewals >= 4 and duration_months >= 24:
-        return {
-            "viable_claim": True,
+            "viable_claim": False,
             "claim_type": "fixed_term_workers",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "issue": "Successive fixed-term renewals may constitute indefinite contract",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Fixed-term Employees (Prevention of Less Favourable Treatment) Regulations 2002"],
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
         }
+    less_favourable = bool(facts.get("less_favourable_treatment", False))
+    objective_justification = bool(facts.get("objective_justification_given", False))
 
-    return {"viable_claim": False, "claim_type": "fixed_term_workers", "confidence": 0.75}
+    breach_reasons: list[str] = []
+    if less_favourable and not objective_justification:
+        breach_reasons.append("less_favourable_treatment_without_objective_justification")
+    if successive_years >= numeric["successive_contracts_years"]:
+        breach_reasons.append("successive_fixed_term_contracts_at_or_above_four_year_anchor")
+
+    return {
+        "viable_claim": bool(breach_reasons),
+        "claim_type": "fixed_term_workers",
+        "jurisdiction": "EW",
+        "strength": "moderate" if breach_reasons else "low",
+        "confidence": 0.82,
+        "confidence_score": 0.82,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "breach_reasons": breach_reasons,
+        "successive_contracts_years_anchor": numeric["successive_contracts_years"],
+        "reason": (
+            "Potential fixed-term worker issue based on treatment or successive-contract facts."
+            if breach_reasons else "No fixed-term worker breach appears from the supplied facts."
+        ),
+        "citations": [
+            _citation("Fixed-term Employees Regulations 2002 reg.3", "https://www.legislation.gov.uk/uksi/2002/2034/regulation/3"),
+            _citation("Fixed-term Employees Regulations 2002 reg.8", "https://www.legislation.gov.uk/uksi/2002/2034/regulation/8"),
+        ],
+    }
 
 
-def assess_agency_workers(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Agency Workers - equal treatment after 12 weeks"""
+def assess_part_time_workers(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    present = _require_present_rules(
+        "part_time_workers",
+        rules,
+        (
+            "less_favourable_treatment_right",
+            "objective_justification_anchor",
+            "complaint_route",
+        ),
+    )
+    if "missing_rules" in present:
+        return present
+
+    less_favourable = bool(facts.get("less_favourable_treatment", False))
+    comparable_full_time_worker = bool(facts.get("comparable_full_time_worker", False))
+    objective_justification = bool(facts.get("objective_justification_given", False))
+    viable = less_favourable and comparable_full_time_worker and not objective_justification
+
+    return {
+        "viable_claim": viable,
+        "claim_type": "part_time_workers",
+        "jurisdiction": "EW",
+        "strength": "moderate" if viable else "low",
+        "confidence": 0.82,
+        "confidence_score": 0.82,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "breach_reasons": ["less_favourable_treatment_without_objective_justification"] if viable else [],
+        "reason": (
+            "Potential part-time worker less-favourable-treatment issue."
+            if viable else "No part-time worker breach appears from the supplied facts."
+        ),
+        "citations": [
+            _citation("Part-time Workers Regulations 2000 reg.5", "https://www.legislation.gov.uk/uksi/2000/1551/regulation/5"),
+            _citation("Part-time Workers Regulations 2000 reg.8", "https://www.legislation.gov.uk/uksi/2000/1551/regulation/8"),
+        ],
+    }
+
+
+def assess_agency_workers(facts: dict[str, Any], rules: dict[str, Any]) -> dict[str, Any]:
+    numeric = _require_rules("agency_workers", rules, ("qualifying_period_weeks",))
+    present = _require_present_rules(
+        "agency_workers",
+        rules,
+        ("equal_treatment_after_qualifying_period", "tribunal_complaint_route"),
+    )
+    if "missing_rules" in numeric:
+        return numeric
+    if "missing_rules" in present:
+        return present
+
     try:
-        weeks_assignment = float(facts.get("weeks_on_assignment", 0))
-        agency_pay = float(facts.get("agency_worker_pay", 0))
-        direct_pay = float(facts.get("direct_worker_pay", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if weeks_assignment >= 12 and agency_pay < direct_pay:
-        pay_gap = direct_pay - agency_pay
+        weeks_on_assignment = float(facts.get("weeks_on_assignment", 0))
+    except (TypeError, ValueError) as exc:
         return {
-            "viable_claim": True,
+            "viable_claim": False,
             "claim_type": "agency_workers",
-            "strength": "moderate",
-            "confidence": 0.8,
-            "issue": f"After 12 weeks, entitled to equal pay (gap: £{pay_gap})",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Agency Workers Regulations 2010 reg.5", "Equality Act 2010"],
+            "reason": f"Invalid facts: {exc}",
+            "confidence": 0.0,
+            "confidence_score": 0.0,
+            "grounding_score": 0.0,
+            "insufficient_grounding": True,
+            "citations": [],
         }
+    less_favourable_basic_conditions = bool(facts.get("less_favourable_basic_conditions", False))
+    qualifying_period_met = weeks_on_assignment >= numeric["qualifying_period_weeks"]
+    viable = qualifying_period_met and less_favourable_basic_conditions
 
-    return {"viable_claim": False, "claim_type": "agency_workers", "confidence": 0.8}
-
-
-def assess_redundancy(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Redundancy - eligibility, consultation, payment"""
-    try:
-        years_service = float(facts.get("years_service", 0))
-        weekly_pay = float(facts.get("gross_weekly_pay", 0))
-        age = int(facts.get("age", 30))
-        genuine_redundancy = facts.get("genuine_redundancy", True)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if not genuine_redundancy and years_service >= 2:
-        return {
-            "viable_claim": True,
-            "claim_type": "redundancy",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "issue": "Dismissal is not genuine redundancy - unfair selection",
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.139", "ERA 1996 s.94"],
-        }
-
-    if genuine_redundancy and years_service >= 2:
-        # Calculate statutory redundancy payment
-        weeks_per_year = 0.5 if age < 22 else (1.0 if age < 41 else 1.5)
-        years_to_count = min(int(years_service), 20)
-        week_cap = rules.get("weeks_pay_cap", 751)
-        capped_pay = min(weekly_pay, week_cap)
-        redundancy_payment = years_to_count * weeks_per_year * capped_pay
-
-        return {
-            "viable_claim": True,
-            "claim_type": "redundancy",
-            "strength": "strong",
-            "confidence": 0.9,
-            "issue": "Entitled to statutory redundancy payment",
-            "estimated_damages": redundancy_payment,
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.135", "ERA 1996 s.162"],
-        }
-
-    return {"viable_claim": False, "claim_type": "redundancy", "confidence": 0.85}
-
-
-def assess_transfer_of_undertaking(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Transfer of Undertaking (TUPE) - employment continuity, protection"""
-    try:
-        tupe_transfer_occurred = facts.get("tupe_transfer", False)
-        dismissal_connected = facts.get("dismissal_connected_to_transfer", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if tupe_transfer_occurred and dismissal_connected:
-        return {
-            "viable_claim": True,
-            "claim_type": "transfer_of_undertaking",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "issue": "Dismissal connected to TUPE transfer - automatically unfair",
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["Transfer of Undertakings (Protection of Employment) Regulations 2006 reg.7"],
-        }
-
-    return {"viable_claim": False, "claim_type": "transfer_of_undertaking", "confidence": 0.9}
-
-
-def assess_data_protection_employment(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Data Protection in Employment - GDPR, privacy rights"""
-    try:
-        unlawful_processing = facts.get("unlawful_data_processing", False)
-        breach_type = facts.get("breach_type", "")
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if unlawful_processing and breach_type:
-        return {
-            "viable_claim": True,
-            "claim_type": "data_protection_employment",
-            "strength": "moderate",
-            "confidence": 0.75,
-            "issue": f"Unlawful data processing: {breach_type}",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["UK GDPR Article 82", "Data Protection Act 2018 s.169"],
-        }
-
-    return {"viable_claim": False, "claim_type": "data_protection_employment", "confidence": 0.75}
-
-
-def assess_whistleblowing(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Whistleblowing - Public Interest Disclosure Act protection"""
-    try:
-        disclosure_made = facts.get("protected_disclosure_made", False)
-        dismissal_follows = facts.get("dismissal_after_disclosure", False)
-        public_interest = facts.get("in_public_interest", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if disclosure_made and dismissal_follows and public_interest:
-        return {
-            "viable_claim": True,
-            "claim_type": "whistleblowing",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "issue": "Dismissal for protected whistleblowing disclosure - automatically unfair",
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.103A", "Public Interest Disclosure Act 1998"],
-        }
-
-    return {"viable_claim": False, "claim_type": "whistleblowing", "confidence": 0.9}
-
-
-def assess_health_and_safety(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Health & Safety - dismissal for raising concerns, right to refuse unsafe work"""
-    try:
-        safety_concern_raised = facts.get("safety_concern_raised", False)
-        dismissal_for_concern = facts.get("dismissal_for_safety_concern", False)
-        unsafe_conditions = facts.get("unsafe_work_conditions", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if (safety_concern_raised or unsafe_conditions) and dismissal_for_concern:
-        return {
-            "viable_claim": True,
-            "claim_type": "health_and_safety",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "issue": "Dismissal for raising health & safety concerns - automatically unfair",
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.100", "Health and Safety at Work etc. Act 1974 s.44"],
-        }
-
-    return {"viable_claim": False, "claim_type": "health_and_safety", "confidence": 0.9}
-
-
-def assess_trade_union_rights(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Trade Union Rights - membership, activities, time off"""
-    try:
-        union_member = facts.get("union_member", False)
-        dismissed_for_membership = facts.get("dismissed_for_union_membership", False)
-        union_activities = facts.get("union_activities", False)
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if (dismissed_for_membership or union_activities) and union_member:
-        return {
-            "viable_claim": True,
-            "claim_type": "trade_union_rights",
-            "strength": "very_strong",
-            "confidence": 0.95,
-            "issue": "Dismissal for union membership or activities - automatically unfair",
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.152", "TULR(C)A 1992 s.146"],
-        }
-
-    return {"viable_claim": False, "claim_type": "trade_union_rights", "confidence": 0.9}
-
-
-def assess_strikes_and_lockouts(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Strikes & Lockouts - protection from dismissal, reinstatement rights"""
-    try:
-        participated_in_strike = facts.get("participated_in_strike", False)
-        dismissed_for_strike = facts.get("dismissed_for_strike", False)
-        days_since_strike_start = float(facts.get("days_since_strike_start", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if participated_in_strike and dismissed_for_strike and days_since_strike_start < 12:
-        return {
-            "viable_claim": True,
-            "claim_type": "strikes_and_lockouts",
-            "strength": "strong",
-            "confidence": 0.85,
-            "issue": "Dismissal for participation in official strike within 12-week period",
-            "deadline": (datetime.utcnow() + relativedelta(months=3)).isoformat(),
-            "citations": ["ERA 1996 s.238", "TULR(C)A 1992 s.238A"],
-        }
-
-    return {"viable_claim": False, "claim_type": "strikes_and_lockouts", "confidence": 0.85}
-
-
-def assess_employment_contracts(facts: Dict[str, Any], rules: Dict[str, Any]) -> Dict[str, Any]:
-    """Employment Contracts - breach, unfair terms, written statement"""
-    try:
-        written_statement_provided = facts.get("written_statement_provided", True)
-        contract_breach = facts.get("contract_breach", False)
-        breach_amount = float(facts.get("breach_amount", 0))
-        employment_duration_months = float(facts.get("employment_duration_months", 0))
-    except (ValueError, TypeError):
-        return {"viable_claim": False, "reason": "Invalid facts", "confidence": 0.0}
-
-    if not written_statement_provided and employment_duration_months > 2:
-        return {
-            "viable_claim": True,
-            "claim_type": "employment_contracts",
-            "strength": "moderate",
-            "confidence": 0.7,
-            "issue": "Employer failed to provide written statement within 2 months",
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["ERA 1996 s.1", "ERA 1996 s.11"],
-        }
-
-    if contract_breach and breach_amount > 0:
-        return {
-            "viable_claim": True,
-            "claim_type": "employment_contracts",
-            "strength": "moderate",
-            "confidence": 0.8,
-            "issue": f"Breach of contract claim for £{breach_amount}",
-            "estimated_damages": breach_amount,
-            "deadline": (datetime.utcnow() + relativedelta(years=3)).isoformat(),
-            "citations": ["Breach of Contract claims - County Court jurisdiction"],
-        }
-
-    return {"viable_claim": False, "claim_type": "employment_contracts", "confidence": 0.75}
+    return {
+        "viable_claim": viable,
+        "claim_type": "agency_workers",
+        "jurisdiction": "EW",
+        "strength": "moderate" if viable else "low",
+        "confidence": 0.82,
+        "confidence_score": 0.82,
+        "grounding_score": 0.9,
+        "insufficient_grounding": False,
+        "weeks_on_assignment": weeks_on_assignment,
+        "qualifying_period_weeks": numeric["qualifying_period_weeks"],
+        "qualifying_period_met": qualifying_period_met,
+        "breach_reasons": ["less_favourable_basic_conditions_after_qualifying_period"] if viable else [],
+        "reason": (
+            "Potential agency-worker equal-treatment issue after the qualifying period."
+            if viable else "No agency-worker equal-treatment breach appears from the supplied facts."
+        ),
+        "citations": [
+            _citation("Agency Workers Regulations 2010 reg.5", "https://www.legislation.gov.uk/uksi/2010/93/regulation/5"),
+            _citation("Agency Workers Regulations 2010 reg.7", "https://www.legislation.gov.uk/uksi/2010/93/regulation/7"),
+            _citation("Agency Workers Regulations 2010 reg.18", "https://www.legislation.gov.uk/uksi/2010/93/regulation/18"),
+        ],
+    }

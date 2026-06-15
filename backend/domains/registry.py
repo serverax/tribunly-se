@@ -29,21 +29,22 @@ from backend.domains.shared.errors import (
 )
 from backend.domains.shared.types import DomainSpec
 from backend.domains.shared.templates import load_domain_templates, template_for
+from backend.domains.employment.modules import production_module_keys
 
 # ──────────────────────────────────────────────────────────────────────────────
 # The registry.
 #
 # employment is the only production-ready domain today. immigration & housing are
 # scaffolded placeholders, disabled until they have real rules, corpus, templates
-# and tests. matter_types for employment reflect what the code ACTUALLY supports
-# (classify.py emits unfair_dismissal AND unpaid_wages), not an aspirational
-# subset — CLAUDE.md §15: report reality, not marketing.
+# and tests. matter_types for employment reflect the production subset of the
+# 24-module UK employment catalogue in backend.domains.employment.modules.
+# CLAUDE.md §15: report reality, not marketing.
 # ──────────────────────────────────────────────────────────────────────────────
 domain_registry: Dict[str, DomainSpec] = {
     "employment": {
         "name": "employment",
         "enabled": True,
-        "matter_types": ["unfair_dismissal", "unpaid_wages"],
+        "matter_types": production_module_keys(),
         "jurisdiction": ["EW", "S"],
         "rules_pack": "employment_rules",
         "retrieval_domain": "employment_uk",

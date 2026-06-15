@@ -97,6 +97,18 @@ def test_missing_rule_fails_closed():
     assert body["status"] == "not_supported"
 
 
+def test_db_unavailable_fails_closed_not_crash(monkeypatch):
+    def boom():
+        raise RuntimeError("db unavailable")
+
+    monkeypatch.setattr("backend.core.retrieve.get_connection", boom)
+    r = _assess(FACTUAL_Q, {}, jurisdiction="EW")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["invokes_llm"] is False
+    assert body["status"] == "not_supported"
+
+
 def test_out_of_scope_returns_not_supported_not_guess():
     body = _assess("How do I bake sourdough bread at home?", {}).json()
     assert body.get("status") == "not_supported"

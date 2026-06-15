@@ -50,7 +50,11 @@ from fastapi.testclient import TestClient
 
 from backend.api.main import app
 
+from tests.integration.auth_helpers import TEST_USER_ID, mock_auth_headers
+
 client = TestClient(app, raise_server_exceptions=True)
+
+_LEGACY_AUTH = mock_auth_headers(TEST_USER_ID)
 
 # ── Test fixtures ──────────────────────────────────────────────────────────────
 
@@ -104,7 +108,7 @@ _ASSESSMENT = {
 
 
 def _make_case() -> str:
-    resp = client.post("/cases", json={
+    resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unfair_dismissal", "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
         "key_dates": {"edt": "2026-04-01", "deadline_date": "2026-06-30"},
@@ -410,7 +414,7 @@ def test_phase3e_deadline_urgency_regression():
 
 
 def test_phase3c_document_generation_regression():
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "particulars_of_claim",
         "assessment": _ASSESSMENT,
         "facts": {"edt": "2026-04-01", "service_start_date": "2023-04-01", "jurisdiction": "EW"},

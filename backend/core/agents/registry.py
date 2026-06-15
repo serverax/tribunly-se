@@ -102,7 +102,10 @@ class DeadlineAgent(LegalAgent):
             tl_rule = next(
                 (r for r in rules if "time_limit_months" in r.get("rule_key", "")), None
             )
-            tl_months = int(tl_rule["value_numeric"] if tl_rule else 3)
+            if not tl_rule or tl_rule.get("value_numeric") is None:
+                gaps.append("time_limit_months_rule_missing")
+                raise ValueError("time_limit_months rule missing")
+            tl_months = int(tl_rule["value_numeric"])
             ec_a = facts.get("ec_day_a") or facts.get("acas_contact_date")
             ec_b = facts.get("ec_day_b") or facts.get("acas_certificate_date")
 

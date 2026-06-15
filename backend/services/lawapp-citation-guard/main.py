@@ -125,7 +125,11 @@ def _verify_citations(chunk_ids: List[str]) -> List[Dict]:
     try:
         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             placeholders = ",".join(["%s"] * len(chunk_ids))
-            sql = f"SELECT id, corpus_source, authority_ref, corpus_text FROM legal_corpus WHERE id IN ({placeholders})"
+            sql = f"""
+                SELECT id, source_type, source_table, authority_ref, body_text
+                FROM corpus_chunks
+                WHERE id IN ({placeholders})
+            """
 
             cur.execute(sql, chunk_ids)
             rows = cur.fetchall()
@@ -133,9 +137,9 @@ def _verify_citations(chunk_ids: List[str]) -> List[Dict]:
             for row in rows:
                 verified.append({
                     "chunk_id": str(row["id"]),
-                    "source": row["corpus_source"],
+                    "source": row.get("source_type") or row.get("source_table") or "corpus",
                     "authority_ref": row["authority_ref"],
-                    "text_preview": row["corpus_text"][:200],
+                    "text_preview": (row.get("body_text") or "")[:200],
                 })
 
     except Exception as e:

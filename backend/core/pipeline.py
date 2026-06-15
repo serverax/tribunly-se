@@ -247,7 +247,11 @@ def assess(
         (r for r in bundle.exact_rules if r["rule_key"] == tl_rule_key),
         None,
     )
-    time_limit_months = int(time_limit_rule["value_numeric"]) if time_limit_rule else 3
+    if not time_limit_rule or time_limit_rule.get("value_numeric") is None:
+        return build_insufficient_grounding_response(
+            f"Required rule missing from rules table: {tl_rule_key}"
+        )
+    time_limit_months = int(time_limit_rule["value_numeric"])
 
     ec_day_a_str = facts.get("ec_day_a")
     ec_day_b_str = facts.get("ec_day_b")

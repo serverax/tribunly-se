@@ -131,11 +131,10 @@ services:
     command: >
       bash -c "
         echo 'Starting lawapp legal data bootstrap...' &&
-        python -m backend.ingestion.seeds.employment_law_modules &&
-        python -m backend.ingestion.seeds.legislation_seed &&
         python -m ingestion.legislation.ingest &&
         python -m ingestion.acas.ingest &&
         python -m ingestion.embeddings.embedder &&
+        python -m ingestion.sync_corpus_chunks &&
         echo 'Bootstrap complete.'
       "
     depends_on:

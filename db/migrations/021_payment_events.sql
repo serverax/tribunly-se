@@ -19,6 +19,29 @@ CREATE TABLE IF NOT EXISTS payment_events (
     processed_at    TIMESTAMPTZ
 );
 
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS stripe_event_id TEXT;
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS payment_mode TEXT;
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS session_id TEXT;
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS payment_intent TEXT;
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS case_id UUID;
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS user_id UUID;
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS amount_total INTEGER;
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS currency TEXT;
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS payment_status TEXT NOT NULL DEFAULT 'pending';
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS raw_event JSONB NOT NULL DEFAULT '{}';
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS received_at TIMESTAMPTZ NOT NULL DEFAULT now();
+ALTER TABLE payment_events ADD COLUMN IF NOT EXISTS processed_at TIMESTAMPTZ;
+
+UPDATE payment_events
+   SET stripe_event_id = COALESCE(stripe_event_id, event_id)
+ WHERE stripe_event_id IS NULL
+   AND EXISTS (
+       SELECT 1 FROM information_schema.columns
+       WHERE table_schema = 'public'
+         AND table_name = 'payment_events'
+         AND column_name = 'event_id'
+   );
+
 CREATE INDEX IF NOT EXISTS payment_events_stripe_idx ON payment_events (stripe_event_id);
 CREATE INDEX IF NOT EXISTS payment_events_case_idx   ON payment_events (case_id);
 CREATE INDEX IF NOT EXISTS payment_events_user_idx   ON payment_events (user_id);

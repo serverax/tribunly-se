@@ -47,10 +47,16 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.api.main import app
+
+from tests.integration.auth_helpers import TEST_USER_ID, mock_auth_headers
 from tests.integration.extraction_helpers import seed_extracted_facts
 from tests.integration.payment_helpers import mark_case_paid
 
 client = TestClient(app, raise_server_exceptions=True)
+
+# Legacy /documents/generate fails closed (401) for anonymous callers; these tests
+# target payment/content behaviour, so authenticate with a mock identity.
+_LEGACY_AUTH = mock_auth_headers(TEST_USER_ID)
 
 _MOCK_PDF = b"%PDF-1.0\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"
 
@@ -116,7 +122,7 @@ _KEY_DATES_EDT_ONLY = {
 
 
 def _make_case(assessment=None, key_dates=None) -> str:
-    resp = client.post("/cases", json={
+    resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unfair_dismissal", "jurisdiction": "EW",
         "assessment": assessment or _ASSESSMENT_OK,
         "key_dates": key_dates or _KEY_DATES_EDT_ONLY,
@@ -417,7 +423,7 @@ def test_phase4a_upload_regression():
 def test_phase3c_document_generation_regression():
     from tests.integration.test_phase4b_bundle import _ASSESSMENT
     case_id = _make_paid_case()
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "schedule_of_loss",
         "assessment": _ASSESSMENT,
         "facts": {"edt": "2026-04-01", "service_start_date": "2023-04-01", "jurisdiction": "EW"},

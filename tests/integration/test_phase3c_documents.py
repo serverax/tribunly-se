@@ -32,7 +32,11 @@ from backend.api.main import app
 from backend.core.documents import safety_check, LEGAL_BOUNDARY_NOTICE
 from tests.integration.payment_helpers import mark_case_paid
 
+from tests.integration.auth_helpers import TEST_USER_ID, mock_auth_headers
+
 client = TestClient(app, raise_server_exceptions=True)
+
+_LEGACY_AUTH = mock_auth_headers(TEST_USER_ID)
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -98,7 +102,7 @@ _PAID_CASE_ID: str | None = None
 def paid_case_for_document_generation():
     """Full-document assertions use DB-backed paid state, never raw tokens."""
     global _PAID_CASE_ID
-    resp = client.post("/cases", json={
+    resp = client.post("/cases", headers=_LEGACY_AUTH, json={
         "claim_type": "unfair_dismissal",
         "jurisdiction": "EW",
         "assessment": _ASSESSMENT,
@@ -115,7 +119,7 @@ def paid_case_for_document_generation():
 # ── 1. Particulars of Claim endpoint ─────────────────────────────────────────
 
 def test_particulars_of_claim_endpoint_returns_200():
-    resp = client.post("/documents/generate", json=_POC_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_REQUEST)
     assert resp.status_code == 200
     data = resp.json()
     assert data["document_type"] == "particulars_of_claim"
@@ -129,7 +133,7 @@ def test_particulars_of_claim_endpoint_returns_200():
 # ── 2. Schedule of Loss endpoint ──────────────────────────────────────────────
 
 def test_schedule_of_loss_endpoint_returns_200():
-    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_SOL_REQUEST)
     assert resp.status_code == 200
     data = resp.json()
     assert data["document_type"] == "schedule_of_loss"
@@ -141,20 +145,20 @@ def test_schedule_of_loss_endpoint_returns_200():
 # ── 3. PoC includes user facts ────────────────────────────────────────────────
 
 def test_particulars_includes_edt():
-    resp = client.post("/documents/generate", json=_POC_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_REQUEST)
     content = resp.json()["content"]
     # EDT formatted as '1 April 2026'
     assert "April 2026" in content, f"EDT date not found in PoC content"
 
 
 def test_particulars_includes_reason_for_dismissal():
-    resp = client.post("/documents/generate", json=_POC_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_REQUEST)
     content = resp.json()["content"].lower()
     assert "conduct" in content, "reason_for_dismissal not found in PoC content"
 
 
 def test_particulars_includes_service_dates():
-    resp = client.post("/documents/generate", json=_POC_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_REQUEST)
     content = resp.json()["content"]
     assert "2023" in content, "Service start year not found in PoC"
     assert "2026" in content, "EDT year not found in PoC"
@@ -163,14 +167,14 @@ def test_particulars_includes_service_dates():
 # ── 4. SoL includes value range ────────────────────────────────────────────────
 
 def test_schedule_includes_value_range_figures():
-    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_SOL_REQUEST)
     content = resp.json()["content"]
     assert "1,800" in content or "1800" in content, "Low estimate not found in SoL"
     assert "31,200" in content or "31200" in content, "High estimate not found in SoL"
 
 
 def test_schedule_includes_value_range_basis():
-    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_SOL_REQUEST)
     content = resp.json()["content"]
     assert "statutory rules" in content.lower() or "ERA 1996" in content
 
@@ -178,13 +182,13 @@ def test_schedule_includes_value_range_basis():
 # ── 5. Claim type present ──────────────────────────────────────────────────────
 
 def test_poc_includes_unfair_dismissal_claim_type():
-    resp = client.post("/documents/generate", json=_POC_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_REQUEST)
     content = resp.json()["content"].lower()
     assert "unfair dismissal" in content
 
 
 def test_sol_includes_unfair_dismissal_claim_type():
-    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_SOL_REQUEST)
     content = resp.json()["content"].lower()
     assert "unfair dismissal" in content
 
@@ -192,7 +196,7 @@ def test_sol_includes_unfair_dismissal_claim_type():
 # ── 6. Legal boundary notice present ─────────────────────────────────────────
 
 def test_poc_includes_legal_boundary_notice():
-    resp = client.post("/documents/generate", json=_POC_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_REQUEST)
     content = resp.json()["content"]
     assert "NOT legal advice" in content, "Legal boundary notice missing from PoC"
     assert "not a solicitor or law firm" in content.lower()
@@ -200,7 +204,7 @@ def test_poc_includes_legal_boundary_notice():
 
 
 def test_sol_includes_legal_boundary_notice():
-    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_SOL_REQUEST)
     content = resp.json()["content"]
     assert "NOT legal advice" in content
     assert "not a solicitor or law firm" in content.lower()
@@ -208,7 +212,7 @@ def test_sol_includes_legal_boundary_notice():
 
 def test_documents_include_self_help_draft_label():
     for req in [_POC_REQUEST, _SOL_REQUEST]:
-        resp = client.post("/documents/generate", json=req)
+        resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=req)
         content = resp.json()["content"]
         assert "SELF-HELP DRAFT" in content or "self-help draft" in content.lower(), \
             f"Self-help draft label missing for {req['document_type']}"
@@ -217,7 +221,7 @@ def test_documents_include_self_help_draft_label():
 # ── 7. No outcome guarantees ──────────────────────────────────────────────────
 
 def test_poc_no_guarantee_language():
-    resp = client.post("/documents/generate", json=_POC_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_REQUEST)
     content = resp.json()["content"].lower()
     assert "you will win" not in content
     assert "guaranteed to win" not in content
@@ -226,7 +230,7 @@ def test_poc_no_guarantee_language():
 
 
 def test_sol_no_guarantee_language():
-    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_SOL_REQUEST)
     content = resp.json()["content"].lower()
     assert "you will win" not in content
     assert "guaranteed to win" not in content
@@ -236,7 +240,7 @@ def test_sol_no_guarantee_language():
 # ── 8. No filing / representation language ────────────────────────────────────
 
 def test_poc_no_filing_language():
-    resp = client.post("/documents/generate", json=_POC_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_POC_REQUEST)
     content = resp.json()["content"].lower()
     assert "we will file" not in content
     assert "we will submit" not in content
@@ -244,7 +248,7 @@ def test_poc_no_filing_language():
 
 
 def test_sol_no_representation_language():
-    resp = client.post("/documents/generate", json=_SOL_REQUEST)
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json=_SOL_REQUEST)
     content = resp.json()["content"].lower()
     assert "we will represent you" not in content
     assert "as your solicitor" not in content
@@ -255,7 +259,7 @@ def test_sol_no_representation_language():
 def test_unsupported_document_type_returns_422():
     """Pydantic Literal validation rejects unknown document_type with 422."""
     # letter_before_action is now valid (Phase 5B). Use a genuinely invalid type.
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "court_filing_invalid",
         "assessment": _ASSESSMENT,
         "facts": _FACTS,
@@ -267,7 +271,7 @@ def test_unsupported_document_type_returns_422():
 
 def test_empty_facts_does_not_crash():
     """Template must handle missing facts with placeholder text, not raise."""
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=_LEGACY_AUTH, json={
         "document_type": "particulars_of_claim",
         "assessment": _ASSESSMENT,
         "facts": {},

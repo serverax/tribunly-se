@@ -45,11 +45,15 @@ def handle_chat_message(req: ChatMessageRequest) -> ChatMessageResponse:
             value = rule.get("value_numeric")
             if value is not None:
                 try:
-                    rules[key] = float(value)
+                    numeric = float(value)
                 except (TypeError, ValueError):
-                    rules[key] = value
-        rules.setdefault("qualifying_period_months", 24)
-        rules.setdefault("time_limit_months", 3)
+                    continue
+                if key == "qualifying_period":
+                    rules["qualifying_period_months"] = numeric * 12
+                elif key == "basic_award_min_automatic":
+                    rules["basic_award_min"] = numeric
+                else:
+                    rules[key] = numeric
         assessment = assess_case("unfair_dismissal", facts, rules)
         confidence_score = float(assessment.get("confidence_score", assessment.get("confidence", 0.5)))
 

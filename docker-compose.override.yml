@@ -11,6 +11,8 @@ services:
   backend:
     environment:
       POSTGRES_PASSWORD: lawapp
+      ENCRYPTION_KEY: 1W5as0aC23E5QI9GlSoyh_3Zusj4b2OvQFX-9Gm5mqY=
+      PAYMENT_MODE: test
   outbox-worker:
     environment:
       POSTGRES_PASSWORD: lawapp

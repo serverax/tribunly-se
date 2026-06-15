@@ -24,6 +24,10 @@ FAKE_CITES = [
     {"cite": "Fictional Employment Act 2099 s.1", "type": "legislation", "url": "https://example.invalid/fake"},
 ]
 
+# Legacy /documents/generate fails closed on anonymous callers (401) — these tests
+# target the CITATION gate, so authenticate with a mock identity (LAWAPP_AUTH_MODE=mock).
+AUTH = {"X-User-ID": "00000000-0000-0000-0000-000000000002"}
+
 
 def _failure_count() -> int:
     conn = get_connection()
@@ -37,7 +41,7 @@ def _failure_count() -> int:
 
 def test_fake_citation_is_blocked_before_drafting_and_logged():
     before = _failure_count()
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=AUTH, json={
         "document_type": "particulars_of_claim",
         "assessment": {"has_viable_claim": "yes", "citations": FAKE_CITES},
         "facts": {"edt": "2024-05-01"},
@@ -48,7 +52,7 @@ def test_fake_citation_is_blocked_before_drafting_and_logged():
 
 
 def test_real_citation_passes_the_critic():
-    resp = client.post("/documents/generate", json={
+    resp = client.post("/documents/generate", headers=AUTH, json={
         "document_type": "particulars_of_claim",
         "assessment": {"has_viable_claim": "no", "citations": [
             {"cite": "Employment Rights Act 1996 s.98", "type": "legislation",
@@ -63,7 +67,7 @@ def test_real_citation_passes_the_critic():
 
 def test_every_fake_law_is_flagged_individually():
     for fake in FAKE_CITES:
-        resp = client.post("/documents/generate", json={
+        resp = client.post("/documents/generate", headers=AUTH, json={
             "document_type": "schedule_of_loss",
             "assessment": {"has_viable_claim": "yes", "citations": [fake]},
             "facts": {"edt": "2024-05-01"},

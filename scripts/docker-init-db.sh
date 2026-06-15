@@ -69,17 +69,15 @@ PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB
     echo "  ⚠️  pgvector not available (continuing anyway)"
 }
 
-# Load schema
+# Load schema via canonical migrations
 echo ""
-echo "▸ Loading schema..."
-if [ -f "/app/backend/schema/legal_database_schema.sql" ]; then
-    PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-        -f "/app/backend/schema/legal_database_schema.sql" > /dev/null 2>&1 || {
-        echo "  ⚠️  Schema load had warnings but continuing"
-    }
-    echo "✅ Schema loaded"
+echo "▸ Running canonical migrations..."
+if [ -f "/app/db/init-migrations.sh" ]; then
+    cd /app
+    bash /app/db/init-migrations.sh
+    echo "✅ Migrations applied"
 else
-    echo "❌ Schema file not found at /app/backend/schema/legal_database_schema.sql"
+    echo "❌ Migration runner not found at /app/db/init-migrations.sh"
     exit 1
 fi
 
@@ -113,9 +111,9 @@ fi
 echo ""
 echo "▸ Verifying schema integrity..."
 TABLE_COUNT=$(PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-    -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'lawapp';")
+    -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';")
 
-echo "✅ Found $TABLE_COUNT tables in lawapp schema"
+echo "✅ Found $TABLE_COUNT tables in public schema"
 
 echo ""
 echo "════════════════════════════════════════════════════════════"

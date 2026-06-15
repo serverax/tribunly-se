@@ -76,7 +76,7 @@ run_psql -c "CREATE TABLE IF NOT EXISTS _migrations (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL UNIQUE,
         applied_at TIMESTAMPTZ DEFAULT now()
-    );" 2>/dev/null || true
+    );"
 
 # Find and apply all migrations in order
 echo ""
@@ -85,7 +85,7 @@ migration_count=0
 applied_count=0
 
 # Find all .sql files matching pattern NNN_*.sql and sort numerically
-for migration_file in $(find "$MIGRATIONS_DIR" -maxdepth 1 -name "[0-9][0-9][0-9]_*.sql" -o -name "[0-9][0-9]_*.sql" | sort -V); do
+for migration_file in $(find "$MIGRATIONS_DIR" -maxdepth 1 \( -name "[0-9][0-9][0-9]_*.sql" -o -name "[0-9][0-9]_*.sql" \) | sort -V); do
     migration_name=$(basename "$migration_file")
 
     # Check if migration already applied
@@ -94,17 +94,24 @@ for migration_file in $(find "$MIGRATIONS_DIR" -maxdepth 1 -name "[0-9][0-9][0-9
     if [ "${already_applied:-0}" = "0" ]; then
         echo "▸ Applying: $migration_name"
 
+        migration_log="$(mktemp)"
+
         # Apply migration
-        if run_psql -f "$migration_file" > /dev/null 2>&1; then
+        if run_psql -v ON_ERROR_STOP=1 -f "$migration_file" > "$migration_log" 2>&1; then
 
             # Mark as applied
-            run_psql -c "INSERT INTO _migrations (name) VALUES ('$migration_name');" 2>/dev/null || true
+            run_psql -c "INSERT INTO _migrations (name) VALUES ('$migration_name');"
 
             echo "  ✅ Applied"
             applied_count=$((applied_count + 1))
         else
-            echo "  ⚠️  FAILED (will continue, may cause issues)"
+            echo "  ❌ FAILED: $migration_name"
+            cat "$migration_log"
+            rm -f "$migration_log"
+            echo "Migration failure is a hard release blocker."
+            exit 1
         fi
+        rm -f "$migration_log"
     else
         echo "  ⊝ Already applied: $migration_name"
     fi

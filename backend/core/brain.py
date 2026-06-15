@@ -586,9 +586,11 @@ def run_brain(
             tl = next(
                 (r["value_numeric"] for r in rules
                  if "time_limit_months" in r.get("rule_key", "")),
-                3,
+                None,
             )
-            deadline_result = compute_limitation_date(edt, int(tl or 3), None, None)
+            if tl is None:
+                raise ValueError("time_limit_months rule missing")
+            deadline_result = compute_limitation_date(edt, int(tl), None, None)
             if deadline_result and deadline_result.get("limitation_date"):
                 lim = _dt.date.fromisoformat(deadline_result["limitation_date"])
                 days_remaining = (lim - _dt.date.today()).days

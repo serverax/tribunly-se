@@ -54,27 +54,67 @@ BEGIN;
 -- key, so add a dedicated index. Genuinely useful, not a placeholder. Idempotent.
 CREATE INDEX IF NOT EXISTS oauth_identities_subject_idx ON oauth_identities (subject);
 
+-- Existing shared databases may already have an auth_sessions table from an
+-- earlier/non-LawApp schema. Add the canonical LawApp session columns before
+-- creating the view so this migration remains idempotent.
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS refresh_token_hash text;
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS issued_at timestamptz NOT NULL DEFAULT now();
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS revoked_reason text;
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS rotated_to uuid REFERENCES auth_sessions(id) ON DELETE SET NULL;
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS mfa_satisfied boolean NOT NULL DEFAULT true;
+ALTER TABLE auth_sessions ADD COLUMN IF NOT EXISTS ip_hash text;
+UPDATE auth_sessions
+   SET refresh_token_hash = COALESCE(refresh_token_hash, session_token_hash)
+ WHERE refresh_token_hash IS NULL
+   AND EXISTS (
+       SELECT 1 FROM information_schema.columns
+       WHERE table_schema='public'
+         AND table_name='auth_sessions'
+         AND column_name='session_token_hash'
+   );
+CREATE UNIQUE INDEX IF NOT EXISTS auth_sessions_refresh_token_hash_uidx
+    ON auth_sessions (refresh_token_hash)
+    WHERE refresh_token_hash IS NOT NULL;
+
 -- ── user_sessions: canonical-name VIEW over the wired auth_sessions table ─────
 -- `session_id` is the stable identifier the rest of the product refers to; it is
 -- the auth_sessions primary key (indexed by auth_sessions_pkey). `is_active` is a
 -- derived convenience flag (a live, non-revoked, non-expired session).
-CREATE OR REPLACE VIEW user_sessions AS
-SELECT
-    id                  AS session_id,
-    id,
-    user_id,
-    refresh_token_hash,
-    issued_at,
-    expires_at,
-    revoked_at,
-    revoked_reason,
-    rotated_to,
-    mfa_satisfied,
-    user_agent,
-    ip_hash,
-    created_at,
-    (revoked_at IS NULL AND expires_at > now()) AS is_active
-FROM auth_sessions;
+DO $$
+BEGIN
+    IF to_regclass('public.user_sessions') IS NULL
+       OR EXISTS (
+           SELECT 1
+           FROM pg_class c
+           JOIN pg_namespace n ON n.oid = c.relnamespace
+           WHERE n.nspname = 'public'
+             AND c.relname = 'user_sessions'
+             AND c.relkind = 'v'
+       )
+    THEN
+        EXECUTE $view$
+            CREATE OR REPLACE VIEW user_sessions AS
+            SELECT
+                id                  AS session_id,
+                id,
+                user_id,
+                refresh_token_hash,
+                issued_at,
+                expires_at,
+                revoked_at,
+                revoked_reason,
+                rotated_to,
+                mfa_satisfied,
+                user_agent,
+                ip_hash,
+                created_at,
+                (revoked_at IS NULL AND expires_at > now()) AS is_active
+            FROM auth_sessions
+        $view$;
+    ELSE
+        RAISE NOTICE 'Skipping user_sessions view because a non-view relation already exists.';
+    END IF;
+END $$;
 
 -- ── user_identities: canonical-name VIEW over the wired oauth_identities ──────
 -- `provider_id` is the provider's stable account identifier (the OIDC `sub`
