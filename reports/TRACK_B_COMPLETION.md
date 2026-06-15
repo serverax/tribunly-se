@@ -32,7 +32,12 @@ Completed: 2026-06-15
 
 ## Commits (logical units)
 
-Will be recorded after commit push (see git log).
+- `54ba433` Expand licensed RAG corpus via legislation.gov.uk and ACAS sources
+- `6bd8bdd` Formal scope-cut fencing for 13 partial employment modules
+- `a30be0d` Tune k6 readiness script for assess tags and scope-cut checks
+- `b03e55a` Add Track B production prerequisite evidence and completion report
+
+Pushed to `origin/release/lawapp-clean-snapshot` (not main).
 
 ## Production verdict
 
