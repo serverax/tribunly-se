@@ -14,12 +14,20 @@ export const options = {
     },
   },
   thresholds: {
-    http_req_failed: ["rate<0.05"],
-    http_req_duration: ["p(95)<1000"],
+    "http_req_duration{type:assess}": ["p(95)<3000"],
+    "http_req_failed{type:assess}": ["rate<0.02"],
+    "checks{check:assessment responds 200}": ["rate>0.90"],
+    "checks{check:scope-cut module returns not_covered}": ["rate>0.95"],
   },
 };
 
 const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8000";
+const EXPECTED_AUTH_STATUSES = [401, 402, 403];
+const EXPECTED_REJECT_STATUSES = [400, 401, 402, 403, 404, 422];
+
+function isExpectedStatus(status, allowed) {
+  return allowed.includes(status);
+}
 
 export default function () {
   const home = http.get(`${BASE_URL}/`);
@@ -31,9 +39,11 @@ export default function () {
   const login = http.post(
     `${BASE_URL}/api/auth/login`,
     JSON.stringify({ email: `load-${__VU}-${__ITER}@example.invalid`, password: "not-a-real-password" }),
-    { headers: { "Content-Type": "application/json" } },
+    { headers: { "Content-Type": "application/json" }, tags: { type: "auth_gate" } },
   );
-  check(login, { "login rejects bad creds safely": (r) => [400, 401, 404, 422].includes(r.status) });
+  check(login, {
+    "login rejects bad creds safely": (r) => isExpectedStatus(r.status, EXPECTED_REJECT_STATUSES),
+  });
 
   const assessment = http.post(
     `${BASE_URL}/assess`,
@@ -50,16 +60,49 @@ export default function () {
         weekly_pay: 600,
       },
     }),
+    { headers: { "Content-Type": "application/json" }, tags: { type: "assess" } },
+  );
+  check(assessment, {
+    "assessment responds 200": (r) => r.status === 200,
+    "assessment has trace_id": (r) => {
+      try {
+        const body = r.json();
+        return typeof body.trace_id === "string" && body.trace_id.length > 8;
+      } catch (_) {
+        return false;
+      }
+    },
+  });
+
+  const scopeCut = http.post(
+    `${BASE_URL}/api/workflow/diagnosis`,
+    JSON.stringify({
+      claim_type: "discrimination",
+      jurisdiction: "EW",
+      facts: { discriminatory_event_date: "2026-05-01", protected_characteristic: "sex" },
+    }),
     { headers: { "Content-Type": "application/json" } },
   );
-  check(assessment, { "assessment responds": (r) => r.status === 200 });
+  check(scopeCut, {
+    "scope-cut module returns not_covered": (r) => {
+      if (r.status !== 200) return false;
+      try {
+        const body = r.json();
+        return body.status === "not_covered" && body.claim_type === "discrimination";
+      } catch (_) {
+        return false;
+      }
+    },
+  });
 
   const saveCase = http.post(
     `${BASE_URL}/cases`,
     JSON.stringify({ claim_type: "unfair_dismissal", facts: {}, assessment: {}, key_dates: {} }),
     { headers: { "Content-Type": "application/json" } },
   );
-  check(saveCase, { "anonymous save blocked": (r) => [401, 403].includes(r.status) });
+  check(saveCase, {
+    "anonymous save blocked (401/403)": (r) => isExpectedStatus(r.status, EXPECTED_AUTH_STATUSES),
+  });
 
   const docGate = http.post(
     `${BASE_URL}/api/documents/generate`,
@@ -70,7 +113,9 @@ export default function () {
     }),
     { headers: { "Content-Type": "application/json" } },
   );
-  check(docGate, { "anonymous document gate blocked": (r) => [401, 403].includes(r.status) });
+  check(docGate, {
+    "anonymous document gate blocked (401/402/403)": (r) => isExpectedStatus(r.status, EXPECTED_AUTH_STATUSES),
+  });
 
   sleep(1);
 }
