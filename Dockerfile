@@ -68,6 +68,7 @@ RUN groupadd -g 10001 lawapp && useradd -u 10001 -g 10001 -m lawapp \
 USER 10001
 
 COPY --chown=lawapp:lawapp backend ./backend
+COPY --chown=lawapp:lawapp services ./services
 COPY --chown=lawapp:lawapp shared ./shared
 COPY --chown=lawapp:lawapp ingestion ./ingestion
 COPY --chown=lawapp:lawapp db ./db
