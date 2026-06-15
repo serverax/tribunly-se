@@ -53,13 +53,24 @@ def _expand_abbreviation(act: str) -> str:
     return _ABBREV_MAP.get(act, act)
 
 
+_SECTION_PREFIX_RE = re.compile(
+    r"(?:section|s\.?)\s*(?P<section>\d+[A-Z]?)",
+    re.IGNORECASE,
+)
+
+
 def _parse_legislation_cite(cite: str) -> tuple[str, str | None]:
     """Extract act_title and section_ref from a citation string."""
+    explicit_section = None
+    sec_match = _SECTION_PREFIX_RE.search(cite)
+    if sec_match:
+        explicit_section = sec_match.group("section")
     m = _LEGISLATION_RE.search(cite)
     if m:
         act = _expand_abbreviation(m.group("act").strip())
-        return act, m.group("section")
-    return cite, None
+        section = m.group("section") or explicit_section
+        return act, section
+    return cite, explicit_section
 
 
 def _verify_legislation_in_db(act_title: str, section_ref: str | None) -> bool:

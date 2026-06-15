@@ -1270,16 +1270,17 @@ def save_case(
     Phase 6A/6B: associates case with user_id from X-User-ID (mock) or Bearer token (jwt stub).
     GUARDRAIL: only de-identified assessment output is stored.
     """
-    from backend.core.user_auth import get_current_user, ensure_user_exists
+    from backend.core.user_auth import get_current_user, ensure_user_exists, get_auth_mode
     import json
     _uid = get_current_user(x_user_id, authorization)
-    if not _uid:
+    if not _uid and get_auth_mode() != "none":
         raise HTTPException(status_code=401, detail="Authentication required")
 
     conn = get_connection()
     try:
         with conn.cursor() as cur:
-            ensure_user_exists(conn, _uid)
+            if _uid:
+                ensure_user_exists(conn, _uid)
 
             assessment_to_store = {
                 k: v for k, v in req.assessment.items()
