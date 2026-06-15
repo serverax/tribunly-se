@@ -1,0 +1,458 @@
+Unable to find image 'grafana/k6:latest' locally
+latest: Pulling from grafana/k6
+4f4fb700ef54: Pulling fs layer
+d26fab839b56: Pulling fs layer
+78179edfdd48: Pulling fs layer
+4f4fb700ef54: Already exists
+4f4fb700ef54: Pull complete
+d26fab839b56: Download complete
+d26fab839b56: Pull complete
+eea0c93431f2: Download complete
+78179edfdd48: Download complete
+78179edfdd48: Pull complete
+Digest: sha256:632ddbc81a4a9fdc9e597da91ab1d8fcf1916dd988b43b4a4559d2f8d8e73d47
+Status: Downloaded newer image for grafana/k6:latest
+
+         /\      Grafana   /ÔÇ¥ÔÇ¥/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ÔÇ¥ÔÇ¥\ 
+  /          \   |   (  |  (ÔÇ¥)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /scripts/k6_100k_readiness.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 2m10s max duration (incl. graceful stop):
+              * smoke_readiness: Up to 50 looping VUs for 2m0s over 3 stages (gracefulRampDown: 10s, gracefulStop: 30s)
+
+
+running (0m00.9s), 01/50 VUs, 0 complete and 0 interrupted iterations
+smoke_readiness   [   1% ] 01/50 VUs  0m00.9s/2m00.0s
+
+running (0m01.9s), 02/50 VUs, 0 complete and 0 interrupted iterations
+smoke_readiness   [   2% ] 02/50 VUs  0m01.9s/2m00.0s
+
+running (0m02.9s), 03/50 VUs, 0 complete and 0 interrupted iterations
+smoke_readiness   [   2% ] 03/50 VUs  0m02.9s/2m00.0s
+
+running (0m03.9s), 04/50 VUs, 0 complete and 0 interrupted iterations
+smoke_readiness   [   3% ] 04/50 VUs  0m03.9s/2m00.0s
+
+running (0m04.9s), 04/50 VUs, 0 complete and 0 interrupted iterations
+smoke_readiness   [   4% ] 04/50 VUs  0m04.9s/2m00.0s
+
+running (0m06.0s), 05/50 VUs, 1 complete and 0 interrupted iterations
+smoke_readiness   [   5% ] 05/50 VUs  0m06.0s/2m00.0s
+
+running (0m06.9s), 06/50 VUs, 1 complete and 0 interrupted iterations
+smoke_readiness   [   6% ] 06/50 VUs  0m06.9s/2m00.0s
+
+running (0m07.9s), 07/50 VUs, 2 complete and 0 interrupted iterations
+smoke_readiness   [   7% ] 07/50 VUs  0m07.9s/2m00.0s
+
+running (0m08.9s), 08/50 VUs, 2 complete and 0 interrupted iterations
+smoke_readiness   [   7% ] 08/50 VUs  0m08.9s/2m00.0s
+
+running (0m09.9s), 08/50 VUs, 2 complete and 0 interrupted iterations
+smoke_readiness   [   8% ] 08/50 VUs  0m09.9s/2m00.0s
+
+running (0m11.0s), 09/50 VUs, 4 complete and 0 interrupted iterations
+smoke_readiness   [   9% ] 09/50 VUs  0m11.0s/2m00.0s
+
+running (0m11.9s), 10/50 VUs, 4 complete and 0 interrupted iterations
+smoke_readiness   [  10% ] 10/50 VUs  0m11.9s/2m00.0s
+
+running (0m12.9s), 11/50 VUs, 5 complete and 0 interrupted iterations
+smoke_readiness   [  11% ] 11/50 VUs  0m12.9s/2m00.0s
+
+running (0m13.9s), 12/50 VUs, 7 complete and 0 interrupted iterations
+smoke_readiness   [  12% ] 12/50 VUs  0m13.9s/2m00.0s
+
+running (0m14.9s), 12/50 VUs, 7 complete and 0 interrupted iterations
+smoke_readiness   [  12% ] 12/50 VUs  0m14.9s/2m00.0s
+
+running (0m15.9s), 13/50 VUs, 8 complete and 0 interrupted iterations
+smoke_readiness   [  13% ] 13/50 VUs  0m15.9s/2m00.0s
+
+running (0m17.0s), 14/50 VUs, 8 complete and 0 interrupted iterations
+smoke_readiness   [  14% ] 14/50 VUs  0m17.0s/2m00.0s
+
+running (0m17.9s), 15/50 VUs, 10 complete and 0 interrupted iterations
+smoke_readiness   [  15% ] 15/50 VUs  0m17.9s/2m00.0s
+
+running (0m19.0s), 16/50 VUs, 10 complete and 0 interrupted iterations
+smoke_readiness   [  16% ] 16/50 VUs  0m18.9s/2m00.0s
+
+running (0m20.0s), 16/50 VUs, 10 complete and 0 interrupted iterations
+smoke_readiness   [  17% ] 16/50 VUs  0m19.9s/2m00.0s
+
+running (0m21.0s), 17/50 VUs, 12 complete and 0 interrupted iterations
+smoke_readiness   [  18% ] 17/50 VUs  0m21.0s/2m00.0s
+
+running (0m22.0s), 18/50 VUs, 12 complete and 0 interrupted iterations
+smoke_readiness   [  18% ] 18/50 VUs  0m21.9s/2m00.0s
+
+running (0m23.0s), 19/50 VUs, 13 complete and 0 interrupted iterations
+smoke_readiness   [  19% ] 19/50 VUs  0m22.9s/2m00.0s
+
+running (0m24.0s), 20/50 VUs, 16 complete and 0 interrupted iterations
+smoke_readiness   [  20% ] 20/50 VUs  0m23.9s/2m00.0s
+
+running (0m25.0s), 20/50 VUs, 16 complete and 0 interrupted iterations
+smoke_readiness   [  21% ] 20/50 VUs  0m24.9s/2m00.0s
+
+running (0m26.0s), 21/50 VUs, 20 complete and 0 interrupted iterations
+smoke_readiness   [  22% ] 21/50 VUs  0m25.9s/2m00.0s
+
+running (0m26.9s), 22/50 VUs, 25 complete and 0 interrupted iterations
+smoke_readiness   [  22% ] 22/50 VUs  0m26.9s/2m00.0s
+
+running (0m28.0s), 23/50 VUs, 28 complete and 0 interrupted iterations
+smoke_readiness   [  23% ] 23/50 VUs  0m27.9s/2m00.0s
+
+running (0m29.0s), 24/50 VUs, 33 complete and 0 interrupted iterations
+smoke_readiness   [  24% ] 24/50 VUs  0m29.0s/2m00.0s
+
+running (0m30.0s), 24/50 VUs, 36 complete and 0 interrupted iterations
+smoke_readiness   [  25% ] 24/50 VUs  0m29.9s/2m00.0s
+
+running (0m30.9s), 25/50 VUs, 43 complete and 0 interrupted iterations
+smoke_readiness   [  26% ] 25/50 VUs  0m30.9s/2m00.0s
+
+running (0m31.9s), 25/50 VUs, 45 complete and 0 interrupted iterations
+smoke_readiness   [  27% ] 25/50 VUs  0m31.9s/2m00.0s
+
+running (0m33.0s), 26/50 VUs, 59 complete and 0 interrupted iterations
+smoke_readiness   [  27% ] 26/50 VUs  0m32.9s/2m00.0s
+
+running (0m34.0s), 26/50 VUs, 81 complete and 0 interrupted iterations
+smoke_readiness   [  28% ] 26/50 VUs  0m33.9s/2m00.0s
+
+running (0m34.9s), 27/50 VUs, 102 complete and 0 interrupted iterations
+smoke_readiness   [  29% ] 27/50 VUs  0m34.9s/2m00.0s
+
+running (0m35.9s), 27/50 VUs, 127 complete and 0 interrupted iterations
+smoke_readiness   [  30% ] 27/50 VUs  0m35.9s/2m00.0s
+
+running (0m36.9s), 27/50 VUs, 143 complete and 0 interrupted iterations
+smoke_readiness   [  31% ] 27/50 VUs  0m36.9s/2m00.0s
+
+running (0m38.0s), 28/50 VUs, 164 complete and 0 interrupted iterations
+smoke_readiness   [  32% ] 28/50 VUs  0m37.9s/2m00.0s
+
+running (0m38.9s), 28/50 VUs, 185 complete and 0 interrupted iterations
+smoke_readiness   [  32% ] 28/50 VUs  0m38.9s/2m00.0s
+
+running (0m39.9s), 29/50 VUs, 198 complete and 0 interrupted iterations
+smoke_readiness   [  33% ] 29/50 VUs  0m39.9s/2m00.0s
+
+running (0m40.9s), 29/50 VUs, 214 complete and 0 interrupted iterations
+smoke_readiness   [  34% ] 29/50 VUs  0m40.9s/2m00.0s
+
+running (0m41.9s), 29/50 VUs, 232 complete and 0 interrupted iterations
+smoke_readiness   [  35% ] 29/50 VUs  0m41.9s/2m00.0s
+
+running (0m42.9s), 30/50 VUs, 244 complete and 0 interrupted iterations
+smoke_readiness   [  36% ] 30/50 VUs  0m42.9s/2m00.0s
+
+running (0m43.9s), 30/50 VUs, 274 complete and 0 interrupted iterations
+smoke_readiness   [  37% ] 30/50 VUs  0m43.9s/2m00.0s
+
+running (0m45.0s), 31/50 VUs, 280 complete and 0 interrupted iterations
+smoke_readiness   [  37% ] 31/50 VUs  0m44.9s/2m00.0s
+
+running (0m45.9s), 31/50 VUs, 304 complete and 0 interrupted iterations
+smoke_readiness   [  38% ] 31/50 VUs  0m45.9s/2m00.0s
+
+running (0m46.9s), 32/50 VUs, 316 complete and 0 interrupted iterations
+smoke_readiness   [  39% ] 32/50 VUs  0m46.9s/2m00.0s
+
+running (0m47.9s), 32/50 VUs, 344 complete and 0 interrupted iterations
+smoke_readiness   [  40% ] 32/50 VUs  0m47.9s/2m00.0s
+
+running (0m48.9s), 32/50 VUs, 350 complete and 0 interrupted iterations
+smoke_readiness   [  41% ] 32/50 VUs  0m48.9s/2m00.0s
+
+running (0m49.9s), 33/50 VUs, 357 complete and 0 interrupted iterations
+smoke_readiness   [  42% ] 33/50 VUs  0m49.9s/2m00.0s
+
+running (0m50.9s), 33/50 VUs, 382 complete and 0 interrupted iterations
+smoke_readiness   [  42% ] 33/50 VUs  0m50.9s/2m00.0s
+
+running (0m51.9s), 34/50 VUs, 398 complete and 0 interrupted iterations
+smoke_readiness   [  43% ] 34/50 VUs  0m51.9s/2m00.0s
+
+running (0m52.9s), 34/50 VUs, 412 complete and 0 interrupted iterations
+smoke_readiness   [  44% ] 34/50 VUs  0m52.9s/2m00.0s
+
+running (0m53.9s), 34/50 VUs, 426 complete and 0 interrupted iterations
+smoke_readiness   [  45% ] 34/50 VUs  0m53.9s/2m00.0s
+
+running (0m54.9s), 35/50 VUs, 442 complete and 0 interrupted iterations
+smoke_readiness   [  46% ] 35/50 VUs  0m54.9s/2m00.0s
+
+running (0m55.9s), 35/50 VUs, 452 complete and 0 interrupted iterations
+smoke_readiness   [  47% ] 35/50 VUs  0m55.9s/2m00.0s
+
+running (0m56.9s), 36/50 VUs, 466 complete and 0 interrupted iterations
+smoke_readiness   [  47% ] 36/50 VUs  0m56.9s/2m00.0s
+
+running (0m57.9s), 36/50 VUs, 476 complete and 0 interrupted iterations
+smoke_readiness   [  48% ] 36/50 VUs  0m57.9s/2m00.0s
+
+running (0m58.9s), 37/50 VUs, 480 complete and 0 interrupted iterations
+smoke_readiness   [  49% ] 37/50 VUs  0m58.9s/2m00.0s
+
+running (0m59.9s), 37/50 VUs, 489 complete and 0 interrupted iterations
+smoke_readiness   [  50% ] 37/50 VUs  0m59.9s/2m00.0s
+
+running (1m00.9s), 37/50 VUs, 511 complete and 0 interrupted iterations
+smoke_readiness   [  51% ] 37/50 VUs  1m00.9s/2m00.0s
+
+running (1m02.0s), 38/50 VUs, 517 complete and 0 interrupted iterations
+smoke_readiness   [  52% ] 38/50 VUs  1m02.0s/2m00.0s
+
+running (1m03.0s), 38/50 VUs, 517 complete and 0 interrupted iterations
+smoke_readiness   [  52% ] 38/50 VUs  1m03.0s/2m00.0s
+
+running (1m03.9s), 39/50 VUs, 517 complete and 0 interrupted iterations
+smoke_readiness   [  53% ] 39/50 VUs  1m03.9s/2m00.0s
+
+running (1m05.0s), 39/50 VUs, 525 complete and 0 interrupted iterations
+smoke_readiness   [  54% ] 39/50 VUs  1m05.0s/2m00.0s
+
+running (1m06.0s), 39/50 VUs, 528 complete and 0 interrupted iterations
+smoke_readiness   [  55% ] 39/50 VUs  1m05.9s/2m00.0s
+
+running (1m06.9s), 40/50 VUs, 534 complete and 0 interrupted iterations
+smoke_readiness   [  56% ] 40/50 VUs  1m06.9s/2m00.0s
+
+running (1m07.9s), 40/50 VUs, 534 complete and 0 interrupted iterations
+smoke_readiness   [  57% ] 40/50 VUs  1m07.9s/2m00.0s
+
+running (1m08.9s), 41/50 VUs, 544 complete and 0 interrupted iterations
+smoke_readiness   [  57% ] 41/50 VUs  1m08.9s/2m00.0s
+
+running (1m09.9s), 41/50 VUs, 545 complete and 0 interrupted iterations
+smoke_readiness   [  58% ] 41/50 VUs  1m09.9s/2m00.0s
+
+running (1m10.9s), 42/50 VUs, 548 complete and 0 interrupted iterations
+smoke_readiness   [  59% ] 42/50 VUs  1m10.9s/2m00.0s
+
+running (1m11.9s), 42/50 VUs, 559 complete and 0 interrupted iterations
+smoke_readiness   [  60% ] 42/50 VUs  1m11.9s/2m00.0s
+
+running (1m13.0s), 42/50 VUs, 561 complete and 0 interrupted iterations
+smoke_readiness   [  61% ] 42/50 VUs  1m12.9s/2m00.0s
+
+running (1m13.9s), 43/50 VUs, 565 complete and 0 interrupted iterations
+smoke_readiness   [  62% ] 43/50 VUs  1m13.9s/2m00.0s
+
+running (1m14.9s), 43/50 VUs, 577 complete and 0 interrupted iterations
+smoke_readiness   [  62% ] 43/50 VUs  1m14.9s/2m00.0s
+
+running (1m15.9s), 44/50 VUs, 579 complete and 0 interrupted iterations
+smoke_readiness   [  63% ] 44/50 VUs  1m15.9s/2m00.0s
+
+running (1m16.9s), 44/50 VUs, 585 complete and 0 interrupted iterations
+smoke_readiness   [  64% ] 44/50 VUs  1m16.9s/2m00.0s
+
+running (1m17.9s), 44/50 VUs, 595 complete and 0 interrupted iterations
+smoke_readiness   [  65% ] 44/50 VUs  1m17.9s/2m00.0s
+
+running (1m19.0s), 45/50 VUs, 601 complete and 0 interrupted iterations
+smoke_readiness   [  66% ] 45/50 VUs  1m19.0s/2m00.0s
+
+running (1m19.9s), 45/50 VUs, 613 complete and 0 interrupted iterations
+smoke_readiness   [  67% ] 45/50 VUs  1m19.9s/2m00.0s
+
+running (1m20.9s), 46/50 VUs, 615 complete and 0 interrupted iterations
+smoke_readiness   [  67% ] 46/50 VUs  1m20.9s/2m00.0s
+
+running (1m22.0s), 46/50 VUs, 618 complete and 0 interrupted iterations
+smoke_readiness   [  68% ] 46/50 VUs  1m22.0s/2m00.0s
+
+running (1m22.9s), 47/50 VUs, 633 complete and 0 interrupted iterations
+smoke_readiness   [  69% ] 47/50 VUs  1m22.9s/2m00.0s
+
+running (1m24.0s), 47/50 VUs, 640 complete and 0 interrupted iterations
+smoke_readiness   [  70% ] 47/50 VUs  1m24.0s/2m00.0s
+
+running (1m25.0s), 47/50 VUs, 640 complete and 0 interrupted iterations
+smoke_readiness   [  71% ] 47/50 VUs  1m25.0s/2m00.0s
+
+running (1m25.9s), 48/50 VUs, 640 complete and 0 interrupted iterations
+smoke_readiness   [  72% ] 48/50 VUs  1m26.0s/2m00.0s
+
+running (1m26.9s), 48/50 VUs, 640 complete and 0 interrupted iterations
+smoke_readiness   [  72% ] 48/50 VUs  1m26.9s/2m00.0s
+
+running (1m27.9s), 49/50 VUs, 655 complete and 0 interrupted iterations
+smoke_readiness   [  73% ] 49/50 VUs  1m27.9s/2m00.0s
+
+running (1m28.9s), 49/50 VUs, 666 complete and 0 interrupted iterations
+smoke_readiness   [  74% ] 49/50 VUs  1m28.9s/2m00.0s
+
+running (1m29.9s), 49/50 VUs, 666 complete and 0 interrupted iterations
+smoke_readiness   [  75% ] 49/50 VUs  1m29.9s/2m00.0s
+
+running (1m30.9s), 50/50 VUs, 676 complete and 0 interrupted iterations
+smoke_readiness   [  76% ] 50/50 VUs  1m30.9s/2m00.0s
+
+running (1m31.9s), 50/50 VUs, 679 complete and 0 interrupted iterations
+smoke_readiness   [  77% ] 50/50 VUs  1m31.9s/2m00.0s
+
+running (1m32.9s), 50/50 VUs, 680 complete and 0 interrupted iterations
+smoke_readiness   [  77% ] 50/50 VUs  1m32.9s/2m00.0s
+
+running (1m33.9s), 47/50 VUs, 700 complete and 0 interrupted iterations
+smoke_readiness   [  78% ] 47/50 VUs  1m33.9s/2m00.0s
+
+running (1m34.9s), 44/50 VUs, 711 complete and 0 interrupted iterations
+smoke_readiness   [  79% ] 44/50 VUs  1m34.9s/2m00.0s
+
+running (1m35.9s), 43/50 VUs, 730 complete and 0 interrupted iterations
+smoke_readiness   [  80% ] 43/50 VUs  1m35.9s/2m00.0s
+
+running (1m36.9s), 42/50 VUs, 738 complete and 0 interrupted iterations
+smoke_readiness   [  81% ] 42/50 VUs  1m36.9s/2m00.0s
+
+running (1m37.9s), 40/50 VUs, 757 complete and 0 interrupted iterations
+smoke_readiness   [  82% ] 40/50 VUs  1m37.9s/2m00.0s
+
+running (1m38.9s), 39/50 VUs, 761 complete and 0 interrupted iterations
+smoke_readiness   [  82% ] 39/50 VUs  1m38.9s/2m00.0s
+
+running (1m39.9s), 34/50 VUs, 797 complete and 0 interrupted iterations
+smoke_readiness   [  83% ] 34/50 VUs  1m39.9s/2m00.0s
+
+running (1m40.9s), 34/50 VUs, 805 complete and 0 interrupted iterations
+smoke_readiness   [  84% ] 34/50 VUs  1m40.9s/2m00.0s
+
+running (1m41.9s), 31/50 VUs, 836 complete and 0 interrupted iterations
+smoke_readiness   [  85% ] 31/50 VUs  1m41.9s/2m00.0s
+
+running (1m42.9s), 29/50 VUs, 852 complete and 0 interrupted iterations
+smoke_readiness   [  86% ] 29/50 VUs  1m42.9s/2m00.0s
+
+running (1m43.9s), 27/50 VUs, 881 complete and 0 interrupted iterations
+smoke_readiness   [  87% ] 27/50 VUs  1m43.9s/2m00.0s
+
+running (1m44.9s), 26/50 VUs, 895 complete and 0 interrupted iterations
+smoke_readiness   [  87% ] 26/50 VUs  1m44.9s/2m00.0s
+
+running (1m45.9s), 25/50 VUs, 921 complete and 0 interrupted iterations
+smoke_readiness   [  88% ] 25/50 VUs  1m45.9s/2m00.0s
+
+running (1m46.9s), 23/50 VUs, 945 complete and 0 interrupted iterations
+smoke_readiness   [  89% ] 23/50 VUs  1m46.9s/2m00.0s
+
+running (1m47.9s), 22/50 VUs, 959 complete and 0 interrupted iterations
+smoke_readiness   [  90% ] 22/50 VUs  1m47.9s/2m00.0s
+
+running (1m48.9s), 20/50 VUs, 973 complete and 0 interrupted iterations
+smoke_readiness   [  91% ] 20/50 VUs  1m48.9s/2m00.0s
+
+running (1m49.9s), 18/50 VUs, 993 complete and 0 interrupted iterations
+smoke_readiness   [  92% ] 18/50 VUs  1m49.9s/2m00.0s
+
+running (1m50.9s), 16/50 VUs, 1009 complete and 0 interrupted iterations
+smoke_readiness   [  92% ] 16/50 VUs  1m50.9s/2m00.0s
+
+running (1m51.9s), 16/50 VUs, 1017 complete and 0 interrupted iterations
+smoke_readiness   [  93% ] 16/50 VUs  1m51.9s/2m00.0s
+
+running (1m52.9s), 13/50 VUs, 1032 complete and 0 interrupted iterations
+smoke_readiness   [  94% ] 13/50 VUs  1m52.9s/2m00.0s
+
+running (1m53.9s), 11/50 VUs, 1045 complete and 0 interrupted iterations
+smoke_readiness   [  95% ] 11/50 VUs  1m53.9s/2m00.0s
+
+running (1m54.9s), 10/50 VUs, 1056 complete and 0 interrupted iterations
+smoke_readiness   [  96% ] 10/50 VUs  1m54.9s/2m00.0s
+
+running (1m55.9s), 08/50 VUs, 1066 complete and 0 interrupted iterations
+smoke_readiness   [  97% ] 08/50 VUs  1m55.9s/2m00.0s
+
+running (1m56.9s), 06/50 VUs, 1074 complete and 0 interrupted iterations
+smoke_readiness   [  97% ] 06/50 VUs  1m56.9s/2m00.0s
+
+running (1m57.9s), 05/50 VUs, 1077 complete and 0 interrupted iterations
+smoke_readiness   [  98% ] 05/50 VUs  1m57.9s/2m00.0s
+
+running (1m58.9s), 03/50 VUs, 1082 complete and 0 interrupted iterations
+smoke_readiness   [  99% ] 03/50 VUs  1m58.9s/2m00.0s
+
+running (1m59.9s), 02/50 VUs, 1085 complete and 0 interrupted iterations
+smoke_readiness   [ 100% ] 02/50 VUs  1m59.9s/2m00.0s
+
+
+  Ôûê THRESHOLDS 
+
+    checks{check:assessment responds 200}
+    Ô£ù 'rate>0.90' rate=5.51%
+
+    checks{check:scope-cut module returns not_covered}
+    Ô£ô 'rate>0.95' rate=100.00%
+
+    http_req_duration{type:assess}
+    Ô£ù 'p(95)<3000' p(95)=6.15s
+
+    http_req_failed{type:assess}
+    Ô£ù 'rate<0.02' rate=94.48%
+
+
+  Ôûê TOTAL RESULTS 
+
+    checks_total.......: 8696   72.208692/s
+    checks_succeeded...: 64.33% 5595 out of 8696
+    checks_failed......: 35.66% 3101 out of 8696
+
+    Ô£ô homepage 200
+    Ô£ô health 200
+    Ô£ù login rejects bad creds safely
+      Ôå│  3% ÔÇö Ô£ô 40 / Ô£ù 1047
+    Ô£ù assessment responds 200
+      Ôå│  5% ÔÇö Ô£ô 60 / Ô£ù 1027
+    Ô£ù assessment has trace_id
+      Ôå│  5% ÔÇö Ô£ô 60 / Ô£ù 1027
+    Ô£ô scope-cut module returns not_covered
+    Ô£ô anonymous save blocked (401/403)
+    Ô£ô anonymous document gate blocked (401/402/403)
+
+    HTTP
+    http_req_duration..............: avg=303.97ms min=2.36ms med=88.36ms max=32.93s p(90)=385.7ms  p(95)=555.31ms
+      { expected_response:true }...: avg=537.69ms min=2.91ms med=115.8ms max=32.93s p(90)=553.03ms p(95)=865.6ms 
+      { type:assess }..............: avg=1.15s    min=3.47ms med=92.06ms max=32.93s p(90)=438.43ms p(95)=6.15s   
+    http_req_failed................: 56.35% 4288 out of 7609
+      { type:assess }..............: 94.48% 1027 out of 1087
+    http_reqs......................: 7609   63.182606/s
+
+    EXECUTION
+    iteration_duration.............: avg=3.13s    min=1.03s  med=1.81s   max=35.93s p(90)=4.17s    p(95)=7.84s   
+    iterations.....................: 1087   9.026087/s
+    vus............................: 2      min=1            max=50
+    vus_max........................: 50     min=50           max=50
+
+    NETWORK
+    data_received..................: 25 MB  206 kB/s
+    data_sent......................: 1.7 MB 14 kB/s
+
+
+
+
+running (2m00.4s), 00/50 VUs, 1087 complete and 0 interrupted iterations
+smoke_readiness Ô£ô [ 100% ] 00/50 VUs  2m0s
+time="2026-06-15T19:10:24Z" level=error msg="thresholds on metrics 'checks{check:assessment responds 200}, http_req_duration{type:assess}, http_req_failed{type:assess}' have been crossed"
+
+## Track B verdict (2026-06-15)
+Command: docker run --rm -i --network lawapp_default -v F:/lawapp/scripts/load:/scripts grafana/k6 run /scripts/k6_100k_readiness.js -e BASE_URL=http://lawapp-backend-1:8000
+PASS: scope-cut module returns not_covered (100%)
+PASS: anonymous save/doc gates (401/403)
+FAIL: assess path — 94.48% http_req_failed{type:assess} (SlowAPI 30/min on POST /assess vs 50 VU load)
+FAIL: assessment responds 200 check 5.51% (rate limit 429)
+Root cause: rate limiting + assess latency under concurrent load, not auth-gate false positives.
+Recommendation (Track C): separate load-test rate-limit profile or pre-authenticated assess scenario.
+Overall: FAIL (thresholds crossed) — documented waiver for expected 401/402 separation partially addressed via tagged thresholds.

@@ -1,0 +1,41 @@
+TRACK B — B1 RAG corpus expansion
+Date: 2026-06-15
+Branch: release/lawapp-clean-snapshot
+Scope: legislation.gov.uk + ACAS only (no GOV.UK bulk, no FCL)
+
+## Commands
+1. docker compose run --rm ingestion python -m ingestion.legislation.ingest
+   → reports/track_b_legislation_ingest.log (exit 0, errors 0)
+2. docker compose run --rm ingestion python -m ingestion.acas.ingest
+   → reports/track_b_acas_ingest.log (exit 0; 13/20 ACAS topic pages stored; 7 URLs 404 skipped)
+3. docker compose run --rm ingestion python -m ingestion.embeddings.embedder
+   → reports/track_b_embed.log (566 new embeddings)
+4. docker compose run --rm ingestion python -m ingestion.sync_corpus_chunks
+   → reports/track_b_sync_corpus.log (before=323 after=889 added=566 embedded=881)
+
+## DB counts (post-sync)
+ corpus_chunks | embedded
+---------------+----------
+           889 |      881
+
+ source_type breakdown:
+ primary_legislation   | majority (ERA, EqA, NMW, maternity, TUPE, WTR, etc.)
+ official_guidance     | ACAS pages
+ secondary_legislation | limits orders / uksi
+
+ legislation rows: 837 (was 284)
+ acas_guidance rows: 50 (was 37)
+
+## RAG search proof
+POST http://localhost:8000/api/rag/hybrid-search
+Body: reports/rag_search_track_b_req.json
+Response: reports/rag_search_track_b_body.json
+
+Result:
+- insufficient_grounding: false
+- merged_results: 8
+- citations include National Minimum Wage Act 1998, Equality Act 2010 corpus (via ERA 2025 s.25), TUPE 2006, Working Time Regs 1998
+
+## Verdict
+PASS — corpus materially expanded (323 → 889 chunks, +175%)
+Waiver: >>1000 chunk stretch goal not met (889); 7 ACAS URLs returned HTTP 404 and were skipped (fail-closed, no fake rows)

@@ -1,0 +1,40 @@
+TRACK B — B2 Partial module disposition (13 modules)
+Date: 2026-06-15
+Decision: PERMANENT SCOPE CUT (not promoted to production)
+
+Modules fenced (UI hidden + API not_covered):
+| module_key | label | DB status | product disposition | API proof |
+|------------|-------|-----------|---------------------|-----------|
+| constructive_dismissal | Constructive dismissal | partial | scope_cut | workflow returns not_covered if forced via API* |
+| discrimination | Discrimination | partial | scope_cut | PASS — not_covered |
+| equal_pay | Equal pay | partial | scope_cut | scope_cut constant |
+| health_and_safety | Health and safety | partial | scope_cut | scope_cut constant |
+| maternity_rights | Maternity rights | partial | scope_cut | scope_cut constant |
+| national_minimum_wage | National Minimum Wage | partial | scope_cut | scope_cut constant |
+| parental_leave | Parental leave | partial | scope_cut | scope_cut constant |
+| paternity_rights | Paternity rights | partial | scope_cut | scope_cut constant |
+| pregnancy_maternity_discrimination | Pregnancy/maternity discrimination | partial | scope_cut | scope_cut constant |
+| shared_parental_leave | Shared parental leave | partial | scope_cut | scope_cut constant |
+| trade_union_rights | Trade union rights | partial | scope_cut | scope_cut constant |
+| tupe | TUPE transfers | partial | scope_cut | scope_cut constant |
+| whistleblowing | Whistleblowing | partial | scope_cut | scope_cut constant |
+
+*constructive_dismissal has /api/workflows/constructive-dismissal (partial workflow) but is NOT in production_module_keys or UI pickers.
+
+## Implementation evidence
+- backend/domains/employment/modules.py: SCOPE_CUT_MODULES + SCOPE_CUT_MESSAGE
+- backend/api/main.py: /api/workflow/diagnosis returns status=not_covered for partial modules
+- client/public/js/beta-scope.js: PARTIAL_HIDDEN hides all 13 from pickers
+- backend/core/employment_assessment.py: ASSESSMENT_HANDLERS limited to 11 production modules
+- tests/test_employment_module_scope.py: 2 passed (not_covered + partial hidden)
+
+## API proof artifact
+reports/track_b_scope_cut_response.json
+{"status":"not_covered","claim_type":"discrimination",...}
+
+## GO_LIVE_MODE gate
+- GO_LIVE_MODE=beta: PASS (partial allowed with verified rules + fail-closed product)
+- GO_LIVE_MODE=production: FAIL (expected — 13 modules remain partial in DB catalogue)
+
+## Verdict
+PASS — formal permanent scope cut documented; depth-before-breadth enforced

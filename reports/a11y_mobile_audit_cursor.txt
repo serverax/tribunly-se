@@ -1,0 +1,29 @@
+TRACK B — B6 Accessibility & mobile audit
+Date: 2026-06-15
+Scope: client/public (static frontend)
+
+## Method
+Static review of index.html, intake.html, styles.css, a11y.js, beta-scope.js
+
+## Strengths (PASS)
+- lang="en" on html elements
+- viewport meta on all sampled pages
+- Landing: skip-link, a11y toolbar (A+/easy read/high contrast), aria-pressed toggles
+- Intake: fieldset/legend, aria-required, aria-describedby on errors, progressbar roles, aria-live deadline preview
+- Responsive: form-row grid collapses @600px
+- Legal notices use role=alert/note
+
+## Findings (in-scope fixes deferred — document only)
+| ID | Severity | Page | Issue | Recommendation |
+|----|----------|------|-------|----------------|
+| A1 | medium | intake.html | Nav lacks aria-label; no skip-link | Match index.html nav pattern |
+| A2 | low | secondary pages | constructive_dismissal.html reachable but module scope-cut | Add banner or redirect to intake with scope message |
+| A3 | low | global | Focus trap not implemented on mobile nav toggle | Add focus management in nav JS |
+| A4 | low | intake | wizard step labels aria-hidden=true | Expose current step to screen readers on change |
+
+## Mobile
+- CSS uses mobile-first breakpoints; touch targets acceptable on primary buttons
+- No horizontal scroll observed in markup review
+
+## Verdict
+PASS WITH FINDINGS — no P0 blockers; A1–A4 logged for Track C UX polish

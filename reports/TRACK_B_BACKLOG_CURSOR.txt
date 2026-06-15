@@ -1,0 +1,27 @@
+TRACK B — B5 Lower-priority backlog (document/fix)
+Date: 2026-06-15
+
+## datetime.utcnow deprecation
+Status: DOCUMENTED (not bulk-fixed — services tree)
+Files: backend/services/*/main.py, backend/core/user_auth.py
+Recommendation: replace with datetime.now(timezone.utc) in dedicated hygiene PR
+
+## services/ vs backend/services/
+Status: DOCUMENTED
+- Monolith Dockerfile copies both backend/ and services/ into /app
+- Track A commit 98db44d aligned container pytest imports
+- No duplicate runtime conflict observed; keep single source in backend/services for new work
+
+## Frontend fetch auth patterns
+Status: PASS (no change required)
+- api.js uses Authorization header from sessionStorage token
+- Anonymous routes fail-closed (401/403) verified in k6 checks
+
+## Ollama cluster DNS in compose
+Status: DOCUMENTED
+- docker-compose.yml: LAWAPP_OLLAMA_BASE_URL defaults to http://ollama-inference.lawapp-ai.svc.cluster.local:11434
+- Local dev without K8s DNS: set LAWAPP_OLLAMA_BASE_URL=http://host.docker.internal:11434 or disable generative lane
+- Health shows ai_provider.active=true when cluster endpoint reachable
+
+## Verdict
+PASS — documented; no unsafe changes applied in Track B

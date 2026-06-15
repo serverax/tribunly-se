@@ -1,0 +1,29 @@
+TRACK B — B4 OTEL / brain_traces correlation proof
+Date: 2026-06-15
+
+## Command
+POST http://localhost:8000/api/brain/trace
+Body: reports/track_b_brain_trace_req.json
+Response: reports/track_b_brain_trace_response.json
+
+## Extracted trace_id
+4e6f144b-ab88-47c3-bf85-c7792ff8e623
+
+## SQL verification
+docker compose exec -T db psql -U lawapp -d lawapp -c \
+  "SELECT trace_id, claim_type, final_status, rules_count, sources_count, citations_verified, created_at FROM brain_traces WHERE trace_id='4e6f144b-ab88-47c3-bf85-c7792ff8e623';"
+
+Result:
+ trace_id                               | claim_type       | final_status | sources_count | citations_verified | created_at
+ 4e6f144b-ab88-47c3-bf85-c7792ff8e623  | unfair_dismissal | ok           | 9             | 9                  | 2026-06-15 19:12:24+00
+
+## Brain pipeline steps (response)
+store_audit_log: ok (audit_id matches trace_id)
+retrieve_legal_evidence: 9 sources, insufficient_grounding=false
+verify_citations: 9 verified, 0 failed
+
+## Note
+POST /assess with use_model=false returns trace_id in HTTP response but does NOT persist brain_traces (pipeline path). Full persistence requires /api/brain/trace or generative lane.
+
+## Verdict
+PASS — HTTP trace_id matches brain_traces row via SQL
