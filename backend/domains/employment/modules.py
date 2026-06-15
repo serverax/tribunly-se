@@ -49,6 +49,18 @@ PRODUCTION_EMPLOYMENT_MODULES: tuple[str, ...] = tuple(
     module["key"] for module in REQUIRED_EMPLOYMENT_MODULES if module["status"] == "production"
 )
 
+# Permanent product scope cut (Track B): partial modules remain DB-catalogued for future
+# work but are explicitly NOT covered in the current 11-topic product surface.
+SCOPE_CUT_MODULES: tuple[str, ...] = tuple(
+    module["key"] for module in REQUIRED_EMPLOYMENT_MODULES if module["status"] == "partial"
+)
+
+SCOPE_CUT_MESSAGE = (
+    "This employment topic is not covered in the current LawApp product scope. "
+    "It is catalogued for future development but has no verified end-to-end workflow, "
+    "legal-accuracy bar, or document templates yet."
+)
+
 
 def module_keys() -> list[str]:
     return [module["key"] for module in REQUIRED_EMPLOYMENT_MODULES]
@@ -61,9 +73,16 @@ def production_module_keys() -> list[str]:
 def module_coverage() -> dict:
     total = len(REQUIRED_EMPLOYMENT_MODULES)
     production = len(PRODUCTION_EMPLOYMENT_MODULES)
+    scope_cut = len(SCOPE_CUT_MODULES)
     return {
         "required_total": total,
         "production_total": production,
+        "scope_cut_total": scope_cut,
         "remaining_total": total - production,
         "modules": list(REQUIRED_EMPLOYMENT_MODULES),
+        "scope_cut_modules": list(SCOPE_CUT_MODULES),
     }
+
+
+def is_scope_cut(module_key: str) -> bool:
+    return module_key in SCOPE_CUT_MODULES

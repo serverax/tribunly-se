@@ -29,10 +29,10 @@ def test_workflow_diagnosis_fails_closed_for_unverified_employment_module():
 
     assert resp.status_code == 200
     body = resp.json()
-    assert body["status"] == "not_supported"
+    assert body["status"] == "not_covered"
     assert body["claim_type"] == "discrimination"
     assert body["supported_types"] == supported_matter_types()
-    assert "verified server-side rules" in body["message"]
+    assert "not covered" in body["message"].lower()
 
 
 def test_registry_is_current_production_employment_scope():

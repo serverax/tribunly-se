@@ -857,11 +857,12 @@ def workflow_diagnosis(
 
         claim_type = (req.claim_type or "unfair_dismissal").lower().strip()
         supported_types = supported_matter_types()
+        from backend.domains.employment.modules import SCOPE_CUT_MESSAGE, is_scope_cut
         if claim_type not in supported_types:
             return {
-                "status": "not_supported",
+                "status": "not_covered" if is_scope_cut(claim_type) else "not_supported",
                 "claim_type": claim_type,
-                "message": (
+                "message": SCOPE_CUT_MESSAGE if is_scope_cut(claim_type) else (
                     "This employment module is not yet backed by verified server-side "
                     "rules, corpus, workflow tests, and document templates."
                 ),
