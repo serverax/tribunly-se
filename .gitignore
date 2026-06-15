@@ -38,8 +38,12 @@ logs/
 .coverage
 htmlcov/
 
+# Rust / WASM build output
+client/wasm/target/
+
 # Data / uploads (never commit ingested data)
 data/
+.local/lawapp_uploads/
 *.sqlite
 *.db
 *.docx
