@@ -226,6 +226,10 @@ app.include_router(_auth_router)
 from backend.api.tools_routes import router as _tools_router
 app.include_router(_tools_router)
 
+# ── User feedback (corrections) — auth-gated ─────────────────────────────────
+from backend.api.feedback_routes import router as _feedback_router
+app.include_router(_feedback_router)
+
 # ── Free-tool login wall / resume-state routes ────────────────────────────────
 from backend.api.login_gate_routes import router as _login_gate_router
 app.include_router(_login_gate_router)

@@ -413,9 +413,28 @@ class AgentRegistry:
 
     def get_agents_for_claim(self, claim_type: str, urgency: str = "safe") -> list[LegalAgent]:
         from backend.core.brain import _AGENT_MAP
-        names = _AGENT_MAP.get(claim_type, _AGENT_MAP["_default"])
-        if urgency in ("urgent", "critical", "expired") and "human_review" not in names:
-            names = names + ["human_review"]
+        from backend.core.agents.domain_plugins import get_domain_plugin
+
+        plugin = get_domain_plugin("employment")
+        if plugin:
+            names = plugin.agents_for(claim_type, urgency)
+        else:
+            names = list(_AGENT_MAP.get(claim_type, _AGENT_MAP["_default"]))
+            if urgency in ("urgent", "critical", "expired") and "human_review" not in names:
+                names = names + ["human_review"]
+        return [self._agents[n] for n in names if n in self._agents]
+
+    def agents_for_domain(
+        self, domain: str, claim_type: str, urgency: str = "safe"
+    ) -> list[LegalAgent]:
+        """Resolve agents via domain plugin when available."""
+        from backend.core.agents.domain_plugins import get_domain_plugin
+
+        plugin = get_domain_plugin(domain)
+        if plugin:
+            names = plugin.agents_for(claim_type, urgency)
+        else:
+            names = [a.name for a in self.get_agents_for_claim(claim_type, urgency)]
         return [self._agents[n] for n in names if n in self._agents]
 
 

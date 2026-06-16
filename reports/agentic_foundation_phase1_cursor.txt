@@ -1,0 +1,64 @@
+LawApp Agentic Foundation  -  Phase 1 (Cursor session)
+========================================================
+Branch: release/lawapp-clean-snapshot
+Date: 2026-06-16
+
+## Summary
+
+Extended existing Python Brain/orchestrator (no Mastra greenfield). Phase 1 adds:
+orchestration stages with agent delegation, score-based RAG rerank, compliance fields
+on brain_traces, feedback API scaffold, tool registry, and employment_uk domain plugin.
+
+## What was implemented
+
+### Pillar 1  -  Orchestration
+- backend/core/orchestrator.py  -  classify → route → delegate → merge → run_stages
+- backend/core/agents/domain_plugins.py  -  EmploymentUkPlugin (domains/employment_uk)
+- backend/core/brain.py  -  step 11b orchestrate_agents; Orchestrator facade methods
+- backend/core/agents/registry.py  -  domain-plugin-aware get_agents_for_claim
+
+### Pillar 2  -  RAG
+- backend/core/retrieval/rerank.py  -  score-based rerank after trust_scorer
+- backend/core/retrieve.py  -  wires rerank_authorities()
+
+### Pillar 3  -  Compliance / Audit
+- db/migrations/076_agentic_foundation.sql  -  compliance_verdict, reasoning_chain_summary, orchestration_stages on brain_traces
+- backend/core/brain.py  -  compliance verdict + reasoning chain on trace + audit INSERT
+
+### Pillar 4  -  Feedback (scaffold)
+- agent_feedback + agent_memory tables (migration 076)
+- backend/core/agent_memory.py  -  mask_pii, record_feedback, save_agent_memory
+- backend/api/feedback_routes.py  -  POST /api/feedback (auth-gated)
+
+### Pillar 5  -  Tools (scaffold)
+- backend/core/tool_registry/  -  registry, deadline_calculate, companies_house stub, document_extract
+
+### Docs
+- docs/architecture/AGENTIC_FOUNDATION_QUESTIONS.md
+- docs/architecture/AGENTIC_FOUNDATION_PLAN.md
+
+## Proof commands (run 2026-06-16)
+
+```
+python -m pytest tests/test_agentic_foundation_phase1.py -q
+# Result: 11 passed
+
+python -c "from backend.core.orchestrator import Orchestrator; from backend.core.tool_registry import get_tool_registry; print('imports ok')"
+# Result: imports ok
+```
+
+## Tests added
+- tests/test_agentic_foundation_phase1.py (11 cases)
+
+## Open questions
+See docs/architecture/AGENTIC_FOUNDATION_QUESTIONS.md
+
+## Next phase
+- Merge agent findings into structured assessment (not trace-only)
+- Companies House live API when key provisioned
+- Cross-encoder rerank behind RERANK_MODEL_ENABLED
+- Feedback → feedback_registry batch consumer
+
+## Blockers
+- COMPANIES_HOUSE_API_KEY not configured (stub returns unavailable  -  expected)
+- Migration 076 must be applied in Docker/CI before feedback/brain_traces columns exist in DB

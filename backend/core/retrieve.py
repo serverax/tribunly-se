@@ -30,6 +30,7 @@ from ingestion.db import get_connection
 from shared.schemas import RetrievalBundle
 from backend.core.retrieval.trust_scorer import score_authorities
 from backend.core.retrieval.rrf import reciprocal_rank_fusion
+from backend.core.retrieval.rerank import rerank_authorities
 
 logger = logging.getLogger(__name__)
 
@@ -473,8 +474,9 @@ def retrieve(
         for idx, r in enumerate(authorities)
     ]
     
-    # Apply Trust Scorer (Phase 3)
+    # Apply Trust Scorer (Phase 3) then score-based rerank (Phase 1 agentic foundation)
     auth_payload = score_authorities(auth_payload)
+    auth_payload = rerank_authorities(auth_payload)
     citations = [
         {
             "authority_ref": a.get("authority_ref") or a.get("cite"),

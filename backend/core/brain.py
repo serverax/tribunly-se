@@ -333,18 +333,50 @@ def execute_generative_lane(query: str, context: Optional[dict] = None,
 
 
 class Orchestrator:
-    """Institutionalised governed pipeline orchestrator."""
+    """Institutionalised governed pipeline orchestrator (facade over core.orchestrator)."""
+
     @staticmethod
-    def execute_generative_lane(query: str, context: dict, case_id: str, user_id: str,
-                                jurisdiction: str = "EW", claim_type: str = "unfair_dismissal") -> dict:
+    def execute_generative_lane(
+        query: str,
+        context: dict,
+        case_id: str,
+        user_id: str,
+        jurisdiction: str = "EW",
+        claim_type: str = "unfair_dismissal",
+    ) -> dict:
         return execute_generative_lane(
             query=query,
             context=context,
             case_id=case_id,
             user_id=user_id,
             jurisdiction=jurisdiction,
-            claim_type=claim_type
+            claim_type=claim_type,
         )
+
+    @staticmethod
+    def classify(message: str, facts: dict, jurisdiction: str = "EW") -> dict:
+        from backend.core.orchestrator import orchestrator as _orch
+        return _orch.classify(message, facts, jurisdiction)
+
+    @staticmethod
+    def route(claim_type: str, urgency: str = "safe", domain: str = "employment") -> dict:
+        from backend.core.orchestrator import orchestrator as _orch
+        return _orch.route(claim_type, urgency, domain)
+
+    @staticmethod
+    def delegate(agent_names, message, facts, bundle, jurisdiction="EW"):
+        from backend.core.orchestrator import orchestrator as _orch
+        return _orch.delegate(agent_names, message, facts, bundle, jurisdiction)
+
+    @staticmethod
+    def merge(agent_results, route: dict):
+        from backend.core.orchestrator import orchestrator as _orch
+        return _orch.merge(agent_results, route)
+
+    @staticmethod
+    def run_stages(message, facts, bundle, **kwargs):
+        from backend.core.orchestrator import orchestrator as _orch
+        return _orch.run_stages(message, facts, bundle, **kwargs)
 
 
 orchestrator = Orchestrator()
@@ -426,6 +458,9 @@ class BrainTrace:
         self.audit_id: Optional[str]           = None
         self.final_status: Optional[str]       = None
         self.duration_ms: Optional[float]      = None
+        self.orchestration_stages: list[dict]  = []
+        self.compliance_verdict: Optional[str] = None
+        self.reasoning_chain_summary: dict     = {}
 
     def record_step(self, name: str, status: str = "ok", detail: Any = None) -> None:
         self.steps.append({
@@ -461,6 +496,9 @@ class BrainTrace:
             "audit_id":            self.audit_id,
             "final_status":        self.final_status,
             "duration_ms":         self.duration_ms,
+            "orchestration_stages": self.orchestration_stages,
+            "compliance_verdict":  self.compliance_verdict,
+            "reasoning_chain_summary": self.reasoning_chain_summary,
             "steps":               self.steps,
         }
 
@@ -731,6 +769,36 @@ def run_brain(
         "graph_nodes":          len(graph_context.get("nodes", [])),
     })
 
+    # ── Step 11b: Orchestrate agents (classify → route → delegate → merge) ─────
+    orchestration_summary: dict = {}
+    try:
+        from backend.domains.registry import resolve_domain_for_matter
+        from backend.core.orchestrator import orchestrator as _orch
+
+        _domain = resolve_domain_for_matter(claim_type) or "employment"
+        orch = _orch.run_stages(
+            message,
+            facts,
+            bundle,
+            jurisdiction=j,
+            claim_type=claim_type,
+            urgency=urgency,
+            domain=_domain,
+            agent_names=agents,
+        )
+        orchestration_summary = orch.to_dict()
+        trace.orchestration_stages = orch.stages
+        if orch.evidence_gaps:
+            trace.missing_facts = list(dict.fromkeys(trace.missing_facts + orch.evidence_gaps))
+        trace.record_step("orchestrate_agents", "ok", {
+            "agents_run": orch.agents_run,
+            "human_review_required": orch.human_review_required,
+            "tools_available": orch.tools_available,
+        })
+    except Exception as exc:
+        logger.warning("Agent orchestration skipped: %s", exc)
+        trace.record_step("orchestrate_agents", "skipped", {"reason": str(exc)})
+
     # ── Step 12: Verify citations ──────────────────────────────────────────────
     verified, failed = 0, 0
     if bundle and getattr(bundle, "authorities", []):
@@ -847,6 +915,30 @@ def run_brain(
         },
     )
 
+    # Compliance verdict for audit (CitationGuard + safety + evaluation)
+    _citation_ok = failed == 0 and verified > 0
+    if safety_result["blocked"]:
+        trace.compliance_verdict = "blocked_safety"
+    elif eval_passed is False:
+        trace.compliance_verdict = "blocked_evaluation"
+    elif assessment.get("status") == "ok" and _citation_ok and safety_result["passed"]:
+        trace.compliance_verdict = "pass"
+    elif assessment.get("governance_result", {}).get("passes") is False:
+        trace.compliance_verdict = "blocked_governance"
+    else:
+        trace.compliance_verdict = "conditional"
+    trace.reasoning_chain_summary = {
+        "claim_type": claim_type,
+        "agents_selected": agents,
+        "agents_run": orchestration_summary.get("agents_run", []),
+        "rules_count": trace.rules_count,
+        "sources_count": trace.sources_count,
+        "citations_verified": verified,
+        "evaluation_passed": eval_passed,
+        "governance_passes": assessment.get("governance_result", {}).get("passes"),
+        "orchestration": orchestration_summary,
+    }
+
     # If safety gate blocked the answer, return a safe fallback
     if safety_result["blocked"]:
         trace.final_status = "blocked_by_safety"
@@ -923,6 +1015,9 @@ def run_brain(
             safety_passed      = safety_result["passed"],
             memory_saved       = memory_saved,
             final_status       = assessment.get("status", "error"),
+            compliance_verdict = trace.compliance_verdict,
+            reasoning_chain_summary = trace.reasoning_chain_summary,
+            orchestration_stages = trace.orchestration_stages,
         )
     except Exception as exc:
         logger.debug("Brain audit write skipped: %s", exc)
@@ -1001,6 +1096,9 @@ def _write_brain_audit(
     safety_passed:      Optional[bool],
     memory_saved:       bool,
     final_status:       str,
+    compliance_verdict: Optional[str] = None,
+    reasoning_chain_summary: Optional[dict] = None,
+    orchestration_stages: Optional[list] = None,
 ) -> Optional[str]:
     """
     Write brain trace to brain_traces table. Returns trace_id on success.
@@ -1018,13 +1116,15 @@ def _write_brain_audit(
                     agents_used, rules_count, sources_count,
                     citations_verified, citations_failed,
                     evidence_gaps, evaluation_passed, final_status,
-                    missing_facts, rag_sources, safety_passed, memory_saved
+                    missing_facts, rag_sources, safety_passed, memory_saved,
+                    compliance_verdict, reasoning_chain_summary, orchestration_stages
                 ) VALUES (
                     %s, %s::uuid, %s::uuid, %s,
                     %s::jsonb, %s, %s,
                     %s, %s,
                     %s::jsonb, %s, %s,
-                    %s::jsonb, %s::jsonb, %s, %s
+                    %s::jsonb, %s::jsonb, %s, %s,
+                    %s, %s::jsonb, %s::jsonb
                 )
                 ON CONFLICT (trace_id) DO NOTHING
                 RETURNING trace_id
@@ -1046,6 +1146,9 @@ def _write_brain_audit(
                     json.dumps(rag_sources),
                     safety_passed,
                     memory_saved,
+                    compliance_verdict,
+                    json.dumps(reasoning_chain_summary or {}),
+                    json.dumps(orchestration_stages or []),
                 ),
             )
             conn.commit()
