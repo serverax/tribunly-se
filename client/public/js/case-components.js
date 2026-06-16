@@ -252,9 +252,12 @@
       wrap.style.flexWrap = "wrap";
       wrap.style.gap = "0.35rem";
       modules.forEach(function (m) {
-        var status = m.status || "partial";
-        var cls = status === "production" ? "cos-pill-green" : status === "unavailable" ? "cos-pill-red" : "cos-pill-amber";
-        var pill = textEl("span", "cos-pill " + cls, (m.label || m.key) + " · " + status);
+        var cov = m.display_status
+          || ((window.LAWAPP_BETA_SCOPE && LAWAPP_BETA_SCOPE.coverageLabel)
+            ? LAWAPP_BETA_SCOPE.coverageLabel(m.status)
+            : "Coming soon");
+        var cls = cov === "Ready to read" ? "cos-pill-green" : "cos-pill-amber";
+        var pill = textEl("span", "cos-pill " + cls, (m.label || m.key) + " · " + cov);
         wrap.appendChild(pill);
       });
       container.appendChild(wrap);

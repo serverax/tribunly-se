@@ -1,0 +1,39 @@
+LawApp domain plugin verification
+Generated: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+Agent: cursor subagent
+
+## Acceptance: employment_uk only enabled; others fail closed
+
+| Domain pack | enabled | status | require_domain() |
+|-------------|---------|--------|------------------|
+| employment | true | production | PASS (enabled) |
+| benefits | false | stub | DomainDisabledError |
+| debt | false | stub | DomainDisabledError |
+| housing | false | stub | DomainDisabledError |
+| immigration | false | stub | DomainDisabledError |
+
+## Runtime proof
+
+```
+enabled_domains: ['employment']
+employment -> PASS enabled
+employment_uk -> UnsupportedDomainError (pack code is 'employment'; retrieval_domain='employment_uk')
+housing -> DomainDisabledError
+immigration -> DomainDisabledError
+```
+
+## Implementation
+
+- Packs: `domains/*/domain_config.json`
+- Loader: `backend/domains/loader.py` (skips `_schema`, legacy `employment_uk/`)
+- Registry: `backend/domains/registry.py` require_domain() fail-closed
+- API: `backend/api/domain_routes.py` (domain list/switch with validation)
+
+## Note
+
+Platform domain code is `employment` with `retrieval_domain: employment_uk`. This matches owner scope (UK employment only). Requesting unknown code `employment_uk` as domain fails closed.
+
+## Verdict
+
+PASS

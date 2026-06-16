@@ -62,12 +62,27 @@
     });
   }
 
+  function coverageLabel(status) {
+    var s = (status || "").toLowerCase();
+    return s === "production" ? "Ready to read" : "Coming soon";
+  }
+
+  function corpusSummary(status, chunkCount) {
+    var label = coverageLabel(status);
+    if (label === "Ready to read" && chunkCount > 0) {
+      return "Browse cited UK sources";
+    }
+    return label === "Ready to read" ? label : "";
+  }
+
   window.LAWAPP_BETA_SCOPE = {
     modules: MODULES,
     partialHidden: PARTIAL_HIDDEN,
     moduleKeys: function () { return MODULES.map(function (m) { return m.key; }); },
     populateSelect: populateSelect,
     populateRadioGroup: populateRadioGroup,
+    coverageLabel: coverageLabel,
+    corpusSummary: corpusSummary,
     betaNotice: "Controlled beta  -  11 employment topics (England & Wales). Not full UK employment law coverage.",
   };
 })();

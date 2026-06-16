@@ -24,6 +24,17 @@ _PREVIEW_DISCLAIMER = (
     "Information only, not legal advice. Sign in to save results to your case."
 )
 
+_USER_MODULE_STATUS = {
+    "production": "Ready to read",
+    "partial": "Coming soon",
+    "unavailable": "Coming soon",
+    "stub": "Coming soon",
+}
+
+
+def _display_module_status(status: str) -> str:
+    return _USER_MODULE_STATUS.get(status, "Coming soon")
+
 
 def _tables_ready(conn) -> bool:
     with conn.cursor() as cur:
@@ -59,19 +70,20 @@ def list_knowledge_modules() -> dict:
                 "module_key": r[0],
                 "label": r[1],
                 "status": r[2],
+                "display_status": _display_module_status(r[2]),
                 "chunk_count": int(r[3] or 0),
                 "browse_url": f"/pages/knowledge.html?module={r[0]}",
             }
             for r in rows
         ]
-        production = sum(1 for m in modules if m["status"] == "production")
+        ready_count = sum(1 for m in modules if m["display_status"] == "Ready to read")
         return {
             "modules": modules,
             "module_count": len(modules),
-            "production_count": production,
+            "ready_count": ready_count,
             "beta_scope_note": (
-                f"Controlled beta covers {production} production topics. "
-                "Additional modules are partial or planned."
+                f"Controlled beta: {ready_count} topics Ready to read. "
+                "Others are Coming soon."
             ),
             "verification_badge": "corpus_backed",
         }

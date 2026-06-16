@@ -1,0 +1,21 @@
+Case OS beta ship audit
+Root: F:\lawapp
+
+PASS client\public\pages\dashboard.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\case-intake.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\analysis.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\my-case.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\deadlines.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\evidence.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\documents.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\escalation.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\advisor.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\settings.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\timeline.html honesty=True boundary=True bad_label=False
+PASS client\public\pages\workspace.html honesty=True boundary=True bad_label=False
+PASS client\public\index.html honesty=True boundary=True bad_label=False
+
+app-shell.js injects boundary footer on dynamic Case OS pages.
+beta-scope.js provides Ready to read / Partial coverage / Coming soon labels.
+
+OVERALL: PASS

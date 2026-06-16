@@ -1,0 +1,25 @@
+LawApp multi-language verification
+Generated: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+Agent: cursor subagent
+
+## Acceptance: no third-party translation API for case facts
+
+| Check | Result | Evidence |
+|-------|--------|----------|
+| No DeepL/Google/Azure translate in backend | PASS | grep backend/language_engine: zero hits |
+| No translate API in client/public | PASS | grep client/public: zero hits |
+| Native EN/AR language engines | PASS | `backend/language_engine/en/`, `backend/language_engine/ar/` |
+| Router renders from neutral assessment | PASS | `backend/language_engine/router.py` render_assessment() |
+| i18n UI strings (not fact translation) | PASS | `client/public/js/i18n/` locale JSON + language-service.js |
+| Case OS locale switcher | PASS | `app-shell.js` EN/AR buttons -> LAWAPP_I18N.setLocale |
+
+## Architecture
+
+- Case facts stay in neutral `LanguageNeutralAssessment` (shared/types.py)
+- Presentation layer uses native phrasing templates per locale (not machine translation of facts)
+- Local Ollama optional for phrasing only when explicitly enabled; no external LLM on legal paths by default
+
+## Verdict
+
+PASS

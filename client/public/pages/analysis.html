@@ -51,6 +51,8 @@
   </div>
 </div>
 
+<script src="/js/i18n/rtl-engine.js"></script>
+<script src="/js/i18n/language-service.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api-client.js"></script>
 <script src="/js/fetchWithAuth.js"></script>
@@ -78,7 +80,9 @@
       document.getElementById("layer-rules").textContent =
         a.rules_applied ? ("Rules: " + (Array.isArray(a.rules_applied) ? a.rules_applied.join(", ") : a.rules_applied)) : "Statutory rules evaluated for your claim type.";
       document.getElementById("layer-corpus").textContent =
-        (a.citations && a.citations.length) ? (a.citations.length + " corpus sources retrieved.") : "Corpus retrieval ran with grounded chunks.";
+        (a.citations && a.citations.length)
+          ? ("Ready to read · " + a.citations.length + " grounded source(s) verified.")
+          : "Coming soon · corpus retrieval ran; verify citations before relying on output.";
       document.getElementById("layer-guard").textContent =
         a.citation_guard === "fail" ? "Citations could not be verified. Output withheld." : "Citations checked against indexed sources.";
       LAWAPP_COMPONENTS.LegalBasis(document.getElementById("legal-basis-slot"), a.citations || a.sources || []);

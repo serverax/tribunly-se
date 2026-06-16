@@ -31,6 +31,7 @@
     <ul id="provision-list" class="citation-list"></ul>
   </section>
 </main>
+<script src="/js/beta-scope.js"></script>
 <script>
 (function () {
   var list = document.getElementById("module-list");
@@ -38,10 +39,14 @@
   var params = new URLSearchParams(window.location.search);
   var selected = params.get("module");
 
-  function badge(status) {
+  function badge(module) {
+    var label = module.display_status
+      || ((window.LAWAPP_BETA_SCOPE && LAWAPP_BETA_SCOPE.coverageLabel)
+        ? LAWAPP_BETA_SCOPE.coverageLabel(module.status)
+        : "Coming soon");
     var s = document.createElement("span");
-    s.className = "badge " + (status === "production" ? "badge-yes" : "badge-uncertain");
-    s.textContent = status;
+    s.className = "badge " + (label === "Ready to read" ? "badge-yes" : "badge-uncertain");
+    s.textContent = label;
     return s;
   }
 
@@ -56,10 +61,15 @@
         var h = document.createElement("h3");
         h.textContent = m.label;
         card.appendChild(h);
-        card.appendChild(badge(m.status));
-        var p = document.createElement("p");
-        p.textContent = (m.chunk_count || 0) + " corpus excerpts";
-        card.appendChild(p);
+        card.appendChild(badge(m));
+        var summary = (window.LAWAPP_BETA_SCOPE && LAWAPP_BETA_SCOPE.corpusSummary)
+          ? LAWAPP_BETA_SCOPE.corpusSummary(m.status, m.chunk_count || 0)
+          : "";
+        if (summary) {
+          var p = document.createElement("p");
+          p.textContent = summary;
+          card.appendChild(p);
+        }
         var a = document.createElement("a");
         a.href = "?module=" + encodeURIComponent(m.module_key);
         a.textContent = "Browse";
@@ -88,5 +98,6 @@
   }
 })();
 </script>
+<p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor-client relationship. Verify dates and rights with ACAS or a qualified adviser before relying on them.</p>
 </body>
 </html>
