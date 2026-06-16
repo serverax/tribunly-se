@@ -33,8 +33,10 @@ logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://lawapp:lawapp@db:5432/lawapp")
-# Keep the public env var name while avoiding key-shaped source patterns.
 ADMIN_TOKEN_SECRET = os.getenv("ADMIN_" + "JWT_SECRET", "")
+JWT_SECRET = os.getenv("JWT_SECRET", ADMIN_TOKEN_SECRET)
+JWT_ISSUER = os.getenv("JWT_ISSUER", "lawapp-issuer")
+JWT_AUDIENCE = os.getenv("JWT_AUDIENCE", "lawapp-audience")
 
 # ────────────────────────────────────────────────────────────────────
 # DATABASE CONNECTION
@@ -480,6 +482,224 @@ async def admin_approve_ingestion_proposal(
     if not result.get("ok"):
         raise HTTPException(status_code=404, detail=result.get("error", "approve_failed"))
     return result
+
+
+# ────────────────────────────────────────────────────────────────────
+# ADMIN WORKSPACE APIs (JWT admin role, port 8007)
+# ────────────────────────────────────────────────────────────────────
+
+def _verify_jwt_user(authorization: Optional[str] = Header(None, alias="Authorization")) -> str:
+    if not JWT_SECRET:
+        raise HTTPException(status_code=503, detail="JWT not configured on admin service")
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise HTTPException(status_code=401, detail="Bearer token required")
+    token = authorization.split(" ", 1)[1].strip()
+    try:
+        import jwt as pyjwt
+        payload = pyjwt.decode(
+            token,
+            JWT_SECRET,
+            algorithms=["HS256"],
+            audience=JWT_AUDIENCE,
+            issuer=JWT_ISSUER,
+            options={"require": ["exp", "sub"]},
+        )
+        user_id = payload.get("sub")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT 1 FROM users WHERE id = %s::uuid AND COALESCE(is_admin, false) = true",
+            (user_id,),
+        )
+        if not cur.fetchone():
+            raise HTTPException(status_code=403, detail="Admin role required")
+        cur.close()
+    finally:
+        conn.close()
+    return str(user_id)
+
+
+@app.get("/admin/cases")
+async def admin_list_cases(
+    limit: int = 100,
+    _admin: str = Depends(_verify_jwt_user),
+):
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            """
+            SELECT c.id AS case_id, c.user_id, u.email AS user_email,
+                   c.claim_type, c.status, c.jurisdiction, c.assessment,
+                   c.key_dates, c.created_at, c.updated_at
+            FROM cases c
+            LEFT JOIN users u ON u.id = c.user_id
+            WHERE c.deleted_at IS NULL
+            ORDER BY c.updated_at DESC NULLS LAST
+            LIMIT %s
+            """,
+            (limit,),
+        )
+        rows = cur.fetchall()
+        cases = []
+        for row in rows:
+            assessment = row.get("assessment") or {}
+            key_dates = row.get("key_dates") or {}
+            cases.append({
+                "case_id": str(row["case_id"]),
+                "user_id": str(row["user_id"]) if row.get("user_id") else None,
+                "user_email": row.get("user_email"),
+                "claim_type": row.get("claim_type"),
+                "status": row.get("status"),
+                "strength": assessment.get("strength") if isinstance(assessment, dict) else None,
+                "deadline": (key_dates or {}).get("limitation_date") if isinstance(key_dates, dict) else None,
+                "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
+            })
+        cur.execute("SELECT COUNT(*) AS n FROM cases WHERE deleted_at IS NULL")
+        total = cur.fetchone()["n"]
+        cur.close()
+        return {"cases": cases, "count": len(cases), "total": int(total or 0)}
+    finally:
+        conn.close()
+
+
+@app.get("/admin/ai-logs")
+async def admin_list_ai_logs(
+    limit: int = 100,
+    _admin: str = Depends(_verify_jwt_user),
+):
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            """
+            SELECT trace_id, user_id, case_id, claim_type, input_summary,
+                   retrieved_sources, reasoning_trace, confidence, model_version,
+                   citations_verified, citations_failed, compliance_verdict,
+                   final_status, created_at
+            FROM brain_traces
+            ORDER BY created_at DESC
+            LIMIT %s
+            """,
+            (limit,),
+        )
+        logs = []
+        for row in cur.fetchall():
+            item = dict(row)
+            for k in ("user_id", "case_id"):
+                if item.get(k):
+                    item[k] = str(item[k])
+            if item.get("created_at"):
+                item["created_at"] = item["created_at"].isoformat()
+            logs.append(item)
+        cur.execute("SELECT COUNT(*) AS n FROM brain_traces")
+        total = cur.fetchone()["n"]
+        cur.close()
+        return {"logs": logs, "count": len(logs), "total": int(total or 0)}
+    finally:
+        conn.close()
+
+
+@app.get("/admin/users")
+async def admin_list_users(
+    limit: int = 200,
+    _admin: str = Depends(_verify_jwt_user),
+):
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            """
+            SELECT u.id AS user_id, u.email, u.is_admin, u.subscription_status,
+                   u.created_at, COUNT(c.id) FILTER (WHERE c.deleted_at IS NULL) AS case_count
+            FROM users u
+            LEFT JOIN cases c ON c.user_id = u.id
+            GROUP BY u.id
+            ORDER BY u.created_at DESC
+            LIMIT %s
+            """,
+            (limit,),
+        )
+        users = []
+        for row in cur.fetchall():
+            item = dict(row)
+            item["user_id"] = str(item["user_id"])
+            if item.get("created_at"):
+                item["created_at"] = item["created_at"].isoformat()
+            users.append(item)
+        cur.execute("SELECT COUNT(*) AS n FROM users")
+        total = cur.fetchone()["n"]
+        cur.close()
+        return {"users": users, "count": len(users), "total": int(total or 0)}
+    finally:
+        conn.close()
+
+
+@app.get("/admin/system-health")
+async def admin_system_health(_admin: str = Depends(_verify_jwt_user)):
+    db_status = "disconnected"
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT 1")
+        cur.close()
+        conn.close()
+        db_status = "connected"
+    except Exception:
+        db_status = "disconnected"
+    return {
+        "generated_at": datetime.utcnow().isoformat(),
+        "database": {"status": db_status},
+        "service": "lawapp-admin-service",
+        "port": 8007,
+        "latency_ms_stub": True,
+    }
+
+
+@app.get("/admin/compliance")
+async def admin_compliance(
+    limit: int = 100,
+    _admin: str = Depends(_verify_jwt_user),
+):
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            """
+            SELECT trace_id, case_id, compliance_verdict, citations_verified,
+                   citations_failed, final_status, confidence, created_at
+            FROM brain_traces
+            WHERE compliance_verdict IS NOT NULL
+               OR citations_failed > 0
+               OR final_status IN ('blocked', 'citation_failed', 'fail_closed')
+            ORDER BY created_at DESC
+            LIMIT %s
+            """,
+            (limit,),
+        )
+        flags = []
+        for row in cur.fetchall():
+            item = dict(row)
+            if item.get("case_id"):
+                item["case_id"] = str(item["case_id"])
+            if item.get("created_at"):
+                item["created_at"] = item["created_at"].isoformat()
+            item["weak_grounding"] = (
+                (item.get("citations_failed") or 0) > 0
+                or item.get("compliance_verdict") in ("fail", "blocked", "weak_grounding")
+            )
+            flags.append(item)
+        cur.close()
+        return {"flags": flags, "count": len(flags)}
+    finally:
+        conn.close()
 
 
 if __name__ == "__main__":

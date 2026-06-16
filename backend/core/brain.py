@@ -776,8 +776,13 @@ def run_brain(
     trace.record_step("retrieve_legal_evidence", "ok", {
         "sources_count":        trace.sources_count,
         "insufficient_grounding": getattr(bundle, "insufficient_grounding", True),
-        "graph_nodes":          len(graph_context.get("nodes", [])),
+        "graph_nodes":          len(
+            graph_context.get("nodes")
+            or graph_context.get("path")
+            or []
+        ),
         "graph_engine":         graph_context.get("engine"),
+        "hybrid_merge":         True,
     })
 
     # ── Step 11b: Orchestrate agents (classify → route → delegate → merge) ─────

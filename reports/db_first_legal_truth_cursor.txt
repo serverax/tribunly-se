@@ -1,0 +1,53 @@
+DB-first Legal Truth implementation proof
+Generated: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+
+=== Files created / modified ===
+docs/architecture/DB_FIRST_LEGAL_TRUTH.md
+db/migrations/082_knowledge_proposals.sql
+backend/core/legal_truth_validator.py
+backend/core/knowledge_proposer.py
+backend/core/ingestion_write_guard.py
+backend/api/ingestion_proposal_routes.py
+backend/api/feedback_routes.py (POST /api/feedback/outcome)
+backend/core/brain.py (legal_truth_validation + knowledge_proposal_created trace stages)
+backend/core/outbox.py (ingestion_proposal_approved event)
+backend/api/main.py (ingestion proposal router)
+backend/services/lawapp-admin-service/main.py (admin proposal endpoints)
+tests/test_legal_truth_validator.py
+tests/test_knowledge_proposals.py
+
+=== Brain wiring ===
+Order enforced in brain.py docstring and run_brain:
+  steps 10-11: rules engine + RAG retrieve
+  step 14: pipeline.assess (LLM explain + CitationGuard)
+  substage legal_truth_validation: validate_legal_truth + apply_validation_to_assessment
+  substage knowledge_proposal_created: propose_knowledge_gap on gaps (queue only)
+  steps 15-16: evaluate + safety
+  step 19: return_answer
+
+Trace steps recorded: legal_truth_validation, knowledge_proposal_created
+
+=== Three rules enforcement ===
+Rule 1 DB is LAW: pipeline retrieves before reason; legal_truth_validator cross-checks citations/rules
+Rule 2 Controlled write-back: knowledge_proposer -> knowledge.ingestion_proposals; approve -> outbox only
+Rule 3 Ingestion-only writes: ingestion_write_guard + tests scan brain/pipeline imports
+
+=== Pytest ===
+13 passed (test_legal_truth_validator.py + test_knowledge_proposals.py)
+Result: PASS.............                                                            [100%]
+============================== warnings summary ===============================
+tests/test_legal_truth_validator.py: 31 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+tests/test_knowledge_proposals.py::TestIngestionWriteGuard::test_brain_path_does_not_import_ingestion_writes
+  F:\lawapp\backend\core\models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+13 passed, 33 warnings in 31.88s
