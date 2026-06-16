@@ -1,0 +1,58 @@
+Graph RAG Layer Production v1 - Deploy Proof
+==========================================
+Date: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+Mode: Postgres (NEO4J_ENABLED=false default)
+
+## Docker services
+docker compose up -d lawapp-graph-rag-service backend
+- lawapp-graph-rag-service: healthy on :8018
+- backend: healthy on :8000
+- db, redis: healthy
+
+## Health
+GET http://localhost:8018/health
+{"status":"ok","timestamp":"2026-06-16T20:45:16.893916","engine":"legal_nodes/legal_edges","mode":"postgres"}
+
+## Graph search (hybrid merge query)
+POST http://localhost:8018/api/graph/search
+Body: {"query":"unfair dismissal band of reasonable responses"}
+
+Result summary:
+- claim_type: unfair_dismissal
+- engine: postgres
+- path_nodes: 13 (includes reasonableness_test / Range of Reasonable Responses)
+- edges: 24
+- confidence: 1.0
+- cache_hit: false
+
+## Unit tests
+python -m pytest tests/test_graph_rag_hybrid.py tests/test_graphrag_traversal.py -q
+13 passed
+
+## Hybrid merge location
+- backend/core/retrieve.py: retrieve_hybrid(), retrieve_hybrid_context(), retrieve_graph_context()
+- backend/core/brain.py: Step 11 uses retrieve_hybrid()
+- backend/core/rag/graph_engine.py: dual-mode Neo4j/Postgres + Redis graph:chain:{hash}
+
+## Neo4j (optional profile)
+docker compose --profile graph-neo4j up -d neo4j
+- Browser: http://localhost:7474
+- Bolt: bolt://localhost:7687
+- Dev auth only: neo4j / lawapp_dev_only (NEO4J_AUTH in compose)
+
+## Owner override note (Q2)
+Owner decision 2026-06-16 Q2 was Postgres-only. User now requests hybrid:
+Neo4j primary when NEO4J_ENABLED=true; Postgres legal_nodes/legal_edges fallback.
+
+## Architecture doc
+docs/architecture/GRAPH_RAG_LAYER_V1.md
+
+## Schema / ingestion
+control-plane/scripts/neo4j/schema.cypher
+db/migrations/082_knowledge_ingestion_proposals.sql
+ingestion/graph/neo4j_ingest.py
+ingestion/graph/relationship_extractor.py
+
+## FCL boundary
+Sample-only case law in graph ingest; FCL_BULK_LICENCE_GRANTED=false enforced.

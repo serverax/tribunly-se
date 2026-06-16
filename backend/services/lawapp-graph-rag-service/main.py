@@ -115,14 +115,37 @@ class DeadlinesResponse(BaseModel):
     trace_id: Optional[str] = None
 
 
+class GraphSearchRequest(BaseModel):
+    query: str = Field(..., description="Natural language graph search query")
+    jurisdiction: str = Field(default="EW", description="EW | S")
+    limit: int = Field(default=10, ge=1, le=50)
+
+
+class GraphSearchResponse(BaseModel):
+    query: str
+    claim_type: str
+    path: list[LegalNode]
+    edges: list[LegalEdge]
+    matches: list[LegalNode]
+    confidence: float
+    jurisdiction: str
+    engine: str
+    cache_hit: bool = False
+    trace_id: Optional[str] = None
+
+
 class HealthResponse(BaseModel):
     status: str
     timestamp: str
+    engine: Optional[str] = None
+    mode: Optional[str] = None
 
 
 class ReadinessResponse(BaseModel):
     status: str
     database_connected: bool
+    engine: str = "postgres"
+    neo4j_enabled: bool = False
 
 
 # ── Middleware ────────────────────────────────────────────────────────

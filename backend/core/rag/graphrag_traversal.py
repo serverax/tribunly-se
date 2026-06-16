@@ -476,22 +476,26 @@ def traverse(claim_type: str, module: str = "", jurisdiction: str = "EW", **kwar
 
 
 def health() -> dict[str, str]:
-    from backend.core.rag.neo4j_traversal import health as neo4j_health, neo4j_enabled
+    from backend.core.rag.graph_engine import engine_health
 
-    if neo4j_enabled():
-        neo = neo4j_health()
-        if neo.get("status") == "ok":
-            return neo
-    return GraphRAGTraversal().health()
+    eh = engine_health()
+    mode = eh.get("mode", "postgres")
+    if mode.startswith("neo4j") and eh.get("neo4j_ok"):
+        return {"status": "ok", "mode": "neo4j", "engine": "neo4j"}
+    if eh.get("neo4j_enabled") and not eh.get("neo4j_ok"):
+        return {"status": "degraded", "mode": "postgres_fallback", "engine": "legal_nodes/legal_edges"}
+    pg = eh.get("postgres") or GraphRAGTraversal().health()
+    return pg
 
 
 def graph_engine_mode() -> str:
-    from backend.core.rag.neo4j_traversal import neo4j_enabled, health as neo4j_health
+    from backend.core.rag.graph_engine import engine_health
 
-    if neo4j_enabled():
-        neo = neo4j_health()
-        if neo.get("status") == "ok":
-            return "neo4j"
+    eh = engine_health()
+    mode = eh.get("mode", "postgres")
+    if mode == "neo4j":
+        return "neo4j"
+    if eh.get("neo4j_enabled"):
         return "postgres_fallback"
     return "postgres"
 
@@ -504,39 +508,31 @@ def build_legal_path_cached(
     query: str = "",
 ) -> dict:
     """Dual-mode legal path with Redis cache (graph:chain:{hash})."""
-    from backend.core.rag.graph_cache import get_cached_chain, set_cached_chain
-    from backend.core.rag.neo4j_traversal import build_legal_chain, neo4j_enabled
+    from backend.core.rag.graph_engine import build_graph_chain
 
-    mode = graph_engine_mode()
-    cache_query = query or claim_type
-    cached = get_cached_chain(cache_query, claim_type, jurisdiction, mode)
-    if cached:
-        cached["cache_hit"] = True
-        return cached
-
-    if neo4j_enabled():
-        result = build_legal_chain(claim_type, module, jurisdiction, max_depth)
-    else:
-        result = build_legal_path(claim_type, module, jurisdiction, max_depth)
-        result["engine"] = "postgres"
-
-    result["cache_hit"] = False
-    set_cached_chain(result, cache_query, claim_type, jurisdiction, mode)
-    return result
+    chain = build_graph_chain(
+        claim_type=claim_type,
+        jurisdiction=jurisdiction,
+        max_depth=max_depth,
+        query=query or claim_type,
+    )
+    return {
+        "claim_type": claim_type,
+        "path": chain.get("path", []),
+        "edges": chain.get("edges", []),
+        "confidence": chain.get("confidence", 0.0),
+        "missing_prerequisites": chain.get("missing_prerequisites", []),
+        "jurisdiction": jurisdiction,
+        "engine": chain.get("engine", graph_engine_mode()),
+        "cache_hit": chain.get("cache_hit", False),
+    }
 
 
 def search_legal_graph_cached(query: str, jurisdiction: str = "EW", limit: int = 10) -> dict:
     """Natural-language graph search with Redis cache."""
-    from backend.core.rag.graph_cache import get_cached_chain, set_cached_chain
-    from backend.core.rag.neo4j_traversal import search_legal_graph
+    from backend.core.rag.graph_rag_chain import search_legal_chain
 
-    mode = graph_engine_mode()
-    cached = get_cached_chain(query, "", jurisdiction, f"search_{mode}")
-    if cached:
-        cached["cache_hit"] = True
-        return cached
-
-    result = search_legal_graph(query, jurisdiction, limit)
-    result["cache_hit"] = False
-    set_cached_chain(result, query, "", jurisdiction, f"search_{mode}")
+    result = search_legal_chain(query, jurisdiction=jurisdiction, limit=limit)
+    result["matches"] = result.get("hits") or result.get("path", [])[:limit]
+    result["engine"] = result.get("engine", graph_engine_mode())
     return result

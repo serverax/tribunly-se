@@ -395,6 +395,65 @@ def _exact_rule_authorities(query: str, rules: list[dict], jurisdiction: str) ->
     return out
 
 
+def retrieve_graph_context(
+    query: str,
+    claim_type: str,
+    jurisdiction: str = "EW",
+) -> dict:
+    """Graph leg of hybrid retrieval via graph_engine (Neo4j or Postgres)."""
+    try:
+        from backend.core.rag.graph_rag_chain import build_legal_chain, search_legal_chain
+
+        if query and len(query.split()) > 2:
+            chain = search_legal_chain(query, jurisdiction=jurisdiction)
+        else:
+            chain = build_legal_chain(claim_type=claim_type, jurisdiction=jurisdiction, query=query)
+        return {
+            "nodes": chain.get("path", []),
+            "edges": chain.get("edges", []),
+            "path": chain.get("path", []),
+            "context_text": chain.get("context_text") or chain.get("formatted", ""),
+            "engine": chain.get("engine", "postgres"),
+            "confidence": chain.get("confidence", 0.0),
+            "claim_type": claim_type,
+            "source": "graph_rag_layer_v1",
+        }
+    except Exception as exc:
+        logger.warning("retrieve_graph_context failed closed: %s", exc)
+        return {
+            "nodes": [],
+            "path": [],
+            "edges": [],
+            "engine": "fail_closed",
+            "source": "graph_rag_layer_v1",
+        }
+
+
+def retrieve_hybrid_context(
+    query: str,
+    claim_type: str,
+    jurisdiction: str,
+    edt: date,
+    domain: Optional[str] = None,
+) -> dict:
+    """
+    Hybrid merge for Mother Algorithm: semantic (pgvector) + graph + rules (SQL).
+
+    Returns:
+        final_context = { "semantic": [...], "graph": {...}, "rules": [...] }
+    """
+    bundle = retrieve(query, claim_type, jurisdiction, edt, domain=domain)
+    graph = retrieve_graph_context(query, claim_type, jurisdiction)
+    return {
+        "semantic": bundle.authorities,
+        "graph": graph,
+        "rules": bundle.exact_rules,
+        "insufficient_grounding": bundle.insufficient_grounding,
+        "grounding_score": getattr(bundle, "grounding_score", 0.0),
+        "citations": getattr(bundle, "citations", []),
+    }
+
+
 def retrieve(
     query: str,
     claim_type: str,
