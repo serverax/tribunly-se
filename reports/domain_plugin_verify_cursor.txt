@@ -1,10 +1,27 @@
-Generated: 2026-06-16T23:35:35Z
-Task: F - domain plugin verification (employment_uk only enabled)
+LawApp domain plugin verification
+Generated: 2026-06-16 (evidence run)
+Branch: release/lawapp-clean-snapshot
 
-C:\Python314\python.exe -m pytest tests/test_domain_modularity.py tests/test_domain_plugin_system.py tests/test_domain_pack_loader.py -q --tb=line
-...........................                                              [100%]
+| Check | Result | Evidence |
+|-------|--------|----------|
+| Domain packs on disk | PASS | 6 packs |
+| employment pack | PASS | domains/employment/domain_config.json |
+| Runtime fail-closed probe | FAIL | see below |
+| Pytest domain suite | PASS | exit 0 |
+
+## Runtime probe
+```
+File "<string>", line 1
+    from backend.domains.registry import enabled_domains, require_domain; from backend.domains.registry import DomainDisabledError, UnsupportedDomainError; print('enabled', enabled_domains()); require_domain('employment'); print('employment PASS'); try: require_domain('housing'); print('housing UNEXPECTED'); except DomainDisabledError: print('housing DomainDisabledError'); try: require_domain('employment_uk'); print('employment_uk UNEXPECTED'); except Exception as e: print('employment_uk', type(e).__name__)
+                                                                                                                                                                                                                                                         ^^^
+SyntaxError: invalid syntax
+```
+
+## Pytest
+```
+.........                                                                [100%]
 ============================== warnings summary ===============================
-tests/test_domain_modularity.py: 32 warnings
+tests/test_domain_plugin_system.py: 32 warnings
   C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
     if asyncio.iscoroutinefunction(func):
 
@@ -13,12 +30,7 @@ C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovi
     config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-27 passed, 33 warnings in 13.42s
+9 passed, 33 warnings in 31.72s
+```
 
-Invariant checks:
-- Unknown/disabled domains fail closed
-- Domain switching routes through brain/control plane, not bypass
-- Only employment pack enabled for beta
-
-exit_code: 0
-PASS
+## Verdict: FAIL
