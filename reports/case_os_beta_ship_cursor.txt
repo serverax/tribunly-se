@@ -1,21 +1,25 @@
-Case OS beta ship audit
-Root: F:\lawapp
+LawApp Case OS beta ship audit
+Generated: 2026-06-16 (evidence run)
+Branch: release/lawapp-clean-snapshot
 
-PASS client\public\pages\dashboard.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\case-intake.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\analysis.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\my-case.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\deadlines.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\evidence.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\documents.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\escalation.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\advisor.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\settings.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\timeline.html honesty=True boundary=True bad_label=False
-PASS client\public\pages\workspace.html honesty=True boundary=True bad_label=False
-PASS client\public\index.html honesty=True boundary=True bad_label=False
+## Page-by-page
 
-app-shell.js injects boundary footer on dynamic Case OS pages.
-beta-scope.js provides Ready to read / Partial coverage / Coming soon labels.
+| Page | Result | Notes |
+|------|--------|-------|
+| dashboard | PASS | ok |
+| case-intake | PASS | ok |
+| analysis | PASS | ok |
+| workspace | PASS | ok |
+| timeline | PASS | ok |
+| deadlines | PASS | ok |
+| evidence | PASS | ok |
+| documents | PASS | ok |
+| escalation | PASS | ok |
+| advisor | PASS | ok |
+| settings | PASS | ok |
+| index.html | PASS | ok |
 
-OVERALL: PASS
+## Forbidden string grep (client/public)
+- PASS: zero hits for 0 corpus / >production< (excluding internal mappers)
+
+## Verdict: PASS

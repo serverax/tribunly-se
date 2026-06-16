@@ -15,39 +15,28 @@ Agent: cursor subagent (architecture compliance rollback)
 | 6 | tests/test_langgraph_legal_reason.py, legal_reason_routes.py deleted | VERIFIED (absent) |
 | 7 | tests/test_single_brain_architecture.py | PRESENT (anti-LangGraph gate) |
 | 8 | reports/single_brain_enforcement_cursor.txt | THIS FILE |
-
-## Actions taken (this pass)
-
-REMOVED (re-deleted after parallel reintroduction):
-- backend/ai/ (untracked LangGraph tree)
-- backend/api/legal_reason_routes.py
-- legal_reason router registration in backend/api/main.py
-
-RESTORED:
-- tests/test_single_brain_architecture.py (anti-bypass assertions; was overwritten to require LangGraph)
-
-UPDATED DOCS:
-- docs/checkpoint/INGESTION_LANGGRAPH_CHECKPOINT.md (STOPPED, owner decisions, priorities)
-- docs/checkpoint/README.md
-- docs/adr/ADR-000-langgraph-gate.md (coexistence risk table)
-- docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md (SUPERSEDED banner)
-- docs/architecture/LEGAL_REASON_API_V1.md (SUPERSEDED banner)
+| 9 | Commit + push release/lawapp-clean-snapshot | THIS COMMIT |
 
 ## Pytest proof
 
 Command: python -m pytest tests/test_single_brain_architecture.py -q
-Result: 12 passed in 17.93s
+Result: 13 passed in 9.64s
 
-## AFTER grep (production backend)
+## Production backend (after cleanup)
 
-backend/: ZERO langgraph / legal_reason / backend.ai.graph references.
+- backend/ai/ - ABSENT
+- backend/api/legal_reason_routes.py - ABSENT
+- backend/api/main.py - no legal_reason_routes import
+- pyproject.toml - no langgraph / langchain-core
+- Dockerfile - no langgraph / langchain-core
 
-Allowed references:
-- tests/test_single_brain_architecture.py (negative assertions)
+## Allowed references (documentation / enforcement only)
+
+- tests/test_single_brain_architecture.py
 - docs/adr/ADR-000-langgraph-gate.md
 - docs/checkpoint/*.md
-- docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md (historical, SUPERSEDED banner)
-- docs/architecture/LEGAL_REASON_API_V1.md (historical, SUPERSEDED banner)
+- docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md (SUPERSEDED banner)
+- docs/architecture/LEGAL_REASON_API_V1.md (SUPERSEDED banner)
 - .cursor/rules/40-ai-gate.mdc
 
 ## Single brain authoritative path

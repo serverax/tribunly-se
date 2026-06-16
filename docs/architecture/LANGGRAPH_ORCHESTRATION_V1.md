@@ -1,5 +1,8 @@
 # LangGraph Orchestration V1
 
+> **SUPERSEDED - not implemented per [ADR-000](../adr/ADR-000-langgraph-gate.md).**  
+> Historical design only. LawApp uses `backend/core/brain.py` as the single reasoning runtime. Do not implement from this document.
+
 ## High-level design
 
 ```

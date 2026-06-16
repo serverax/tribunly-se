@@ -100,11 +100,16 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
       '<path d="M4 7h16M4 12h16M4 17h16"/></svg></button>' +
       '<h1 class="case-os-topbar-title">' + (title || "Case OS") + "</h1>" +
+      '<div id="case-os-domain-badge" class="case-os-domain-badge" aria-live="polite"></div>' +
       '<div class="case-os-lang-switcher" role="group" aria-label="Language">' +
       '<button type="button" class="case-os-lang-btn" data-set-locale="en">EN</button>' +
       '<button type="button" class="case-os-lang-btn" data-set-locale="ar">AR</button>' +
       "</div></header>" +
-      '<main id="main" class="case-os-content"></main></div>' +
+      '<main id="main" class="case-os-content"></main>' +
+      '<footer class="case-os-boundary boundary" role="contentinfo">' +
+      '<p>This tool provides legal information, not legal advice, and does not create a solicitor-client relationship. ' +
+      'Tribunal deadlines are strict - verify dates with ACAS or a qualified adviser before relying on them.</p>' +
+      '</footer></div>' +
       '<nav class="case-os-bottom-nav" aria-label="Case quick navigation">' + bottomNav + "</nav>";
 
     shell.querySelector(".case-os-content").innerHTML = inner;
@@ -208,6 +213,9 @@
     });
     highlightNav();
     propagateCaseId();
+    if (window.LawAppDomainBadge && typeof LawAppDomainBadge.refresh === "function") {
+      LawAppDomainBadge.refresh();
+    }
   }
 
   function injectBoundaryFooter() {
@@ -226,6 +234,7 @@
   function boot() {
     if (!document.body.classList.contains("case-os")) return;
     if (document.getElementById("case-os-sidebar")) wireShell();
+    injectBoundaryFooter();
   }
 
   function init(opts) {

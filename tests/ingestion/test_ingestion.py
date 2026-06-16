@@ -224,7 +224,7 @@ class TestRulesTable:
 
 class TestEmbeddingDimension:
     def test_embeddings_correct_dimension(self, db):
-        """Verify embeddings have the expected dimension (384 for fastembed or 1536 for OpenAI)."""
+        """Verify embeddings have the expected dimension (1024 local Ollama)."""
         cur = db.cursor()
         cur.execute(
             "SELECT vector_dims(embedding) FROM legislation "
@@ -233,7 +233,7 @@ class TestEmbeddingDimension:
         row = cur.fetchone()
         if row:
             dim = row[0]
-            assert dim in (384, 1536), f"Unexpected embedding dimension: {dim}"
+            assert dim in (384, 1024), f"Unexpected embedding dimension: {dim}"
 
 
 class TestIngestionConfig:

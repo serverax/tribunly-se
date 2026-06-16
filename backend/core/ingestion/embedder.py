@@ -5,7 +5,7 @@ approved it. Writes provenance-complete rows into corpus_chunks (the unified
 retrieval table) with a content hash, and marks previous chunks of the same
 source stale when the content hash changes.
 
-Embeddings are local (fastembed BAAI/bge-small-en-v1.5, 384-dim). No external API.
+Embeddings are local (Ollama bge-large-en-v1.5, 1024-dim). No external API.
 """
 from __future__ import annotations
 
@@ -17,19 +17,13 @@ from typing import Callable, Optional
 
 logger = logging.getLogger(__name__)
 
-_EMBED_MODEL = "BAAI/bge-small-en-v1.5"
-_model = None
+_EMBED_MODEL = "bge-large-en-v1.5"
+_EMBED_DIM = 1024
 
 
 def _embed(text: str) -> list[float]:
-    global _model
-    if _model is None:
-        from fastembed import TextEmbedding
-        _model = TextEmbedding(
-            model_name=_EMBED_MODEL,
-            cache_dir=_resolve_cache_dir(),
-        )
-    return list(_model.embed([text]))[0].tolist()
+    from ingestion.embeddings.ollama_embed import embed_text_ollama
+    return embed_text_ollama(text)
 
 
 def _resolve_cache_dir() -> str:

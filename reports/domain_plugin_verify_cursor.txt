@@ -1,39 +1,23 @@
-LawApp domain plugin verification
-Generated: 2026-06-16
-Branch: release/lawapp-clean-snapshot
-Agent: cursor subagent
+Domain plugin verification — 2026-06-16
 
-## Acceptance: employment_uk only enabled; others fail closed
+Enabled production domain:
+- domains/employment/domain_config.json — enabled=true, status=production, retrieval_domain=employment_uk
 
-| Domain pack | enabled | status | require_domain() |
-|-------------|---------|--------|------------------|
-| employment | true | production | PASS (enabled) |
-| benefits | false | stub | DomainDisabledError |
-| debt | false | stub | DomainDisabledError |
-| housing | false | stub | DomainDisabledError |
-| immigration | false | stub | DomainDisabledError |
+Disabled / fail-closed domains:
+- immigration — enabled=false, status=stub
+- housing — enabled=false
+- benefits — enabled=false
+- debt — enabled=false
 
-## Runtime proof
+API:
+- GET /api/domains — lists packs; only employment enabled=true
+- POST /assess with X-Lawapp-Domain: immigration → status=domain_unavailable, invokes_llm=false (no fake answer)
 
-```
-enabled_domains: ['employment']
-employment -> PASS enabled
-employment_uk -> UnsupportedDomainError (pack code is 'employment'; retrieval_domain='employment_uk')
-housing -> DomainDisabledError
-immigration -> DomainDisabledError
-```
+Tests:
+- tests/test_build_order_gates.py::test_assess_immigration_domain_fail_closed
+- tests/test_build_order_gates.py::test_domains_api_lists_employment_only_enabled
 
-## Implementation
+Verdict: PASS — non-employment domains cannot emit governed answers.
 
-- Packs: `domains/*/domain_config.json`
-- Loader: `backend/domains/loader.py` (skips `_schema`, legacy `employment_uk/`)
-- Registry: `backend/domains/registry.py` require_domain() fail-closed
-- API: `backend/api/domain_routes.py` (domain list/switch with validation)
-
-## Note
-
-Platform domain code is `employment` with `retrieval_domain: employment_uk`. This matches owner scope (UK employment only). Requesting unknown code `employment_uk` as domain fails closed.
-
-## Verdict
-
-PASS
+Run:
+  pytest tests/test_build_order_gates.py -q
