@@ -11,7 +11,7 @@ Session checkpoint documents capture **evidence-backed progress** and **ordered 
 
 | Checkpoint | Updated | Scope | Status |
 |------------|---------|-------|--------|
-| [INGESTION_LANGGRAPH_CHECKPOINT.md](./INGESTION_LANGGRAPH_CHECKPOINT.md) | 2026-06-16 | Ingestion 084, Case OS beta, i18n/domain verify; LangGraph **STOPPED** per [ADR-000](../adr/ADR-000-langgraph-gate.md) | **OPEN** (priorities 1-4; not LangGraph) |
+| [INGESTION_LANGGRAPH_CHECKPOINT.md](./INGESTION_LANGGRAPH_CHECKPOINT.md) | 2026-06-16 | Dual-plane ingestion workers (committed); LangGraph/`/legal/reason` rolled back ([ADR-000](../adr/ADR-000-langgraph-gate.md)) | **OPEN** (Docker ingestion proof pending) |
 | [MULTI_LANGUAGE_CHECKPOINT.md](./MULTI_LANGUAGE_CHECKPOINT.md) | 2026-06-16 | EN/AR language engine, RTL, i18n API | **OPEN** (verify tests + Brain wiring) |
 
 **LangGraph:** Rolled back. Single Brain runtime only (`backend/core/brain.py`). Enforcement: `tests/test_single_brain_architecture.py`, proof: `reports/single_brain_enforcement_cursor.txt`.
