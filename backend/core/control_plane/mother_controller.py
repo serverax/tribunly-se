@@ -20,7 +20,8 @@ from backend.core.control_plane.learning_loop import LearningLoop
 from backend.core.control_plane.memory_store import MemoryStore
 from backend.core.control_plane.reasoning_router import ReasoningRouter
 from backend.domains.constants import DOMAIN_DEFAULT
-from backend.domains.context import resolve_request_domain
+from backend.domains.context import domain_unavailable_response, require_operational_domain, resolve_request_domain
+from backend.domains.shared.errors import DomainDisabledError, UnsupportedDomainError
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +72,14 @@ class MotherController:
             domain_code=inp.domain_code,
             facts=inp.facts,
         ) or DOMAIN_DEFAULT
+
+        try:
+            require_operational_domain(domain_code)
+        except (UnsupportedDomainError, DomainDisabledError) as exc:
+            blocked = domain_unavailable_response(domain_code, exc)
+            blocked["trace_id"] = trace_id
+            stages.append({"stage": "domain_gate", "status": "blocked", "domain": domain_code})
+            return MotherOutput(result=blocked, stages=stages, governance_verdict="FAIL", trace_id=trace_id)
 
         # Intake
         intake_agent = self.agents.get("intake")

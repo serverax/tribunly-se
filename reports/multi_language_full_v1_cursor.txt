@@ -1,0 +1,122 @@
+{
+  "pytest": "10 passed",
+  "en_sample": {
+    "locale": "en",
+    "dir": "ltr",
+    "rendered": {
+      "locale": "en",
+      "dir": "ltr",
+      "reasoning_summary": "Neutral pipeline summary.",
+      "key_weaknesses": [
+        "procedure_gap"
+      ],
+      "employer_arguments": [],
+      "recommended_next_step": "Review the cited sources and confirm key dates before lodging a tribunal claim.",
+      "strength_label": "Strength uncertain",
+      "headline": "Unfair dismissal assessment",
+      "formatted": {
+        "claim_type": "unfair_dismissal",
+        "headline": "Unfair dismissal assessment",
+        "strength_label": "Strength uncertain",
+        "citations": [
+          {
+            "cite": "ERA 1996 s.111",
+            "url": "https://example.test",
+            "rule_key": "unfair_dismissal.time_limit_months"
+          }
+        ],
+        "deadline": null
+      }
+    },
+    "assessment_core": {
+      "status": "ok",
+      "claim_type": "unfair_dismissal",
+      "jurisdiction": "EW",
+      "strength": "medium",
+      "has_viable_claim": null,
+      "reasoning_summary": "Neutral pipeline summary.",
+      "key_weaknesses": [
+        "procedure_gap"
+      ],
+      "employer_arguments": [],
+      "recommended_next_step": "",
+      "citations": [
+        {
+          "cite": "ERA 1996 s.111",
+          "url": "https://example.test",
+          "rule_key": "unfair_dismissal.time_limit_months"
+        }
+      ],
+      "rule_keys": [
+        "unfair_dismissal.time_limit_months"
+      ],
+      "deadline": null,
+      "grounding_score": null,
+      "confidence_score": null,
+      "trace_id": ""
+    }
+  },
+  "ar_sample": {
+    "locale": "ar",
+    "dir": "rtl",
+    "rendered": {
+      "locale": "ar",
+      "dir": "rtl",
+      "reasoning_summary": "استناداً إلى القواعد القانونية المحددة والمصادر المسترجعة من قاعدة البيانات، تم إعداد تقييم أولي لمسألة تقييم الفصل غير العادل بمستوى قوة: القوة غير محددة بعد.",
+      "key_weaknesses": [
+        "نقطة ضعف محتملة تتطلب مزيداً من الأدلة."
+      ],
+      "employer_arguments": [],
+      "recommended_next_step": "راجع المصادر المذكورة وتحقق من التواريخ الجوهرية قبل تقديم مطالبة أمام المحكمة العمالية.",
+      "strength_label": "القوة غير محددة بعد",
+      "headline": "تقييم الفصل غير العادل",
+      "formatted": {
+        "نوع_المطالبة": "unfair_dismissal",
+        "العنوان": "تقييم الفصل غير العادل",
+        "تسمية_القوة": "القوة غير محددة بعد",
+        "الملخص": "استناداً إلى القواعد القانونية المحددة والمصادر المسترجعة من قاعدة البيانات، تم إعداد تقييم أولي لمسألة تقييم الفصل غير العادل بمستوى قوة: القوة غير محددة بعد.",
+        "نقاط_الضعف": [
+          "نقطة ضعف محتملة تتطلب مزيداً من الأدلة."
+        ],
+        "حجج_صاحب_العمل": [],
+        "الخطوة_التالية": "راجع المصادر المذكورة وتحقق من التواريخ الجوهرية قبل تقديم مطالبة أمام المحكمة العمالية.",
+        "المراجع": [
+          {
+            "المرجع": "ERA 1996 s.111",
+            "الرابط": "https://example.test"
+          }
+        ],
+        "الموعد_النهائي": null
+      }
+    },
+    "assessment_core": {
+      "status": "ok",
+      "claim_type": "unfair_dismissal",
+      "jurisdiction": "EW",
+      "strength": "medium",
+      "has_viable_claim": null,
+      "reasoning_summary": "Neutral pipeline summary.",
+      "key_weaknesses": [
+        "procedure_gap"
+      ],
+      "employer_arguments": [],
+      "recommended_next_step": "",
+      "citations": [
+        {
+          "cite": "ERA 1996 s.111",
+          "url": "https://example.test",
+          "rule_key": "unfair_dismissal.time_limit_months"
+        }
+      ],
+      "rule_keys": [
+        "unfair_dismissal.time_limit_months"
+      ],
+      "deadline": null,
+      "grounding_score": null,
+      "confidence_score": null,
+      "trace_id": ""
+    }
+  },
+  "arabic_prompts": "backend/language_engine/ar/prompts.py",
+  "next_build": "see client/next/.next"
+}

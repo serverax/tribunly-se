@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { ProcessRequest, ProcessResponse } from '../../core/types';
+import { detectLanguage, assessProxyHeaders } from '../../core/mother_algorithm/language_router';
 import { GovernanceService } from '../governance/governance.service';
 import { MemoryService } from '../memory/memory.service';
 import { ReasoningService } from '../reasoning/reasoning.service';
@@ -30,7 +31,15 @@ export class OrchestratorService {
       request.jurisdiction ?? 'EW',
     );
 
-    const brainRaw = await this.reasoning.assess(request);
+    const locale = detectLanguage({
+      preferredLanguage: (request as ProcessRequest & { language?: string }).language,
+      text: request.query,
+    });
+
+    const brainRaw = await this.reasoning.assess(request, {
+      language: locale,
+      headers: assessProxyHeaders(locale),
+    });
     const governance = this.governance.validateAssessment(brainRaw);
 
     const response = this.governance.buildProcessResponse(retrieval, governance, traceId);

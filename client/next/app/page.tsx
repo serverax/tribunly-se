@@ -2,6 +2,7 @@ import Link from "next/link";
 import { API_BASE, fetchHealth } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CaseForm } from "@/components/CaseForm";
 
 export default async function HomePage() {
   let health: { status?: string } = {};
@@ -32,6 +33,15 @@ export default async function HomePage() {
           </Button>
         </div>
       </section>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Multi-native assessment (EN / AR)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CaseForm />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

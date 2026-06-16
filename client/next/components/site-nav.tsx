@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useUserStore } from "@/store/userStore";
 
 export function SiteNav() {
@@ -34,6 +35,7 @@ export function SiteNav() {
             {l.label}
           </Link>
         ))}
+        <LanguageSwitcher />
         <span className="ml-auto text-muted-foreground">
           {user?.email ? user.email : "Guest"}
         </span>
