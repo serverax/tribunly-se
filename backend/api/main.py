@@ -226,6 +226,9 @@ app.include_router(_auth_router)
 from backend.api.tools_routes import router as _tools_router
 app.include_router(_tools_router)
 
+from backend.api.features_routes import router as _features_router
+app.include_router(_features_router)
+
 # ── User feedback (corrections)  -  auth-gated ─────────────────────────────────
 from backend.api.feedback_routes import router as _feedback_router
 app.include_router(_feedback_router)
