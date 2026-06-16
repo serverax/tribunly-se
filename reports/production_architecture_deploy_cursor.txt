@@ -1,0 +1,47 @@
+LawApp production architecture deploy proof
+Generated: 2026-06-16T19:22:00Z
+Branch: release/lawapp-clean-snapshot
+Command: docker compose ps + curl health checks
+
+=== Docker Compose Status ===
+All core microservices UP and healthy (see docker compose ps output in session).
+
+=== Health checks (curl) ===
+backend          : HTTP 200  {"status":"ok","service":"lawapp-backend","db":"connected"}
+rules            : HTTP 200  lawapp-rules-service
+rag              : HTTP 200  lawapp-rag-service
+graph            : HTTP 200  ok
+redaction        : HTTP 200  ok
+audit            : HTTP 200  ok
+admin            : HTTP 200  lawapp-admin-service
+case             : HTTP 200  lawapp-case-service
+notification     : HTTP 200  lawapp-notification-service
+redis            : TCP OK    port 6379
+static_index     : HTTP 200  client/public/index.html
+architecture_page: HTTP 200  client/public/pages/architecture.html
+
+=== Frontend Next.js (:3000) ===
+frontend (compose) : FAIL build  npm/Docker Hub network timeouts this session
+                   PARTIAL     client/next/ scaffold with API rewrites (007dc6e6 + wiring)
+Static fallback  : PASS       http://localhost:8000
+
+=== Integration wiring ===
+NEXT_PUBLIC_API_URL=http://localhost:8000 (documented in client/next/lib/api.ts)
+Admin service      : http://localhost:8007
+Brain orchestrator : backend/core/orchestrator.py (Case Engine Controller)
+CitationGuard      : in-process backend/core/agentic/corpus_citation_guard.py
+Postgres graph     : legal_nodes/legal_edges via lawapp-graph-rag-service :8018
+knowledge.* schema : db/migrations/078_knowledge_schema_stubs.sql
+
+=== K8s prep ===
+Canonical manifests: infra/k8s/
+Deployment map doc: infra/k8s/K8S_DEPLOYMENT_MAP.md
+Track C deploy: NOT EXECUTED (per owner decision Q15)
+
+=== MUST HAVE gaps ===
+- frontend-next Docker image not built (network)
+- Track C production deploy
+- Stripe live / secrets rotation
+- FCL bulk case law ingestion
+- Admin reviewer SSO/MFA UI complete
+- knowledge.* schema cutover complete

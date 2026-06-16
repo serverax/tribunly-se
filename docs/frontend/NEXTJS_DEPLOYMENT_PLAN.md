@@ -30,8 +30,14 @@
 |-------|---------|---------|
 | `/` | Landing | `GET /health` smoke |
 | `/dashboard` | Signed-in hub | `GET /api/auth/me`, `GET /cases` |
-| `/workspace` | Case workspace shell | `GET /cases`, `POST /assess` optional |
-| `/about-architecture` | Architecture overview | static content + links |
+| `/workspace` | Case workspace shell | `GET /cases` |
+| `/intake` | Case intake | `POST /cases` |
+| `/diagnosis` | Brain diagnosis | `POST /api/diagnosis` |
+| `/case/[id]` | Case detail | `GET /cases/{id}` |
+| `/admin`, `/admin/review` | Admin gate (dev) | `lawapp-admin-service` :8007 |
+| `/about-architecture` | Architecture overview | static + health links |
+
+Rewrites in `next.config.mjs` proxy `/api/*`, `/cases/*`, `/assess`, `/health` to `NEXT_PUBLIC_API_URL`.
 
 ---
 

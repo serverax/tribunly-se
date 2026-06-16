@@ -1,83 +1,66 @@
-Single-brain architecture enforcement proof
+LawApp single-brain architecture enforcement
 Generated: 2026-06-16
 Branch: release/lawapp-clean-snapshot
-Agent: cursor subagent (single-brain gate)
+Agent: cursor subagent (architecture compliance rollback)
 
-================================================================================
-BEFORE (violations found prior to deletion)
-================================================================================
+## Checklist (build order)
 
-Paths with langgraph|StateGraph|build_graph( in backend/tests Python:
+| # | Task | Status |
+|---|------|--------|
+| 1 | docs/adr/ADR-000-langgraph-gate.md (why blocked, coexistence risk) | DONE |
+| 2 | docs/checkpoint/INGESTION_LANGGRAPH_CHECKPOINT.md rewritten (STOPPED, priorities 084/Case OS/i18n/domain) | DONE |
+| 3 | Deprecation banners on LANGGRAPH_ORCHESTRATION_V1.md + LEGAL_REASON_API_V1.md | DONE |
+| 4 | docs/checkpoint/README.md updated | DONE |
+| 5 | langgraph removed from pyproject.toml / Dockerfile | VERIFIED (absent) |
+| 6 | tests/test_langgraph_legal_reason.py, legal_reason_routes.py deleted | VERIFIED (absent) |
+| 7 | tests/test_single_brain_architecture.py | PRESENT |
+| 8 | reports/single_brain_enforcement_cursor.txt | THIS FILE |
 
-  backend/ai/graph/nodes/__init__.py
-  backend/ai/graph/__init__.py
-  backend/ai/graph/graph.py          (from langgraph.graph import END, START, StateGraph)
-  backend/ai/graph/state.py
-  backend/ai/services/__init__.py
-  backend/ai/services/llm.py
-  backend/ai/services/pgvector.py
-  backend/ai/__init__.py
-  backend/api/legal_reason_routes.py   (POST /api/v1/legal/reason, /api/legal/reason)
-  backend/core/langgraph/__init__.py
-  backend/core/langgraph/legal_reason_graph.py
-  backend/core/langgraph/nodes.py
-  tests/test_langgraph_legal_reason.py
-  tests/test_legal_reason_api.py
+## Actions taken
 
-pyproject.toml: langgraph>=0.2.0, langchain-core>=0.3.0 (duplicate entries)
-Dockerfile: langgraph>=0.2.0, langchain-core>=0.3.0 (duplicate entries)
-backend/api/main.py: included legal_reason_routes router
+DELETED:
+- backend/ai/ (graph/, services/)
+- backend/core/langgraph/
+- backend/api/legal_reason_routes.py
+- tests/test_langgraph_legal_reason.py
+- tests/test_legal_reason_api.py
 
-================================================================================
-ACTIONS TAKEN
-================================================================================
+MODIFIED (earlier rollback):
+- backend/api/main.py (unregistered legal_reason router)
+- pyproject.toml (removed langgraph, langchain-core)
+- Dockerfile (removed langgraph, langchain-core)
 
-Deleted:
-  - backend/ai/ (entire tree)
-  - backend/core/langgraph/ (entire tree)
-  - backend/api/legal_reason_routes.py
-  - tests/test_langgraph_legal_reason.py
-  - tests/test_legal_reason_api.py
+CREATED / UPDATED (this pass):
+- docs/adr/ADR-000-langgraph-gate.md (+ coexistence risk table)
+- docs/checkpoint/INGESTION_LANGGRAPH_CHECKPOINT.md (STOPPED, owner decisions, priorities)
+- docs/checkpoint/README.md (OPEN priorities, ADR link)
+- docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md (SUPERSEDED banner)
+- docs/architecture/LEGAL_REASON_API_V1.md (SUPERSEDED banner)
+- tests/test_single_brain_architecture.py
+- reports/single_brain_enforcement_cursor.txt
 
-Removed langgraph from production deps (pyproject.toml, Dockerfile) — verified absent.
+## Pytest proof
 
-ADR: docs/adr/ADR-000-langgraph-gate.md (updated with coexistence analysis)
-Checkpoint: docs/checkpoint/INGESTION_LANGGRAPH_CHECKPOINT.md, README.md
-Tests: tests/test_single_brain_architecture.py (assess→brain assertion added)
+Command: python -m pytest tests/test_single_brain_architecture.py -q
+Result: 13 passed in 13.29s
 
-================================================================================
-AFTER (grep backend + tests *.py)
-================================================================================
+## AFTER grep (production backend)
 
-langgraph|StateGraph|build_graph(|legal_reason_routes|backend.ai.|core.langgraph:
-  (no matches)
+backend/: ZERO langgraph / legal_reason / backend.ai.graph references.
 
-pyproject.toml langgraph: NOT PRESENT
-Dockerfile langgraph: NOT PRESENT
-backend/api/main.py legal_reason_routes: NOT PRESENT
+Allowed references:
+- tests/test_single_brain_architecture.py (negative assertions)
+- docs/adr/ADR-000-langgraph-gate.md
+- docs/checkpoint/*.md
+- docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md (historical, SUPERSEDED banner)
+- docs/architecture/LEGAL_REASON_API_V1.md (historical, SUPERSEDED banner)
+- .cursor/rules/40-ai-gate.mdc
 
-/assess path:
-  backend/api/main.py → MotherController
-  backend/core/control_plane/mother_controller.py → from backend.core.brain import orchestrator
+## Single brain authoritative path
 
-brain.py pipeline (docs/04_RAG_REASONING_SPEC.md):
-  classify → retrieve → reason → score → govern → respond
-  Mapped in ADR-000 Brain ↔ spec table; 19-step BRAIN_STEPS in brain.py
+backend/core/brain.py -> 19-step pipeline -> CitationGuard -> response
+No POST /api/v1/legal/reason
 
-================================================================================
-PYTEST
-================================================================================
+## Verdict
 
-Command: pytest tests/test_single_brain_architecture.py -q
-(See commit CI / local run output)
-
-================================================================================
-OWNER REVIEW FLAGS
-================================================================================
-
-- docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md and LEGAL_REASON_API_V1.md remain
-  as historical references; superseded by ADR-000 (not deleted — owner may archive).
-- MotherController is the /assess entry shim; generative lane calls brain.orchestrator.
-  Not a second reasoning runtime; acceptable per ADR-000.
-- language_engine/ and language_controller routes are presentation-layer only; not
-  LangGraph; no action taken.
+PASS

@@ -506,35 +506,6 @@ services:
       retries: 6
       start_period: 20s
 
-  # Next.js frontend (production target UI on port 3000).
-  # Static HTML remains on backend :8000 until full cutover.
-  frontend-next:
-    build:
-      context: ./client/next
-      dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
-    restart: unless-stopped
-    ports:
-      - "${FRONTEND_PORT:-3000}:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
-    depends_on:
-      backend:
-        condition: service_healthy
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "fetch('http://127.0.0.1:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
-        ]
-      interval: 15s
-      timeout: 10s
-      retries: 6
-      start_period: 30s
-
   # Optional Neo4j graph plane (NEO4J_ENABLED=false by default; Postgres fallback)
   neo4j:
     image: neo4j:5
