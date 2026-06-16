@@ -1,8 +1,8 @@
-"""lawapp-llm-gateway — the ONLY service permitted to call Ollama.
+"""lawapp-llm-gateway  -  the ONLY service permitted to call Ollama.
 
 Wraps backend.core.models.LocalInferenceReasoningModel. Rejects raw PII before
 inference (detail.error = "pii_rejected") and fails closed (503) when the model is
-unavailable — never a fallback hallucination. Uses the shared factory for the
+unavailable  -  never a fallback hallucination. Uses the shared factory for the
 mandatory X-Trace-ID middleware + /health + /ready.
 """
 from __future__ import annotations

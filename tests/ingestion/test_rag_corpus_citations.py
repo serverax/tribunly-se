@@ -53,7 +53,7 @@ def _corpus_populated() -> bool:
         return False
 
 
-@pytest.mark.skipif(not _corpus_populated(), reason="corpus empty — run ingest script first")
+@pytest.mark.skipif(not _corpus_populated(), reason="corpus empty  -  run ingest script first")
 def test_hybrid_returns_vector_and_lexical():
     d = _bundle(_Q)
     auths = d["authorities"]
@@ -65,7 +65,7 @@ def test_hybrid_returns_vector_and_lexical():
     assert d["insufficient_grounding"] is False
 
 
-@pytest.mark.skipif(not _corpus_populated(), reason="corpus empty — run ingest script first")
+@pytest.mark.skipif(not _corpus_populated(), reason="corpus empty  -  run ingest script first")
 def test_citations_have_official_source_urls():
     d = _bundle("unfair dismissal fair reason capability conduct")
     urls = [a.get("url") for a in d["authorities"] if a.get("url")]

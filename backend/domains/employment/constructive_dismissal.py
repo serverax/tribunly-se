@@ -1,7 +1,7 @@
 """
 Constructive dismissal deterministic engine (Sovereign Trinity order Workflow B).
 
-Agent ART logic — NO LLM, NO free prose. Applies a deterministic legal matrix
+Agent ART logic  -  NO LLM, NO free prose. Applies a deterministic legal matrix
 and returns a strict JSON-serialisable dict:
 
   breach classification -> Kaur last-straw -> affirmation trap -> causation -> action
@@ -9,16 +9,16 @@ and returns a strict JSON-serialisable dict:
 Legal anchors (statutory authority is DB-verified from the legislation corpus;
 case-law doctrine is encoded as deterministic matrix logic, not fabricated
 citations, because Find Case Law bulk ingestion is licence-gated):
-  * ERA 1996 s.95(1)(c) — constructive dismissal (employee resigns in response
+  * ERA 1996 s.95(1)(c)  -  constructive dismissal (employee resigns in response
     to the employer's repudiatory breach)
-  * Western Excavating (ECC) Ltd v Sharp [1978] — contract (not "unreasonable")
+  * Western Excavating (ECC) Ltd v Sharp [1978]  -  contract (not "unreasonable")
     test  -> encoded in breach classification
-  * Kaur v Leeds Teaching Hospitals NHS Trust [2018] — final-straw doctrine
+  * Kaur v Leeds Teaching Hospitals NHS Trust [2018]  -  final-straw doctrine
     -> encoded in last-straw selection
   * affirmation / delay -> encoded in affirmation_risk
 
 Output fails closed (viability "zero"/human_review) when statutory grounding or
-core facts are missing — it never invents a favourable answer.
+core facts are missing  -  it never invents a favourable answer.
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ def _parse_date(value: Any) -> Optional[date]:
 
 def _statutory_citations(conn=None) -> list[dict]:
     """DB-verified statutory citations for constructive dismissal (s.95, s.94).
-    Returns [] if the corpus is unavailable — caller then fails closed."""
+    Returns [] if the corpus is unavailable  -  caller then fails closed."""
     own = conn is None
     try:
         if own:
@@ -64,7 +64,7 @@ def _statutory_citations(conn=None) -> list[dict]:
                 """
             )
             for section_ref, cite, url in cur.fetchall():
-                note = ("constructive dismissal — resignation in response to a "
+                note = ("constructive dismissal  -  resignation in response to a "
                         "repudiatory breach") if section_ref == "95" else \
                        "right not to be unfairly dismissed"
                 cites.append({"cite": cite, "section_ref": section_ref,
@@ -162,7 +162,7 @@ def assess_constructive_dismissal(facts: dict, conn=None) -> dict:
     if delay_days < 0:
         return _fail_closed(
             "resignation_before_breach",
-            "Resignation date precedes the last repudiatory act — causation cannot "
+            "Resignation date precedes the last repudiatory act  -  causation cannot "
             "be established on these facts.",
             citations,
             evidence_gaps=evidence_gaps,
@@ -244,7 +244,7 @@ def assess_constructive_dismissal(facts: dict, conn=None) -> dict:
 
 def _fail_closed(reason: str, message: str, citations: list[dict],
                  evidence_gaps: Optional[list[str]] = None) -> dict:
-    """Safe, non-committal fail-closed result — never a favourable assessment."""
+    """Safe, non-committal fail-closed result  -  never a favourable assessment."""
     return {
         "claim_type": "constructive_dismissal",
         "claim_viability": "zero",

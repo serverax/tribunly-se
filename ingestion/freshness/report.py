@@ -1,5 +1,5 @@
 """
-Phase 1 — Source freshness report.
+Phase 1  -  Source freshness report.
 
 Queries the `source_freshness` view and prints a table showing every source
 with its row count and oldest `last_verified_at`. Flags any source where the
@@ -47,13 +47,13 @@ def run_report(stale_days: int = STALE_DAYS_DEFAULT) -> bool:
         conn.close()
 
     if not rows:
-        console.print("[red]No data in source_freshness view — has ingestion run?[/red]")
+        console.print("[red]No data in source_freshness view  -  has ingestion run?[/red]")
         return False
 
     now = datetime.now(tz=timezone.utc)
     stale_threshold_days = stale_days
 
-    table = Table(title=f"Source Freshness Report — {now.strftime('%Y-%m-%d %H:%M UTC')}")
+    table = Table(title=f"Source Freshness Report  -  {now.strftime('%Y-%m-%d %H:%M UTC')}")
     table.add_column("Source", style="bold")
     table.add_column("Rows", justify="right")
     table.add_column("Oldest verified_at")
@@ -63,7 +63,7 @@ def run_report(stale_days: int = STALE_DAYS_DEFAULT) -> bool:
     all_fresh = True
     for source, row_count, oldest_verified in rows:
         if oldest_verified is None:
-            age_str = "—"
+            age_str = " - "
             status = "[yellow]NO DATA[/yellow]"
             all_fresh = False
         else:
@@ -81,7 +81,7 @@ def run_report(stale_days: int = STALE_DAYS_DEFAULT) -> bool:
         table.add_row(
             source,
             str(row_count or 0),
-            str(oldest_verified)[:19] if oldest_verified else "—",
+            str(oldest_verified)[:19] if oldest_verified else " - ",
             age_str,
             status,
         )

@@ -1,10 +1,10 @@
 """
-lawapp MCP Connector Layer — deny-by-default tool registry.
+lawapp MCP Connector Layer  -  deny-by-default tool registry.
 
 Provides controlled access to external tools and services.
 Every connector call is logged to mcp_tool_calls.
 
-GUARDRAIL: deny-by-default — unknown tools are blocked.
+GUARDRAIL: deny-by-default  -  unknown tools are blocked.
 GUARDRAIL: No connector may file claims, represent users, or send emails.
 GUARDRAIL: All calls are audited with trace_id and user_id.
 GUARDRAIL: Raw personal data never leaves the lawapp boundary via MCP.

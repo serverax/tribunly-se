@@ -9,14 +9,14 @@
 -- An anonymous visitor may answer the free-tool teaser questions WITHOUT logging
 -- in. Those answers are stored here ENCRYPTED AT REST (Fernet, same key family as
 -- cases.facts_encrypted) and addressed by a high-entropy resume token. Only the
--- SHA-256 HASH of that token is stored — the raw token is returned to the client
+-- SHA-256 HASH of that token is stored  -  the raw token is returned to the client
 -- once and never persisted, so a DB read alone cannot resume a session.
 --
 -- When the visitor logs in, they present the resume token; the row is "claimed"
--- (bound to their user id) and the saved answers are restored EXACTLY — no lost
+-- (bound to their user id) and the saved answers are restored EXACTLY  -  no lost
 -- answers. A row already claimed by another user is rejected (no cross-user theft).
 --
--- Idempotent (CREATE ... IF NOT EXISTS) — safe to re-run.
+-- Idempotent (CREATE ... IF NOT EXISTS)  -  safe to re-run.
 
 BEGIN;
 

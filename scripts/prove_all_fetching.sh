@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# prove_all_fetching.sh — every required source was fetched (or its blocker recorded).
+# prove_all_fetching.sh  -  every required source was fetched (or its blocker recorded).
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp"
 Q(){ docker compose exec -T db psql -U lawapp -d lawapp -t -c "$1" | tr -d ' \r\n'; }
 fail=0; ok(){ echo "  PASS: $*"; }; bad(){ echo "  FAIL: $*"; fail=1; }
 
-echo "########## legislation.gov.uk — required Acts/sections fetched ##########"
+echo "########## legislation.gov.uk  -  required Acts/sections fetched ##########"
 for s in 94 95 97 98 108 111 119 120 122 123 124 207B 227; do
   n=$(Q "SELECT count(*) FROM legislation WHERE act_title ILIKE '%Employment Rights Act 1996%' AND section_ref='$s';")
   [ "${n:-0}" -ge 1 ] && ok "ERA 1996 s.$s" || bad "ERA 1996 s.$s missing"
@@ -30,7 +30,7 @@ echo "########## per-source fetch checkpoints recorded ##########"
 ck=$(Q "SELECT count(DISTINCT source_id) FROM corpus_ingestion_runs;")
 [ "${ck:-0}" -ge 3 ] && ok "ingestion checkpoints for $ck sources" || bad "insufficient ingestion checkpoints ($ck)"
 
-echo "########## Find Case Law — blocker recorded, not faked ##########"
+echo "########## Find Case Law  -  blocker recorded, not faked ##########"
 g=$(Q "SELECT application_status FROM legal_sources WHERE source_id='find_case_law';")
 cl=$(Q "SELECT count(*) FROM case_law_documents;")
 if [ "$g" = "granted" ]; then ok "FCL granted"; else

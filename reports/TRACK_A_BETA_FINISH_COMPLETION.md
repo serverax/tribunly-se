@@ -1,4 +1,4 @@
-TRACK A (Beta Finish) — Completion Report
+TRACK A (Beta Finish)  -  Completion Report
 Branch: release/lawapp-clean-snapshot
 Baseline: 0c1b1a7
 Completed: 2026-06-15
@@ -31,7 +31,7 @@ Completed: 2026-06-15
 
 ## Waivers
 
-1. **test_stream_chat_real_tokens_from_qwen** — requires local Ollama with qwen2.5:3b loaded; skipif probes chat endpoint; not a product defect.
+1. **test_stream_chat_real_tokens_from_qwen**  -  requires local Ollama with qwen2.5:3b loaded; skipif probes chat endpoint; not a product defect.
 
 ## Escalations to owner
 

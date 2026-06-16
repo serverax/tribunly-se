@@ -38,7 +38,7 @@ def _a_real_corpus_uuid():
         conn.close()
 
 
-db_required = pytest.mark.skipif(not _db_up(), reason="UNPROVEN — DB not accessible")
+db_required = pytest.mark.skipif(not _db_up(), reason="UNPROVEN  -  DB not accessible")
 
 
 def test_extract_uuids_pure():

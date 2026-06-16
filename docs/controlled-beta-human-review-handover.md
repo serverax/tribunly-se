@@ -1,8 +1,8 @@
 # Controlled-Beta Human Review Handover
 
-**lawapp — UK Employment Claim Co-Pilot**
+**lawapp  -  UK Employment Claim Co-Pilot**
 **Date:** 2026-06-01
-**Status:** TECHNICAL PREPARATION COMPLETE — Awaiting DPO and legal reviews
+**Status:** TECHNICAL PREPARATION COMPLETE  -  Awaiting DPO and legal reviews
 
 ---
 
@@ -36,7 +36,7 @@ python scripts/check_beta_readiness.py
 
 ---
 
-## Review 1: DPO — DPIA Review
+## Review 1: DPO  -  DPIA Review
 
 **Who:** Data Protection Officer (DPO) or qualified data protection practitioner
 **Document to review:** `docs/dpia-artefact.md`
@@ -51,7 +51,7 @@ python scripts/check_beta_readiness.py
 
 ### What you must record
 
-Update `docs/compliance-signoff.json` — the `"dpia"` section:
+Update `docs/compliance-signoff.json`  -  the `"dpia"` section:
 
 ```json
 "dpia": {
@@ -66,8 +66,8 @@ Update `docs/compliance-signoff.json` — the `"dpia"` section:
 }
 ```
 
-**All four fields — `reviewer_name`, `review_date`, `review_scope`, and
-`evidence_reference` — are required. Setting `reviewed_by_dpo=true` alone
+**All four fields  -  `reviewer_name`, `review_date`, `review_scope`, and
+`evidence_reference`  -  are required. Setting `reviewed_by_dpo=true` alone
 is not sufficient; the system will reject a boolean-only sign-off.**
 
 ### What the system checks
@@ -82,7 +82,7 @@ and the blocker message will specify which fields are missing.
 
 ---
 
-## Review 2: Legal — Privacy Notice Review
+## Review 2: Legal  -  Privacy Notice Review
 
 **Who:** Qualified legal counsel (solicitor, in-house lawyer, or equivalent)
 **Document to review:** `docs/privacy-notice-draft.md`
@@ -98,7 +98,7 @@ and the blocker message will specify which fields are missing.
 
 ### What you must record
 
-Update `docs/compliance-signoff.json` — the `"privacy_notice"` section:
+Update `docs/compliance-signoff.json`  -  the `"privacy_notice"` section:
 
 ```json
 "privacy_notice": {
@@ -146,10 +146,10 @@ If any fields are still missing, the script reports the specific blockers.
 
 These constraints are enforced by the system and cannot be bypassed:
 
-- `reviewed_by_dpo=true` requires `reviewer_name` AND `review_date` — no exceptions
-- `legally_reviewed=true` requires `reviewer_name` AND `review_date` — no exceptions
+- `reviewed_by_dpo=true` requires `reviewer_name` AND `review_date`  -  no exceptions
+- `legally_reviewed=true` requires `reviewer_name` AND `review_date`  -  no exceptions
 - A boolean flag without evidence is rejected; `controlled_beta_ready` stays false
-- `compliance-signoff.json` is the single source of truth — no env var overrides
+- `compliance-signoff.json` is the single source of truth  -  no env var overrides
 
 ---
 

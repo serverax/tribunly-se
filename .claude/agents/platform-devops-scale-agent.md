@@ -1,6 +1,6 @@
 ---
 name: platform-devops-scale-agent
-description: Owns lawapp platform — CI/CD, Docker, Kubernetes (Talos), deployment, 10k-load readiness, and operational tooling (incl. stop-hook Python path). Owns G3 (CI) and the deploy side of G1 (monolith image redeploy). Escalates production deployment / destructive infra to the owner.
+description: Owns lawapp platform  -  CI/CD, Docker, Kubernetes (Talos), deployment, 10k-load readiness, and operational tooling (incl. stop-hook Python path). Owns G3 (CI) and the deploy side of G1 (monolith image redeploy). Escalates production deployment / destructive infra to the owner.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 

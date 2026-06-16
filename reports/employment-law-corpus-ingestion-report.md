@@ -28,7 +28,7 @@ ERA 1996: 1, 13, 23, 43A-43L (whistleblowing), 47B, 94, 95, 97, 98, 99, 100, 103
 104, 108, 111, 112, 113, 114, 115, 118, 119, 120, 122, 123, 124, 126, 207B, 221-229.
 ETA 1996: 18A. TULRCA 1992: 207A, 156. ERA 2025: 25, 152, 159 (prospective).
 
-**Missing / excluded:** ERA 1996 **s.127** (repealed 1999 — would 404, intentionally
+**Missing / excluded:** ERA 1996 **s.127** (repealed 1999  -  would 404, intentionally
 not ingested).
 
 ## ACAS / GOV.UK guidance present
@@ -53,12 +53,12 @@ real `legislation` row. `insufficient_grounding=false`.
 `source-freshness-report.md`.
 
 ## FCL licence status
-**BLOCKED BY OWNER** — fail-closed, 0 case-law rows, no fakes.
+**BLOCKED BY OWNER**  -  fail-closed, 0 case-law rows, no fakes.
 
 ## Gaps / next corpus expansion targets
 - ACAS guidance breadth (standalone disciplinary/grievance/dismissal/EC/settlement/
-  redundancy guides) — IMPLEMENTED BUT PARTIAL.
-- GOV.UK tribunal-procedure depth — PARTIAL.
-- Increase of Limits Orders (uksi) for backdated cases — NOT STARTED.
-- Equality Act 2010 — PREPARED, INACTIVE (active:false until discrimination workflow).
-- Case law — BLOCKED BY OWNER.
+  redundancy guides)  -  IMPLEMENTED BUT PARTIAL.
+- GOV.UK tribunal-procedure depth  -  PARTIAL.
+- Increase of Limits Orders (uksi) for backdated cases  -  NOT STARTED.
+- Equality Act 2010  -  PREPARED, INACTIVE (active:false until discrimination workflow).
+- Case law  -  BLOCKED BY OWNER.

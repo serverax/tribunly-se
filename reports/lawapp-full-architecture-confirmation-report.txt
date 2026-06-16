@@ -1,5 +1,5 @@
 ================================================================================
-LAWAPP — FULL ARCHITECTURE CONFIRMATION REPORT
+LAWAPP  -  FULL ARCHITECTURE CONFIRMATION REPORT
 Date: 2026-06-02
 ================================================================================
 
@@ -9,15 +9,15 @@ Project name:    lawapp
 GitHub repo:     https://github.com/serverax/lawapp
 Local root:      F:\lawapp  (WSL: /mnt/f/lawapp, Git Bash: /f/lawapp)
 GHCR image:      ghcr.io/serverax/lawapp/backend
-K8s namespace:   iterlaw-ai (legacy deployment namespace — project is lawapp)
+K8s namespace:   iterlaw-ai (legacy deployment namespace  -  project is lawapp)
                  Rename planned when persistence/DNS is confirmed.
 NOT:             IterLaw, RightsNow, Hermes
 
 ================================================================================
-PHASE 1 — DATABASE SCHEMAS
+PHASE 1  -  DATABASE SCHEMAS
 ================================================================================
 
-Cluster: admin@ordinox-talos — 3 nodes Ready
+Cluster: admin@ordinox-talos  -  3 nodes Ready
 Namespace: iterlaw-ai
 DB: PostgreSQL 16 + pgvector in lawapp-postgres pod (1/1 Running)
 Extensions: vector ✓  pgcrypto ✓  plpgsql ✓
@@ -25,39 +25,39 @@ Extensions: vector ✓  pgcrypto ✓  plpgsql ✓
 Migrations applied: 001–015 (15 total)
 
 LEGAL DATA SPINE TABLES
-  legislation              DONE  — 80 rows (ERA 1996, ET Act 1996, TULRCA 1992, ERA 2025)
-  case_law_chunks          DONE  — 0 rows (FCL bulk BLOCKED until licence)
-  case_law_documents       DONE  — 0 rows (schema ready)
-  acas_guidance            DONE  — 0 rows (ingestion code ready, not yet run)
-  rules                    DONE  — 19 rows (11 UD + 8 UPW, all verified)
-  official_guidance        DONE  — 4 rows (GOV.UK: dismiss-staff, tribunals, etc.)
-  bills                    DONE  — 0 rows (Parliament Bills API code ready)
-  legal_change_watch       DONE  — 0 rows (table ready)
-  ingestion_runs           DONE  — 0 rows (table ready)
-  public_datasets_index    DONE  — 0 rows (table ready)
-  source_freshness         DONE  — VIEW (6 sources)
+  legislation              DONE   -  80 rows (ERA 1996, ET Act 1996, TULRCA 1992, ERA 2025)
+  case_law_chunks          DONE   -  0 rows (FCL bulk BLOCKED until licence)
+  case_law_documents       DONE   -  0 rows (schema ready)
+  acas_guidance            DONE   -  0 rows (ingestion code ready, not yet run)
+  rules                    DONE   -  19 rows (11 UD + 8 UPW, all verified)
+  official_guidance        DONE   -  4 rows (GOV.UK: dismiss-staff, tribunals, etc.)
+  bills                    DONE   -  0 rows (Parliament Bills API code ready)
+  legal_change_watch       DONE   -  0 rows (table ready)
+  ingestion_runs           DONE   -  0 rows (table ready)
+  public_datasets_index    DONE   -  0 rows (table ready)
+  source_freshness         DONE   -  VIEW (6 sources)
 
 APPLICATION TABLES
-  users                    DONE  — 0 rows
-  cases                    DONE  — 0 rows
-  documents                DONE  — 0 rows
-  referrals                DONE  — 0 rows
-  handoff_leads            DONE  — 0 rows (envelope encryption wired)
-  assessment_audit_logs    DONE  — 1 row (Phase 2C audit)
-  model_call_audit         DONE  — 0 rows (migration 015)
-  guardrail_events         DONE  — 0 rows (migration 015)
-  workflow_runs            DONE  — 0 rows (migration 015)
-  workflow_steps           DONE  — 0 rows (migration 015)
-  retrieval_audit          DONE  — 0 rows (migration 015)
+  users                    DONE   -  0 rows
+  cases                    DONE   -  0 rows
+  documents                DONE   -  0 rows
+  referrals                DONE   -  0 rows
+  handoff_leads            DONE   -  0 rows (envelope encryption wired)
+  assessment_audit_logs    DONE   -  1 row (Phase 2C audit)
+  model_call_audit         DONE   -  0 rows (migration 015)
+  guardrail_events         DONE   -  0 rows (migration 015)
+  workflow_runs            DONE   -  0 rows (migration 015)
+  workflow_steps           DONE   -  0 rows (migration 015)
+  retrieval_audit          DONE   -  0 rows (migration 015)
 
 MISSING TABLES
-  source_documents         MISSING — no dedicated source_documents table yet
+  source_documents         MISSING  -  no dedicated source_documents table yet
                            (source metadata in legislation/official_guidance rows)
-  agent_tasks / agent_events MISSING — workflow_runs + workflow_steps covers this
+  agent_tasks / agent_events MISSING  -  workflow_runs + workflow_steps covers this
 
 RAG/VECTOR STATUS
   pgvector extension:      INSTALLED ✓
-  legislation.embedding:   vector(1536) column ✓ (no embeddings yet — OpenAI quota)
+  legislation.embedding:   vector(1536) column ✓ (no embeddings yet  -  OpenAI quota)
   official_guidance.embedding: vector(1536) ✓ (no embeddings yet)
   IVFFlat indexes:         Created on legislation, official_guidance, acas, case_law
   BM25 fallback:           ACTIVE (PostgreSQL full-text search)
@@ -69,7 +69,7 @@ PHASE 1 VERDICT: PARTIAL
   Vector embeddings: MISSING (OpenAI quota blocked)
 
 ================================================================================
-PHASE 2 — UK LAW DATA SOURCES
+PHASE 2  -  UK LAW DATA SOURCES
 ================================================================================
 
 1. legislation.gov.uk           PARTIAL
@@ -94,7 +94,7 @@ PHASE 2 — UK LAW DATA SOURCES
 5. Find Case Law (FCL)          BLOCKED
    Code:  ingestion/case_law/ingest.py  ✓ (sample mode ready)
    Bulk:  FCL_BULK_ENABLED=false
-   Licence: Not yet approved — bulk crawl BLOCKED
+   Licence: Not yet approved  -  bulk crawl BLOCKED
    Sample: Code ready, not run
 
 PHASE 2 VERDICT: PARTIAL
@@ -102,14 +102,14 @@ PHASE 2 VERDICT: PARTIAL
   Data population: PARTIAL (legislation done, acas/bills/more-govuk pending)
 
 ================================================================================
-PHASE 3 — RAG LAYER
+PHASE 3  -  RAG LAYER
 ================================================================================
 
 Module                    Status    File
 ──────────────────────────────────────────────────────────────────────
 retrieve_rules()          DONE      backend/engine/retrieve.py:40
 retrieve_keyword() (BM25) DONE      backend/engine/retrieve.py:79
-retrieve_semantic() (pgvector) CODED backend/engine/retrieve.py:166 — BLOCKED (no embeddings)
+retrieve_semantic() (pgvector) CODED backend/engine/retrieve.py:166  -  BLOCKED (no embeddings)
 hybrid retrieve()         DONE      backend/engine/retrieve.py:274
 citation bundle           DONE      retrieval bundle has authority_ref + source_url
 source_freshness view     DONE      db/migrations/001+014
@@ -124,7 +124,7 @@ Retrieval order (implemented):
   5. official_guidance → available from migration 014
   6. legal_change_watch → warn-only (table exists, not wired to retrieval)
 
-Hard rule: retrieval always runs before reasoning — ENFORCED in pipeline.py
+Hard rule: retrieval always runs before reasoning  -  ENFORCED in pipeline.py
 
 PHASE 3 VERDICT: PARTIAL
   Rules retrieval: DONE
@@ -133,7 +133,7 @@ PHASE 3 VERDICT: PARTIAL
   Citations: DONE (from rules table)
 
 ================================================================================
-PHASE 4 — ALGORITHM/REASONING BRAIN
+PHASE 4  -  ALGORITHM/REASONING BRAIN
 ================================================================================
 
 Function              Status    File
@@ -157,7 +157,7 @@ StructuredAssessment schema:
   value_range, key_weaknesses, employer_arguments, deadline (source=rules),
   recommended_next_step, citations, grounding_score, confidence_score,
   insufficient_grounding
-  Status: DONE — shared/schemas.py
+  Status: DONE  -  shared/schemas.py
 
 Hard rules enforced:
   ✓ deadlines from rules, not LLM (govern gate 3)
@@ -171,20 +171,20 @@ Hard rules enforced:
 PHASE 4 VERDICT: PARTIAL (well-built, reason() needs ANTHROPIC_API_KEY for real model)
 
 ================================================================================
-PHASE 5 — AIA/INTERNAL WORKFLOW MANAGER
+PHASE 5  -  AIA/INTERNAL WORKFLOW MANAGER
 ================================================================================
 
-Tables (migration 015 — applied to cluster):
-  workflow_runs         DONE — run-level state, grounding/confidence scores
-  workflow_steps        DONE — per-step status, retry count, error_reason
-  model_call_audit      DONE — model provider, tokens, latency, boundary_log
-  guardrail_events      DONE — gate 1-5 decisions
-  retrieval_audit       DONE — retrieval type, authority counts
+Tables (migration 015  -  applied to cluster):
+  workflow_runs         DONE  -  run-level state, grounding/confidence scores
+  workflow_steps        DONE  -  per-step status, retry count, error_reason
+  model_call_audit      DONE  -  model provider, tokens, latency, boundary_log
+  guardrail_events      DONE  -  gate 1-5 decisions
+  retrieval_audit       DONE  -  retrieval type, authority counts
 
 Application wiring:   PARTIAL
   assessment_audit_logs: WIRED (pipeline writes after every governed assessment)
-  workflow_runs: SCHEMA DONE — not yet wired into pipeline (next phase)
-  model_call_audit: SCHEMA DONE — not yet wired
+  workflow_runs: SCHEMA DONE  -  not yet wired into pipeline (next phase)
+  model_call_audit: SCHEMA DONE  -  not yet wired
 
 The pipeline in backend/engine/pipeline.py already writes assessment_audit_logs.
 Full workflow_runs wiring is the next build step.
@@ -192,7 +192,7 @@ Full workflow_runs wiring is the next build step.
 PHASE 5 VERDICT: PARTIAL (schema DONE, pipeline wiring PARTIAL)
 
 ================================================================================
-PHASE 6 — API ENDPOINTS
+PHASE 6  -  API ENDPOINTS
 ================================================================================
 
 Endpoint                    Status    Notes
@@ -210,13 +210,13 @@ GET  /admin/rules-verification DONE
 GET  /admin/dp-report       DONE
 
 MISSING:
-  POST /api/diagnosis        MISSING — planned next vertical slice
+  POST /api/diagnosis        MISSING  -  planned next vertical slice
                              (currently served by POST /assess)
 
 PHASE 6 VERDICT: PARTIAL (/api/diagnosis is next)
 
 ================================================================================
-PHASE 7 — TEST RESULTS
+PHASE 7  -  TEST RESULTS
 ================================================================================
 
 Local test suite (docker compose):
@@ -227,14 +227,14 @@ Local test suite (docker compose):
   Govern unit tests:            PASS
   Deidentify tests:             PASS
 
-CI (GitHub Actions — run 26807214617):
+CI (GitHub Actions  -  run 26807214617):
   Build and push to GHCR:       PASS ✓ (independent job)
   Integration regression:       PARTIAL FAIL (3 known issues below)
 
 CI known failures:
-  1. ModuleNotFoundError: jwt — PyJWT not in CI pip install list → FIXABLE
-  2. BM25 corpus empty in CI — legislation/acas not seeded in CI → FIXABLE
-  3. beta_readiness encryption blocker check — env config in CI → FIXABLE
+  1. ModuleNotFoundError: jwt  -  PyJWT not in CI pip install list → FIXABLE
+  2. BM25 corpus empty in CI  -  legislation/acas not seeded in CI → FIXABLE
+  3. beta_readiness encryption blocker check  -  env config in CI → FIXABLE
 
 Cluster smoke tests (iterlaw-ai namespace):
   /health                       PASS  {"status":"ok","db":"connected"}
@@ -248,7 +248,7 @@ Cluster smoke tests (iterlaw-ai namespace):
 PHASE 7 VERDICT: PARTIAL (local PASS, CI has 3 fixable failures)
 
 ================================================================================
-PHASE 8 — GAP ANALYSIS AND NEXT BUILD ORDER
+PHASE 8  -  GAP ANALYSIS AND NEXT BUILD ORDER
 ================================================================================
 
 IMPLEMENTED (PASS):
@@ -271,13 +271,13 @@ IMPLEMENTED (PASS):
 
 PARTIAL (needs more work):
   ACAS ingestion (code done, corpus not populated in cluster)
-  GOV.UK guidance (4/13 paths; body text thin — needs content improvement)
+  GOV.UK guidance (4/13 paths; body text thin  -  needs content improvement)
   Parliament Bills (code done, not yet run)
   Legislation corpus (80 chunks; more sections needed)
   pgvector/semantic retrieval (BLOCKED: OpenAI quota)
   model_call_audit wiring (schema done, pipeline not yet writing to it)
   workflow_runs wiring (schema done, pipeline not yet writing to it)
-  /api/diagnosis endpoint (currently via /assess — needs proper route)
+  /api/diagnosis endpoint (currently via /assess  -  needs proper route)
   CI regression (3 fixable failures)
 
 MISSING:
@@ -288,8 +288,8 @@ MISSING:
   /api/diagnosis dedicated endpoint
 
 BLOCKERS (external):
-  OpenAI quota — blocks pgvector embeddings; BM25 active as fallback
-  FCL licence — blocks bulk case law; sample mode ready
+  OpenAI quota  -  blocks pgvector embeddings; BM25 active as fallback
+  FCL licence  -  blocks bulk case law; sample mode ready
 
 NEXT BUILD ORDER (smallest safe steps):
   1. Fix CI: add PyJWT to CI pip install, seed legislation in CI
@@ -303,7 +303,7 @@ NEXT BUILD ORDER (smallest safe steps):
   9. Add more ERA 1996 sections to legislation ingestion targets
 
 IS LAWAPP READY FOR /api/diagnosis VERTICAL SLICE?
-  YES — /assess already implements the full pipeline.
+  YES  -  /assess already implements the full pipeline.
   POST /api/diagnosis can be a thin named route added to main.py in <10 lines.
   The retrieval, reasoning, and governance are all wired and tested.
 

@@ -9,19 +9,19 @@ for the Talos cluster (`kubectl` resolves only a dead AKS endpoint).
 
 | Area | Status |
 | ---- | ------ |
-| Inference fabric manifest (offline) | PASS — file exists, valid YAML |
-| Ollama DaemonSet running per node | UNPROVEN — no kubeconfig / no cluster access |
-| Local traffic policy (runtime) | UNPROVEN — no kubeconfig / no cluster access |
-| Mother Algorithm wired to Ollama Service DNS | PASS — config + code proven |
-| Perpetual Law Brain (crawler/critic/linker/embedder/orchestrator) | PASS — 14/14 tests |
-| Whitelist crawler | PASS — tests |
-| Critic gate | PASS — tests |
-| Graph linker (node+edge) | PASS — DB test |
-| Embedder (gated, provenance) | PASS — DB test |
-| RAG searchable (chunk stored + embedded + current) | PASS — DB test |
-| Local Ollama single inference (qwen2.5:3b) | PASS — returned exact JSON `{"edt":"2024-05-01","reason":"conduct"}` |
-| Benchmark latency vs 400ms gate (CPU, concurrency 4) | FAIL — P50 79.0s / P95 103.8s, 10/20 timed out @120s |
-| CPU pinning / Guaranteed QoS (runtime) | UNPROVEN — no kubeconfig / no cluster access |
+| Inference fabric manifest (offline) | PASS  -  file exists, valid YAML |
+| Ollama DaemonSet running per node | UNPROVEN  -  no kubeconfig / no cluster access |
+| Local traffic policy (runtime) | UNPROVEN  -  no kubeconfig / no cluster access |
+| Mother Algorithm wired to Ollama Service DNS | PASS  -  config + code proven |
+| Perpetual Law Brain (crawler/critic/linker/embedder/orchestrator) | PASS  -  14/14 tests |
+| Whitelist crawler | PASS  -  tests |
+| Critic gate | PASS  -  tests |
+| Graph linker (node+edge) | PASS  -  DB test |
+| Embedder (gated, provenance) | PASS  -  DB test |
+| RAG searchable (chunk stored + embedded + current) | PASS  -  DB test |
+| Local Ollama single inference (qwen2.5:3b) | PASS  -  returned exact JSON `{"edt":"2024-05-01","reason":"conduct"}` |
+| Benchmark latency vs 400ms gate (CPU, concurrency 4) | FAIL  -  P50 79.0s / P95 103.8s, 10/20 timed out @120s |
+| CPU pinning / Guaranteed QoS (runtime) | UNPROVEN  -  no kubeconfig / no cluster access |
 | Payment expanded | NO |
 
 ## 2. Files Changed / Created
@@ -52,21 +52,21 @@ for the Talos cluster (`kubectl` resolves only a dead AKS endpoint).
 
 ## 4. Ollama Pod Status
 
-UNPROVEN — no cluster access. Operator verification required per node
+UNPROVEN  -  no cluster access. Operator verification required per node
 (148.251.247.56, 138.201.253.245, 138.201.202.174) via the verify script.
 
 ## 5. Service Routing
 
-* Service DNS: `http://llm-inference-service.lawapp-ai.svc.cluster.local:11434` (set in manifest + config) — PASS (config/manifest), runtime UNPROVEN
-* internalTrafficPolicy: `Local` (set in manifest) — PASS (manifest text), runtime behaviour UNPROVEN
-* Public exposure: ClusterIP only, no Ingress/LoadBalancer in manifest — PASS (manifest), runtime UNPROVEN
-* Local routing proof / failover: UNPROVEN — no cluster access
+* Service DNS: `http://llm-inference-service.lawapp-ai.svc.cluster.local:11434` (set in manifest + config)  -  PASS (config/manifest), runtime UNPROVEN
+* internalTrafficPolicy: `Local` (set in manifest)  -  PASS (manifest text), runtime behaviour UNPROVEN
+* Public exposure: ClusterIP only, no Ingress/LoadBalancer in manifest  -  PASS (manifest), runtime UNPROVEN
+* Local routing proof / failover: UNPROVEN  -  no cluster access
 
 ## 6. CPU and Memory Tuning
 
-* Guaranteed QoS: manifest sets requests==limits (cpu "4", memory "8Gi") — PASS (manifest); runtime UNPROVEN
-* CPU Manager static policy / true core pinning: UNPROVEN — requires kubelet configz on the Talos nodes (verify script step 9)
-* Model: qwen2.5:3b · Quantization: Ollama default Q4_K_M tag (nearest standard small Qwen2.5-3B) — to be confirmed by `ollama list`
+* Guaranteed QoS: manifest sets requests==limits (cpu "4", memory "8Gi")  -  PASS (manifest); runtime UNPROVEN
+* CPU Manager static policy / true core pinning: UNPROVEN  -  requires kubelet configz on the Talos nodes (verify script step 9)
+* Model: qwen2.5:3b · Quantization: Ollama default Q4_K_M tag (nearest standard small Qwen2.5-3B)  -  to be confirmed by `ollama list`
 * Notes: do not claim true pinning unless kubelet `cpuManagerPolicy=static` is proven
 
 ## 7. Perpetual Law Brain Pipeline
@@ -85,7 +85,7 @@ UNPROVEN — no cluster access. Operator verification required per node
 | Table/Migration | Change | Proof |
 | --------------- | ------ | ----- |
 | corpus_chunks (032, exists) | mapped as `legal_chunks` equivalent; added `ingestion_run_id` | `ALTER TABLE` + `CREATE INDEX` succeeded |
-| legal_sources (028, exists) | mapped — NOT recreated (pasted duplicate rejected) | conflicting `CREATE TABLE` would error |
+| legal_sources (028, exists) | mapped  -  NOT recreated (pasted duplicate rejected) | conflicting `CREATE TABLE` would error |
 | corpus_ingestion_runs (028) / corpus_ingestion_errors (037) | reused | run/error tests pass |
 | legal_nodes / legal_edges (018) | reused | node/edge test passes |
 | 039_corpus_chunks_ingestion_run_id.sql | added column + index | applied to live db |
@@ -101,18 +101,18 @@ UNPROVEN — no cluster access. Operator verification required per node
 
 | Node | Pod | Model | p50 | p95 | Notes |
 | ---- | --- | ----- | --: | --: | ----- |
-| local-docker (host CPU) | lawapp-ollama | qwen2.5:3b | 79,020 ms | 103,796 ms | **FAIL vs 400ms gate.** 20 requests, concurrency 4, max_tokens 128; 10 ok / 10 timed out @120s. Single-request inference PASS (correct JSON). CPU only — no GPU. This is local docker, NOT the Talos cluster. The pasted "P50 14.82ms" was REJECTED (it timed `x**2`, not inference). |
+| local-docker (host CPU) | lawapp-ollama | qwen2.5:3b | 79,020 ms | 103,796 ms | **FAIL vs 400ms gate.** 20 requests, concurrency 4, max_tokens 128; 10 ok / 10 timed out @120s. Single-request inference PASS (correct JSON). CPU only  -  no GPU. This is local docker, NOT the Talos cluster. The pasted "P50 14.82ms" was REJECTED (it timed `x**2`, not inference). |
 
 **Latency verdict:** the 400ms P95 target is unreachable for a 3B generative model on CPU. Honest options: (a) GPU nodes, (b) a much smaller model for extraction, (c) cap output tokens + treat as classification, or (d) accept multi-second reasoning latency with UI streaming and keep the <400ms gate only for the deterministic rules/DB path.
 
 ## 11. Security and Safety
 
-* External exposure: none in manifest (ClusterIP only) — PASS (manifest), runtime UNPROVEN
-* Domain whitelist: hardcoded `DOMAIN_WHITELIST`, non-official refused — PASS (tests)
-* Redirect protection: each hop validated — PASS (test)
-* Non-legal source rejection: news/opinion discarded — PASS (test)
-* No AI-generated authority: only crawler-fetched, critic-approved content embedded — PASS (rejected doc → 0 chunks test)
-* No raw personal data to model: de-identification asserted in reasoning providers — PASS (test_local_inference de-id test)
+* External exposure: none in manifest (ClusterIP only)  -  PASS (manifest), runtime UNPROVEN
+* Domain whitelist: hardcoded `DOMAIN_WHITELIST`, non-official refused  -  PASS (tests)
+* Redirect protection: each hop validated  -  PASS (test)
+* Non-legal source rejection: news/opinion discarded  -  PASS (test)
+* No AI-generated authority: only crawler-fetched, critic-approved content embedded  -  PASS (rejected doc → 0 chunks test)
+* No raw personal data to model: de-identification asserted in reasoning providers  -  PASS (test_local_inference de-id test)
 
 ## 12. Remaining Blockers
 
@@ -126,6 +126,6 @@ UNPROVEN — no cluster access. Operator verification required per node
 
 * Can lawapp use node-local Ollama now? UNPROVEN on the cluster (no access). The manifest + provider + config are PASS offline.
 * Can the Mother Algorithm call the local fabric safely? PASS at code level (fail-soft to stub proven); cluster routing UNPROVEN.
-* Can the Perpetual Law Brain ingest official law safely? PASS — 14/14 tests prove whitelist-only, critic-gated, provenance-bound, no-AI-authority ingestion.
-* Can approved documents become searchable in RAG? PASS — chunk stored, embedded, is_current (DB test).
+* Can the Perpetual Law Brain ingest official law safely? PASS  -  14/14 tests prove whitelist-only, critic-gated, provenance-bound, no-AI-authority ingestion.
+* Can approved documents become searchable in RAG? PASS  -  chunk stored, embedded, is_current (DB test).
 * Unproven claims: every Talos cluster runtime check, and the real Qwen2.5-3B latency.

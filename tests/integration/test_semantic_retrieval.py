@@ -1,11 +1,11 @@
 """
-Phase 2 — Semantic retrieval tests.
+Phase 2  -  Semantic retrieval tests.
 
 REQUIRES: embeddings populated in legislation, case_law_chunks, acas_guidance.
 Run after:  docker compose run --rm ingestion python -m ingestion.embeddings.embedder
 
 These tests prove that the semantic leg of the hybrid retrieval returns real
-statute text, case law, and ACAS guidance — not empty results and not
+statute text, case law, and ACAS guidance  -  not empty results and not
 keyword-search fakes. Every returned chunk must carry a source_url and a
 similarity score. The citations produced here are what the reasoning model
 uses to ground its legal claims.
@@ -43,7 +43,7 @@ def _embeddings_present() -> bool:
 def require_embeddings():
     if not _embeddings_present():
         pytest.skip(
-            "Embeddings not populated — run: "
+            "Embeddings not populated  -  run: "
             "docker compose run --rm ingestion python -m ingestion.embeddings.embedder"
         )
 
@@ -64,11 +64,11 @@ def test_semantic_retrieval_returns_legislation():
 
     print(f"\nReturned {len(results)} chunks from semantic retrieval:")
     for r in results:
-        print(f"  [{r.get('source_type')}] {r.get('cite')} — score={r.get('distance'):.4f}")
+        print(f"  [{r.get('source_type')}] {r.get('cite')}  -  score={r.get('distance'):.4f}")
         print(f"    url: {r.get('url')}")
         print(f"    text[:80]: {(r.get('text') or '')[:80]}")
 
-    assert len(results) > 0, "Semantic retrieval returned empty — embeddings may not be present"
+    assert len(results) > 0, "Semantic retrieval returned empty  -  embeddings may not be present"
 
     for r in results:
         assert r.get("source_type") in ("legislation", "case_law", "acas"), \
@@ -139,7 +139,7 @@ def test_semantic_retrieval_case_law():
         print(f"  [{r.get('source_type')}] {r.get('cite')} score={r.get('distance'):.4f}")
         print(f"    text[:80]: {(r.get('text') or '')[:80]}")
 
-    assert len(results) > 0, "No results returned — check that case_law_chunks are embedded"
+    assert len(results) > 0, "No results returned  -  check that case_law_chunks are embedded"
 
 
 def test_hybrid_retrieval_returns_both_legs():
@@ -161,12 +161,12 @@ def test_hybrid_retrieval_returns_both_legs():
 
     assert len(bundle.exact_rules) > 0, "No rules returned from structured leg"
     assert len(bundle.authorities) > 0, \
-        "No authorities from semantic leg — embeddings may not be populated"
+        "No authorities from semantic leg  -  embeddings may not be populated"
     assert bundle.insufficient_grounding is False, \
         "Bundle should not be insufficient_grounding when both legs return results"
 
     for auth in bundle.authorities:
-        print(f"  [{auth['type']}] {auth['cite']} — url={auth['url']}")
+        print(f"  [{auth['type']}] {auth['cite']}  -  url={auth['url']}")
         assert auth.get("cite"), "Authority missing cite"
         assert auth.get("url"),  "Authority missing url"
         assert auth.get("text"), "Authority missing text"
@@ -175,7 +175,7 @@ def test_hybrid_retrieval_returns_both_legs():
 def test_semantic_retrieval_respects_prospective_filter():
     """
     Semantic retrieval must not return prospective legislation rows
-    (is_prospective=True) in the main results — they are not current law.
+    (is_prospective=True) in the main results  -  they are not current law.
     """
     results = retrieve_semantic(
         query="qualifying period six months",
@@ -190,5 +190,5 @@ def test_semantic_retrieval_respects_prospective_filter():
         # The prospective row is marked is_prospective=True in the DB;
         # the semantic query filters it out (WHERE is_prospective = false)
         # so no prospective-only rows should appear
-        # This is a structural check — we verify the query ran without error
+        # This is a structural check  -  we verify the query ran without error
     assert True  # structural: if we got here, the query ran correctly

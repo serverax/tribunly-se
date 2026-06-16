@@ -1,4 +1,4 @@
-# Security Remediation Record — 2026-06-10
+# Security Remediation Record  -  2026-06-10
 
 ## 1. Historical GitHub PAT exposure (commits 3611c37, 6c5882e, a0968b0, e165295)
 
@@ -7,12 +7,12 @@ tested against `GET https://api.github.com/user` on 2026-06-10:
 
 | Token (redacted) | Type | Result |
 |---|---|---|
-| ghp_FPO6iy…M3OC | classic PAT | HTTP 401 — inactive |
-| ghp_vFFuRx…bW0G | classic PAT | HTTP 401 — inactive |
-| github_pat…KRZB | fine-grained (partial) | HTTP 401 — inactive |
-| github_pat…FZtD | fine-grained | HTTP 401 — inactive |
-| github_pat…Dxtx | fine-grained (partial) | HTTP 401 — inactive |
-| github_pat…46qq | fine-grained | HTTP 401 — inactive |
+| ghp_FPO6iy…M3OC | classic PAT | HTTP 401  -  inactive |
+| ghp_vFFuRx…bW0G | classic PAT | HTTP 401  -  inactive |
+| github_pat…KRZB | fine-grained (partial) | HTTP 401  -  inactive |
+| github_pat…FZtD | fine-grained | HTTP 401  -  inactive |
+| github_pat…Dxtx | fine-grained (partial) | HTTP 401  -  inactive |
+| github_pat…46qq | fine-grained | HTTP 401  -  inactive |
 
 **Conclusion: no live credential exists in git history.** All leaked tokens are
 already revoked or expired.
@@ -21,7 +21,7 @@ already revoked or expired.
 
 **Recommendation: ACCEPT history as-is.** Rationale:
 - Every leaked token is verified inactive (above), so the history exposure is
-  inert — rewriting removes patterns, not risk.
+  inert  -  rewriting removes patterns, not risk.
 - A rewrite (git filter-repo/BFG + force-push) invalidates every clone, breaks
   the recorded CI evidence trail (run ↔ commit SHA mappings), and the release
   artifact provenance (image tags are commit SHAs).
@@ -40,7 +40,7 @@ backend was restarted cleanly. No live external-LLM credential existed; no
 provider-side revocation required. Local-Ollama-only policy now matches the
 cluster state.
 
-## 4. Auto-commit/auto-push automation — found and disabled
+## 4. Auto-commit/auto-push automation  -  found and disabled
 
 Root cause of the unexplained "chore: recover lawapp session and latest fixes"
 commit and the historical tarball-push failures:
@@ -53,7 +53,7 @@ commit and the historical tarball-push failures:
   active entries.
 - The five auto-commit/push scripts (`scripts/auto_push_lawapp.sh`,
   `lawapp-push.sh`, `push-all.sh`, `push-to-github.sh`, `push-and-deploy.sh`)
-  were **removed from the repo** — they enabled unreviewed pushes and the
+  were **removed from the repo**  -  they enabled unreviewed pushes and the
   original PAT leak came from the "add auto push scripts" commit. They
   contained no live tokens at removal time (only scan-pattern strings).
 - `.codex-clean-*.tar` files: already absent from the working tree.

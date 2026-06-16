@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_uk_legal_dataset.sh — DB-FIRST proof for the UK employment legal dataset.
+# prove_uk_legal_dataset.sh  -  DB-FIRST proof for the UK employment legal dataset.
 #
 # Principle: LEGAL DB FIRST -> CORPUS FIRST -> RULES FIRST -> CITATIONS FIRST.
 # Proves, and exits non-zero on ANY gap:

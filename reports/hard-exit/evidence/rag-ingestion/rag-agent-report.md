@@ -1,8 +1,8 @@
-# T-004 — RAG Ingestion / Embedding & Retrieval Proof
+# T-004  -  RAG Ingestion / Embedding & Retrieval Proof
 
 **Agent:** db-rag-ingestion-agent
 **Date:** 2026-06-07
-**Target DB:** lawapp-rag / lawapp-postgres-0 — db=`lawapp`, user=`lawapp_user` (in-cluster)
+**Target DB:** lawapp-rag / lawapp-postgres-0  -  db=`lawapp`, user=`lawapp_user` (in-cluster)
 **Result:** `HARD EXIT RESULT: PASS`
 
 ---
@@ -20,7 +20,7 @@
 | Placeholder/zero vectors | **0** |
 | Chunk → legal_sources orphans | **0** |
 
-Embeddings use the SAME model and dimension as the 92 pre-existing chunks — retrieval
+Embeddings use the SAME model and dimension as the 92 pre-existing chunks  -  retrieval
 is consistent across the whole corpus. All 798 new vectors are real (distinct,
 L2-normalised, non-zero), produced from each chunk's `body_text`.
 
@@ -36,18 +36,18 @@ L2-normalised, non-zero), produced from each chunk's `body_text`.
    - Run in `/tmp/lawapp-audit-venv` (fastembed 0.8.0 + psycopg2) against DB via
      `kubectl port-forward lawapp-postgres-0 15432:5432`.
    - `UPDATE corpus_chunks SET embedding=...::vector, embedding_model='bge-small-en-v1.5',
-     embedding_created_at=now() WHERE id=%s AND embedding IS NULL` — ADDITIVE only.
+     embedding_created_at=now() WHERE id=%s AND embedding IS NULL`  -  ADDITIVE only.
    - Script refuses any all-zero vector (asserts dim==384, norm>1e-9).
 3. Index: `CREATE INDEX corpus_chunks_embedding_hnsw_cos ON corpus_chunks USING hnsw
    (embedding vector_cosine_ops) WITH (m=16, ef_construction=64); ANALYZE corpus_chunks;`
-4. Retrieval: `reports/hard-exit/evidence/rag-ingestion/retrieve.py` — query embedded
+4. Retrieval: `reports/hard-exit/evidence/rag-ingestion/retrieve.py`  -  query embedded
    with the same model, pgvector cosine NN (`<=>`), top-5, joined to `legal_sources`.
 
 ### Why not run inside a pod
 First attempt inside `lawapp-ai/lawapp-brain` (which has fastembed + the model cached at
 `/app/fastembed_cache` + DATABASE_URL→lawapp-rag) was **OOM-killed (exit 137)**: the pod
 has a 1Gi memory limit and runs the live brain service; loading the ONNX model on top of
-it exceeded the ceiling before the first batch committed (0 rows written — verified).
+it exceeded the ceiling before the first batch committed (0 rows written  -  verified).
 Falling back to the local audit venv (model cached on host, DB via port-forward) embedded
 all 798 cleanly without touching the running service. No vectors were faked.
 
@@ -55,16 +55,16 @@ all 798 cleanly without touching the running service. No vectors were faked.
 
 ## Proof files
 
-- `embedding-proof.txt` — before (92 embedded / 798 NULL) → after (890 / 0 NULL);
+- `embedding-proof.txt`  -  before (92 embedded / 798 NULL) → after (890 / 0 NULL);
   model `bge-small-en-v1.5` dim 384 for all 890; **0** zero/placeholder vectors;
   vectors distinct (727 distinct cosine distances over 889 comparisons, range 0.12–0.90);
   798 rows have `embedding_created_at` 2026-06-07.
-- `vector-index-proof.txt` — pgvector 0.8.2; HNSW index DDL; `\d corpus_chunks` showing
+- `vector-index-proof.txt`  -  pgvector 0.8.2; HNSW index DDL; `\d corpus_chunks` showing
   the index; `EXPLAIN ANALYZE` confirms `Index Scan using corpus_chunks_embedding_hnsw_cos`
   (1.3ms exec).
-- `retrieval-proof.txt` — 2 real queries, top-5 each, with chunk_id, cosine distance,
+- `retrieval-proof.txt`  -  2 real queries, top-5 each, with chunk_id, cosine distance,
   source_id, source_url, authority_ref, parent source name, chunk_hash, snippet.
-- `source-id-return-proof.txt` — 0 orphans / 0 null source_id / 0 missing url / 0 missing
+- `source-id-return-proof.txt`  -  0 orphans / 0 null source_id / 0 missing url / 0 missing
   hash across 890 chunks; all 10 retrieved chunks mapped to real UK `legal_sources`
   (id 9 ERA 1996, id 10 Equality Act 2010, id 12 ACAS).
 
@@ -98,7 +98,7 @@ chunk_hash      : de5f5dfcec658b6b6acf342d71be94da85d774d5e3818a0f6eacd2794679bc
 embedding_model : bge-small-en-v1.5  dim=384
 ```
 
-This is the unfair-dismissal qualifying-period provision — ideal anchor for citation
+This is the unfair-dismissal qualifying-period provision  -  ideal anchor for citation
 validation.
 
 ---
@@ -108,9 +108,9 @@ validation.
 - No chunks failed to embed. 798/798 embedded; 0 NULL remain.
 - No egress was blocked: the bge model was cached locally; the model also revalidated
   files from HF without error. No OWNER-ACTION needed.
-- Index is HNSW (not IVFFlat) — appropriate for 890 rows and confirmed used by the planner.
+- Index is HNSW (not IVFFlat)  -  appropriate for 890 rows and confirmed used by the planner.
 - ADDITIVE only: no DROP/TRUNCATE/DELETE; only `UPDATE ... WHERE embedding IS NULL`.
 
-**Status: PASS** — embeddings real and consistent with existing corpus; pgvector HNSW
+**Status: PASS**  -  embeddings real and consistent with existing corpus; pgvector HNSW
 index built and used; retrieval returns chunk IDs + source IDs + source URLs from official
 UK data (ERA 1996, Equality Act 2010, ACAS); no fake retrieval, no placeholder vectors.

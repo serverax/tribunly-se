@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Constructive Dismissal Risk — lawapp</title>
+  <title>Constructive Dismissal Risk  -  lawapp</title>
   <link rel="stylesheet" href="/css/styles.css" />
   <style>
     .cd-wrap { max-width: 820px; margin: 1.5rem auto; padding: 0 1rem; }
@@ -24,7 +24,7 @@
 </head>
 <body>
   <main class="cd-wrap">
-    <h1>Constructive Dismissal — Risk Triage</h1>
+    <h1>Constructive Dismissal  -  Risk Triage</h1>
     <p class="boundary">Self-help triage only. lawapp is not a solicitor and does not guarantee any outcome.</p>
 
     <form id="cd-form" class="cd-card" aria-label="Constructive dismissal facts">
@@ -53,7 +53,7 @@
         <span><strong>Confidence:</strong> <span id="r-confidence"></span></span>
       </p>
       <h3>Affirmation risk</h3>
-      <p>Delay from last act to resignation: <strong id="r-delay"></strong> days —
+      <p>Delay from last act to resignation: <strong id="r-delay"></strong> days  - 
          <span id="r-risk"></span></p>
       <p id="r-mitigation" class="boundary"></p>
 
@@ -148,13 +148,13 @@
         show('r-review', true);
       } else { show('r-review', false); }
 
-      document.getElementById('r-breach').textContent = r.breach_type || '—';
+      document.getElementById('r-breach').textContent = r.breach_type || ' - ';
       document.getElementById('r-causation').textContent = r.causation_established ? 'yes' : 'no';
       document.getElementById('r-grounding').textContent = r.grounding_score;
       document.getElementById('r-confidence').textContent = r.confidence_score;
 
       const ar = r.affirmation_risk || {};
-      document.getElementById('r-delay').textContent = (ar.delay_days ?? '—');
+      document.getElementById('r-delay').textContent = (ar.delay_days ?? ' - ');
       const rk = document.getElementById('r-risk');
       rk.textContent = (ar.risk_level || 'unknown') + ' risk';
       rk.className = 'risk-' + (ar.risk_level || 'low');
@@ -166,7 +166,7 @@
         const dateEl = document.createElement('strong');
         dateEl.textContent = a.date || '';
         d.appendChild(dateEl);
-        d.appendChild(document.createTextNode(` — ${a.event || '(no detail)'} `));
+        d.appendChild(document.createTextNode(`  -  ${a.event || '(no detail)'} `));
         const kindEl = document.createElement('em');
         kindEl.textContent = `[${a.breach_kind}]`;
         d.appendChild(kindEl);
@@ -197,7 +197,7 @@
         } else {
           li.appendChild(document.createTextNode(ct.cite || ''));
         }
-        li.appendChild(document.createTextNode(` — ${ct.note || ''}`));
+        li.appendChild(document.createTextNode(`  -  ${ct.note || ''}`));
         c.appendChild(li);
       });
       document.getElementById('r-boundary').textContent = r.legal_boundary || '';

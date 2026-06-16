@@ -1,5 +1,5 @@
 """
-Auth service layer — the real orchestration behind /api/auth/*.
+Auth service layer  -  the real orchestration behind /api/auth/*.
 
 Ties together: users table, auth_sessions (refresh tokens / logout-all),
 auth_tokens (single-use magic-link / verify / reset), oauth_identities (provider
@@ -14,7 +14,7 @@ Design notes:
   * Magic-link / OAuth prove email control → email_verified is set true.
   * Password reset revokes ALL sessions (force global re-login).
   * MFA-ready: if a user has mfa_enabled, password login returns mfa_required and
-    withholds tokens (no TOTP-verify endpoint is shipped yet — documented).
+    withholds tokens (no TOTP-verify endpoint is shipped yet  -  documented).
 
 GUARDRAILS:
   * Generic responses for magic-link / password-reset (no account enumeration).

@@ -65,5 +65,5 @@ ADDITIVE ONLY. INSERT only. `legal_sources` uses `ON CONFLICT (domain,source_id)
 `corpus_chunks` uses `ON CONFLICT (chunk_hash) DO NOTHING`. No DROP/TRUNCATE/UPDATE.
 
 ## Artefacts
-- `transform.py` — the transform (run under `/tmp/lawapp-audit-venv`, lxml 6.1.1).
-- `insert-sources.sql`, `insert-chunks.sql` — generated SQL piped into psql.
+- `transform.py`  -  the transform (run under `/tmp/lawapp-audit-venv`, lxml 6.1.1).
+- `insert-sources.sql`, `insert-chunks.sql`  -  generated SQL piped into psql.

@@ -1,5 +1,5 @@
 """
-Burchell-stage assessment — deterministic scaffold.
+Burchell-stage assessment  -  deterministic scaffold.
 Refactored from Iterlaw burchell.engine.ts
 """
 import re
@@ -21,10 +21,10 @@ def assess_burchell_from_text(text: str) -> BurchellAssessment:
     investigation: Literal["likely", "unclear", "weak"] = "unclear"
     if no_investigation:
         investigation = "weak"
-        notes.append("Narrative suggests absent or minimal investigation — Burchell 'reasonable investigation' harder for employer.")
+        notes.append("Narrative suggests absent or minimal investigation  -  Burchell 'reasonable investigation' harder for employer.")
     elif some_process:
         investigation = "likely"
-        notes.append("Some procedural steps referenced — investigation quality still fact-specific.")
+        notes.append("Some procedural steps referenced  -  investigation quality still fact-specific.")
     else:
         notes.append("Investigation quality not clearly evidenced in free text.")
 

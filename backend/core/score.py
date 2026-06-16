@@ -1,5 +1,5 @@
 """
-Stage 4 — Grounding and confidence scoring.
+Stage 4  -  Grounding and confidence scoring.
 
 Grounding score: fraction of legal claims in the assessment that trace to a
 citation in the citations list. Every legal assertion must map to a retrieved
@@ -121,7 +121,7 @@ def _compute_confidence(
 def below_threshold(assessment: StructuredAssessment) -> tuple[bool, str]:
     """
     Check whether either score falls below the governance threshold.
-    Returns (failed, reason) — called by the governance gate.
+    Returns (failed, reason)  -  called by the governance gate.
     """
     if assessment.grounding_score < GROUNDING_THRESHOLD:
         return True, (

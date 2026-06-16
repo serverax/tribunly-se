@@ -32,7 +32,7 @@ spec:
             image: ghcr.io/serverax/lawapp/backend:970b95c60d1dbce57474a02909b22c5e9f7f75a0
             # Inline E2E smoke: deterministic diagnosis must return a rules-sourced
             # deadline with no PII in output. (scripts/smoke-iterlaw-ai.sh does not
-            # exist in the image — it required kubectl anyway.)
+            # exist in the image  -  it required kubectl anyway.)
             command:
               - python
               - -c

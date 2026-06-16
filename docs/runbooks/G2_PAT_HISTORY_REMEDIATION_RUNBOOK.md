@@ -1,12 +1,12 @@
-# G2 — Leaked GitHub PAT in Git History: Owner Remediation Runbook
+# G2  -  Leaked GitHub PAT in Git History: Owner Remediation Runbook
 
-**Status:** `G2 FAIL — PAT exposed in git history; owner-side rotation/history remediation required`
-**Classification:** SECURITY OWNER-ACTION TRACKED — not a blocker for non-destructive engineering work.
+**Status:** `G2 FAIL  -  PAT exposed in git history; owner-side rotation/history remediation required`
+**Classification:** SECURITY OWNER-ACTION TRACKED  -  not a blocker for non-destructive engineering work.
 
 ## What was found
 
 - **Working tree:** CLEAN (no secret/PAT patterns).
-- **Remotes:** SSH only (`git@github.com:serverax/lawapp.git`) — no embedded credentials.
+- **Remotes:** SSH only (`git@github.com:serverax/lawapp.git`)  -  no embedded credentials.
 - **Git history:** a GitHub PAT pattern is present in 3 commits:
   `6c5882e`, `a0968b0`, `e165295`. (Raw token never printed; redacted everywhere.)
 - Detection: `scripts/security/scan-secrets-history.sh` (now fails-closed on history hits).
@@ -50,7 +50,7 @@ and the history blobs purged.
 ## CI posture
 
 - `.github/workflows/lawapp-ci.yml` runs the working-tree secret gate (`SCAN_HISTORY=0`) on every
-  build — blocks new leaks.
+  build  -  blocks new leaks.
 - The full scan (`HISTORY_FAILS=1`) correctly **fails closed** until history is purged; run it as the
   release/audit gate. Do not relax it to pass while the leak remains.
 

@@ -1,5 +1,5 @@
 """
-Real Document Extraction Engine — Brain Step 11 (Document Intelligence).
+Real Document Extraction Engine  -  Brain Step 11 (Document Intelligence).
 
 Extracts structured facts from uploaded documents.
 Supports: PDF (text-based), DOCX, plain text.
@@ -164,7 +164,7 @@ def _extract_text_from_pdf(content: bytes) -> str:
     For scanned/image PDFs, falls back to empty string.
     OCR requires external tesseract installation (documented separately).
 
-    GUARDRAIL: Only text is extracted — no rendering, no JS execution.
+    GUARDRAIL: Only text is extracted  -  no rendering, no JS execution.
     """
     try:
         if PyPDF2 is None:
@@ -190,7 +190,7 @@ def _extract_text_from_docx(content: bytes) -> str:
     """
     Extract text from a DOCX file using python-docx.
 
-    GUARDRAIL: Only text is extracted — no macro execution.
+    GUARDRAIL: Only text is extracted  -  no macro execution.
     """
     try:
         import docx  # type: ignore
@@ -230,7 +230,7 @@ def extract_facts_from_document(
                  confidence, status="unconfirmed"
       - "warnings": list of extraction warnings
 
-    GUARDRAIL: All facts have status="unconfirmed" — never auto-applied.
+    GUARDRAIL: All facts have status="unconfirmed"  -  never auto-applied.
     GUARDRAIL: Raw extracted text is NOT stored in this response (PII protection).
     """
     warnings: list[str] = []

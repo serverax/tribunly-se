@@ -1,5 +1,5 @@
 """
-Data-protection status report — Phase 5A.
+Data-protection status report  -  Phase 5A.
 
 Generates a plain-English report of the current data-protection posture.
 This is a status check, NOT a compliance certification.
@@ -26,7 +26,7 @@ def generate_dp_report() -> dict:
     Generate the data-protection status report.
 
     Returns a structured dict covering all required areas.
-    Does NOT claim GDPR compliance — reports current state honestly.
+    Does NOT claim GDPR compliance  -  reports current state honestly.
     """
     return {
         "report_date":   _TODAY,
@@ -44,7 +44,7 @@ def generate_dp_report() -> dict:
             "implementation":      "PARTIAL",
             "location":            "/tmp/lawapp_uploads/{case_id}/{upload_id}",
             "encryption_at_rest":  "NOT_IMPLEMENTED",
-            "access_control":      "Container filesystem only — no ACL",
+            "access_control":      "Container filesystem only  -  no ACL",
             "retention_policy":    "NOT_IMPLEMENTED",
             "note": (
                 "Phase 4A: local filesystem, container ephemeral storage. "
@@ -56,15 +56,15 @@ def generate_dp_report() -> dict:
         # ── 2. Logs ────────────────────────────────────────────────────────────
         "logs": {
             "status":             "PARTIAL",
-            "file_bytes_in_logs": "GUARDRAILED — upload endpoint logs metadata only",
-            "pii_in_logs":        "UNKNOWN — log scanner covers test fixtures only",
+            "file_bytes_in_logs": "GUARDRAILED  -  upload endpoint logs metadata only",
+            "pii_in_logs":        "UNKNOWN  -  log scanner covers test fixtures only",
             "log_level":          "INFO (production should be WARN+)",
             "log_retention":      "NOT_IMPLEMENTED",
             "structured_logging": "NOT_IMPLEMENTED",
             "note": (
                 "Upload handler explicitly avoids logging file_bytes. "
                 "Deidentify.py strips PII before model boundary. "
-                "Log scanning for PII values is partial — not production guarantee."
+                "Log scanning for PII values is partial  -  not production guarantee."
             ),
         },
 
@@ -89,7 +89,7 @@ def generate_dp_report() -> dict:
         "encryption_at_rest": {
             "status":             "NOT_IMPLEMENTED",
             "cases_assessment":   "Stored in PostgreSQL plaintext jsonb",
-            "cases_facts":        "facts_encrypted column is NULL — encryption not yet applied",
+            "cases_facts":        "facts_encrypted column is NULL  -  encryption not yet applied",
             "uploaded_documents": "Local filesystem, no encryption",
             "handoff_leads":      "Name+email in plaintext DB column",
             "note": (
@@ -101,8 +101,8 @@ def generate_dp_report() -> dict:
         # ── 5. Facts persistence ───────────────────────────────────────────────
         "facts_persistence": {
             "status":                "PARTIAL",
-            "raw_user_facts":        "NOT stored — only structured assessment output persisted",
-            "assessment_jsonb":      "De-identified pipeline output — no intake PII",
+            "raw_user_facts":        "NOT stored  -  only structured assessment output persisted",
+            "assessment_jsonb":      "De-identified pipeline output  -  no intake PII",
             "key_dates":             "Stores dates only (not names/employers)",
             "extracted_facts_table": "documents.extracted_facts may contain PII from confirmed OCR",
             "note": (
@@ -116,7 +116,7 @@ def generate_dp_report() -> dict:
         "retention_deletion": {
             "status":           "NOT_IMPLEMENTED",
             "retention_policy": "None defined",
-            "deletion_endpoint": "None — no DELETE /cases/{id} or data erasure",
+            "deletion_endpoint": "None  -  no DELETE /cases/{id} or data erasure",
             "right_to_erasure":  "Not implemented (Art.17 UK GDPR)",
             "note": (
                 "Phase 5B+: implement case deletion, upload deletion, "
@@ -133,8 +133,8 @@ def generate_dp_report() -> dict:
                 "production_ready": True,
             },
             "uploaded_documents": {
-                "handling": "Mock extraction only — placeholders returned, no real OCR",
-                "real_ocr_pii_risk": "Phase 5B: real OCR will extract real PII — needs encryption pipeline",
+                "handling": "Mock extraction only  -  placeholders returned, no real OCR",
+                "real_ocr_pii_risk": "Phase 5B: real OCR will extract real PII  -  needs encryption pipeline",
                 "production_ready": False,
             },
             "handoff_leads": {
@@ -144,7 +144,7 @@ def generate_dp_report() -> dict:
                 "production_ready": False,
             },
             "case_timeline_events": {
-                "handling": "User-entered text — may contain PII",
+                "handling": "User-entered text  -  may contain PII",
                 "encryption": "NOT_IMPLEMENTED",
                 "production_ready": False,
             },
@@ -180,13 +180,13 @@ def generate_dp_report() -> dict:
         # implemented:            already in place
         "priority_breakdown": {
             "launch_blockers": [
-                "DPIA not completed — required before any real user data is processed",
+                "DPIA not completed  -  required before any real user data is processed",
                 "No documented legal basis for data processing (GDPR Art.6/Art.9)",
                 "No privacy notice / transparency information for users",
             ],
             "production_blockers": [
                 "No encryption at rest for uploaded documents (AES-256-GCM required)",
-                "No encryption for cases.facts_encrypted column (NULL — unfilled)",
+                "No encryption for cases.facts_encrypted column (NULL  -  unfilled)",
                 "No encryption for handoff_leads PII (name, email in plaintext)",
                 "No data retention or deletion policy (Art.17 UK GDPR right to erasure)",
                 "User authentication not implemented (user_id=NULL on all case records)",
@@ -217,7 +217,7 @@ def generate_dp_report() -> dict:
                 "No privacy notice for users (launch blocker)",
                 "No encryption at rest for uploaded documents (production blocker)",
                 "No encryption for cases.facts_encrypted (production blocker)",
-                "No data retention/deletion policy — Art.17 UK GDPR (production blocker)",
+                "No data retention/deletion policy  -  Art.17 UK GDPR (production blocker)",
                 "User authentication not implemented (production blocker)",
             ],
             "ready_for_limited_beta": False,

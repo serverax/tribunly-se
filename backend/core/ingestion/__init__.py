@@ -1,4 +1,4 @@
-"""Perpetual Law Brain — verified legal-source ingestion pipeline.
+"""Perpetual Law Brain  -  verified legal-source ingestion pipeline.
 
 Stages: fetch (whitelist) -> validate domain -> parse -> critic gate -> graph link
 -> chunk -> embed -> audit -> refresh retrieval index.

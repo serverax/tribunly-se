@@ -1,4 +1,4 @@
-# Corpus Quality — Report (SQL evidence)
+# Corpus Quality  -  Report (SQL evidence)
 
 - **Timestamp:** 2026-06-05  **Branch:** main  **Commit:** a0968b0
 - **Proof scripts:** `scripts/prove_corpus_quality.sh`, `scripts/prove_uk_law_scraping_fetching.sh`
@@ -10,14 +10,14 @@ GROUP BY source_type, jurisdiction, domain ORDER BY source_type, jurisdiction;
 
      source_type     | jurisdiction |    domain     | rows
 ---------------------+--------------+---------------+------
- case_law            | UK           | employment_uk |    1   (Find Case Law — OWNER_BLOCKED)
+ case_law            | UK           | employment_uk |    1   (Find Case Law  -  OWNER_BLOCKED)
  govuk               | UK           | employment_uk |    1
- legislation         | NI           | employment_uk |    1   (NI placeholder — NOT_STARTED)
+ legislation         | NI           | employment_uk |    1   (NI placeholder  -  NOT_STARTED)
  official_guidance   | EW           | employment_uk |    1
  official_guidance   | GB           | employment_uk |    1
- parliament          | UK           | employment_uk |    1   (Bills — monitoring only)
+ parliament          | UK           | employment_uk |    1   (Bills  -  monitoring only)
  primary_legislation | GB           | employment_uk |    1
- tribunal            | GB           | employment_uk |    2   (GOV.UK ET/EAT — fallback)
+ tribunal            | GB           | employment_uk |    2   (GOV.UK ET/EAT  -  fallback)
 ```
 
 ## legislation by Act (live-fetched legislation.gov.uk)
@@ -62,7 +62,7 @@ runs recorded in `corpus_ingestion_runs` with blocker_reason; zero fake rows.
 
 ## Jurisdiction integrity
 All employment corpus rows = **GB** (apply GB-wide: E&W + Scotland). **NI = 0** corpus rows
-and **0** NI rules — NI is **NOT_STARTED / fail-closed**, never mapped to EW.
+and **0** NI rules  -  NI is **NOT_STARTED / fail-closed**, never mapped to EW.
 
-**Status: corpus quality PROVEN** — populated, organised by source_type/jurisdiction/
+**Status: corpus quality PROVEN**  -  populated, organised by source_type/jurisdiction/
 domain/effective-date, embedded, hashed, canonical verification statuses, no fake data.

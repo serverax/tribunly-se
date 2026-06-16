@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_no_fake_claims_or_uncited_law.sh — honest diagnosis: no fake encouragement,
+# prove_no_fake_claims_or_uncited_law.sh  -  honest diagnosis: no fake encouragement,
 # no uncited legal assertion, weak cases shown plainly.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1

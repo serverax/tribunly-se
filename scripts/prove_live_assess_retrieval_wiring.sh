@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_live_assess_retrieval_wiring.sh — hard end-to-end proof that the LIVE /assess
+# prove_live_assess_retrieval_wiring.sh  -  hard end-to-end proof that the LIVE /assess
 # HTTP path is DB-first, retrieval-first, cited, jurisdiction-filtered, audited, and
 # fails closed for unsupported jurisdictions. Hits the running backend, not a stub.
 set -uo pipefail

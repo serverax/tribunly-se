@@ -23,7 +23,7 @@ from ingestion.rules.seed_unfair_dismissal import CANONICAL_KEYS
 def test_no_duplicate_or_unknown_rule_key_series():
     """
     Every rule_key in the rules table must be in the canonical set.
-    Fails immediately if a second series is introduced — no silent doubling.
+    Fails immediately if a second series is introduced  -  no silent doubling.
     """
     conn = get_connection()
     try:

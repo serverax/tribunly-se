@@ -1,4 +1,4 @@
--- Migration 023 — Seed Minimum Viable ACAS Guidance
+-- Migration 023  -  Seed Minimum Viable ACAS Guidance
 -- Ensures a deterministic baseline for reasoning.
 
 -- Remove potential existing seed data to allow re-run

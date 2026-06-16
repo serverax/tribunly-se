@@ -49,7 +49,7 @@ def test_extracts_legislation_section_full_and_abbrev():
 
 
 def test_unknown_token_is_not_fabricated():
-    # A bare phrase with no recognisable citation yields zero citations —
+    # A bare phrase with no recognisable citation yields zero citations  - 
     # nothing is invented.
     cits = extract_citations("the manager was unfair and rude to the claimant")
     assert cits == []

@@ -117,7 +117,7 @@ def cache_set_bool(key: str, value: bool, ttl_s: int | None = None) -> None:
 
 
 def reset_for_tests(client=None) -> None:
-    """Inject a fake client (or None) and re-arm init — TEST USE ONLY."""
+    """Inject a fake client (or None) and re-arm init  -  TEST USE ONLY."""
     global _client, _init_done
     with _client_lock:
         _client = client

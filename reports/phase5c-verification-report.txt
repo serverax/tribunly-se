@@ -1,6 +1,6 @@
-PHASE 5C — LIVE LEGAL VERIFICATION AND PRODUCTION-READINESS HARDENING
+PHASE 5C  -  LIVE LEGAL VERIFICATION AND PRODUCTION-READINESS HARDENING
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -15,7 +15,7 @@ Phase 5C adds:
   6. Rules verification report (GET /admin/rules-verification)
 
 ═══════════════════════════════════════════════════════════════════════════════
-UNFAIR DISMISSAL RULES — VERIFICATION STATUS
+UNFAIR DISMISSAL RULES  -  VERIFICATION STATUS
 ═══════════════════════════════════════════════════════════════════════════════
 
 All UD rules were confirmed from legislation.gov.uk and primary sources
@@ -39,16 +39,16 @@ on 2026-05-31 (see seed_unfair_dismissal.py inline documentation).
   unfair_dismissal.ec_max_duration_weeks    verified             SI 2025/1153
 
   Additional statutes covered in documentation (not separate rule rows):
-  ERA 1996 s.94  — Right not to be unfairly dismissed (definitional, not numeric)
-  ERA 1996 s.95  — Circumstances of dismissal (definitional)
-  ERA 1996 s.97  — Effective date of termination (definitional)
-  ERA 1996 s.98  — General test of fairness (merits assessment, not deterministic)
-  TULRCA s.207A  — ACAS uplift (tribunal discretion 0-25%, in SoL documentation)
+  ERA 1996 s.94   -  Right not to be unfairly dismissed (definitional, not numeric)
+  ERA 1996 s.95   -  Circumstances of dismissal (definitional)
+  ERA 1996 s.97   -  Effective date of termination (definitional)
+  ERA 1996 s.98   -  General test of fairness (merits assessment, not deterministic)
+  TULRCA s.207A   -  ACAS uplift (tribunal discretion 0-25%, in SoL documentation)
 
   Gate result: VERIFIED (all production-enabled rules verified)
 
 ═══════════════════════════════════════════════════════════════════════════════
-UNPAID WAGES RULES — VERIFICATION STATUS
+UNPAID WAGES RULES  -  VERIFICATION STATUS
 ═══════════════════════════════════════════════════════════════════════════════
 
   Rule key                                      Status              Authority
@@ -60,10 +60,10 @@ UNPAID WAGES RULES — VERIFICATION STATUS
   unlawful_deduction_wages.remedy_basis         case_law_verified   ERA 1996 s.24 + Delaney [1992]
 
   Note: case_law_verified means the citation is to a reported court/tribunal decision.
-  These are distinct from statutory rules — they cannot be directly verified on
+  These are distinct from statutory rules  -  they cannot be directly verified on
   legislation.gov.uk. The citations are correct and well-established authority.
   Bear Scotland [2015] was a 2015 EAT decision (Langstaff P). Delaney v Staples
-  [1992] 1 AC 687 is a House of Lords authority — among the highest UK court authority.
+  [1992] 1 AC 687 is a House of Lords authority  -  among the highest UK court authority.
 
   Gate result: VERIFIED (all production-enabled UPW rules verified or case_law_verified)
 
@@ -80,7 +80,7 @@ Logic:
 Gate result after Phase 5C seeding: PASSED ✓
 
 ═══════════════════════════════════════════════════════════════════════════════
-DATA-PROTECTION REPORT — PRIORITY CATEGORISATION
+DATA-PROTECTION REPORT  -  PRIORITY CATEGORISATION
 ═══════════════════════════════════════════════════════════════════════════════
 
 Phase 5C categorises DP gaps into:
@@ -132,20 +132,20 @@ production-ready due to DP, auth, and encryption gaps.
 FILES CREATED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  db/migrations/011_phase5c_verification.sql      — verification columns
-  scripts/check_rules_verification.py             — CI gate for rule verification
-  backend/engine/production_readiness.py          — production readiness report
-  tests/integration/test_phase5c_verification.py  — 21 integration tests
-  reports/phase5c-verification-report.txt         — this report
+  db/migrations/011_phase5c_verification.sql       -  verification columns
+  scripts/check_rules_verification.py              -  CI gate for rule verification
+  backend/engine/production_readiness.py           -  production readiness report
+  tests/integration/test_phase5c_verification.py   -  21 integration tests
+  reports/phase5c-verification-report.txt          -  this report
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES MODIFIED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  ingestion/rules/seed_unfair_dismissal.py  — VERIFICATION_STATUSES + UPDATE SQL
-  ingestion/rules/seed_unpaid_wages.py      — _UPW_VERIFICATION + UPDATE SQL
-  backend/engine/dp_report.py               — priority_breakdown categorisation
-  backend/api/main.py                       — /admin/rules-verification,
+  ingestion/rules/seed_unfair_dismissal.py   -  VERIFICATION_STATUSES + UPDATE SQL
+  ingestion/rules/seed_unpaid_wages.py       -  _UPW_VERIFICATION + UPDATE SQL
+  backend/engine/dp_report.py                -  priority_breakdown categorisation
+  backend/api/main.py                        -  /admin/rules-verification,
                                               /admin/production-readiness; v1.1.0-phase5c
 
 ═══════════════════════════════════════════════════════════════════════════════

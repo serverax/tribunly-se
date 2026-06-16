@@ -1,5 +1,5 @@
 -- Migration 004: Phase 3 dashboard, retention, coaching, solicitor review
--- Placeholder migration — schemas finalised before Phase 3 build starts.
+-- Placeholder migration  -  schemas finalised before Phase 3 build starts.
 
 -- Document readiness tracking
 CREATE TABLE IF NOT EXISTS document_readiness (
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS document_readiness (
 );
 
 -- Human case-support coaching sessions
--- Label: "Human case-support coaching" — NOT legal advice.
+-- Label: "Human case-support coaching"  -  NOT legal advice.
 -- provider_type must be paralegal_coach; never label as solicitor without SRA authorisation.
 CREATE TABLE IF NOT EXISTS support_sessions (
     id                  uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS solicitor_reviews (
 );
 
 -- Reminder events
--- Message templates are static strings with placeholders — never LLM-generated.
+-- Message templates are static strings with placeholders  -  never LLM-generated.
 CREATE TABLE IF NOT EXISTS reminder_events (
     id                  uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
     case_id             uuid        REFERENCES cases(id) ON DELETE CASCADE,

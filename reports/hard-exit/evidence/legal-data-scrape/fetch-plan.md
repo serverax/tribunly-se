@@ -1,4 +1,4 @@
-# SA-001 Fetch Plan — RAW UK Employment-Law Sources
+# SA-001 Fetch Plan  -  RAW UK Employment-Law Sources
 
 Scope: acquisition only. Fetch raw official source bytes to disk. No parsing into rules,
 no corpus_chunks, no embeddings, no DB rows. Record real HTTP status + sha256 for every fetch.

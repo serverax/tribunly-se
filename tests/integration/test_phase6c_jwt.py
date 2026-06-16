@@ -1,9 +1,9 @@
 """
-Phase 6C — Real JWT cryptographic verification tests.
+Phase 6C  -  Real JWT cryptographic verification tests.
 
 Tests:
   JWT verification (direct):
-   1.  Valid HS256 JWT accepted — correct sub returned
+   1.  Valid HS256 JWT accepted  -  correct sub returned
    2.  Expired JWT rejected (401)
    3.  Wrong issuer rejected (401)
    4.  Wrong audience rejected (401)
@@ -318,7 +318,7 @@ def test_readiness_report_shows_jwt_implemented():
 
 
 def test_controlled_beta_ready_remains_false():
-    """Controlled beta still blocked by DPIA/privacy — not a technical issue."""
+    """Controlled beta still blocked by DPIA/privacy  -  not a technical issue."""
     resp = client.get("/admin/production-readiness", headers=_ADMIN_HDR)
     data = resp.json()
     # With current compliance-signoff.json (DPIA not reviewed), CB is still False

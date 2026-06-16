@@ -1,15 +1,15 @@
-# lawapp MVP — End-to-End Proof Report
+# lawapp MVP  -  End-to-End Proof Report
 
 - **Timestamp:** 2026-06-05  **Branch:** main  **Commit:** a0968b0
 - **Command:** `bash scripts/prove_mvp_user_journey.sh` (+ 7 component proofs, + full regression)
 - **Status:** MVP journey **PASS**; only Find Case Law bulk remains **OWNER-BLOCKED**.
 
 ## Files changed (this phase)
-- `backend/api/main.py` — `/documents/generate` now **fail-closed grounding gate**:
+- `backend/api/main.py`  -  `/documents/generate` now **fail-closed grounding gate**:
   refuses (HTTP 422) when the assessment is `insufficient_grounding`, `not_supported`,
   or `jurisdiction_supported=false`.
 - (Prior phase, underpinning the journey) `backend/core/retrieve.py` +
-  `backend/core/pipeline.py` — jurisdiction_code filtering, NI fail-closed,
+  `backend/core/pipeline.py`  -  jurisdiction_code filtering, NI fail-closed,
   `legal_retrieval_audit` + `deadline_calculation_audit` writes.
 
 ## Migrations changed
@@ -39,20 +39,20 @@ prove_handoff_workflow.sh .............. HANDOFF WORKFLOW PROOF: PASS
 prove_legal_boundary_notices.sh ........ LEGAL BOUNDARY NOTICES PROOF: PASS
 prove_no_fake_claims_or_uncited_law.sh . NO FAKE CLAIMS / UNCITED LAW PROOF: PASS
 ```
-(Plus the 14 legal-spine proofs from the prior phase — all PASS.)
+(Plus the 14 legal-spine proofs from the prior phase  -  all PASS.)
 
 ## Journey evidence (hostile end-to-end)
-1. **Land/intake** — `/pages/intake.html`, `/pages/assessment.html` served (200).
-2. **/assess** — status=ok, **8 citations**, deadline **2024-07-31** (source=`rules`),
+1. **Land/intake**  -  `/pages/intake.html`, `/pages/assessment.html` served (200).
+2. **/assess**  -  status=ok, **8 citations**, deadline **2024-07-31** (source=`rules`),
    **6 key_weaknesses** shown.
-3. **Test payment** — `/api/payment/create-session` returns
+3. **Test payment**  -  `/api/payment/create-session` returns
    `{mode, session_id, payment_token, checkout_url, price_gbp, document_type}`.
-4. **Document generation (paid)** — schedule_of_loss (13,176 chars) +
+4. **Document generation (paid)**  -  schedule_of_loss (13,176 chars) +
    particulars_of_claim (12,728 chars); `disclaimer_included=true`,
    `safety_check.passed=true`, no reserved-activity wording.
-5. **Fail-closed** — ungrounded assessment → **HTTP 422** (no document).
-6. **Handoff** — consented lead → **201** (free); no consent → **422**; bad trigger → 422.
-7. **Audit** — `legal_retrieval_audit` 29→30, `deadline_calculation_audit` 18→19.
+5. **Fail-closed**  -  ungrounded assessment → **HTTP 422** (no document).
+6. **Handoff**  -  consented lead → **201** (free); no consent → **422**; bad trigger → 422.
+7. **Audit**  -  `legal_retrieval_audit` 29→30, `deadline_calculation_audit` 18→19.
 
 ## DB audit row counts (before → after a single journey run)
 - legal_retrieval_audit: 29 → 30
@@ -93,9 +93,9 @@ prove_no_fake_claims_or_uncited_law.sh . NO FAKE CLAIMS / UNCITED LAW PROOF: PAS
 - `tests/test_deadline.py` passes.
 
 ## Known blockers (external owner/licence only)
-- **Find Case Law bulk ingestion** — BLOCKED BY OWNER (computational-analysis licence
+- **Find Case Law bulk ingestion**  -  BLOCKED BY OWNER (computational-analysis licence
   pending). case_law empty, fail-closed, blocker recorded. Everything else green.
-- **Live solicitor integration** — out of scope per the order; the handoff trigger +
+- **Live solicitor integration**  -  out of scope per the order; the handoff trigger +
   capture workflow is implemented and proven (free to the user).
 
 ## Honest note on full pytest

@@ -3,7 +3,7 @@ The DomainSpec contract.
 
 A legal domain is described declaratively by a DomainSpec. The registry stores
 one DomainSpec per domain. Anything the rest of the platform needs to know in
-order to route, gate, retrieve, and document a matter is expressed here — so a
+order to route, gate, retrieve, and document a matter is expressed here  -  so a
 NEW domain can be added by registering a DomainSpec, with no edit to shared
 core (CLAUDE.md §4: modular; new domains must not require a core rewrite).
 

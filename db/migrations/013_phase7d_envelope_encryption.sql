@@ -1,6 +1,6 @@
--- Migration 013: Phase 7D — envelope encryption key metadata columns
+-- Migration 013: Phase 7D  -  envelope encryption key metadata columns
 -- Adds encryption_key_metadata jsonb to tables that store encrypted data.
--- Stores EncryptedKeyBundle (CiphertextBlob + provider metadata) — NOT plaintext keys.
+-- Stores EncryptedKeyBundle (CiphertextBlob + provider metadata)  -  NOT plaintext keys.
 --
 -- GUARDRAIL: encryption_key_metadata must NEVER contain plaintext key material.
 --            It contains the KMS CiphertextBlob which is safe to persist.

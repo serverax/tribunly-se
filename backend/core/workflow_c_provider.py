@@ -1,5 +1,5 @@
 """
-Workflow C provider stage — wires the replaceable LLM provider plug into /assess.
+Workflow C provider stage  -  wires the replaceable LLM provider plug into /assess.
 
 Order of operations (founder mandate: DB FIRST, RULES FIRST, CITATIONS FIRST,
 AI SECOND, FAIL-CLOSED ALWAYS):
@@ -11,7 +11,7 @@ AI SECOND, FAIL-CLOSED ALWAYS):
     4. run all 4 AIA validators on the provider output
     5. accept only if every validator passes; otherwise reject / fail closed
 
-This never replaces the deterministic result — it attaches a ``provider_stage``
+This never replaces the deterministic result  -  it attaches a ``provider_stage``
 block and only contributes if it passes every gate.
 """
 

@@ -1,6 +1,6 @@
-PHASE 5A — VALIDATION, HARDENING, ACCURACY REGRESSION, PRODUCTION-READINESS
+PHASE 5A  -  VALIDATION, HARDENING, ACCURACY REGRESSION, PRODUCTION-READINESS
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -20,17 +20,17 @@ LEGAL ACCURACY REGRESSION SUITE
 
 Location: tests/legal_accuracy/test_legal_accuracy.py
 Fixtures: tests/legal_accuracy/fixtures.py (8 fact patterns)
-Model:    StubReasoningModel only — no real LLM, no quota dependency
+Model:    StubReasoningModel only  -  no real LLM, no quota dependency
 
 Fact patterns:
-  FP1: Ordinary UD (4yr, conduct, no procedure) — deadline, QP, weaknesses
-  FP2: Under qualifying period (14mo) — QP fails, has_viable_claim='no'
-  FP3: Day-one service (auto-unfair candidate) — QP fails
-  FP4: EC applied, floor does NOT bite — deadline 2026-04-14
-  FP5: EC applied, floor BITES — deadline 2026-04-25
-  FP6: Missed deadline — urgency='expired'
-  FP7: Insufficient facts (no EDT) — missing_edt status, no fabrication
-  FP8: Complex case (SOSR + procedure) — deadline correct, QP passes
+  FP1: Ordinary UD (4yr, conduct, no procedure)  -  deadline, QP, weaknesses
+  FP2: Under qualifying period (14mo)  -  QP fails, has_viable_claim='no'
+  FP3: Day-one service (auto-unfair candidate)  -  QP fails
+  FP4: EC applied, floor does NOT bite  -  deadline 2026-04-14
+  FP5: EC applied, floor BITES  -  deadline 2026-04-25
+  FP6: Missed deadline  -  urgency='expired'
+  FP7: Insufficient facts (no EDT)  -  missing_edt status, no fabrication
+  FP8: Complex case (SOSR + procedure)  -  deadline correct, QP passes
 
 Cross-fixture assertions:
   - All in-scope deadlines: source='rules'
@@ -45,7 +45,7 @@ Script: scripts/run_legal_accuracy.py
 Usage:  python scripts/run_legal_accuracy.py
 Exit:   0 = all pass, 1 = any fail
 
-The CI gate runs ONLY tests/legal_accuracy/ — not the full integration suite.
+The CI gate runs ONLY tests/legal_accuracy/  -  not the full integration suite.
 Real-model tests are excluded. Deterministic layer only.
 Skipped tests (quota/model) are not treated as pass evidence.
 
@@ -54,13 +54,13 @@ DATA-PROTECTION REPORT SUMMARY (GET /admin/dp-report)
 ═══════════════════════════════════════════════════════════════════════════════
 
 IMPLEMENTED:
-  [✓] Third-party model boundary — deidentify.py strips 14 PII field types
+  [✓] Third-party model boundary  -  deidentify.py strips 14 PII field types
   [✓] boundary_log in every assess() response
   [✓] Raw uploaded bytes never logged, never sent to external service
 
 PARTIAL:
-  [~] Log PII scanning — test-fixture level only, not production audit
-  [~] Facts persistence — assessment jsonb is de-identified; extracted_facts may hold confirmed PII
+  [~] Log PII scanning  -  test-fixture level only, not production audit
+  [~] Facts persistence  -  assessment jsonb is de-identified; extracted_facts may hold confirmed PII
 
 NOT IMPLEMENTED:
   [✗] Encryption at rest (uploads, cases.facts_encrypted, handoff_leads)
@@ -102,7 +102,7 @@ Events (11): diagnosis_started, diagnosis_completed, document_preview_generated,
              upload_added, extraction_reviewed, bundle_preview_generated,
              handoff_started, handoff_submitted
 
-GUARDRAIL: case_id is nullable — pre-case events supported
+GUARDRAIL: case_id is nullable  -  pre-case events supported
 GUARDRAIL: metadata must not contain PII or raw file content
 
 ═══════════════════════════════════════════════════════════════════════════════

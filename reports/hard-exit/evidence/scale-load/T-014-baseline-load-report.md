@@ -1,9 +1,9 @@
-# T-014 — Baseline Load Report (100k NFR, scaled-down local)
+# T-014  -  Baseline Load Report (100k NFR, scaled-down local)
 
 **Date:** 2026-06-07
 **Target:** live `lawapp-backend-1` (local Docker, single container).
 **Harness:** `scripts/load/baseline_load.py` (real concurrent HTTP, percentile latency).
-**Result:** 🔴 **NOT 100k-ready** — current single-node config is ~200× short of target.
+**Result:** 🔴 **NOT 100k-ready**  -  current single-node config is ~200× short of target.
 **Scope honesty:** this is a *local single-node* probe to expose code/config bottlenecks. A
 true 100k test needs the AKS cluster (unreachable) + a distributed load-gen fleet → owner-blocked.
 
@@ -11,7 +11,7 @@ true 100k test needs the AKS cluster (unreachable) + a distributed load-gen flee
 
 ## Measured (real numbers)
 
-### `/health` — trivial endpoint, no DB, concurrency=100, requests=2000
+### `/health`  -  trivial endpoint, no DB, concurrency=100, requests=2000
 `reports/hard-exit/evidence/scale-load/t014-baseline/health-c100-n2000.json`
 ```
 throughput_rps : 51.3
@@ -27,9 +27,9 @@ latency_ms     : p50=1748  p95=2505  p99=3104  max=3241  mean=1699
 | error < 0.1% | 0.0% | ✅ (no errors, just slow) |
 
 **Root causes (consistent with the architecture audit):**
-1. Single backend container, **single uvicorn worker** (dev mode) — no process/worker scaling.
-2. **No connection pooling** — even non-DB routes share one event loop saturated at c=100.
-3. `replicas: 1` everywhere — no horizontal scale, no LB.
+1. Single backend container, **single uvicorn worker** (dev mode)  -  no process/worker scaling.
+2. **No connection pooling**  -  even non-DB routes share one event loop saturated at c=100.
+3. `replicas: 1` everywhere  -  no horizontal scale, no LB.
 4. No caching → every request does full work.
 
 ## What this proves
@@ -45,4 +45,4 @@ latency_ms     : p50=1748  p95=2505  p99=3104  max=3241  mean=1699
 4. Add Redis cache for CitationGuard UUID set + corpus/rules hot paths.
 5. Re-run baseline after each; full 100k distributed run = owner-blocked (needs AKS + load fleet).
 
-**Verdict: T-014 = FAIL (not yet 100k-ready) — baseline captured, remediation plan binding.**
+**Verdict: T-014 = FAIL (not yet 100k-ready)  -  baseline captured, remediation plan binding.**

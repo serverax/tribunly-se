@@ -6,7 +6,7 @@ Phase 1: deterministic score-based rerank combining:
   - trust_score (source-type prior)
   - exact_citation_match boost
 
-No cross-encoder model in Phase 1 — avoids new runtime deps. Env flag
+No cross-encoder model in Phase 1  -  avoids new runtime deps. Env flag
 RERANK_MODEL_ENABLED reserved for Phase 2 local cross-encoder.
 """
 
@@ -20,7 +20,7 @@ def _base_score(auth: dict) -> float:
     rrf = float(auth.get("rrf_score") or 0.0)
     trust = float(auth.get("trust_score") or 0.0) / 100.0
     exact = 1.0 if auth.get("exact_citation_match") else 0.0
-    # Weighted combination — RRF primary, trust secondary, exact citation tie-break
+    # Weighted combination  -  RRF primary, trust secondary, exact citation tie-break
     return (rrf * 0.55) + (trust * 0.35) + (exact * 0.10)
 
 
@@ -36,7 +36,7 @@ def rerank_authorities(authorities: Sequence[dict], *, limit: int | None = None)
         return []
 
     if os.getenv("RERANK_MODEL_ENABLED", "").lower() in ("1", "true", "yes"):
-        # Phase 2 hook — fall through to score-based until model wired
+        # Phase 2 hook  -  fall through to score-based until model wired
         pass
 
     ranked: list[dict] = []

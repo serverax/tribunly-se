@@ -1,4 +1,4 @@
-# Rules Integrity — Proof Report
+# Rules Integrity  -  Proof Report
 
 - **Timestamp:** 2026-06-05  **Branch:** main  **Commit:** a0968b0
 - **Command:** `bash scripts/prove_rules_integrity.sh` + `pytest tests/test_rules_integrity.py`

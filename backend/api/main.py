@@ -1,5 +1,5 @@
 """
-Backend API — Phase 3B.
+Backend API  -  Phase 3B.
 
 Exposes the assessment pipeline: classify → retrieve (rules + BM25 keyword
 fallback) → deadline (deterministic) → de-identify → reason → score → govern.
@@ -47,7 +47,7 @@ from ingestion.freshness.report import run_report
 
 logger = logging.getLogger(__name__)
 
-# ── Rate limiter — Redis-backed when available; in-memory fallback ──────────
+# ── Rate limiter  -  Redis-backed when available; in-memory fallback ──────────
 import os as _os_rate
 _redis_uri = _os_rate.getenv("RATELIMIT_STORAGE_URI", "")
 if _redis_uri:
@@ -57,7 +57,7 @@ if _redis_uri:
         logging.getLogger(__name__).info("Rate limiter: Redis backend (%s)", _redis_uri)
     except Exception as _rate_err:
         logging.getLogger(__name__).warning(
-            "Rate limiter: Redis unavailable (%s) — falling back to in-memory. "
+            "Rate limiter: Redis unavailable (%s)  -  falling back to in-memory. "
             "Install redis package or check RATELIMIT_STORAGE_URI.", _rate_err
         )
         _limiter = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
@@ -66,7 +66,7 @@ else:
 
 
 def _resolve_assess_rate_limit() -> str:
-    """Assess POST rate limit — relaxed when LAWAPP_LOAD_TEST_MODE=1 for k6 runs."""
+    """Assess POST rate limit  -  relaxed when LAWAPP_LOAD_TEST_MODE=1 for k6 runs."""
     explicit = _os_rate.getenv("LAWAPP_ASSESS_RATE_LIMIT", "").strip()
     if explicit:
         return explicit
@@ -125,7 +125,7 @@ def _require_admin_in_production(
         )
 
 
-# ── Case ownership dependency — used by all /cases/{case_id}/* sub-endpoints ──
+# ── Case ownership dependency  -  used by all /cases/{case_id}/* sub-endpoints ──
 
 def _require_case_owner(
     case_id: str,
@@ -191,7 +191,7 @@ from backend.core import otel as _otel
 _otel.setup_telemetry(app)
 
 # ── Path-Splitter routes (ADR: Deterministic vs Generative Routing) ──────────
-# /reasoning/route + /reasoning/stream — FACTUAL serves deterministic rules (<400ms,
+# /reasoning/route + /reasoning/stream  -  FACTUAL serves deterministic rules (<400ms,
 # no LLM); REASONING streams model tokens via text/event-stream.
 from backend.api.reasoning_routes import router as _reasoning_router
 app.include_router(_reasoning_router)
@@ -226,7 +226,7 @@ app.include_router(_auth_router)
 from backend.api.tools_routes import router as _tools_router
 app.include_router(_tools_router)
 
-# ── User feedback (corrections) — auth-gated ─────────────────────────────────
+# ── User feedback (corrections)  -  auth-gated ─────────────────────────────────
 from backend.api.feedback_routes import router as _feedback_router
 app.include_router(_feedback_router)
 
@@ -398,7 +398,7 @@ def get_me(
 @app.get("/health")
 def health() -> dict:
     """
-    Health check — reports DB status, auth mode, AI provider, and payment mode.
+    Health check  -  reports DB status, auth mode, AI provider, and payment mode.
     Transparency endpoint: always honest about stub/real configuration.
     """
     from backend.core.models import get_ai_provider_status
@@ -427,14 +427,14 @@ def health() -> dict:
         "auth_mode":            get_auth_mode(),
         "payment_mode":         get_payment_mode(),
         "ai_provider":          get_ai_provider_status(),
-        "openrouter_configured": _openrouter,   # bool only — never the key
+        "openrouter_configured": _openrouter,   # bool only  -  never the key
     }
 
 
 @app.get("/livez", include_in_schema=False)
 def livez() -> dict:
     """Liveness probe target: reports only that the process is up. Performs NO
-    dependency checks (no DB/LLM). The k8s liveness probe MUST use this — a
+    dependency checks (no DB/LLM). The k8s liveness probe MUST use this  -  a
     transient DB outage then marks the pod NotReady (readiness=/health) instead of
     crash-looping the container (which is what /health-as-liveness caused)."""
     return {"status": "alive", "service": "lawapp-backend"}
@@ -443,7 +443,7 @@ def livez() -> dict:
 @app.get("/freshness")
 def freshness() -> dict:
     """
-    Source freshness report — lists every legal source with its
+    Source freshness report  -  lists every legal source with its
     last_verified_at and flags stale entries.
     Phase 1 acceptance criterion: this endpoint returns data for all sources.
     """
@@ -475,7 +475,7 @@ def get_rules(claim_type: str, jurisdiction: str = "EW") -> dict:
     Return current rules for a claim type.
 
     Used by the client-side deadline calculator to fetch rule values.
-    The client does the arithmetic from these values — no legal values
+    The client does the arithmetic from these values  -  no legal values
     are hardcoded client-side.
 
     Phase 3B: includes last_verified_at for source transparency.
@@ -592,7 +592,7 @@ def _assess_factual(req: "AssessRequest", decision) -> dict:
 
     No LLM, no streaming. Returns cited rule references. Fails CLOSED if the
     jurisdiction is unsupported, the query is out of scope, or the required rule
-    is missing — never guesses.
+    is missing  -  never guesses.
     """
     from datetime import date
     from backend.core.classify import classify
@@ -604,18 +604,18 @@ def _assess_factual(req: "AssessRequest", decision) -> dict:
 
     if not jurisdiction_supported(req.jurisdiction):
         return {**base, "status": "not_supported",
-                "message": f"{req.jurisdiction} employment law is not verified — fail closed."}
+                "message": f"{req.jurisdiction} employment law is not verified  -  fail closed."}
 
     c = classify(req.query, req.facts or {})
     if not getattr(c, "in_scope", True):
         return {**base, "status": "not_supported",
-                "message": "Out of scope for this system — no guess."}
+                "message": "Out of scope for this system  -  no guess."}
 
     claim = getattr(c, "matter_type", None) or "unfair_dismissal"
     rules = retrieve_rules(claim, req.jurisdiction, date.today())
     if not rules:
         return {**base, "status": "insufficient_grounding", "claim_type": claim,
-                "citations": [], "reason": "required rule missing — fail closed"}
+                "citations": [], "reason": "required rule missing  -  fail closed"}
 
     citations = [{
         "cite": (r.get("authority") or r.get("authority_ref") or r.get("rule_key")),
@@ -711,13 +711,13 @@ def _orchestrator_assess(req: AssessRequest) -> dict:
 @app.post("/api/diagnosis")
 def diagnosis_endpoint(request: Request, req: AssessRequest) -> dict:
     """
-    POST /api/diagnosis — primary diagnosis endpoint for lawapp.
+    POST /api/diagnosis  -  primary diagnosis endpoint for lawapp.
 
     Identical to POST /assess but on the canonical /api/diagnosis route.
     Runs the full pipeline: classify → retrieve → reason → score → govern → respond.
 
     Retrieval order:
-      1. rules table (deterministic values — deadlines, caps, thresholds)
+      1. rules table (deterministic values  -  deadlines, caps, thresholds)
       2. legislation (BM25 active; pgvector when embeddings available)
       3. acas_guidance / official_guidance (supporting context)
       4. case_law (FCL bulk disabled; sample-only until licence granted)
@@ -748,7 +748,7 @@ def generate_document(req: DocumentRequest, x_user_id: Optional[str] = Header(No
 
     Phase 6A/7: Real payment gating via DB. Full content is delivered ONLY when the case
     is paid (is_case_paid); unpaid callers receive a truncated preview.
-    GUARDRAIL: auth required — unauthenticated requests are rejected (401).
+    GUARDRAIL: auth required  -  unauthenticated requests are rejected (401).
     GUARDRAIL: case ownership verified before any document generation.
     """
     from backend.core.documents import (
@@ -784,7 +784,7 @@ def generate_document(req: DocumentRequest, x_user_id: Optional[str] = Header(No
             ),
         )
 
-    # CRITIC GATE (Integrity Framework — Citation Pinning). The Critic sits before the
+    # CRITIC GATE (Integrity Framework  -  Citation Pinning). The Critic sits before the
     # drafter (SEA): every cited authority in the assessment MUST resolve to a real
     # local-DB row. A non-resolving citation = hallucination => 422, the document is
     # NEVER drafted, and the rejection is logged (security event / DSPy training signal).
@@ -809,18 +809,18 @@ def generate_document(req: DocumentRequest, x_user_id: Optional[str] = Header(No
 
     if req.document_type == "particulars_of_claim":
         content = generate_particulars_of_claim(req.assessment, req.facts)
-        title   = "Particulars of Claim — Unfair Dismissal (Self-Help Draft)"
+        title   = "Particulars of Claim  -  Unfair Dismissal (Self-Help Draft)"
     elif req.document_type == "schedule_of_loss":
         content = generate_schedule_of_loss(req.assessment, req.facts)
-        title   = "Schedule of Loss — Unfair Dismissal (Self-Help Draft)"
+        title   = "Schedule of Loss  -  Unfair Dismissal (Self-Help Draft)"
     elif req.document_type == "letter_before_action":
         from backend.core.documents import generate_letter_before_action
         content = generate_letter_before_action(req.assessment, req.facts)
-        title   = "Letter Before Action — Unpaid Wages (Self-Help Draft)"
+        title   = "Letter Before Action  -  Unpaid Wages (Self-Help Draft)"
     else:
         from backend.core.documents import generate_et1_support_notes_wages
         content = generate_et1_support_notes_wages(req.assessment, req.facts)
-        title   = "ET1 Support Notes — Unpaid Wages (Self-Help Draft)"
+        title   = "ET1 Support Notes  -  Unpaid Wages (Self-Help Draft)"
 
     check = safety_check(content)
     if not check["passed"]:
@@ -1218,7 +1218,7 @@ def workflow_documents_generate(
                         req.facts,
                         req.assessment,
                     )
-                    title = "Particulars of Claim — Unfair Dismissal (Self-Help Draft)"
+                    title = "Particulars of Claim  -  Unfair Dismissal (Self-Help Draft)"
                 elif doc_type == "schedule_of_loss":
                     content = generate_schedule_of_loss(
                         user_id,
@@ -1226,7 +1226,7 @@ def workflow_documents_generate(
                         req.assessment,
                         req.facts,
                     )
-                    title = "Schedule of Loss — Unfair Dismissal (Self-Help Draft)"
+                    title = "Schedule of Loss  -  Unfair Dismissal (Self-Help Draft)"
 
                 # CRITICAL GATE: Safety check all generated content
                 check = safety_check(content)
@@ -1274,7 +1274,7 @@ def workflow_documents_generate(
 class SaveCaseRequest(BaseModel):
     claim_type: str = "unfair_dismissal"
     jurisdiction: str = "EW"
-    assessment: dict            # structured assessment summary (no PII — pipeline output)
+    assessment: dict            # structured assessment summary (no PII  -  pipeline output)
     key_dates: dict             # {"edt": "YYYY-MM-DD", "deadline_date": "YYYY-MM-DD"}
     recommended_next_step: Optional[str] = None
     facts: Optional[dict] = None  # Phase 6: raw facts for encryption at rest
@@ -1696,11 +1696,11 @@ class HandoffLeadRequest(BaseModel):
 @app.post("/handoff/leads", status_code=201)
 def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
     """
-    Capture a handoff lead — contact info from a user requesting solicitor referral.
+    Capture a handoff lead  -  contact info from a user requesting solicitor referral.
 
     Trigger conditions: seek_solicitor, insufficient_grounding, low_confidence.
     The user has explicitly chosen to submit their details.
-    consent_given must be True — enforced at DB level and here.
+    consent_given must be True  -  enforced at DB level and here.
 
     Phase 3D: stored locally. No live referral to any partner firm.
     Phase 6: integrate with solicitor referral network.
@@ -1736,14 +1736,14 @@ def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
     provider  = get_key_provider()
 
     if kms_mode == "aws_kms" and provider.is_available():
-        # Envelope encryption path (Phase 7E) — one data key per record
+        # Envelope encryption path (Phase 7E)  -  one data key per record
         try:
             from cryptography.fernet import Fernet as _Fernet
             _data_key, _bundle = provider.generate_data_key()
             if not _data_key or not _bundle:
-                raise RuntimeError("KMS generate_data_key returned None — service unavailable")
+                raise RuntimeError("KMS generate_data_key returned None  -  service unavailable")
             _fernet = _Fernet(_data_key)
-            del _data_key   # plaintext data key is transient — NEVER stored
+            del _data_key   # plaintext data key is transient  -  NEVER stored
             _name_enc  = _fernet.encrypt(req.name.encode()).decode("ascii")
             _email_enc = _fernet.encrypt(req.email.encode()).decode("ascii")
             _phone_enc = _fernet.encrypt(req.phone.encode()).decode("ascii") if req.phone else None
@@ -1758,7 +1758,7 @@ def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
                 provider.provider_name(),
             )
         except Exception as exc:
-            logger.error("Handoff lead envelope encryption failed: %s — failing closed.", type(exc).__name__)
+            logger.error("Handoff lead envelope encryption failed: %s  -  failing closed.", type(exc).__name__)
             raise HTTPException(status_code=503, detail="Encryption service unavailable.")
 
     elif _enc_ready():
@@ -1774,7 +1774,7 @@ def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
             _pii_encrypted = True
             logger.info("Handoff lead PII encrypted (env key). Plaintext not stored.")
         except Exception as exc:
-            logger.error("Handoff lead env-key encryption failed — storing plaintext: %s", exc)
+            logger.error("Handoff lead env-key encryption failed  -  storing plaintext: %s", exc)
             _name_store = req.name
             _email_store = req.email
             _phone_store = req.phone
@@ -1821,7 +1821,7 @@ def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
             "message": (
                 "Thank you. Your details have been received. "
                 "lawapp will match you with a qualified employment solicitor. "
-                "This is free to you — no charges apply for this referral. "
+                "This is free to you  -  no charges apply for this referral. "
                 "lawapp is not a solicitor and does not provide regulated legal advice."
             ),
         }
@@ -1998,7 +1998,7 @@ def list_reminders(case_id: str, _owner: Optional[str] = Depends(_require_case_o
 
 # ── Phase 4A: Document upload and OCR/extraction ─────────────────────────────
 
-# Local upload directory — Phase 4A only, NOT production-ready.
+# Local upload directory  -  Phase 4A only, NOT production-ready.
 # Production: replace with encrypted object storage (S3/GCS + AES-256).
 _UPLOAD_DIR = _Path(
     _os.getenv(
@@ -2012,7 +2012,7 @@ try:
     _UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     _UPLOADS_AVAILABLE = True
 except OSError as _upload_exc:
-    logger.error("Upload dir %s not writable (%s) — uploads disabled (fail closed). "
+    logger.error("Upload dir %s not writable (%s)  -  uploads disabled (fail closed). "
                  "Set LAWAPP_UPLOAD_DIR to a writable volume.", _UPLOAD_DIR, _upload_exc)
     _UPLOADS_AVAILABLE = False
 
@@ -2061,7 +2061,7 @@ def upload_document(
             detail=f"doc_type must be one of: {sorted(_VALID_DOC_TYPES)}",
         )
 
-    # Read file bytes — never logged, never sent externally
+    # Read file bytes  -  never logged, never sent externally
     file_bytes = file.file.read()
     file_size  = len(file_bytes)
     upload_id  = str(_uuid.uuid4())
@@ -2074,9 +2074,9 @@ def upload_document(
             file_bytes = _enc_b(file_bytes)
             _file_encrypted = True
         except Exception as exc:
-            logger.error("Upload file encryption failed — storing plaintext: %s", exc)
+            logger.error("Upload file encryption failed  -  storing plaintext: %s", exc)
 
-    # Store to local filesystem (NOT production-ready — no HSM key management)
+    # Store to local filesystem (NOT production-ready  -  no HSM key management)
     if not _UPLOADS_AVAILABLE:
         raise HTTPException(
             status_code=503,
@@ -2086,7 +2086,7 @@ def upload_document(
     case_dir.mkdir(parents=True, exist_ok=True)
     storage_path = case_dir / upload_id
     storage_path.write_bytes(file_bytes)
-    # Log metadata only — NEVER log file_bytes or encryption key
+    # Log metadata only  -  NEVER log file_bytes or encryption key
     logger.info(
         "Upload stored: upload_id=%s case_id=%s doc_type=%s size_bytes=%d "
         "content_type=%s encrypted=%s",
@@ -2130,7 +2130,7 @@ def upload_document(
             "extraction_status": "pending",
             "created_at":        row[1].isoformat(),
             "storage_note": (
-                "LOCAL STORAGE — Phase 4A only. "
+                "LOCAL STORAGE  -  Phase 4A only. "
                 "No encryption at rest. Not production-ready."
             ),
         }
@@ -2216,7 +2216,7 @@ def extract_document(
         filename, content_type, storage_ref = row
         
         # Read from local filesystem (Phase 4 storage).
-        # The upload endpoint stores storage_ref as "local:<path>" — strip the
+        # The upload endpoint stores storage_ref as "local:<path>"  -  strip the
         # scheme prefix before resolving the real filesystem path.
         _ref = storage_ref.split("local:", 1)[-1] if storage_ref else storage_ref
         storage_path = _Path(_ref)
@@ -2241,7 +2241,7 @@ def extract_document(
         )
 
         # Workflow A fail-closed: if AEE extracted no usable facts, do NOT mark
-        # success and do NOT emit an evidence_parsed event — surface it honestly.
+        # success and do NOT emit an evidence_parsed event  -  surface it honestly.
         _facts_out = result.get("facts") or {}
         _num_facts = len([v for v in _facts_out.values() if v]) if isinstance(_facts_out, dict) else len(_facts_out)
         if _num_facts == 0:
@@ -2277,7 +2277,7 @@ def extract_document(
             )
         conn.commit()
 
-        # Workflow A: durable evidence_parsed event (IDs + counts only — no PII).
+        # Workflow A: durable evidence_parsed event (IDs + counts only  -  no PII).
         try:
             from backend.core import outbox as _outbox
             _rid = _otel.get_request_id()
@@ -2320,9 +2320,9 @@ def update_extracted_facts(case_id: str, upload_id: str, req: UpdateFactsRequest
     Confirm, correct, or reject individual extracted facts.
 
     States:
-      user_confirmed — accept extracted value as-is
-      user_corrected — override with user-supplied value
-      rejected       — discard; will not be applied to case
+      user_confirmed  -  accept extracted value as-is
+      user_corrected  -  override with user-supplied value
+      rejected        -  discard; will not be applied to case
 
     Only confirmed/corrected facts can subsequently be applied to the case.
     Rejected facts are not applied.
@@ -2600,7 +2600,7 @@ def generate_bundle(case_id: str, _owner: Optional[str] = Depends(_require_case_
 
 @app.get("/cases/{case_id}/bundle")
 def get_bundle_status(case_id: str, _owner: Optional[str] = Depends(_require_case_owner)) -> dict:
-    """Return bundle metadata for a case — which components have been generated."""
+    """Return bundle metadata for a case  -  which components have been generated."""
     conn = get_connection()
     try:
         with conn.cursor() as cur:
@@ -2656,7 +2656,7 @@ class FunnelEventRequest(BaseModel):
 @app.post("/funnel/events", status_code=201)
 def record_funnel_event(req: FunnelEventRequest) -> dict:
     """
-    Record a funnel event. Local storage only — no external analytics.
+    Record a funnel event. Local storage only  -  no external analytics.
     GUARDRAIL: metadata must not contain raw personal facts, file content, or PII.
     """
     if req.event_name not in _VALID_FUNNEL_EVENTS:
@@ -2932,7 +2932,7 @@ def get_timeline(case_id: str, _owner: Optional[str] = Depends(_require_case_own
     Auto-generates events from key_dates, uploads, generated docs, and handoffs.
     Manual events from DB are merged in.
     Confirmed extracted facts (user_confirmed/user_corrected only) add confirmed_extraction events.
-    Missing dates are flagged — never invented.
+    Missing dates are flagged  -  never invented.
 
     GUARDRAIL: Only confirmed/corrected extracted facts used.
     GUARDRAIL: Dates never invented; missing_date=True when date absent.
@@ -2965,7 +2965,7 @@ def create_timeline_event(case_id: str, req: CreateEventRequest, _owner: Optiona
     """
     Add a manual timeline event to a case.
 
-    event_date is optional — leave null rather than guessing.
+    event_date is optional  -  leave null rather than guessing.
     GUARDRAIL: Source 'rules_engine' is reserved for system use only.
     """
     if req.event_type not in _VALID_EVENT_TYPES:
@@ -3159,12 +3159,12 @@ def get_escalation(case_id: str, as_of: Optional[str] = None, _owner: Optional[s
     return result
 
 
-# ── Phase 6: Deletion endpoints (right to erasure — Art.17 UK GDPR) ──────────
+# ── Phase 6: Deletion endpoints (right to erasure  -  Art.17 UK GDPR) ──────────
 
 @app.delete("/cases/{case_id}", status_code=200)
 def delete_case(case_id: str, _owner: Optional[str] = Depends(_require_case_owner)) -> dict:
     """
-    Soft-delete a case (right to erasure — Art.17 UK GDPR).
+    Soft-delete a case (right to erasure  -  Art.17 UK GDPR).
     Sets deleted_at; case no longer returned by GET /cases/{id}.
     Audit logs retained for legal/compliance purposes.
     """
@@ -3199,7 +3199,7 @@ def delete_case(case_id: str, _owner: Optional[str] = Depends(_require_case_owne
 @app.delete("/handoff/leads/{lead_id}", status_code=200)
 def delete_handoff_lead(lead_id: str) -> dict:
     """
-    Delete a handoff lead and clear PII (right to erasure — Art.17 UK GDPR).
+    Delete a handoff lead and clear PII (right to erasure  -  Art.17 UK GDPR).
     Clears name, email, phone, case_summary, and encrypted values.
     trigger_reason and consent_given retained for audit trail.
     """
@@ -3243,7 +3243,7 @@ def delete_handoff_lead(lead_id: str) -> dict:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# lawapp Brain Algorithm — API Endpoints
+# lawapp Brain Algorithm  -  API Endpoints
 # All endpoints below are controlled by the lawapp Brain. Debug/test endpoints
 # require X-Admin-Key in production (LAWAPP_AUTH_MODE != "none").
 # ═══════════════════════════════════════════════════════════════════════════
@@ -3295,7 +3295,7 @@ class ConstructiveDismissalRequest(BaseModel):
 @_limiter.limit("30/minute")
 def api_constructive_dismissal(request: Request, req: ConstructiveDismissalRequest) -> dict:
     """
-    Workflow B — deterministic constructive-dismissal triage (Agent ART, no LLM).
+    Workflow B  -  deterministic constructive-dismissal triage (Agent ART, no LLM).
     Strict JSON output; statutory grounding from the legislation corpus; fails
     closed (viability "zero"/human_review) when grounding or core facts are missing.
     """
@@ -3341,7 +3341,7 @@ def create_payment_session(
     PAYMENT_MODE=stripe/stripe_test/stripe_live: redirects to Stripe checkout.
     PAYMENT_MODE=disabled: always returns payment_required=True.
 
-    GUARDRAIL: auth required — unauthenticated requests are rejected (401) BEFORE any
+    GUARDRAIL: auth required  -  unauthenticated requests are rejected (401) BEFORE any
                mode-specific response, matching canonical ordering.
     GUARDRAIL: Never charges without displaying price first.
     GUARDRAIL: raw tokens and simulator modes never unlock documents.
@@ -3349,7 +3349,7 @@ def create_payment_session(
     from backend.core.payment import get_payment_mode
     from backend.core.user_auth import get_current_user
 
-    # Authenticate first — parity with canonical /api/payments/create-session,
+    # Authenticate first  -  parity with canonical /api/payments/create-session,
     # which returns 401 before evaluating payment mode (incl. disabled).
     user_id = get_current_user(x_user_id, authorization)
     if not user_id:
@@ -3411,7 +3411,7 @@ def get_payment_status(
     """
     DEPRECATED legacy alias. Return the current payment mode (mode name only, no per-user data).
 
-    GUARDRAIL: auth required — unauthenticated requests are rejected (401), matching
+    GUARDRAIL: auth required  -  unauthenticated requests are rejected (401), matching
     canonical GET /api/payments/status/{case_id} ordering.
     """
     from backend.core.payment import get_payment_mode
@@ -3768,7 +3768,7 @@ def debug_mcp_tools(_admin: str = Depends(_require_admin_in_production)) -> dict
             {"name": "legal_source_api",   "allowed": True,  "consent_required": False, "description": "Fetch updates from legislation.gov.uk"},
             {"name": "payment",            "allowed": True,  "consent_required": True,  "description": "Process Stripe payments"},
             {"name": "case_management",    "allowed": True,  "consent_required": True,  "description": "Link case to external CMS"},
-            {"name": "email_import",       "allowed": False, "consent_required": True,  "description": "Import emails — disabled pending consent framework"},
+            {"name": "email_import",       "allowed": False, "consent_required": True,  "description": "Import emails  -  disabled pending consent framework"},
             {"name": "social_media",       "allowed": False, "consent_required": False, "description": "Not approved"},
         ],
         "note": "Brain controls all tool access. Unapproved tools are blocked at gateway.",
@@ -3911,7 +3911,7 @@ def get_retention_status(
     _key: str = Depends(_require_admin_key),
 ) -> dict:
     """
-    Return retention status — records older than retention_days.
+    Return retention status  -  records older than retention_days.
     Reports only; does not delete. Run scripts/run_retention.py to apply.
     """
     conn = get_connection()
@@ -3950,7 +3950,7 @@ def get_retention_status(
 
 @app.post("/api/router/test")
 def api_router_test(req: RouterTestRequest) -> dict:
-    """Canonical: AI Router test — selects processing path for a query."""
+    """Canonical: AI Router test  -  selects processing path for a query."""
     from backend.core.router import route
     return route(req.message, req.facts, req.claim_type).to_dict()
 
@@ -3979,7 +3979,7 @@ def api_rag_hybrid_search(req: HybridSearchRequest) -> dict:
 
 @app.post("/api/rag/graph")
 def api_rag_graph(req: LegalGraphRequest) -> dict:
-    """Canonical: Legal knowledge graph — nodes and edges for a claim type."""
+    """Canonical: Legal knowledge graph  -  nodes and edges for a claim type."""
     from backend.core.legal_graph import get_claim_subgraph
     result = get_claim_subgraph(req.claim_type, req.jurisdiction, max_depth=2)
     return result
@@ -4018,7 +4018,7 @@ def api_memory_get(
 
 @app.post("/api/evaluate")
 def api_evaluate(req: EvaluateRequest) -> dict:
-    """Canonical: Legal Evaluation AI — evaluate an assessment before output."""
+    """Canonical: Legal Evaluation AI  -  evaluate an assessment before output."""
     from backend.core.evaluator import evaluate_assessment
     assessment = req.answer
     if req.assessment_text and not assessment:
@@ -4056,7 +4056,7 @@ def api_mcp_tools() -> dict:
 
 @app.post("/api/cache/test")
 def api_cache_test(req: CacheTestRequest) -> dict:
-    """Canonical: Semantic cache — lookup and safety classification."""
+    """Canonical: Semantic cache  -  lookup and safety classification."""
     from backend.core.semantic_cache import cache_lookup, cache_store
     facts = {"case_id": req.case_id} if req.case_id else {}
     result = cache_lookup(req.query, req.jurisdiction, facts)
@@ -4091,7 +4091,7 @@ async def api_documents_upload(
     Canonical document upload with real extraction.
 
     Accepts: PDF, DOCX, plain text.
-    Extracts facts locally — NO content sent to third-party LLM.
+    Extracts facts locally  -  NO content sent to third-party LLM.
     All facts returned with status='unconfirmed' until user accepts them.
 
     GUARDRAIL: Raw document text is never stored or logged in full.
@@ -4236,7 +4236,7 @@ class WasmDeadlineRequest(BaseModel):
 def test_wasm_deadline(req: WasmDeadlineRequest) -> dict:
     """
     WASM Deadline endpoint: validates that WASM/JS arithmetic matches server rules engine.
-    No PII is sent — only dates, which are legal facts not personal data.
+    No PII is sent  -  only dates, which are legal facts not personal data.
     Server computes the same result and records any mismatch.
 
     Proves: WASM loaded / JS fallback used / results match server computation.
@@ -4259,7 +4259,7 @@ def test_wasm_deadline(req: WasmDeadlineRequest) -> dict:
 
     exec_ms = round((_time.monotonic() - t0) * 1000, 2)
 
-    # Build input hash (no PII — dates only)
+    # Build input hash (no PII  -  dates only)
     input_str = f"{req.edt}|{req.time_limit_months}|{req.ec_day_a}|{req.ec_day_b}"
     input_hash = hashlib.sha256(input_str.encode()).hexdigest()[:16]
 
@@ -4295,20 +4295,20 @@ def test_wasm_deadline(req: WasmDeadlineRequest) -> dict:
         "note": (
             "WASM runs in browser (client/public/wasm/lawapp_wasm_bg.wasm). "
             "This server endpoint validates the same arithmetic. "
-            "No personal data — only dates — processed here."
+            "No personal data  -  only dates  -  processed here."
         ),
     }
 
 
-# ── Local Ollama smoke test (LOCAL OLLAMA ONLY — never an external model) ──────
+# ── Local Ollama smoke test (LOCAL OLLAMA ONLY  -  never an external model) ──────
 
 @app.post("/api/test/ollama-smoke")
 def test_ollama_smoke(
     _admin: str = Depends(_require_admin_in_production),
 ) -> dict:
-    """Local Ollama smoke test. LOCAL OLLAMA ONLY — never calls an external/cloud
+    """Local Ollama smoke test. LOCAL OLLAMA ONLY  -  never calls an external/cloud
     LLM. Queries LAWAPP_OLLAMA_BASE_URL /api/tags. If Ollama is unavailable, returns
-    INFERENCE_UNAVAILABLE (fail closed) — never a cloud fallback. Admin-gated."""
+    INFERENCE_UNAVAILABLE (fail closed)  -  never a cloud fallback. Admin-gated."""
     from backend.core.inference_policy import (
         assert_no_external_llm_enabled, get_ollama_base_url, get_ollama_model)
     try:
@@ -4334,7 +4334,7 @@ def test_ollama_smoke(
             "models_available": names,
         }
     except Exception as exc:
-        # Fail closed — never fall back to a cloud model.
+        # Fail closed  -  never fall back to a cloud model.
         return {"status": "INFERENCE_UNAVAILABLE", "backend": "ollama_local",
                 "base_url": base, "detail": str(exc)}
 
@@ -4372,7 +4372,7 @@ def api_deadline_calculate(request: Request, req: DeadlineCalcRequest) -> dict:
     Deterministic deadline calculation.
     Input: { claim_type, edt, acas_start?, acas_end?, jurisdiction }
     Output: { base_deadline, paused_days, floor_deadline, limitation_date, source, authority }
-    Deadline is always computed from the rules table — never estimated.
+    Deadline is always computed from the rules table  -  never estimated.
     """
     claim_type  = req.claim_type
     edt_str     = req.edt
@@ -4425,10 +4425,10 @@ def api_deadline_calculate(request: Request, req: DeadlineCalcRequest) -> dict:
 def _process_stripe_webhook_event(event: dict, mode: str) -> None:
     """
     Process a verified Stripe webhook event.
-    Writes to payment_events (idempotent — skips if event_id already exists).
+    Writes to payment_events (idempotent  -  skips if event_id already exists).
     Updates cases.payment_status on checkout.session.completed.
 
-    GUARDRAIL: idempotent — duplicate Stripe event IDs are silently ignored.
+    GUARDRAIL: idempotent  -  duplicate Stripe event IDs are silently ignored.
     GUARDRAIL: raw_event is stripped of any PII before storage (stores metadata only).
     """
     import json as _pj
@@ -4445,7 +4445,7 @@ def _process_stripe_webhook_event(event: dict, mode: str) -> None:
     case_id        = metadata.get("case_id")
     user_id        = metadata.get("user_id")
 
-    # Strip PII — only store payment metadata, not personal data
+    # Strip PII  -  only store payment metadata, not personal data
     safe_event = {
         "id":   event_id,
         "type": event_type,
@@ -4458,7 +4458,7 @@ def _process_stripe_webhook_event(event: dict, mode: str) -> None:
     conn = get_connection()
     try:
         with conn.cursor() as cur:
-            # Idempotent insert — skip if event_id already processed
+            # Idempotent insert  -  skip if event_id already processed
             cur.execute(
                 """
                 INSERT INTO payment_events (
@@ -4514,7 +4514,7 @@ async def api_payment_webhook(
     stripe/stripe_test/stripe_live: REQUIRES valid Stripe-Signature header
                                     Uses STRIPE_WEBHOOK_SECRET for verification
 
-    GUARDRAIL: Never trust payment status from frontend — only verified webhooks.
+    GUARDRAIL: Never trust payment status from frontend  -  only verified webhooks.
     GUARDRAIL: Invalid signature → 400 (fail closed, never accept bad webhook)
     """
     from backend.core.payment import get_payment_mode, verify_webhook_signature
@@ -4541,7 +4541,7 @@ async def api_payment_webhook(
             event_id   = event.get("id", f"evt_{_uuid.uuid4().hex}")
             logger.info("Stripe webhook verified: %s (%s)", event_type, event_id)
 
-            # Write to payment_events audit table (idempotent — UNIQUE on stripe_event_id)
+            # Write to payment_events audit table (idempotent  -  UNIQUE on stripe_event_id)
             _process_stripe_webhook_event(event, mode)
 
             return {"received": True, "mode": mode, "event_type": event_type, "event_id": event_id}
@@ -4568,8 +4568,8 @@ def api_document_download(
     prefer canonical GET /api/documents/{document_id}.
 
     Enforces the SAME gates as the canonical route (parity required):
-    GUARDRAIL: auth required — unauthenticated requests are rejected (401).
-    GUARDRAIL: ownership verified — user can only download their own documents.
+    GUARDRAIL: auth required  -  unauthenticated requests are rejected (401).
+    GUARDRAIL: ownership verified  -  user can only download their own documents.
     GUARDRAIL: download only permitted for documents linked to a paid case (402).
     """
     from backend.core.user_auth import get_current_user
@@ -4603,9 +4603,9 @@ def api_document_download(
 
     doc_id, doc_type, storage_ref, filename, case_id, created_at, case_owner = row
 
-    # Ownership check (unconditional — user_id is guaranteed non-null by the auth gate above)
+    # Ownership check (unconditional  -  user_id is guaranteed non-null by the auth gate above)
     if str(case_owner) != str(user_id):
-        raise HTTPException(status_code=403, detail="Access denied — document belongs to a different user.")
+        raise HTTPException(status_code=403, detail="Access denied  -  document belongs to a different user.")
 
     # Payment gate (parity with canonical GET /api/documents/{id}): no download on unpaid case.
     if not _is_case_paid(case_id):

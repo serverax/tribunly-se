@@ -1,5 +1,5 @@
 """
-Tribunal-level legal reasoning elements — deterministic scaffolds.
+Tribunal-level legal reasoning elements  -  deterministic scaffolds.
 Refactored from Iterlaw tribunal-tests/*.ts
 """
 from typing import Dict, List

@@ -1,5 +1,5 @@
 ---
-# lawapp PostgreSQL StatefulSet — namespace: lawapp-api
+# lawapp PostgreSQL StatefulSet  -  namespace: lawapp-api
 # Reason: DB placed in lawapp-api for tight coupling with backend service.
 # DNS: lawapp-postgres.lawapp-api.svc.cluster.local:5432
 # PVC: 10Gi, storageClass local-path (Talos/Hetzner default)

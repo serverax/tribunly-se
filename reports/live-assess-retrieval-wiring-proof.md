@@ -1,4 +1,4 @@
-# Live /assess Retrieval Wiring — Proof Report
+# Live /assess Retrieval Wiring  -  Proof Report
 
 - **Timestamp:** 2026-06-05  **Branch:** main  **Commit:** a0968b0
 - **Command:** `bash scripts/prove_live_assess_retrieval_wiring.sh`
@@ -9,7 +9,7 @@ DB-first, retrieval-first, jurisdiction-filtered, cited, and audited.
 
 ## What was wired (code)
 - `backend/core/retrieve.py`:
-  - `juris_codes()` + `jurisdiction_supported()` — map user jurisdiction → controlled
+  - `juris_codes()` + `jurisdiction_supported()`  -  map user jurisdiction → controlled
     `jurisdiction_code` set; NI has no verified rules → unsupported.
   - `retrieve_rules`, `retrieve_keyword`, `retrieve_semantic` now filter
     **`jurisdiction_code = ANY(...)`** (legacy `jurisdiction='EW'` filter replaced).
@@ -19,7 +19,7 @@ DB-first, retrieval-first, jurisdiction-filtered, cited, and audited.
 - `backend/core/pipeline.py`:
   - Jurisdiction gate **before** retrieval: unsupported jurisdiction (NI) returns
     `not_supported`, `jurisdiction_supported=false`, `insufficient_grounding=true`,
-    `recommended_next_step=human_review` — never reuses GB law.
+    `recommended_next_step=human_review`  -  never reuses GB law.
   - `_write_deadline_audit` writes **`deadline_calculation_audit`** (edt, base/final
     limitation dates, EC dates, **rules_used**, jurisdiction_code, calculated_by=server)
     proving the deadline came from the `rules` table, not the model.
@@ -34,7 +34,7 @@ DB-first, retrieval-first, jurisdiction-filtered, cited, and audited.
 
 **NI** (`POST /assess`, jurisdiction=NI):
 - status=`not_supported`, jurisdiction_supported=`false`, insufficient_grounding=`true`,
-  **0 citations** — fails closed, no GB law reused.
+  **0 citations**  -  fails closed, no GB law reused.
 
 **Audit writes** (proven to increment per request):
 - `legal_retrieval_audit` grew (8 → 9), GB rows present.
@@ -47,4 +47,4 @@ legal_retrieval_audit written ✓ · NI fails closed ✓ · no uncited assertion
 
 ## Regression
 `101 passed, 3 skipped` across jurisdiction/rules/indexes/retrieve/pipeline/deadline/
-de-identification/retrieval test suites — no regression from the wiring changes.
+de-identification/retrieval test suites  -  no regression from the wiring changes.

@@ -1,6 +1,6 @@
 # Lawapp alert rules for the cluster's kube-prometheus stack.
 # NOTE: the shared Prometheus (ordinox-monitoring) is currently CrashLoopBackOff
-# (permission-denied on its data PVC — owner action to heal). These rules are
+# (permission-denied on its data PVC  -  owner action to heal). These rules are
 # picked up automatically once Prometheus runs. Until then, operational
 # monitoring is provided by the lawapp-monitoring CronJobs (health probe 5m,
 # smoke test 15m, freshness daily, legal accuracy daily).

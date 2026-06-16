@@ -100,7 +100,7 @@ def test_supported_scope_excludes_disabled_domains():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 2. Retrieval requires a (valid, enabled) domain filter — fail closed
+# 2. Retrieval requires a (valid, enabled) domain filter  -  fail closed
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_retrieval_rejects_unknown_domain():
@@ -177,7 +177,7 @@ def fake_domain():
 
 
 def test_fake_domain_registers_without_core_rewrite(fake_domain):
-    # Purely through register_domain() — no edit to registry/classify/retrieve src.
+    # Purely through register_domain()  -  no edit to registry/classify/retrieve src.
     assert is_domain_enabled("test_widgets") is True
     assert "test_widgets" in enabled_domains()
     assert is_matter_supported("widget_dispute") is True
@@ -189,7 +189,7 @@ def test_fake_domain_registers_without_core_rewrite(fake_domain):
 def test_fake_domain_retrieval_passes_guard(fake_domain):
     # The fail-closed retrieval guard now ACCEPTS the freshly registered domain
     # (it passes require_domain). It will then proceed to real retrieval; we only
-    # assert the guard does not reject it — so we stop before any DB work by
+    # assert the guard does not reject it  -  so we stop before any DB work by
     # checking the guard functions the same retrieve() path uses.
     require_domain("test_widgets")  # must NOT raise
 
@@ -220,7 +220,7 @@ def test_classify_in_scope_for_enabled_matter():
 
 def test_classify_fails_closed_if_domain_disabled():
     """If employment were disabled in the registry, classify must stop returning
-    in_scope=True for its matters — proving the gate is load-bearing, not cosmetic."""
+    in_scope=True for its matters  -  proving the gate is load-bearing, not cosmetic."""
     from backend.core.classify import classify
     original = copy.deepcopy(domain_registry["employment"])
     try:

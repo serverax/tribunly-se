@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kubernetes runtime gate — fails on CrashLoopBackOff, unexpected Pending, not-ready core pods.
+# Kubernetes runtime gate  -  fails on CrashLoopBackOff, unexpected Pending, not-ready core pods.
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"; . scripts/lawapp/_gate_lib.sh
 
@@ -27,7 +27,7 @@ if [ "${pend:-0}" = "0" ]; then pass "no Pending pods"; else fail "$pend Pending
 code=$(brain_http /health)
 if [ "$code" = "200" ]; then pass "brain /health = 200"; else fail "brain /health = $code"; fi
 
-# 5. Distributed-services wiring (SA-014) must pass — service endpoints + service-to-service paths.
+# 5. Distributed-services wiring (SA-014) must pass  -  service endpoints + service-to-service paths.
 if [ -x scripts/lawapp/prove-microservices-wiring.sh ]; then
   if bash scripts/lawapp/prove-microservices-wiring.sh >/tmp/msw.out 2>&1; then pass "microservices wiring proof"; else fail "microservices wiring proof (see /tmp/msw.out)"; fi
 else fail "scripts/lawapp/prove-microservices-wiring.sh missing"; fi

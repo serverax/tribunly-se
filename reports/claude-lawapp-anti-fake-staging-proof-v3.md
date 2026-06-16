@@ -7,9 +7,9 @@ All changes are committed locally (commit f4d2aea). GitHub push blocked by OAuth
 
 ## 1. Executive Verdict
 
-**LOCAL DEMO READY: YES — proven by raw command output below**  
-**STAGING READY: NO — Kubernetes not deployed from this machine; see Part 13**  
-**PRODUCTION READY: NO — Real AI key, Stripe, ingestion pipeline, security review all missing**
+**LOCAL DEMO READY: YES  -  proven by raw command output below**  
+**STAGING READY: NO  -  Kubernetes not deployed from this machine; see Part 13**  
+**PRODUCTION READY: NO  -  Real AI key, Stripe, ingestion pipeline, security review all missing**
 
 ---
 
@@ -30,9 +30,9 @@ git log -3:
 ```
 
 **Bugs found and fixed in this session:**
-1. `payment.py` was auto-modified by system: removed `"mock"` from `_VALID_MODES`, changed default to `"stripe_test"` — caused 4 payment tests to fail. **FIXED.**
-2. `DocumentRequest` model missing `payment_token` field — caused 500 on document generation. **FIXED.**
-3. Document generation endpoint set `paid = True` unconditionally in test_simulator mode — bypassed payment gate. **FIXED.**
+1. `payment.py` was auto-modified by system: removed `"mock"` from `_VALID_MODES`, changed default to `"stripe_test"`  -  caused 4 payment tests to fail. **FIXED.**
+2. `DocumentRequest` model missing `payment_token` field  -  caused 500 on document generation. **FIXED.**
+3. Document generation endpoint set `paid = True` unconditionally in test_simulator mode  -  bypassed payment gate. **FIXED.**
 
 ---
 
@@ -62,16 +62,16 @@ docker compose exec -T db psql -U lawapp -d lawapp -c "SELECT extname FROM pg_ex
 → pgcrypto, plpgsql, vector
 
 docker compose exec -T db psql -U lawapp -d lawapp -c "SELECT COUNT(*) AS rules FROM rules;"
-→ 19 (AUTOMATIC — migration 020_seed_rules.sql runs on fresh start, no manual seed needed)
+→ 19 (AUTOMATIC  -  migration 020_seed_rules.sql runs on fresh start, no manual seed needed)
 
 docker compose exec -T db psql -U lawapp -d lawapp -c "SELECT COUNT(*) AS legislation FROM legislation;"
-→ 0 (REQUIRES INGESTION — see Part 5)
+→ 0 (REQUIRES INGESTION  -  see Part 5)
 
 docker compose exec -T db psql -U lawapp -d lawapp -c "SELECT COUNT(*) AS acas_guidance FROM acas_guidance;"
-→ 0 (REQUIRES INGESTION — see Part 5)
+→ 0 (REQUIRES INGESTION  -  see Part 5)
 
 docker compose exec -T db psql -U lawapp -d lawapp -c "SELECT COUNT(*) AS case_law_chunks FROM case_law_chunks;"
-→ 0 (BLOCKED_EXTERNAL_LICENCE — FCL bulk licence required)
+→ 0 (BLOCKED_EXTERNAL_LICENCE  -  FCL bulk licence required)
 
 docker compose exec -T db psql -U lawapp -d lawapp -c "SELECT COUNT(*) AS legal_nodes FROM legal_nodes;"
 → 15 (seeded in migration 018)
@@ -108,7 +108,7 @@ AFTER INGESTION:
 tbl           | total | embedded
 legislation   |    80 |       80
 acas_guidance |    12 |       12
-case_law      |     0 |        0  (FCL licence required — BLOCKED_EXTERNAL_LICENCE)
+case_law      |     0 |        0  (FCL licence required  -  BLOCKED_EXTERNAL_LICENCE)
 ```
 
 **Ingestion is NOT automatic on fresh Docker start. Owner must run these commands. This is not hidden.**
@@ -121,7 +121,7 @@ case_law      |     0 |        0  (FCL licence required — BLOCKED_EXTERNAL_LIC
 curl -s http://localhost:8000/health
 → {"status":"ok","service":"lawapp-backend","db":"connected","auth_mode":"jwt",
    "payment_mode":"test_simulator","ai_provider":{"provider":"stub","active":false,
-   "note":"No AI key configured — StubReasoningModel active"}}
+   "note":"No AI key configured  -  StubReasoningModel active"}}
 
 curl -s http://localhost:8000/rules/unfair_dismissal
 → 9 rules including:
@@ -141,7 +141,7 @@ POST /api/rag/hybrid-search {"query":"unfair dismissal ERA 1996 s98","edt":"2026
 
 POST /api/brain/trace {"message":"dismissed without appeal 6 years"}
 → steps: 19 | rag_sources: ['hybrid','legal_graph'] | safety_passed: True
-→ assessment: insufficient_grounding (correct — ANTHROPIC_API_KEY=placeholder)
+→ assessment: insufficient_grounding (correct  -  ANTHROPIC_API_KEY=placeholder)
 
 POST /api/payment/create-session {"document_type":"particulars_of_claim"}
 → mode: test_simulator | token: test_eefbadd331604d28... | demo_mode: True
@@ -167,7 +167,7 @@ CREATE CASE as USER 1:
 → {"case_id":"c81b1350-e8b2-4143-b807-c8f292bf29d9","created_at":"2026-06-04T10:32:15..."}
 
 USER 1 READS OWN CASE: HTTP 200 ✓
-USER 2 TRIES USER 1 CASE: {"detail":"Access denied — this case belongs to a different user."} HTTP 403 ✓
+USER 2 TRIES USER 1 CASE: {"detail":"Access denied  -  this case belongs to a different user."} HTTP 403 ✓
 ```
 
 ---
@@ -197,7 +197,7 @@ bash scripts/security-regression.sh
 
 ```
 BEFORE FIX: test_no_token_returns_payment_required FAILED
-  Reason 1: payment.py auto-modified by linter — removed "mock" from VALID_MODES,
+  Reason 1: payment.py auto-modified by linter  -  removed "mock" from VALID_MODES,
             changed default to "stripe_test"
   Reason 2: DocumentRequest model missing payment_token field → 500 Internal Server Error
   Reason 3: document generation set paid=True unconditionally in test_simulator mode
@@ -233,7 +233,7 @@ grep -RIn "we represent you|we will file the claim" client backend
 → NOT in any generated output or user-facing text
 
 grep -RIn "3 months|6 months|123543|751|118223" client/public --include="*.js" --include="*.html"
-→ (no matches) — all legal values fetched from /rules/ endpoint at runtime
+→ (no matches)  -  all legal values fetched from /rules/ endpoint at runtime
 
 WASM binary: client/public/wasm/lawapp_wasm_bg.wasm (95KB)
 JS fallback: computeDeadlineJS() in client/public/js/deadline.js
@@ -241,7 +241,7 @@ Rule source: fetchDeadlineRules() calls GET /rules/{claimType} at runtime
 
 bash scripts/rebuild-wasm.sh
 → ERROR: wasm-pack is not installed. Install: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-(Fails clearly with install instructions — NOT a fake PASS)
+(Fails clearly with install instructions  -  NOT a fake PASS)
 ```
 
 ---
@@ -254,8 +254,8 @@ python -m pytest tests/ -q
 → pytest exit code=0
 
 Skipped (all justified):
-  - TestHybridRetrieve::test_bundle_has_authorities — skip if legislation=0
-  - TestLegislationTable::test_legislation_has_rows — skip if legislation=0
+  - TestHybridRetrieve::test_bundle_has_authorities  -  skip if legislation=0
+  - TestLegislationTable::test_legislation_has_rows  -  skip if legislation=0
   - 1 encryption skip when ENCRYPTION_KEY=placeholder (correct in test env)
 
 bash scripts/smoke_local_journey.sh
@@ -268,7 +268,7 @@ node_modules/.bin/playwright test
 
 bash scripts/push-and-deploy.sh --dry-run
 → Tests run → 446 passed
-→ DRY RUN — no commit, push, or deploy
+→ DRY RUN  -  no commit, push, or deploy
 → push dry-run exit code=0
 ```
 
@@ -279,10 +279,10 @@ bash scripts/push-and-deploy.sh --dry-run
 ```bash
 kubectl config current-context
 → aks-iterlaw-we-prod
-→ (this is AKS context for a different project — NOT the Talos/Hetzner lawapp cluster)
+→ (this is AKS context for a different project  -  NOT the Talos/Hetzner lawapp cluster)
 
 kubectl get ns | grep lawapp
-→ NO CLUSTER ACCESS — kubeconfig not set to Talos/Hetzner cluster
+→ NO CLUSTER ACCESS  -  kubeconfig not set to Talos/Hetzner cluster
 ```
 
 **Kubernetes deployment: NOT PROVEN from this machine.**
@@ -304,7 +304,7 @@ bash scripts/deploy-talos.sh
 ## 13. Kubernetes Live Endpoint Proof
 
 ```
-NOT PROVEN — kubeconfig not configured for Talos/Hetzner cluster on this machine.
+NOT PROVEN  -  kubeconfig not configured for Talos/Hetzner cluster on this machine.
 Current context (aks-iterlaw-we-prod) is AKS for a different project.
 ```
 
@@ -313,7 +313,7 @@ Current context (aks-iterlaw-we-prod) is AKS for a different project.
 ## 14. Kubernetes DB Proof
 
 ```
-NOT PROVEN — same reason as Part 13.
+NOT PROVEN  -  same reason as Part 13.
 ```
 
 ---
@@ -353,7 +353,7 @@ OWNER ACTION REQUIRED:
 ### Owner-only (cannot be fixed by code)
 | # | Blocker |
 |---|---|
-| 1 | Set `ANTHROPIC_API_KEY` — complex assessments return insufficient_grounding |
+| 1 | Set `ANTHROPIC_API_KEY`  -  complex assessments return insufficient_grounding |
 | 2 | Configure Talos kubeconfig and run `bash scripts/deploy-talos.sh` |
 | 3 | Set real Stripe keys (STRIPE_SECRET_KEY, STRIPE_PUBLIC_KEY, STRIPE_WEBHOOK_SECRET) |
 | 4 | Run ingestion scripts after each fresh Docker start (legislation + ACAS) |
@@ -376,17 +376,17 @@ OWNER ACTION REQUIRED:
 **LOCAL DEMO READY: YES**
 
 Evidence:
-- 3 containers running (backend, db, redis) — confirmed
-- rules: 19 rows on fresh start — confirmed
-- 446 tests pass, 0 fail — confirmed  
-- smoke journey: 24/24 — confirmed
-- playwright: 17/17 — confirmed
-- security regression: 9/9 — confirmed
-- user isolation: HTTP 403 — confirmed
-- payment gating: correct (3 bugs found and fixed) — confirmed
-- OCR route: 501 Not Implemented — confirmed
-- No hardcoded legal values — confirmed
-- No reserved legal language in generated output — confirmed
+- 3 containers running (backend, db, redis)  -  confirmed
+- rules: 19 rows on fresh start  -  confirmed
+- 446 tests pass, 0 fail  -  confirmed  
+- smoke journey: 24/24  -  confirmed
+- playwright: 17/17  -  confirmed
+- security regression: 9/9  -  confirmed
+- user isolation: HTTP 403  -  confirmed
+- payment gating: correct (3 bugs found and fixed)  -  confirmed
+- OCR route: 501 Not Implemented  -  confirmed
+- No hardcoded legal values  -  confirmed
+- No reserved legal language in generated output  -  confirmed
 
 **STAGING READY: NO**
 

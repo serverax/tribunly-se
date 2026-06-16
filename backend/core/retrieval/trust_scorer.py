@@ -1,5 +1,5 @@
 """
-Trust scorer for retrieval candidates — Phase 3.
+Trust scorer for retrieval candidates  -  Phase 3.
 Refactored from Iterlaw trustScorer.ts
 """
 from typing import Dict, List, TypedDict, Optional

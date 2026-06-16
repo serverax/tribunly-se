@@ -1,4 +1,4 @@
-"""Companies House lookup — experimental stub until API key provisioned."""
+"""Companies House lookup  -  experimental stub until API key provisioned."""
 
 from __future__ import annotations
 

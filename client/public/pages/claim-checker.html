@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Claim checker — lawapp</title>
+  <title>Claim checker  -  lawapp</title>
   <meta name="description" content="Tell us what happened at work and find out whether it looks like an employment claim we can help with. Free preview, grounded in real UK law.">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
@@ -30,7 +30,7 @@
   <div class="tool-head">
     <span class="eyebrow">Free tool · Claim checker</span>
     <h1>Does this look like a claim?</h1>
-    <p>Tell us what happened in your own words. We'll give you a free, plain-English screen — and you can log in to save it and run a full assessment.</p>
+    <p>Tell us what happened in your own words. We'll give you a free, plain-English screen  -  and you can log in to save it and run a full assessment.</p>
   </div>
 
   <div class="tool-layout">
@@ -74,7 +74,7 @@
     <section id="resultPanel" class="assessment-wrap result-panel" hidden aria-live="polite">
       <div class="assessment-header">
         <h2>Your screen</h2>
-        <span id="result-badge" class="badge">—</span>
+        <span id="result-badge" class="badge"> - </span>
       </div>
       <div class="assessment-body">
         <p id="result-text" style="margin-bottom:1rem;"></p>
@@ -91,7 +91,7 @@
           </div>
           <a id="gate-login" class="btn btn-accent" href="/pages/login.html">Log in to save</a>
         </div>
-        <div id="saved-note" class="form-ok" hidden>You're logged in — continue to a full assessment from your <a href="/pages/dashboard.html">dashboard</a>.</div>
+        <div id="saved-note" class="form-ok" hidden>You're logged in  -  continue to a full assessment from your <a href="/pages/dashboard.html">dashboard</a>.</div>
 
         <p style="font-size:.8rem;color:var(--faint);margin-top:.75rem;">This is an informational screen, not a merits decision or legal advice.</p>
       </div>
@@ -161,7 +161,7 @@
     e.preventDefault();
     errBox.style.display = "none";
     var facts = buildFacts();
-    if (!facts) { errText.textContent = "Please tell us what happened — even a sentence helps."; errBox.style.display = "block"; return; }
+    if (!facts) { errText.textContent = "Please tell us what happened  -  even a sentence helps."; errBox.style.display = "block"; return; }
 
     var btn = form.querySelector("button[type=submit]");
     btn.disabled = true; spinner.hidden = false; resultPanel.hidden = true;
@@ -185,6 +185,6 @@
 </script>
 
 
-  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict — verify dates with ACAS or a qualified adviser before relying on them.</p>
+  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict  -  verify dates with ACAS or a qualified adviser before relying on them.</p>
 </body>
 </html>

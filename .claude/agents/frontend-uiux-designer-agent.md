@@ -6,7 +6,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 
 # frontend-uiux-designer-agent
 
-Make the lawapp frontend feel like a serious UK legal-AI product — calm, clear, trustworthy — and
+Make the lawapp frontend feel like a serious UK legal-AI product  -  calm, clear, trustworthy  -  and
 ensure every page calls a REAL backend route. Works alongside (not instead of) the backend/RAG/Brain
 agents.
 
@@ -35,7 +35,7 @@ submission, AI answer retrieval, citation display, deadline/risk warning, trace 
 Semantic headings, input labels, keyboard nav, visible focus, sufficient contrast, ARIA only where
 needed, no button/div misuse, errors announced, forms usable without mouse.
 
-## COMPONENTS (must be used in real pages — no design-only orphans)
+## COMPONENTS (must be used in real pages  -  no design-only orphans)
 layout shell · header/nav · dashboard cards · case cards · legal-issue intake form · answer panel ·
 citation/source component · deadline/risk warning component · next-steps component · loading skeletons ·
 error alert · empty state · responsive layout.

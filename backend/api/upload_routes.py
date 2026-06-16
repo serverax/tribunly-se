@@ -1,5 +1,5 @@
 """
-File upload and OCR extraction routes — Phase 7: Document intelligence.
+File upload and OCR extraction routes  -  Phase 7: Document intelligence.
 
 ARCHITECTURE:
 - POST /api/uploads/upload: Accept file upload, validate, OCR, store encrypted.
@@ -97,7 +97,7 @@ def _get_encryption_key() -> bytes:
     """Get encryption key from environment. Fail closed if not set."""
     key_env = os.getenv("ENCRYPTION_KEY", "placeholder-dev-key-replace-in-production")
     if key_env in ("placeholder-dev-key-replace-in-production", ""):
-        logger.warning("Encryption key is not configured — uploads will be stored unencrypted")
+        logger.warning("Encryption key is not configured  -  uploads will be stored unencrypted")
         return b"0" * 32  # Dummy key for dev
     return key_env.encode().ljust(32)[:32]
 

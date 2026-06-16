@@ -1,5 +1,5 @@
 """
-Hybrid Retrieval unit tests — lawapp RAG layer.
+Hybrid Retrieval unit tests  -  lawapp RAG layer.
 
 Tests hybrid search: SQL rules + pgvector semantic + BM25 keyword.
 Retrieval must always run before reasoning.
@@ -15,7 +15,7 @@ from shared.schemas import RetrievalBundle
 
 
 class TestRetrieveRules:
-    """Deterministic SQL rules retrieval — always first in pipeline."""
+    """Deterministic SQL rules retrieval  -  always first in pipeline."""
 
     def test_ud_time_limit_rule_exists(self):
         rules = retrieve_rules("unfair_dismissal", "EW", date(2026, 1, 1))
@@ -61,7 +61,7 @@ class TestRetrieveRules:
 
 
 class TestHybridRetrieve:
-    """Full hybrid retrieval — SQL rules + pgvector + BM25."""
+    """Full hybrid retrieval  -  SQL rules + pgvector + BM25."""
 
     def test_retrieve_returns_bundle(self):
         bundle = retrieve(

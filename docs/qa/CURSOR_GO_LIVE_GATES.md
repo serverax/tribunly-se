@@ -1,12 +1,12 @@
-# CURSOR GO-LIVE GATES — lawapp
+# CURSOR GO-LIVE GATES  -  lawapp
 
-Production readiness gates with pass/fail evidence. Gate must have **command + output** — no checklist-only PASS.
+Production readiness gates with pass/fail evidence. Gate must have **command + output**  -  no checklist-only PASS.
 
 **Overall gate status:** ❌ **NOT READY**
 
 ---
 
-## Gate 0 — Product identity
+## Gate 0  -  Product identity
 
 | Check | Required | Evidence | Status |
 |-------|----------|----------|--------|
@@ -16,7 +16,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 1 — Runtime health (local Docker)
+## Gate 1  -  Runtime health (local Docker)
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -27,7 +27,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 2 — Database & migrations
+## Gate 2  -  Database & migrations
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -35,12 +35,12 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 | Core tables | `\dt` | users, cases, rules, corpus_chunks, brain_traces | ✅ PASS |
 | Rules populated | `SELECT COUNT(*) FROM rules;` | ≥100 | ✅ PASS (125) |
 | FK enforcement | insert bad FK (integrity script) | rejected | ✅ PASS (prior script) |
-| Alembic | N/A — SQL migrations | documented | ✅ N/A |
-| Go-live module gate | `bash scripts/proof/prove_database_integrity.sh` | all PASS | ❌ FAIL — 13 partial modules |
+| Alembic | N/A  -  SQL migrations | documented | ✅ N/A |
+| Go-live module gate | `bash scripts/proof/prove_database_integrity.sh` | all PASS | ❌ FAIL  -  13 partial modules |
 
 ---
 
-## Gate 3 — Legal data & RAG
+## Gate 3  -  Legal data & RAG
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -53,7 +53,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 4 — Brain & governance
+## Gate 4  -  Brain & governance
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -66,7 +66,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 5 — Security
+## Gate 5  -  Security
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -80,18 +80,18 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 6 — Payment (production)
+## Gate 6  -  Payment (production)
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
 | Test mode (local) | PAYMENT_MODE=test workflow | confirm-test works | ✅ PASS |
 | Stripe live keys | prod env | configured in vault | ❌ NOT PROVEN |
 | Webhook signature | invalid webhook test | rejected | ✅ PASS |
-| PCI — no card data stored | code review | Stripe-hosted checkout | ✅ PASS (architecture) |
+| PCI  -  no card data stored | code review | Stripe-hosted checkout | ✅ PASS (architecture) |
 
 ---
 
-## Gate 7 — Frontend
+## Gate 7  -  Frontend
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -103,7 +103,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 8 — CI/CD
+## Gate 8  -  CI/CD
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -115,7 +115,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 9 — Kubernetes & infra
+## Gate 9  -  Kubernetes & infra
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -128,7 +128,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 10 — Observability & ops
+## Gate 10  -  Observability & ops
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -141,7 +141,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 11 — Performance & scale
+## Gate 11  -  Performance & scale
 
 | Check | Command | Expected | Status |
 |-------|---------|----------|--------|
@@ -151,7 +151,7 @@ Production readiness gates with pass/fail evidence. Gate must have **command + o
 
 ---
 
-## Gate 12 — Legal/compliance product gates
+## Gate 12  -  Legal/compliance product gates
 
 | Check | Expected | Status |
 |-------|----------|--------|

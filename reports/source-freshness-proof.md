@@ -1,4 +1,4 @@
-# Source Freshness — Proof Report
+# Source Freshness  -  Proof Report
 
 - **Timestamp:** 2026-06-05  **Branch:** main  **Commit:** a0968b0
 - **Proof script:** `scripts/prove_source_freshness.sh`
@@ -24,7 +24,7 @@ docker compose exec -T db psql -U lawapp -d lawapp -c \
   older than the freshness window, default 120 days).
 - `last_ingestion_status = passed` for every source (per-source checkpoints in
   `corpus_ingestion_runs`).
-- `case_law` does not appear because it is empty (Find Case Law OWNER_BLOCKED) — by
+- `case_law` does not appear because it is empty (Find Case Law OWNER_BLOCKED)  -  by
   design, not hidden: see `reports/find-case-law-blocker-proof.md`.
 
 ## Provenance completeness (corpus_chunks = 247, all GB)

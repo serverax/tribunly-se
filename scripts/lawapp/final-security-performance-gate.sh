@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Security gate — no leaked secrets (working tree); auth enforced; G2 history tracked as owner-action.
+# Security gate  -  no leaked secrets (working tree); auth enforced; G2 history tracked as owner-action.
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"; . scripts/lawapp/_gate_lib.sh
 

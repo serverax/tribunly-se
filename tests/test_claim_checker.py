@@ -1,9 +1,9 @@
 """
-Claim checker (the assessment engine) — HTTP + logic proof.
+Claim checker (the assessment engine)  -  HTTP + logic proof.
 
 Endpoints under test (backend/api/main.py):
-  POST /assess           — the full path-split assessment pipeline
-  POST /api/diagnosis    — canonical alias of /assess
+  POST /assess            -  the full path-split assessment pipeline
+  POST /api/diagnosis     -  canonical alias of /assess
 
 The "claim checker" is the assessment pipeline: it classifies the matter, routes
 to the FAST_DETERMINISTIC (rules-only) lane or the REASONING lane, retrieves from
@@ -20,7 +20,7 @@ Proven (conftest -> localhost:5435 lawapp DB):
     - a missing required field -> 422
 
 GUARDRAIL: every successful answer is sourced from the rules table
-("source": "rules_table") and carries citations — never an ungrounded LLM guess.
+("source": "rules_table") and carries citations  -  never an ungrounded LLM guess.
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ class TestClaimCheckerHappyPath:
                         json={"query": _IN_SCOPE_QUERY, "facts": {}, "use_model": False})
         body = r.json()
         rules = body.get("rules") or []
-        # Every rule row is an authority with a stable rule_key — no fabricated cites.
+        # Every rule row is an authority with a stable rule_key  -  no fabricated cites.
         assert all(row.get("rule_key") for row in rules)
 
     def test_diagnosis_alias_matches_assess_shape(self, client):

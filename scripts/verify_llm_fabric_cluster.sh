@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
-# lawapp Node-Local Inference Fabric — cluster verification (PART 9 + node-IP proof)
+# lawapp Node-Local Inference Fabric  -  cluster verification (PART 9 + node-IP proof)
 # ===========================================================================
 # Run this from a machine WITH kubeconfig access to the Talos cluster. It does NOT
-# modify anything — it only gathers proof. It is the operator's job to run this;
+# modify anything  -  it only gathers proof. It is the operator's job to run this;
 # the AI assistant cannot reach the cluster and must not fabricate its output.
 #
 #   bash scripts/verify_inference_fabric.sh | tee reports/inference-fabric-proof.txt
 #
 # Node IPs are used ONLY to prove DaemonSet placement. They are NOT used by the
-# application — the Mother Algorithm calls the Service DNS, never these IPs.
+# application  -  the Mother Algorithm calls the Service DNS, never these IPs.
 set -uo pipefail
 
 NS="lawapp-ai"
 SVC="llm-inference-service"
 SVC_DNS="http://${SVC}.${NS}.svc.cluster.local:11434"
 
-# Operational verification IPs (placement proof only — never app config).
+# Operational verification IPs (placement proof only  -  never app config).
 NODE_CONTROL="148.251.247.56"
 NODE_LLM="138.201.253.245"
 NODE_SECONDARY="138.201.202.174"
@@ -82,7 +82,7 @@ for ip in "$NODE_CONTROL" "$NODE_LLM" "$NODE_SECONDARY"; do
   [ -z "$NODE" ] && continue
   echo "--- $NODE configz (cpuManagerPolicy) ---"
   kubectl get --raw "/api/v1/nodes/${NODE}/proxy/configz" 2>/dev/null \
-    | grep -o '"cpuManagerPolicy":"[^"]*"' || echo "  configz unavailable — pinning NOT CONFIRMED"
+    | grep -o '"cpuManagerPolicy":"[^"]*"' || echo "  configz unavailable  -  pinning NOT CONFIRMED"
 done
 
 hr "SUMMARY"

@@ -79,7 +79,7 @@ jobs:
 
       - name: Create lawapp secrets
         run: |
-          # LOCAL OLLAMA ONLY — no external LLM (OPENAI/ANTHROPIC/OPENROUTER) secret
+          # LOCAL OLLAMA ONLY  -  no external LLM (OPENAI/ANTHROPIC/OPENROUTER) secret
           # is created for any lawapp namespace. Inference is the internal Ollama
           # DaemonSet, configured via configmap lawapp-inference-policy.
           kubectl -n lawapp-api create secret generic lawapp-secrets \
@@ -96,7 +96,7 @@ jobs:
 
           # Brain needs DB + app secrets (NOT any external LLM key). GUARD: only
           # (re)apply when ALL required values are present, so a deploy with unset CI
-          # secrets never overwrites a working secret with empties — an empty
+          # secrets never overwrites a working secret with empties  -  an empty
           # ADMIN_API_KEY aborts brain startup (config_validation StartupConfigError).
           if [ -n "${{ secrets.POSTGRES_PASSWORD }}" ] && [ -n "${{ secrets.JWT_SECRET }}" ] \
              && [ -n "${{ secrets.ENCRYPTION_KEY }}" ] && [ -n "${{ secrets.ADMIN_API_KEY }}" ]; then
@@ -108,9 +108,9 @@ jobs:
               --from-literal=ADMIN_API_KEY="${{ secrets.ADMIN_API_KEY }}" \
               --dry-run=client -o yaml | kubectl apply -f -
           else
-            echo "WARN: required CI secrets not all set — preserving existing lawapp-ai-secrets (not overwriting with empties)."
+            echo "WARN: required CI secrets not all set  -  preserving existing lawapp-ai-secrets (not overwriting with empties)."
             kubectl -n lawapp-ai get secret lawapp-ai-secrets >/dev/null 2>&1 \
-              || echo "ERROR: lawapp-ai-secrets missing AND CI secrets unset — brain will fail; configure repo secrets."
+              || echo "ERROR: lawapp-ai-secrets missing AND CI secrets unset  -  brain will fail; configure repo secrets."
           fi
 
       - name: Apply manifests

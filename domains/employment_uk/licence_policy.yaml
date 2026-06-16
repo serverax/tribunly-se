@@ -1,4 +1,4 @@
-# employment_uk — source licence policy (enforced by the Corpus Ingestion AIA).
+# employment_uk  -  source licence policy (enforced by the Corpus Ingestion AIA).
 # Loaded by ingestion/domain_loader.py. Find Case Law bulk ingestion is
 # fail-closed and stays empty unless FCL_BULK_LICENCE_GRANTED=true.
 domain: employment_uk
@@ -14,7 +14,7 @@ sources:
     requires_owner_approval: false
     gate_env_var: null
     last_verified_at: 2026-06-04
-    notes: OGL v3.0 — primary legislation, free to reuse and analyse.
+    notes: OGL v3.0  -  primary legislation, free to reuse and analyse.
 
   - source_id: acas
     source_name: ACAS public guidance

@@ -1,7 +1,7 @@
 """
 Sync corpus_chunks from source tables (legislation, acas_guidance, official_guidance).
 
-Idempotent via chunk_hash ON CONFLICT DO NOTHING — safe to run after every ingest
+Idempotent via chunk_hash ON CONFLICT DO NOTHING  -  safe to run after every ingest
 and embed pass. Mirrors db/migrations/032_corpus_chunks_and_audits.sql population.
 
 Usage:

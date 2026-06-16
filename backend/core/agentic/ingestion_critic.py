@@ -1,4 +1,4 @@
-"""Ingestion Critic — Perpetual Law Brain structural/provenance gate.
+"""Ingestion Critic  -  Perpetual Law Brain structural/provenance gate.
 
 Validates that a candidate document is a real, official legal instrument with
 complete provenance BEFORE it is allowed to be graph-linked, chunked, or embedded.
@@ -27,7 +27,7 @@ ACCEPTED_SOURCE_TYPES = {"primary_legislation", "secondary_legislation",
                          "case_law", "official_guidance"}
 SUPPORTED_JURISDICTIONS = {"EW", "S", "SC", "NI", "GB", "UK"}
 
-# Recognised legal citation shapes (structure only — not a correctness judgement).
+# Recognised legal citation shapes (structure only  -  not a correctness judgement).
 _CITATION_PATTERNS = [
     re.compile(r"\bs\.?\s?\d+[A-Z]?\b", re.I),                       # s.98 / section
     re.compile(r"\b[A-Z][A-Za-z ]+Act\s+\d{4}\b"),                  # ... Act 1996
@@ -36,7 +36,7 @@ _CITATION_PATTERNS = [
     re.compile(r"\bCode of Practice\b", re.I),                      # ACAS code
 ]
 
-# Markers that indicate opinion/news/blog — rejected outright.
+# Markers that indicate opinion/news/blog  -  rejected outright.
 _NEWS_MARKERS = [
     "comment is free", "opinion", "editorial", "sponsored", "advertisement",
     "blog post", "share this article", "subscribe", "breaking news",

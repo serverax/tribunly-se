@@ -23,7 +23,7 @@ def _db_up():
         return False
 
 
-pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN — DB not accessible")
+pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN  -  DB not accessible")
 
 UID = "11111111-1111-1111-1111-111111111111"
 OTHER = "22222222-2222-2222-2222-222222222222"

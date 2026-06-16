@@ -1,5 +1,5 @@
 -- Migration 005: Phase 4 evidence intelligence
--- Placeholder — finalised before Phase 4 build starts.
+-- Placeholder  -  finalised before Phase 4 build starts.
 
 CREATE TABLE IF NOT EXISTS evidence_items (
     id                   uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS evidence_items (
     document_id          uuid        REFERENCES documents(id) ON DELETE SET NULL,
     evidence_type        text        NOT NULL,   -- dismissal_letter | contract | appeal_outcome
                                                   -- pay_slip | email_chain | witness_statement | other
-    extracted_facts      jsonb,      -- raw OCR extraction — not trusted until user confirms
+    extracted_facts      jsonb,      -- raw OCR extraction  -  not trusted until user confirms
     user_confirmed_facts jsonb,      -- confirmed subset of extracted_facts
     supports             jsonb,      -- {"assertions": [...], "assessment_fields": [...]}
     weakens              jsonb,      -- {"assertions": [...], "assessment_fields": [...]}

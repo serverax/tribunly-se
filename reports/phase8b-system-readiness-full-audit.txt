@@ -22,15 +22,15 @@ SERVER SAFETY CONFIRMATION:
   The correct OrdinoxAI Talos/K3s kubeconfig is needed before server work.
 
 ================================================================================
-SECTION 9 — QUALITY AUTOMATION
+SECTION 9  -  QUALITY AUTOMATION
 ================================================================================
 
 CI/CD and automation files found:
 
-.github/workflows/ci.yml           MISSING — no .github directory exists
+.github/workflows/ci.yml           MISSING  -  no .github directory exists
 .github/workflows/security-scan.yml MISSING
 .github/workflows/deployment-readiness.yml MISSING
-scripts/safe-push.ps1              MISSING (safe_push.sh EXISTS — bash version)
+scripts/safe-push.ps1              MISSING (safe_push.sh EXISTS  -  bash version)
 scripts/quality-gate.ps1           MISSING
 scripts/generate-quality-report.ps1 MISSING
 scripts/verify-db-schema.ps1       MISSING
@@ -39,7 +39,7 @@ Existing automation scripts (bash, not PS1):
   scripts/safe_push.sh             EXISTS
   scripts/run_full_regression.sh   EXISTS
   scripts/run-local-regression.sh  EXISTS
-  scripts/run_legal_accuracy.py    EXISTS (CI gate — run via pytest)
+  scripts/run_legal_accuracy.py    EXISTS (CI gate  -  run via pytest)
   scripts/check_rules_verification.py EXISTS (CI gate)
   scripts/check_beta_readiness.py  EXISTS
   scripts/check_production_readiness_ci.py EXISTS
@@ -48,11 +48,11 @@ Existing automation scripts (bash, not PS1):
   scripts/docker_proof.sh          EXISTS
   scripts/push-all.sh              EXISTS
 
-GitHub Actions CI: MISSING — no .github/workflows/. Tests run locally via
+GitHub Actions CI: MISSING  -  no .github/workflows/. Tests run locally via
 docker compose run. No automated CI on push.
 
 ================================================================================
-SECTION 1 — NEW FEATURES ADDED TO PHASES
+SECTION 1  -  NEW FEATURES ADDED TO PHASES
 ================================================================================
 
 Feature 1: Honest weak-case diagnosis
@@ -79,7 +79,7 @@ Feature 2: Human solicitor/paralegal handoff
 Feature 3: Coaching/paralegal support option
   Phase: 4
   Status: PARTIAL
-  Backend: DB schema only — support_sessions table (migration 004)
+  Backend: DB schema only  -  support_sessions table (migration 004)
            API endpoint NOT wired (no POST /support-sessions)
   Frontend: Not wired
   DB: support_sessions, provider_type CHECK = 'paralegal_coach'
@@ -98,7 +98,7 @@ Feature 4: Solicitor consulting option
 Feature 5: No fake "win your case" language
   Phase: 2 (governance gate 4)
   Status: DONE
-  Backend: backend/engine/govern.py — _RESERVED_ACTIVITY_PHRASES,
+  Backend: backend/engine/govern.py  -  _RESERVED_ACTIVITY_PHRASES,
            _OUTCOME_GUARANTEE_PHRASES (lines 29-37)
   Frontend: assessment.html legal notices
   Tests: tests/test_govern.py,
@@ -110,9 +110,9 @@ Feature 6: Legal accuracy gate
   Phase: 5 (US-12)
   Status: DONE
   Backend: tests/legal_accuracy/test_legal_accuracy.py (38 tests)
-           scripts/run_legal_accuracy.py (CI gate — exits non-zero on failure)
+           scripts/run_legal_accuracy.py (CI gate  -  exits non-zero on failure)
   DB: rules table (seed verified)
-  Tests: 38 tests — 27 UD + 11 UPW — all PASS
+  Tests: 38 tests  -  27 UD + 11 UPW  -  all PASS
   Evidence: scripts/run_legal_accuracy.py exit 0 confirmed in Phase 8B suite
 
 Feature 7: Rules verification gate
@@ -191,7 +191,7 @@ Feature 15: CI/CD quality gates
   Status: PARTIAL
   Backend: scripts/run_legal_accuracy.py, scripts/check_rules_verification.py,
            scripts/check_beta_readiness.py, scripts/check_production_readiness_ci.py
-  Note: No .github/workflows/ — gates exist but not wired to CI pipeline.
+  Note: No .github/workflows/  -  gates exist but not wired to CI pipeline.
         Manual execution via docker compose run.
 
 Feature 16: Safe push automation
@@ -246,21 +246,21 @@ Feature 22: Algorithm brain classify/retrieve/reason/score/govern/respond
   Tests: 25 Phase 8B tests + full regression 767 passed
 
 ================================================================================
-SECTION 2 — BACKEND COMPLETION
+SECTION 2  -  BACKEND COMPLETION
 ================================================================================
 
-API routes:                   DONE (28 routes, all wired — see Section 1 above)
+API routes:                   DONE (28 routes, all wired  -  see Section 1 above)
 Intake/case creation:         DONE (POST /cases with encryption)
 Classification:               DONE (Phase 8B two-stage)
 Retrieval:                    PARTIAL (rules+BM25 DONE; pgvector BLOCKED)
 Reasoning:                    DONE (ClaudeReasoningModel when key present;
                               deterministic upgrade when not)
 Scoring:                      DONE (grounding_score + confidence_score)
-Governance:                   DONE (5 gates, Phase 7 — unchanged)
+Governance:                   DONE (5 gates, Phase 7  -  unchanged)
 Response rendering:           DONE (pipeline.assess() → structured response)
 Deadline calculation:         DONE (deterministic from rules table)
 Document generation:          DONE (backend/engine/documents.py 42KB)
-Payment hooks:                PARTIAL (mock mode only — PAYMENT_MODE=mock)
+Payment hooks:                PARTIAL (mock mode only  -  PAYMENT_MODE=mock)
 Handoff lead capture:         DONE (envelope encrypted)
 Solicitor/paralegal handoff:  PARTIAL (schema + trigger done; no live API)
 Encryption/decryption:        DONE (Fernet + envelope; cases + handoff_leads)
@@ -276,7 +276,7 @@ Known blocker:
   OPENAI_API_KEY needed for pgvector embeddings (currently exhausted/blocked).
 
 ================================================================================
-SECTION 3 — FRONTEND COMPLETION
+SECTION 3  -  FRONTEND COMPLETION
 ================================================================================
 
 Homepage:
@@ -302,7 +302,7 @@ Deadline tracker:
   WASM: MISSING (JS fallback only)
 
 Document generation/payment screen:
-  Status: PARTIAL (in assessment.html — no dedicated page)
+  Status: PARTIAL (in assessment.html  -  no dedicated page)
   Payment: MOCK only (no live Stripe)
 
 Document preview:
@@ -341,7 +341,7 @@ Frontend test suite:
   Status: MISSING (no Jest/Cypress tests)
 
 ================================================================================
-SECTION 4 — DATABASE SCHEMAS
+SECTION 4  -  DATABASE SCHEMAS
 ================================================================================
 
 (Full detail in main Phase 8B report. Summary here.)
@@ -373,47 +373,47 @@ Verification command:
   Result: PASS
 
 ================================================================================
-SECTION 5 — ALGORITHM BRAIN
+SECTION 5  -  ALGORITHM BRAIN
 ================================================================================
 
-classify() — DONE (Phase 8B two-stage)
+classify()  -  DONE (Phase 8B two-stage)
   Logic: real (keyword + ML)
   File: backend/engine/classify.py
   Tests: tests/test_classify.py (14 PASS), test_phase8b_algorithm_brain.py (11 PASS)
 
-retrieve() — PARTIAL
+retrieve()  -  PARTIAL
   Logic: real (rules+BM25); pgvector coded but BLOCKED
   File: backend/engine/retrieve.py
   Tests: tests/integration/test_retrieve_rules.py, test_semantic_retrieval.py
 
-reason() — DONE (not stub-default from Phase 8B)
+reason()  -  DONE (not stub-default from Phase 8B)
   Logic: ClaudeReasoningModel when ANTHROPIC_API_KEY set; deterministic
          upgrade fires from assess_logic.py before stub returns
   File: backend/engine/models.py, backend/engine/assess_logic.py
   Tests: test_phase8b_algorithm_brain.py (7 reason tests)
 
-score() — DONE
+score()  -  DONE
   Logic: real (grounding_score + confidence_score)
   File: backend/engine/score.py
   Tests: tests/integration/test_phase2_engine.py
 
-govern() — DONE (5 gates)
+govern()  -  DONE (5 gates)
   Logic: real (grounding, confidence, determinism, boundary, honesty)
   File: backend/engine/govern.py
   Tests: tests/test_govern.py
 
-respond() — DONE
+respond()  -  DONE
   Logic: embedded in pipeline.assess()
   File: backend/engine/pipeline.py
 
-StructuredAssessment schema — DONE (shared/schemas.py)
-insufficient_grounding — DONE
-confidence_score — DONE
-grounding_score — DONE
-key_weaknesses — DONE (govern gate 5 enforced)
-employer_arguments — DONE
-recommended_next_step — DONE
-handoff trigger — DONE (recommended_next_step="refer_solicitor")
+StructuredAssessment schema  -  DONE (shared/schemas.py)
+insufficient_grounding  -  DONE
+confidence_score  -  DONE
+grounding_score  -  DONE
+key_weaknesses  -  DONE (govern gate 5 enforced)
+employer_arguments  -  DONE
+recommended_next_step  -  DONE
+handoff trigger  -  DONE (recommended_next_step="refer_solicitor")
 
 Answers:
   Classifies ambiguous beyond keywords?  YES (Stage B ML, Phase 8B)
@@ -424,7 +424,7 @@ Answers:
   No raw personal data to model?         YES (deidentify() enforced + tested)
 
 ================================================================================
-SECTION 6 — RAG COMPLETION
+SECTION 6  -  RAG COMPLETION
 ================================================================================
 
 rules structured retrieval:   DONE (retrieve_rules(), BM25 + exact match)
@@ -446,25 +446,25 @@ RAG is NOT ready for production. BM25 is active and working. pgvector is
 coded but blocked. Legal corpus is thin. Do not claim RAG ready.
 
 ================================================================================
-SECTION 7 — WASM COMPLETION
+SECTION 7  -  WASM COMPLETION
 ================================================================================
 
 .wasm binary:               MISSING
 Rust/wasm-pack pipeline:    MISSING
-Deadline calculator (WASM): MISSING — JS fallback covers this
-Form validation (WASM):     MISSING — HTML5 + server validation only
+Deadline calculator (WASM): MISSING  -  JS fallback covers this
+Form validation (WASM):     MISSING  -  HTML5 + server validation only
 Document assembly/preview:  MISSING (server-side only)
 JS fallback:                DONE (client/public/js/deadline.js)
-                            Fetches rules from /rules/{claim_type} — no hardcoded values
+                            Fetches rules from /rules/{claim_type}  -  no hardcoded values
 Server mirror validation:   DONE (backend/engine/deadline.py is authoritative)
 Frontend load/wiring:       DONE for JS; no WASM loading
-Test — no unnecessary server transmission: intake.html live preview uses JS only;
+Test  -  no unnecessary server transmission: intake.html live preview uses JS only;
   no server call for preview calculation (confirmed in assess response flow)
 
 WASM is NOT ready. JS fallback is the only client-side implementation.
 
 ================================================================================
-SECTION 8 — USER STORIES
+SECTION 8  -  USER STORIES
 ================================================================================
 
 US-1 Diagnosis:         DONE  (backend+frontend+DB+tests all confirmed)
@@ -484,7 +484,7 @@ US-14 Solicitor leads:  PARTIAL (handoff stored/encrypted; no live partner API)
 US-15 White-label:      FUTURE PHASE (not in current scope)
 
 ================================================================================
-SECTION 10 — FINAL READINESS TABLE
+SECTION 10  -  FINAL READINESS TABLE
 ================================================================================
 
 | Area                    | Status        | Notes                              |
@@ -519,8 +519,8 @@ Phase 8B verdict:     PASS
   - Legal accuracy gate: 38/38 PASS
   - Rules verification gate: PASS
   - Full regression: 767 passed, 9 skipped (1 pre-existing test updated)
-  - Secret scan: CLEAN in source. .env has real key — gitignored, not committed.
-  - Commit: 808dc72 (not pushed — awaiting PASS review)
+  - Secret scan: CLEAN in source. .env has real key  -  gitignored, not committed.
+  - Commit: 808dc72 (not pushed  -  awaiting PASS review)
   - No server changes made.
 
 Remaining blockers before controlled beta (non-code):
@@ -545,7 +545,7 @@ Server work (OrdinoxAI/IterLaw):
   When the correct context is provided, Phase 8S (Server Foundation) can:
   - Verify iterlaw-ai namespace (confirmed exists in AKS context)
   - Inspect legal-orchestrator deployment (currently Pending due to node NotReady
-    and wrong image: ghcr.io/serverax/rightsnow/legal-orchestrator — needs updating)
+    and wrong image: ghcr.io/serverax/rightsnow/legal-orchestrator  -  needs updating)
   - Prepare infra/k8s/iterlaw/ manifests for lawapp-specific services
   - No apply until manifests reviewed
 

@@ -1,5 +1,5 @@
 """
-Login-gate tests — free-tool login wall.
+Login-gate tests  -  free-tool login wall.
 
 Proves the free-tool funnel's authentication gate:
 
@@ -27,7 +27,7 @@ import os
 
 # Encryption MUST be configured before the app/module import so save_teaser_state
 # encrypts (it fails closed when ENCRYPTION_KEY is absent). A throwaway Fernet key
-# is fine for tests — it never touches production data.
+# is fine for tests  -  it never touches production data.
 if not os.getenv("ENCRYPTION_KEY"):
     from backend.core.encryption import generate_key
     os.environ["ENCRYPTION_KEY"] = generate_key()
@@ -148,7 +148,7 @@ class TestEncryptedTeaserState:
                     (g.hash_resume_token(token),),
                 )
                 row = cur.fetchone()
-                # The raw token must never be persisted — only its hash.
+                # The raw token must never be persisted  -  only its hash.
                 cur.execute(
                     "SELECT count(*) FROM teaser_sessions WHERE resume_token_hash = %s",
                     (token,),
@@ -221,7 +221,7 @@ class TestFreeToolRoutes:
         assert body["login_required"] is True
         assert body.get("resume_token")
         assert "teaser" in body
-        # The teaser is a PREVIEW only — it must NOT contain the full governed result.
+        # The teaser is a PREVIEW only  -  it must NOT contain the full governed result.
         assert "full_result" not in body
         assert set(body["gated_capabilities"]) >= {
             "full_result", "upload_document", "save_case",
@@ -268,7 +268,7 @@ class TestFreeToolRoutes:
         body = r.json()
         assert body["resumed"] is True
         assert body["tool"] == _TOOL
-        # No lost answers — restored EXACTLY where the user stopped.
+        # No lost answers  -  restored EXACTLY where the user stopped.
         assert body["answers"] == _ANSWERS
 
     def test_full_result_with_resume_token_uses_saved_answers(self, client):

@@ -1,8 +1,8 @@
-# Track C — Owner handoff (prepare only, DO NOT EXECUTE)
+# Track C  -  Owner handoff (prepare only, DO NOT EXECUTE)
 
 Prepared: 2026-06-15 after Track B on `release/lawapp-clean-snapshot`
 
-## G2 — PAT / credential rotation
+## G2  -  PAT / credential rotation
 1. Owner revokes any leaked PAT documented in prior security reports (G2).
 2. Rotate GitHub PAT used by CI/autopush; update GitHub Actions secrets only via owner.
 3. Re-run secret scan: `rg` + trufflehog on clean tree; artifact in reports/.
@@ -28,7 +28,7 @@ Prepared: 2026-06-15 after Track B on `release/lawapp-clean-snapshot`
 ## Backup / restore drill
 1. Owner runs pg_dump from production RDS/Postgres on maintenance window.
 2. Restore to isolated staging cluster; verify corpus_chunks count + rules row counts match.
-3. Do NOT execute against production from agent sessions — runbook only.
+3. Do NOT execute against production from agent sessions  -  runbook only.
 
 ## Marketing sign-off
 1. Product/legal review of landing copy, beta scope notice (11 topics), disclaimers.

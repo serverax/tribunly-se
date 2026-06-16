@@ -25,7 +25,7 @@ from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
-# Fields that directly identify a person or employer — strip entirely.
+# Fields that directly identify a person or employer  -  strip entirely.
 _PII_FIELDS = frozenset({
     "claimant_name", "name", "full_name", "first_name", "last_name", "surname",
     "employer_name", "employer", "company_name", "organisation_name",
@@ -36,7 +36,7 @@ _PII_FIELDS = frozenset({
     "date_of_birth", "dob",
     "bank_account", "bank_details", "sort_code",
     "passport_number", "driving_licence",
-    # Raw document text — may contain names, addresses, and other PII
+    # Raw document text  -  may contain names, addresses, and other PII
     "raw_document", "raw_text", "upload_text", "ocr_text", "document_content",
     "letter_text", "email_body", "contract_text",
 })
@@ -94,14 +94,14 @@ def deidentify(facts: dict) -> tuple[dict, dict]:
         "fields_stripped": stripped_keys,
         "fields_passed": list(safe.keys()),
         "unknown_fields_kept_for_review": unknown_kept,
-        "pii_fields_in_output": [],  # should always be empty — checked below
+        "pii_fields_in_output": [],  # should always be empty  -  checked below
     }
 
     # Verify: no PII field names appear in the output keys
     pii_in_output = [k for k in safe if k.lower().replace("-", "_") in _PII_FIELDS]
     if pii_in_output:
-        # Should never happen — log and strip again
-        logger.error("PII fields found in de-identified output: %s — stripping", pii_in_output)
+        # Should never happen  -  log and strip again
+        logger.error("PII fields found in de-identified output: %s  -  stripping", pii_in_output)
         for k in pii_in_output:
             del safe[k]
             stripped_keys.append(k)

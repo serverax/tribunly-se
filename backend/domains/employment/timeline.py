@@ -1,5 +1,5 @@
 """
-Case timeline and escalation engine — Phase 4C.
+Case timeline and escalation engine  -  Phase 4C.
 
 Timeline events are generated deterministically from case data:
   - case.key_dates (EDT, deadlines, ACAS dates)
@@ -157,7 +157,7 @@ def build_timeline(
                              source="confirmed_extraction"))
         else:
             events.append(_ev("employment_started", None,
-                             "Employment start date — not recorded",
+                             "Employment start date  -  not recorded",
                              "Add your employment start date to complete the timeline."))
             warnings.append("Employment start date not recorded.")
 
@@ -175,9 +175,9 @@ def build_timeline(
                              source="confirmed_extraction"))
         else:
             events.append(_ev("dismissal", None,
-                             "Dismissal date — not recorded",
+                             "Dismissal date  -  not recorded",
                              "Add your dismissal date (EDT) to complete the timeline."))
-            warnings.append("Dismissal date (EDT) not recorded — essential for the timeline.")
+            warnings.append("Dismissal date (EDT) not recorded  -  essential for the timeline.")
 
     # ACAS
     if day_a:
@@ -190,11 +190,11 @@ def build_timeline(
                          "Early Conciliation certificate received. Stop-clock ends."))
     elif day_a and not day_b:
         events.append(_ev("acas_day_b", None,
-                         "ACAS EC certificate — not yet received",
+                         "ACAS EC certificate  -  not yet received",
                          "EC certificate (Day B) outstanding."))
         warnings.append("ACAS EC certificate date (Day B) not yet recorded.")
 
-    # ET deadline — always rules_engine source
+    # ET deadline  -  always rules_engine source
     if deadline:
         events.append(_ev("et_deadline", deadline,
                          "ET claim limitation date",
@@ -230,7 +230,7 @@ def build_timeline(
                          "Solicitor introduction requested",
                          f"Trigger: {latest.get('trigger_reason','unknown')}. "
                          "lawapp will match with a qualified employment solicitor. "
-                         "This is a referral only — no solicitor-client relationship created yet."))
+                         "This is a referral only  -  no solicitor-client relationship created yet."))
 
     # ── Manual DB events ───────────────────────────────────────────────────────
     for ev in db_events:
@@ -269,7 +269,7 @@ def build_timeline(
         "timeline_note": (
             "This timeline is informational only. "
             "lawapp is not a solicitor. Dates must be verified against your documents. "
-            "Missing dates are flagged — lawapp never invents dates."
+            "Missing dates are flagged  -  lawapp never invents dates."
         ),
     }
 
@@ -288,7 +288,7 @@ def compute_escalation(
               > needs_review > watch > none
 
     GUARDRAIL: Never claims solicitor has accepted the case.
-    GUARDRAIL: Purely deterministic — no model involvement.
+    GUARDRAIL: Purely deterministic  -  no model involvement.
     """
     rec_next     = assessment.get("recommended_next_step")
     insufficient = bool(assessment.get("insufficient_grounding"))

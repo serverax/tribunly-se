@@ -1,5 +1,5 @@
 """
-ACAS Code compliance — checklist-style deterministic scaffold.
+ACAS Code compliance  -  checklist-style deterministic scaffold.
 Refactored from Iterlaw acas-code.engine.ts
 """
 import re
@@ -17,7 +17,7 @@ def assess_acas_code(text: str) -> AcasComplianceAssessment:
         gaps.append("Potential failure to follow fair procedure / investigation before sanction.")
     
     if bool(re.search(r"\b(no right of appeal|no appeal)\b", t, re.IGNORECASE)):
-        gaps.append("Appeal stage not evidenced — Code expects reasonable appeal where practicable.")
+        gaps.append("Appeal stage not evidenced  -  Code expects reasonable appeal where practicable.")
 
     unlikely = len(gaps) >= 2
     likely = len(gaps) == 0 and bool(re.search(r"\b(hearing|investigation|grievance|appeal)\b", t, re.IGNORECASE))

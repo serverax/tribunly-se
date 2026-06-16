@@ -1,4 +1,4 @@
-# employment_uk — workflow pack (which platform workflows this domain enables).
+# employment_uk  -  workflow pack (which platform workflows this domain enables).
 # Loaded by ingestion/domain_loader.py; consumed by the Corpus Ingestion AIA and
 # proof scripts. Each workflow declares the DB tables/rules/sources it depends on
 # so the proof can fail-closed if a dependency is missing.

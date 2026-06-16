@@ -20,7 +20,7 @@ uv run ruff format "$FILE" --quiet 2>/dev/null || true
 
 # Phase 2: check for remaining violations
 if ! uv run ruff check "$FILE" --quiet 2>&1; then
-    echo "[hook] ruff violations remain in $FILE — run: uv run ruff check $FILE"
+    echo "[hook] ruff violations remain in $FILE  -  run: uv run ruff check $FILE"
     exit 2
 fi
 

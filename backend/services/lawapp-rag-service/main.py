@@ -116,7 +116,7 @@ def hybrid_search(request: SearchRequest):
     vector_results = _vector_search(request.query, request.corpus_filter, limit)
 
     merged: dict[str, dict] = {}
-    # Prefer FTS (keyword) hits — vector ranking is noisy on a sparse corpus.
+    # Prefer FTS (keyword) hits  -  vector ranking is noisy on a sparse corpus.
     for row in bm25_results:
         merged[row["chunk_id"]] = row
     for row in vector_results:
@@ -158,7 +158,7 @@ def _row_to_result(row: psycopg2.extras.DictRow, match_type: str, score: float) 
 def _fts_search(query: str, corpus_filter: Optional[str], limit: int) -> List[Dict]:
     """Full-text search against corpus_chunks (indexed via corpus_chunks_fts_idx)."""
     if not db:
-        logger.warning("FTS search skipped — no DB connection")
+        logger.warning("FTS search skipped  -  no DB connection")
         return []
 
     results: List[Dict] = []
@@ -214,7 +214,7 @@ def _vector_search(query: str, corpus_filter: Optional[str], limit: int) -> List
     try:
         from fastembed import TextEmbedding
     except ImportError:
-        logger.info("fastembed not installed — vector search disabled")
+        logger.info("fastembed not installed  -  vector search disabled")
         return []
 
     try:

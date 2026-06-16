@@ -1,7 +1,7 @@
-"""T-010 — CROSS-USER ROW-LEVEL SECURITY (RLS) END-TO-END proof.
+"""T-010  -  CROSS-USER ROW-LEVEL SECURITY (RLS) END-TO-END proof.
 
 This suite proves, against the REAL local DB and over REAL HTTP, that user A can
-never see, modify, or unlock user B's data — at the backend monolith (the actual
+never see, modify, or unlock user B's data  -  at the backend monolith (the actual
 RLS boundary) and across the distributed AI services.
 
 ────────────────────────────────────────────────────────────────────────────────
@@ -11,10 +11,10 @@ User-owned rows live ONLY in the backend monolith DB:
     cases(user_id)         documents(case_id → cases.user_id)
     reminder_events(case_id) payment_events(user_id, case_id)
 RLS is enforced there by:
-    • /cases                       — SELECT ... WHERE user_id = <caller>   (own rows only)
-    • /cases/{id} and every        — check_case_ownership() → 401 anon / 403 wrong user
+    • /cases                        -  SELECT ... WHERE user_id = <caller>   (own rows only)
+    • /cases/{id} and every         -  check_case_ownership() → 401 anon / 403 wrong user
       /cases/{id}/* sub-route         (via the _require_case_owner dependency)
-    • paid unlock (is_case_paid)   — DB-backed, keyed to the OWNING case row only
+    • paid unlock (is_case_paid)    -  DB-backed, keyed to the OWNING case row only
 
 The distributed AI services (lawapp-rules-engine, lawapp-rag-retrieval,
 lawapp-llm-gateway, lawapp-document-service, lawapp-brain) are STATELESS legal
@@ -23,12 +23,12 @@ public knowledge, document content is generated from facts supplied IN the reque
 body, and inference is stateless. Therefore "A can't read B's data" at the service
 tier is a STRUCTURAL guarantee, proven here three ways:
     1. tenancy context is MANDATORY (services 400 without user/workspace/case ids);
-    2. the only stateful retrieval (document GET) returns 501 — it can never echo
+    2. the only stateful retrieval (document GET) returns 501  -  it can never echo
        another user's stored document because no per-user store is wired;
     3. service responses carry NO user-owned fields and never echo a caller's PII
-       (the llm-gateway rejects PII at the model boundary — data minimisation).
+       (the llm-gateway rejects PII at the model boundary  -  data minimisation).
 
-We do NOT pretend the compute services run their own row filter — they have no
+We do NOT pretend the compute services run their own row filter  -  they have no
 user rows to filter. Faking such an assertion would be a false PASS.
 
 ────────────────────────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ caller could read/modify ANY case by id (confidentiality breach). Fixed in
 backend/core/user_auth.py: enforcing modes now raise 401 on a missing identity;
 only dev 'none' mode passes through. `test_anonymous_*` below pins the fix.
 
-If the local DB is unreachable the DB-backed tests SKIP — they are never faked.
+If the local DB is unreachable the DB-backed tests SKIP  -  they are never faked.
 """
 from __future__ import annotations
 
@@ -104,9 +104,9 @@ def env_jwt():
 @pytest.fixture(scope="module")
 def seeded(env_jwt):
     """Seed two real users + two real cases (+ a reminder each) in the live DB.
-    Skips the whole suite if the DB is unreachable — RLS is never proven on mocks."""
+    Skips the whole suite if the DB is unreachable  -  RLS is never proven on mocks."""
     if not _db_available():
-        pytest.skip("local DB unreachable — cross-user RLS cannot be proven on mock data")
+        pytest.skip("local DB unreachable  -  cross-user RLS cannot be proven on mock data")
     from ingestion.db import get_connection
     from backend.core.user_auth import ensure_user_exists
 
@@ -153,7 +153,7 @@ def client(seeded):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# PART 1 — BACKEND MONOLITH: the real RLS boundary (real DB rows, real HTTP, JWT)
+# PART 1  -  BACKEND MONOLITH: the real RLS boundary (real DB rows, real HTTP, JWT)
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestListIsolation:
@@ -234,11 +234,11 @@ class TestSubResourceIsolation:
 
 
 class TestPaidEntitlementIsolation:
-    """Paid unlock is bound to the OWNING case row — A's payment never unlocks B,
+    """Paid unlock is bound to the OWNING case row  -  A's payment never unlocks B,
     and B is not auto-unlocked. Ownership is checked BEFORE entitlement (403 first)."""
 
     def test_cross_user_paid_bundle_forbidden(self, client):
-        # A cannot even reach B's paid bundle generator — owner check fires first.
+        # A cannot even reach B's paid bundle generator  -  owner check fires first.
         r = client.post(f"/cases/{CASE_B}/bundle/generate", headers=_auth(UID_A), json={})
         assert r.status_code == 403, f"A reaching B's bundle must be 403, got {r.status_code}"
 
@@ -247,7 +247,7 @@ class TestPaidEntitlementIsolation:
         assert r.status_code == 403
 
     def test_entitlement_bound_to_owning_case_row(self, client):
-        # DB-backed truth: CASE_A (paid) unlocks, CASE_B (unpaid) does not — proving
+        # DB-backed truth: CASE_A (paid) unlocks, CASE_B (unpaid) does not  -  proving
         # A's payment cannot bleed into B's case and B is never silently unlocked.
         from unittest.mock import patch
         from backend.core.payment import is_case_paid
@@ -257,7 +257,7 @@ class TestPaidEntitlementIsolation:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# PART 2 — DISTRIBUTED AI SERVICES: stateless compute, structural isolation
+# PART 2  -  DISTRIBUTED AI SERVICES: stateless compute, structural isolation
 # ══════════════════════════════════════════════════════════════════════════════
 
 DOC = "services.lawapp_document_service.app"
@@ -277,7 +277,7 @@ def _svc(modname: str) -> TestClient:
 
 
 class TestServiceTenancyMandatory:
-    """A stateless service must refuse to act without a tenancy context — it can't
+    """A stateless service must refuse to act without a tenancy context  -  it can't
     be tricked into operating in an ambient, un-scoped way."""
 
     def test_document_service_requires_tenancy(self):
@@ -295,7 +295,7 @@ class TestServiceTenancyMandatory:
 
 
 class TestServiceNoCrossUserStore:
-    """The only stateful retrieval surface returns 501 — there is no per-user
+    """The only stateful retrieval surface returns 501  -  there is no per-user
     document store, so it can NEVER echo another user's stored document."""
 
     def test_document_retrieval_not_implemented_no_leak(self):
@@ -305,7 +305,7 @@ class TestServiceNoCrossUserStore:
 
 
 class TestServiceResponsesCarryNoUserData:
-    """Shared-knowledge services return public legal content only — never a caller's
+    """Shared-knowledge services return public legal content only  -  never a caller's
     user/case identifiers or PII. With no user-owned data in the response there is,
     structurally, nothing to leak across users."""
 
@@ -315,7 +315,7 @@ class TestServiceResponsesCarryNoUserData:
                 "jurisdiction": "EW"}
         r = c.post("/v1/retrieve", json=body)
         if r.status_code == 503:
-            pytest.skip("retrieval DB unavailable — cannot assert on mock data")
+            pytest.skip("retrieval DB unavailable  -  cannot assert on mock data")
         assert r.status_code == 200, r.text
         j = r.json()
         assert j["source"] == "local_corpus" and j["llm_called"] is False
@@ -329,7 +329,7 @@ class TestServiceResponsesCarryNoUserData:
         r = c.post("/v1/rules/evaluate",
                    json={"claim_type": "unfair_dismissal", "jurisdiction": "EW"})
         if r.status_code == 503:
-            pytest.skip("rules DB unavailable — cannot assert on mock data")
+            pytest.skip("rules DB unavailable  -  cannot assert on mock data")
         assert r.status_code == 200, r.text
         j = r.json()
         assert j["source"] == "rules_table" and j["llm_called"] is False
@@ -351,7 +351,7 @@ class TestServiceResponsesCarryNoUserData:
 
 class TestGatewayPiiBoundary:
     """The llm-gateway is the only service allowed to call the model. It rejects raw
-    PII at the boundary — user PII never crosses into inference (data minimisation,
+    PII at the boundary  -  user PII never crosses into inference (data minimisation,
     a per-user confidentiality control)."""
 
     def test_gateway_rejects_pii_in_context(self):
@@ -371,7 +371,7 @@ class TestGatewayPiiBoundary:
 
     def test_gateway_non_pii_request_not_rejected_as_pii(self):
         # A clean (dates-only) request is NOT a 422/pii_rejected; it either succeeds
-        # (200) or fails closed because the model is unavailable (503) — never a
+        # (200) or fails closed because the model is unavailable (503)  -  never a
         # silent PII bypass and never a hallucinated fallback.
         r = _svc(GATEWAY).post("/v1/generate", json={
             "messages": [{"role": "user", "content": "Explain the 3-month ET time limit."}],

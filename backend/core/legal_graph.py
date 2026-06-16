@@ -1,5 +1,5 @@
 """
-Legal Knowledge Graph — lawapp Brain Step 9 (RAG source selection).
+Legal Knowledge Graph  -  lawapp Brain Step 9 (RAG source selection).
 
 Queries the legal_nodes and legal_edges tables populated by migration 018
 to provide structured graph context for the Brain.
@@ -48,15 +48,15 @@ def get_claim_subgraph(
 
     Returns:
         {
-          "nodes": list[dict],   — relevant legal nodes
-          "edges": list[dict],   — edges between nodes
-          "context_text": str,   — formatted text for model context
-          "root_node": str,      — root claim node_id
+          "nodes": list[dict],    -  relevant legal nodes
+          "edges": list[dict],    -  edges between nodes
+          "context_text": str,    -  formatted text for model context
+          "root_node": str,       -  root claim node_id
           "depth": int,
           "source": "legal_graph"
         }
 
-    Returns empty graph dict if DB unavailable — never raises.
+    Returns empty graph dict if DB unavailable  -  never raises.
     """
     root_node_id = _CLAIM_ROOT_NODES.get(claim_type)
     if not root_node_id:
@@ -201,7 +201,7 @@ def _format_graph_text(nodes: list[dict], edges: list[dict]) -> str:
         if ref:
             line += f" ({ref})"
         if desc:
-            line += f" — {desc[:150]}"
+            line += f"  -  {desc[:150]}"
         lines.append(line)
 
     if edges:
@@ -245,8 +245,8 @@ def select_rag_sources(
 
     Returns:
         {
-          "sources":       list[str]  — ["hybrid", "legal_graph", "knowledge_graph"]
-          "primary":       str        — the primary source for retrieval
+          "sources":       list[str]   -  ["hybrid", "legal_graph", "knowledge_graph"]
+          "primary":       str         -  the primary source for retrieval
           "use_graph":     bool
           "use_kg":        bool
           "reason":        str

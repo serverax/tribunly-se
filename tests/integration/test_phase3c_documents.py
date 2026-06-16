@@ -1,5 +1,5 @@
 """
-Phase 3C — Document generation integration tests.
+Phase 3C  -  Document generation integration tests.
 
 Validates:
   1.  Particulars of Claim endpoint returns 200 with content
@@ -332,7 +332,7 @@ def test_assess_endpoint_still_validates_client_deadline():
         },
         "jurisdiction": "EW",
         "use_model": False,
-        "client_deadline": "2026-01-01",   # wrong — should flag mismatch
+        "client_deadline": "2026-01-01",   # wrong  -  should flag mismatch
     })
     assert resp.status_code == 200
     assert resp.json().get("deadline_mismatch") is True

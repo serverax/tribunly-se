@@ -1,5 +1,5 @@
 """
-Phase 4C — Case timeline and escalation integration tests.
+Phase 4C  -  Case timeline and escalation integration tests.
 
 Tests:
   Timeline:

@@ -1,5 +1,5 @@
 """
-Payment validation — REAL-ONLY, DB-backed payment state.
+Payment validation  -  REAL-ONLY, DB-backed payment state.
 
 PAYMENT_MODE env var (only these are valid):
   disabled:     paid document generation is blocked. NEVER unlocks paid features.
@@ -11,7 +11,7 @@ PAYMENT_MODE env var (only these are valid):
 There is NO mock and NO test_simulator. Paid access is NEVER granted by a raw
 request token. Paid access is granted ONLY by a verified DB payment record
 (`cases.payment_status` / `payment_sessions.status`) that a real Stripe webhook
-sets. Tests seed that DB record using the real schema — they do not pass tokens.
+sets. Tests seed that DB record using the real schema  -  they do not pass tokens.
 
 GUARDRAIL: No hidden payment. Price shown before any charge. Users must consent.
 GUARDRAIL: production startup fails unless PAYMENT_MODE=stripe/stripe_live +
@@ -107,7 +107,7 @@ def is_case_paid(case_id: str | None) -> bool:
 def verify_stripe_payment_id(stripe_id: str | None) -> bool:
     """Verify a real Stripe payment_intent (pi_) or checkout session (cs_) ID against
     the Stripe API. Used by the webhook/session-completion path to set DB payment
-    state — NOT a document-unlock gate. Fails closed without a real Stripe key.
+    state  -  NOT a document-unlock gate. Fails closed without a real Stripe key.
     Arbitrary tokens (e.g. 'test', 'test_x', 'mock_paid') are NEVER accepted."""
     mode = get_payment_mode()
     if not stripe_id:
@@ -126,7 +126,7 @@ def _verify_stripe_token(token: str, mode: str) -> bool:
     """
     stripe_key = os.getenv("STRIPE_SECRET_KEY", "")
     if not stripe_key or stripe_key in ("placeholder", "sk_" + "test_PLACEHOLDER", "sk_" + "live_PLACEHOLDER"):
-        logger.warning("Stripe key not configured — cannot verify token")
+        logger.warning("Stripe key not configured  -  cannot verify token")
         return False
     try:
         stripe.api_key = stripe_key
@@ -138,7 +138,7 @@ def _verify_stripe_token(token: str, mode: str) -> bool:
             return session.payment_status == "paid"
         return False
     except ImportError:
-        logger.error("stripe Python SDK not installed — run: pip install stripe")
+        logger.error("stripe Python SDK not installed  -  run: pip install stripe")
         return False
     except Exception as exc:
         logger.warning("Stripe verification failed: %s", exc)
@@ -192,7 +192,7 @@ def preview_document(content: str) -> str:
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
         "PREVIEW ENDS HERE\n"
         "Full document access requires payment.\n"
-        "There are no hidden charges — the full price is shown before\n"
+        "There are no hidden charges  -  the full price is shown before\n"
         "any payment is taken. lawapp never charges without your consent.\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     )

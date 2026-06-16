@@ -1,9 +1,9 @@
--- Migration 019 — Brain Phase 1: Safety Boundary + Context Compression Audit Tables
+-- Migration 019  -  Brain Phase 1: Safety Boundary + Context Compression Audit Tables
 -- Created as part of PHASE 1 Brain Algorithm foundation.
 --
 -- New tables:
---   safety_boundary_checks  — immutable log of every safety policy check at Brain step 16
---   context_compression_log — log of context compression metrics at Brain step 13
+--   safety_boundary_checks   -  immutable log of every safety policy check at Brain step 16
+--   context_compression_log  -  log of context compression metrics at Brain step 13
 --
 -- These tables are APPEND-ONLY. No UPDATE or DELETE is permitted at app level.
 
@@ -34,7 +34,7 @@ CREATE INDEX IF NOT EXISTS safety_boundary_blocked_idx ON safety_boundary_checks
 
 CREATE TABLE IF NOT EXISTS context_compression_log (
     id                  BIGSERIAL PRIMARY KEY,
-    trace_id            TEXT,                      -- not FK — may be written before brain_traces row
+    trace_id            TEXT,                      -- not FK  -  may be written before brain_traces row
     original_tokens     INTEGER     NOT NULL DEFAULT 0,
     compressed_tokens   INTEGER     NOT NULL DEFAULT 0,
     citations_preserved INTEGER     NOT NULL DEFAULT 0,

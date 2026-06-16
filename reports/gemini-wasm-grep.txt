@@ -5,9 +5,9 @@ client/public/css/styles.css:89:.deadline-card .date  { font-size: 1.1rem; font-
 client/public/css/styles.css:90:.deadline-urgent { background: var(--warn); }
 client/public/css/styles.css:155:  .deadline-card { flex-direction: column; gap: .5rem; }
 client/public/index.html:8:  <meta name="description" content="Free, honest assessment of your UK unfair dismissal claim. Cited legal sources, deterministic deadlines, no overpromising.">
-client/public/index.html:30:      Honest, cited assessment. Your deadline, your rights, your weaknesses — not just what you want to hear.
-client/public/index.html:46:        <p style="font-size:.9rem;color:var(--muted);margin-top:.5rem;">Your tribunal deadline computed deterministically from the rules — not by a model that guesses.</p>
-client/public/js/deadline.js:2: * Client-side deadline calculator — Phase 10 WASM Integration.
+client/public/index.html:30:      Honest, cited assessment. Your deadline, your rights, your weaknesses  -  not just what you want to hear.
+client/public/index.html:46:        <p style="font-size:.9rem;color:var(--muted);margin-top:.5rem;">Your tribunal deadline computed deterministically from the rules  -  not by a model that guesses.</p>
+client/public/js/deadline.js:2: * Client-side deadline calculator  -  Phase 10 WASM Integration.
 client/public/js/deadline.js:13:  let wasmModule = null;
 client/public/js/deadline.js:17:    if (wasmModule) return wasmModule;
 client/public/js/deadline.js:19:      const module = await import('../wasm/lawapp_wasm.js');
@@ -20,7 +20,7 @@ client/public/js/deadline.js:147:        console.error("WASM compute_deadline_wa
 client/public/js/deadline.js:154:    if (wasmModule && wasmModule.calculate_statutory_notice_wasm) {
 client/public/js/deadline.js:156:        return wasmModule.calculate_statutory_notice_wasm(serviceMonths, direction);
 client/public/js/deadline.js:158:        console.error("WASM calculate_statutory_notice_wasm failed, falling back to JS", e);
-client/public/js/document_preview.js:2: * lawapp Document Preview — Client-side document assembly.
+client/public/js/document_preview.js:2: * lawapp Document Preview  -  Client-side document assembly.
 client/public/js/document_preview.js:4: * Generates a basic draft document preview from confirmed case facts,
 client/public/js/document_preview.js:5: * entirely client-side. No sensitive data is sent to the server for preview.
 client/public/js/document_preview.js:9: *            No API call is made for preview generation.
@@ -57,7 +57,7 @@ client/public/pages/case_detail.html:239:      date.className = 'deadline-date';
 client/public/pages/case_detail.html:258:    label.className = 'deadline-label';
 client/public/pages/case_detail.html:259:    label.textContent = 'Tribunal deadline';
 client/public/pages/case_detail.html:261:    date.className = 'deadline-date';
-client/public/pages/case_detail.html:299:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time — this is a high hurdle. Seek solicitor advice urgently.'
+client/public/pages/case_detail.html:299:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time  -  this is a high hurdle. Seek solicitor advice urgently.'
 client/public/pages/case_detail.html:300:      : 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
 client/public/pages/case_detail.html:463:      urgent_deadline:       'var(--warn)',
 client/public/pages/case_detail.html:491:      span.textContent = escalation.days_remaining > 0 ? escalation.days_remaining + ' days to deadline' : 'Deadline passed';
@@ -77,7 +77,7 @@ client/public/pages/intake.html:24:    .deadline-badge.safe { background: #d4edd
 client/public/pages/intake.html:141:        <!-- Live deadline preview -->
 client/public/pages/intake.html:142:        <div class="deadline-preview" id="deadline-preview" style="display:none;">
 client/public/pages/intake.html:143:          <h4>⏱ Estimated tribunal deadline</h4>
-client/public/pages/intake.html:144:          <div class="date-value" id="preview-date">—</div>
+client/public/pages/intake.html:144:          <div class="date-value" id="preview-date"> - </div>
 client/public/pages/intake.html:145:          <div id="preview-badge" style="margin-top:0.4rem;"></div>
 client/public/pages/intake.html:146:          <p class="deadline-note" id="preview-note"></p>
 client/public/pages/intake.html:147:          <p class="deadline-note" style="font-size:0.78rem;color:#888;margin-top:0.5rem;">
@@ -88,7 +88,7 @@ client/public/pages/intake.html:355:  // ── Live deadline preview ───�
 client/public/pages/intake.html:358:    if (!edt) { document.getElementById('deadline-preview').style.display = 'none'; return; }
 client/public/pages/intake.html:377:    document.getElementById('preview-date').textContent = formatDate(result.limitation_date);
 client/public/pages/intake.html:379:    const badge = document.getElementById('preview-badge');
-client/public/pages/intake.html:383:      note = 'The standard deadline has passed. You may still have grounds to apply for an extension in exceptional circumstances — seek legal advice urgently.';
+client/public/pages/intake.html:383:      note = 'The standard deadline has passed. You may still have grounds to apply for an extension in exceptional circumstances  -  seek legal advice urgently.';
 client/public/pages/intake.html:389:      note = 'You should contact ACAS early conciliation soon to protect your deadline.';
 client/public/pages/intake.html:397:    badge.innerHTML = `<span class="deadline-badge ${badgeClass}">${badgeText}</span>`;
 client/public/pages/intake.html:398:    document.getElementById('preview-note').textContent = note;
@@ -107,7 +107,7 @@ client/public/pages/saved_case.html:194:      date.className = 'deadline-date';
 client/public/pages/saved_case.html:213:    label.className = 'deadline-label';
 client/public/pages/saved_case.html:214:    label.textContent = 'Tribunal deadline';
 client/public/pages/saved_case.html:216:    date.className = 'deadline-date';
-client/public/pages/saved_case.html:254:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time — this is a high hurdle. Seek solicitor advice urgently.'
+client/public/pages/saved_case.html:254:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time  -  this is a high hurdle. Seek solicitor advice urgently.'
 client/public/pages/saved_case.html:255:      : 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
 client/public/pages/saved_case.html:376:      urgent_deadline:       'var(--warn)',
 client/public/pages/saved_case.html:404:      span.textContent = escalation.days_remaining > 0 ? escalation.days_remaining + ' days to deadline' : 'Deadline passed';
@@ -385,11 +385,11 @@ backend/api/main.py:451:            result["deadline_mismatch"] = True
 backend/api/main.py:452:            result["deadline_mismatch_detail"] = {
 backend/api/main.py:453:                "client": req.client_deadline,
 backend/api/main.py:457:            result["deadline_mismatch"] = False
-backend/api/main.py:473:      1. rules table (deterministic values — deadlines, caps, thresholds)
+backend/api/main.py:473:      1. rules table (deterministic values  -  deadlines, caps, thresholds)
 backend/api/main.py:480:    GUARDRAIL: deadlines and caps always from rules table, never from LLM.
 backend/api/main.py:501:      - No payment_token → preview (first N lines) + payment_required=True.
 backend/api/main.py:514:    from backend.core.payment import is_paid, preview_document
-backend/api/main.py:542:    # Phase 6A: wrap payment validation — fail safely on unimplemented modes
+backend/api/main.py:542:    # Phase 6A: wrap payment validation  -  fail safely on unimplemented modes
 backend/api/main.py:549:    delivered_content = content if paid else preview_document(content)
 backend/api/main.py:568:    key_dates: dict             # {"edt": "YYYY-MM-DD", "deadline_date": "YYYY-MM-DD"}
 backend/api/main.py:897:@app.get("/cases/{case_id}/deadline")
@@ -451,7 +451,7 @@ backend/core/agents/registry.py:27:    allowed_tools = ["retrieve_rules", "hybri
 backend/core/agents/registry.py:74:    name = "deadline"
 backend/core/agents/registry.py:76:        "Specialist in tribunal deadlines. Computes limitation dates, "
 backend/core/agents/registry.py:77:        "ACAS EC pause/extension, ET1 filing deadlines. "
-backend/core/agents/registry.py:78:        "GUARDRAIL: all deadlines are rule-derived — never estimated."
+backend/core/agents/registry.py:78:        "GUARDRAIL: all deadlines are rule-derived  -  never estimated."
 backend/core/agents/registry.py:80:    allowed_tools = ["retrieve_rules", "deadline_calculate", "calendar"]
 backend/core/agents/registry.py:81:    prohibited_actions = LegalAgent.prohibited_actions + ["estimate_deadline"]
 backend/core/agents/registry.py:98:            from backend.domains.employment.deadline import compute_limitation_date
@@ -474,10 +474,10 @@ backend/core/brain.py:445:            deadline_result = compute_limitation_date(
 backend/core/brain.py:446:            if deadline_result and deadline_result.get("limitation_date"):
 backend/core/brain.py:447:                lim = _dt.date.fromisoformat(deadline_result["limitation_date"])
 backend/core/bundle.py:96:    if not key_dates.get("deadline_date"):
-backend/core/bundle.py:97:        warnings.append("Tribunal deadline not stored — check /cases/{id}/deadline.")
+backend/core/bundle.py:97:        warnings.append("Tribunal deadline not stored  -  check /cases/{id}/deadline.")
 backend/core/bundle.py:263:    deadline   = key_dates.get("deadline_date")
 backend/core/bundle.py:287:    if deadline:
-backend/core/bundle.py:288:        events.append((deadline, "ET claim limitation date (from rules — ERA 1996 s.111(2))", "rules-derived"))
+backend/core/bundle.py:288:        events.append((deadline, "ET claim limitation date (from rules  -  ERA 1996 s.111(2))", "rules-derived"))
 backend/core/bundle.py:451:    deadline    = key_dates.get("deadline_date")
 backend/core/bundle.py:456:    dl_auth     = (assessment.get("deadline_info") or {}).get("authority", "ERA 1996 s.111(2)")
 backend/core/bundle.py:538:   Your ET claim deadline: {_fmt(deadline)}
@@ -486,7 +486,7 @@ backend/core/bundle.py:543:   Seek urgent advice if the deadline has passed or i
 backend/core/classify.py:77:    "deadline", "time limit", "when do i have to", "how long do i have",
 backend/core/classify.py:200:            "deadline_check" if _has_any(text, _DEADLINE_KEYWORDS) else
 backend/core/classify.py:209:            "deadline_check" if _has_any(text, _DEADLINE_KEYWORDS) else
-backend/core/config_validation.py:2:Startup configuration validation — Phase 6C.
+backend/core/config_validation.py:2:Startup configuration validation  -  Phase 6C.
 backend/core/config_validation.py:80:    # Auth mode validation
 backend/core/config_validation.py:96:        # KMS mode validation in production
 backend/core/config_validation.py:115:        # AWS credential validation is handled by boto3 at runtime (not here).
@@ -512,7 +512,7 @@ backend/core/documents.py:705:   Missing the 3-month deadline is usually fatal t
 backend/core/document_extractor.py:121:def _extract_appeal_deadline(text: str) -> Optional[str]:
 backend/core/document_extractor.py:122:    """Extract appeal deadline."""
 backend/core/document_extractor.py:268:        raw_facts["appeal_deadline"]   = _extract_appeal_deadline(text)
-backend/core/evaluator.py:11:  4. Limitation/deadline logic — dates are rule-derived, not estimated
+backend/core/evaluator.py:11:  4. Limitation/deadline logic  -  dates are rule-derived, not estimated
 backend/core/evaluator.py:54:    "6 months to bring unfair dismissal": "incorrect_ud_deadline",
 backend/core/evaluator.py:55:    "12 months to claim": "incorrect_ud_deadline",
 backend/core/evaluator.py:56:    "1 year to bring": "incorrect_ud_deadline",
@@ -529,7 +529,7 @@ backend/core/evaluator.py:145:            failures.append(f"incorrect_deadline_s
 backend/core/evaluator.py:146:            checks.append({"check": "deadline_statement_accuracy", "passed": False,
 backend/core/evaluator.py:150:        checks.append({"check": "deadline_statement_accuracy", "passed": True, "severity": "medium"})
 backend/core/govern.py:11:3. Determinism: deadline.source == "rules" (assert).
-backend/core/govern.py:69:    # Check 3: determinism — deadline must come from rules, not generation
+backend/core/govern.py:69:    # Check 3: determinism  -  deadline must come from rules, not generation
 backend/core/govern.py:70:    if assessment.deadline is not None:
 backend/core/govern.py:71:        if assessment.deadline.source != "rules":
 backend/core/govern.py:75:                    f"determinism_violation: deadline.source='{assessment.deadline.source}' "
@@ -537,7 +537,7 @@ backend/core/govern.py:76:                    f"must be 'rules'. Model generated
 backend/core/mcp_connectors.py:21:  - deadline_reminder (requires consent)
 backend/core/memory.py:15:  - deadlines: computed deadlines
 backend/core/memory.py:50:        "deadlines", "previous_answers", "evidence_checklist",
-backend/core/models.py:41:        deadline_info: dict,        # pre-computed from rules — model must not alter
+backend/core/models.py:41:        deadline_info: dict,        # pre-computed from rules  -  model must not alter
 backend/core/models.py:49:        The deadline values in deadline_info come from the rules table and are
 backend/core/models.py:80:        deadline_info: dict,
 backend/core/models.py:85:        # Derive deadline from the pre-computed deadline_info (never from model)
@@ -546,14 +546,14 @@ backend/core/models.py:87:            limitation_date=date.fromisoformat(deadlin
 backend/core/models.py:88:            if deadline_info.get("limitation_date") else None,
 backend/core/models.py:90:            authority=deadline_info.get("authority", "ERA 1996 s.111(2)"),
 backend/core/models.py:117:            deadline=deadline,
-backend/core/models.py:151:You must not generate, recall, or re-derive any deadline, cap, or threshold —
+backend/core/models.py:151:You must not generate, recall, or re-derive any deadline, cap, or threshold  - 
 backend/core/models.py:152:these are provided in deadline_info and rules and must be used verbatim.
 backend/core/models.py:158:        self, safe_facts: dict, bundle: RetrievalBundle, deadline_info: dict
 backend/core/models.py:169:{json.dumps(deadline_info, indent=2, default=str)}
 backend/core/models.py:183:  "deadline": {{"limitation_date": "YYYY-MM-DD", "source": "rules", "authority": "..."}},
 backend/core/models.py:197:        deadline_info: dict,
 backend/core/models.py:209:        prompt = self._build_prompt(safe_facts, bundle, deadline_info)
-backend/core/models.py:234:        # Enforce deadline.source = "rules" — governance gate also checks this,
+backend/core/models.py:234:        # Enforce deadline.source = "rules"  -  governance gate also checks this,
 backend/core/models.py:236:        if "deadline" in data:
 backend/core/models.py:237:            data["deadline"]["source"] = "rules"
 backend/core/models.py:290:        deadline_info: dict,
@@ -561,8 +561,8 @@ backend/core/models.py:306:            f"{json.dumps(deadline_info, indent=2, de
 backend/core/models.py:350:                deadline=Deadline(
 backend/core/models.py:367:        if "deadline" in data:
 backend/core/models.py:368:            data["deadline"]["source"] = "rules"  # defensive enforcement
-backend/core/payment.py:2:Payment validation — Phase 6A/7 (extended payment mode abstraction).
-backend/core/payment.py:8:  stripe_test:               Stripe test API validation (Phase 7 — requires STRIPE_SECRET_KEY)
+backend/core/payment.py:2:Payment validation  -  Phase 6A/7 (extended payment mode abstraction).
+backend/core/payment.py:8:  stripe_test:               Stripe test API validation (Phase 7  -  requires STRIPE_SECRET_KEY)
 backend/core/payment.py:24:# Document preview: maximum lines shown to unpaid users.
 backend/core/payment.py:78:            "PAYMENT_MODE=stripe_test: Stripe test validation not yet implemented (Phase 7). "
 backend/core/payment.py:93:            "PAYMENT_MODE=stripe_live: Live Stripe validation not yet implemented (Phase 7)."
@@ -615,7 +615,7 @@ backend/domains/employment/timeline.py:59:    "urgent_deadline": (
 backend/domains/employment/timeline.py:60:        "Your tribunal deadline is near or has passed. "
 backend/domains/employment/timeline.py:69:        "Your deadline is approaching within 30 days. "
 backend/domains/employment/timeline.py:144:    deadline   = key_dates.get("deadline_date")
-backend/domains/employment/timeline.py:197:    # ET deadline — always rules_engine source
+backend/domains/employment/timeline.py:197:    # ET deadline  -  always rules_engine source
 backend/domains/employment/timeline.py:198:    if deadline:
 backend/domains/employment/timeline.py:199:        events.append(_ev("et_deadline", deadline,
 backend/domains/employment/timeline.py:201:                         "Deterministic deadline from ERA 1996 s.111(2). "
@@ -634,7 +634,7 @@ tests/brain/test_brain.py:144:    def test_ud_agents_include_deadline(self):
 tests/brain/test_brain.py:145:        assert "deadline" in _AGENT_MAP["unfair_dismissal"]
 tests/brain/test_brain.py:198:        assert "deadline" in result["trace"]["agents_selected"]
 tests/deadlines/test_deadlines.py:4:Tests deterministic deadline calculations using the actual function signature.
-tests/deadlines/test_deadlines.py:5:Every deadline must come from the rules engine — never from LLM estimation.
+tests/deadlines/test_deadlines.py:5:Every deadline must come from the rules engine  -  never from LLM estimation.
 tests/deadlines/test_deadlines.py:10:from backend.domains.employment.deadline import compute_limitation_date
 tests/deadlines/test_deadlines.py:14:    def test_ud_3_month_deadline(self):
 tests/deadlines/test_deadlines.py:19:    def test_ud_deadline_authority_is_statute(self):
@@ -652,7 +652,7 @@ tests/e2e/lawapp-journey.spec.js:123:  expect(body.deadline.limitation_date).toB
 tests/e2e/lawapp-journey.spec.js:236:test('document preview only without payment token', async ({ request }) => {
 tests/e2e/lawapp-journey.spec.js:278:// ── Test: Live deadline preview ───────────────────────────────────────────────
 tests/e2e/lawapp-journey.spec.js:280:test('intake deadline preview: rules API returns correct values for WASM/JS', async ({ request }) => {
-tests/e2e/lawapp-journey.spec.js:281:  // Pure API test — verifies the data that drives the deadline preview
+tests/e2e/lawapp-journey.spec.js:281:  // Pure API test  -  verifies the data that drives the deadline preview
 tests/evaluation/test_evaluation.py:7:  - Catches wrong deadlines
 tests/evaluation/test_evaluation.py:23:    "deadline_info": {"limitation_date": "2025-12-31", "source": "rules", "authority": "ERA 1996 s.111(2)"},
 tests/evaluation/test_evaluation.py:62:    def test_wrong_ud_deadline_fails(self):
@@ -714,8 +714,8 @@ tests/integration/test_phase2_real_model.py:151:        dl = r["deadline_info"]
 tests/integration/test_phase2_real_model.py:171:    correctly computed deadline, and citations that support each stated point.
 tests/integration/test_phase2_real_model.py:181:    if "deadline_info" in result:
 tests/integration/test_phase2_real_model.py:182:        assert result["deadline_info"]["source"] == "rules", \
-tests/integration/test_phase2_real_model.py:183:            "deadline.source must be 'rules' — model must not generate deadlines"
-tests/integration/test_phase3b_deadline.py:2:Phase 3B — Deterministic deadline tracker integration tests.
+tests/integration/test_phase2_real_model.py:183:            "deadline.source must be 'rules'  -  model must not generate deadlines"
+tests/integration/test_phase3b_deadline.py:2:Phase 3B  -  Deterministic deadline tracker integration tests.
 tests/integration/test_phase3b_deadline.py:9:  5. Invalid EC dates (Day B < Day A) rejected at API validation
 tests/integration/test_phase3b_deadline.py:10:  6. POST /assess with wrong client_deadline → deadline_mismatch=True
 tests/integration/test_phase3b_deadline.py:11:  7. POST /assess with correct client_deadline → deadline_mismatch=False
@@ -729,7 +729,7 @@ tests/integration/test_phase3b_deadline.py:106:    # _add_months(Jan 31, 3) = Ap
 tests/integration/test_phase3b_deadline.py:110:def test_deadline_ec_no_floor():
 tests/integration/test_phase3b_deadline.py:128:def test_deadline_ec_floor_bites():
 tests/integration/test_phase3b_deadline.py:145:def test_deadline_ec_day_b_before_day_a_rejected():
-tests/integration/test_phase3b_deadline.py:146:    """Invalid EC dates (Day B < Day A) — form validation must catch this."""
+tests/integration/test_phase3b_deadline.py:146:    """Invalid EC dates (Day B < Day A)  -  form validation must catch this."""
 tests/integration/test_phase3b_deadline.py:147:    # This test exercises the intake form validation path via the assess endpoint:
 tests/integration/test_phase3b_deadline.py:162:# ── 3. Client deadline validation (backend is authoritative) ──────────────────
 tests/integration/test_phase3b_deadline.py:164:def test_assess_correct_client_deadline_no_mismatch():
@@ -753,7 +753,7 @@ tests/integration/test_phase3c_documents.py:54:    "deadline_info": {
 tests/integration/test_phase3c_documents.py:237:    """Pydantic Literal validation rejects unknown document_type with 422."""
 tests/integration/test_phase3c_documents.py:301:def test_assess_endpoint_still_validates_client_deadline():
 tests/integration/test_phase3c_documents.py:302:    """Phase 3B client_deadline validation must still work."""
-tests/integration/test_phase3c_documents.py:312:        "client_deadline": "2026-01-01",   # wrong — should flag mismatch
+tests/integration/test_phase3c_documents.py:312:        "client_deadline": "2026-01-01",   # wrong  -  should flag mismatch
 tests/integration/test_phase3c_documents.py:315:    assert resp.json().get("deadline_mismatch") is True
 tests/integration/test_phase3d_paid_handoff.py:5:  1.  Unpaid document request returns preview + payment_required=True
 tests/integration/test_phase3d_paid_handoff.py:16: 12.  Phase 3B deadline tests still pass (regression)
@@ -925,7 +925,7 @@ tests/integration/test_pipeline_stub.py:131:    if "deadline_info" in result:
 tests/integration/test_pipeline_stub.py:132:        # 3-month limit from May 1 → Aug 1 anniversary → deadline Jul 31
 tests/integration/test_pipeline_stub.py:133:        dl = result["deadline_info"]["limitation_date"]
 tests/integration/test_pipeline_stub.py:169:    correctly computed deadline, and citations that actually support each point.
-tests/integration/test_rules_deadline_phase1.py:2:Phase 1 proof — rules table effective-dating and deadline arithmetic.
+tests/integration/test_rules_deadline_phase1.py:2:Phase 1 proof  -  rules table effective-dating and deadline arithmetic.
 tests/integration/test_rules_deadline_phase1.py:14:        tests/integration/test_rules_deadline_phase1.py -v -s
 tests/integration/test_rules_deadline_phase1.py:21:from backend.domains.employment.deadline import (
 tests/integration/test_rules_deadline_phase1.py:112:def test_deadline_no_ec():
@@ -933,7 +933,7 @@ tests/integration/test_rules_deadline_phase1.py:113:    """Test 1: No EC. EDT 20
 tests/integration/test_rules_deadline_phase1.py:121:def test_deadline_ec_floor_does_not_bite():
 tests/integration/test_rules_deadline_phase1.py:140:def test_deadline_ec_floor_bites():
 tests/integration/test_rules_deadline_phase1.py:159:def test_deadline_haque_worked_example():
-tests/integration/test_rules_deadline_phase1.py:175:    # Claimant presented 18 Oct 2016 — confirm this is before the deadline
+tests/integration/test_rules_deadline_phase1.py:175:    # Claimant presented 18 Oct 2016  -  confirm this is before the deadline
 tests/integration/test_rules_deadline_phase1.py:179:def test_deadline_para26_no_op_ec_floor_fires():
 tests/integration/test_rules_deadline_phase1.py:201:    """Test 5: Month-end EDT clamping. EDT 31 Jan, +3 months -> 30 Apr -> deadline 29 Apr."""
 tests/knowledge_graph/test_knowledge_graph.py:7:  - deadlines → ERA 1996 sections
@@ -945,13 +945,13 @@ tests/legal_accuracy/fixtures.py:59:            "deadline_date":  "2026-06-14",
 tests/legal_accuracy/fixtures.py:60:            "deadline_source": "rules",
 tests/legal_accuracy/fixtures.py:81:            "deadline_date":   "2026-07-02",
 tests/legal_accuracy/fixtures.py:82:            "deadline_source":  "rules",
-tests/legal_accuracy/fixtures.py:92:        "description": "EC applied — pause days extend deadline, floor does not bite",
+tests/legal_accuracy/fixtures.py:92:        "description": "EC applied  -  pause days extend deadline, floor does not bite",
 tests/legal_accuracy/fixtures.py:106:            "deadline_date":   "2026-04-14",
 tests/legal_accuracy/fixtures.py:107:            "deadline_source":  "rules",
 tests/legal_accuracy/fixtures.py:131:            "deadline_date":   "2026-04-25",
 tests/legal_accuracy/fixtures.py:132:            "deadline_source":  "rules",
-tests/legal_accuracy/fixtures.py:139:    # FP6: Missed deadline — deadline in the past
-tests/legal_accuracy/fixtures.py:142:        "description": "Missed deadline — EDT was 2025-01-01, deadline long past",
+tests/legal_accuracy/fixtures.py:139:    # FP6: Missed deadline  -  deadline in the past
+tests/legal_accuracy/fixtures.py:142:        "description": "Missed deadline  -  EDT was 2025-01-01, deadline long past",
 tests/legal_accuracy/fixtures.py:152:            "deadline_date":  "2025-03-31",
 tests/legal_accuracy/fixtures.py:153:            "deadline_source": "rules",
 tests/legal_accuracy/fixtures.py:154:            "deadline_expired_by_2026_06_01": True,   # checked via urgency
@@ -1020,17 +1020,17 @@ tests/legal_accuracy/test_legal_accuracy.py:271:# ── Cross-fixture: deadline
 tests/legal_accuracy/test_legal_accuracy.py:273:def test_all_in_scope_deadlines_come_from_rules():
 tests/legal_accuracy/test_legal_accuracy.py:274:    """Every in-scope fact pattern must have deadline.source='rules'."""
 tests/legal_accuracy/test_legal_accuracy.py:276:        if "no_deadline" in fp["expected"]:
-tests/legal_accuracy/test_legal_accuracy.py:277:            continue  # FP7 — no deadline expected
+tests/legal_accuracy/test_legal_accuracy.py:277:            continue  # FP7  -  no deadline expected
 tests/legal_accuracy/test_legal_accuracy.py:279:        dl = result.get("deadline_info") or {}
 tests/legal_accuracy/test_legal_accuracy.py:282:                f"{fp['id']}: deadline must come from rules, got source={dl.get('source')}"
 tests/legal_accuracy/test_legal_accuracy.py:309:def test_upw1_deadline_correct():
-tests/legal_accuracy/test_legal_accuracy.py:310:    """UPW1: Clear final salary — deadline 2026-06-29 from wages_due_date 2026-03-31.
+tests/legal_accuracy/test_legal_accuracy.py:310:    """UPW1: Clear final salary  -  deadline 2026-06-29 from wages_due_date 2026-03-31.
 tests/legal_accuracy/test_legal_accuracy.py:311:    Anniversary = add_months(2026-03-31, 3) = 2026-06-30 (clamped); deadline = June 29."""
 tests/legal_accuracy/test_legal_accuracy.py:314:    dl = result.get("deadline_info") or {}
 tests/legal_accuracy/test_legal_accuracy.py:316:        f"UPW1 deadline: expected 2026-06-29, got {dl.get('limitation_date')}"
 tests/legal_accuracy/test_legal_accuracy.py:350:    """UPW4: No wages_due_date → missing_wages_date status, no fabricated deadline."""
 tests/legal_accuracy/test_legal_accuracy.py:357:def test_upw5_deadline_correct_and_expired():
-tests/legal_accuracy/test_legal_accuracy.py:358:    """UPW5: Stale claim — deadline 2026-02-27 (Nov 30 + 3 months = Feb 28, -1 = Feb 27)."""
+tests/legal_accuracy/test_legal_accuracy.py:358:    """UPW5: Stale claim  -  deadline 2026-02-27 (Nov 30 + 3 months = Feb 28, -1 = Feb 27)."""
 tests/legal_accuracy/test_legal_accuracy.py:361:    dl = result.get("deadline_info") or {}
 tests/legal_accuracy/test_legal_accuracy.py:363:        f"UPW5 deadline: expected 2026-02-27, got {dl.get('limitation_date')}"
 tests/legal_accuracy/test_legal_accuracy.py:398:def test_upw_all_deadlines_from_rules():
@@ -1059,7 +1059,7 @@ tests/payment/test_payment.py:163:        # No token = preview + payment_require
 tests/router/test_router.py:32:    def test_deadline_only_routes_to_rules_engine(self):
 tests/router/test_router.py:33:        decision = route("When is my claim deadline?", {
 tests/router/test_router.py:92:            ("When is my wages claim deadline?", {"wages_due_date": "2025-09-01"}),
-tests/security/test_auth_routes.py:129:            pytest.skip(f"LAWAPP_AUTH_MODE={auth_mode} — jwt validation not active")
+tests/security/test_auth_routes.py:129:            pytest.skip(f"LAWAPP_AUTH_MODE={auth_mode}  -  jwt validation not active")
 tests/security/test_payment_access.py:5:  - unpaid user gets preview only (payment_required=True)
 tests/security/test_payment_access.py:28:        """Without payment token, document must be preview + payment_required=True."""
 tests/security/test_security.py:83:                "deadline_info": {"source": "rules", "limitation_date": "2025-12-31"},
@@ -1068,10 +1068,10 @@ tests/security/test_security.py:101:            "deadline_info": {"source": "rul
 tests/security/test_security.py:107:        assert any("incorrect_deadline" in f for f in result["failures"])
 tests/security/test_security.py:116:            "deadline_info": {"source": "rules"},
 tests/test_classify.py:34:def test_deadline_intent():
-tests/test_classify.py:35:    r = classify("I was dismissed — what's my deadline to claim?")
+tests/test_classify.py:35:    r = classify("I was dismissed  -  what's my deadline to claim?")
 tests/test_classify.py:38:    assert r.intent == "deadline_check"
 tests/test_deadline.py:2:Tests for deterministic deadline arithmetic.
-tests/test_deadline.py:8:regression set entry — future changes that silently alter deadline output
+tests/test_deadline.py:8:regression set entry  -  future changes that silently alter deadline output
 tests/test_deadline.py:13:from backend.domains.employment.deadline import compute_limitation_date, _add_months
 tests/test_deadline.py:31:# 3 months from May 10 → Aug 10 anniversary → deadline Aug 9
 tests/test_deadline.py:86:# This tests the rules table query, not the deadline arithmetic.
@@ -1079,7 +1079,7 @@ tests/test_deadline.py:95:    # The deadline arithmetic itself is unaffected by 
 tests/test_deadline.py:108:    # 6 months from Jan 1 → Jul 1 → deadline Jun 30
 tests/test_deadline.py:115:from backend.domains.employment.deadline import check_qualifying_period
 tests/test_govern.py:24:        deadline=Deadline(
-tests/test_govern.py:73:# ── Check 3: determinism — deadline.source must be "rules" ───────────────────
+tests/test_govern.py:73:# ── Check 3: determinism  -  deadline.source must be "rules" ───────────────────
 tests/test_govern.py:90:def test_rules_deadline_source_passes_check3():
 tests/test_govern.py:92:        deadline=Deadline(
 tests/test_govern.py:156:        deadline=Deadline(
@@ -1092,21 +1092,21 @@ tests/test_wasm_document_preview.js:16:const preview = require('../client/public
 tests/test_wasm_document_preview.js:20:// ── Test 1: Generates preview without server call ─────────────────────────────
 tests/test_wasm_document_preview.js:21:function test_preview_is_client_side() {
 tests/test_wasm_document_preview.js:28:  const result = preview.generateParticularsPreview(facts, {});
-tests/test_wasm_document_preview.js:36:  console.log("  PASS: preview_is_client_side — no HTTP calls, all local");
+tests/test_wasm_document_preview.js:36:  console.log("  PASS: preview_is_client_side  -  no HTTP calls, all local");
 tests/test_wasm_document_preview.js:41:  const result = preview.generateParticularsPreview({}, {});
-tests/test_wasm_document_preview.js:46:  console.log("  PASS: legal_boundary_present — disclaimer on all previews");
+tests/test_wasm_document_preview.js:46:  console.log("  PASS: legal_boundary_present  -  disclaimer on all previews");
 tests/test_wasm_document_preview.js:51:  const result = preview.generateParticularsPreview({}, {});
 tests/test_wasm_document_preview.js:54:  assert(!result.includes('undefined'), 'No undefined values must appear in preview');
 tests/test_wasm_document_preview.js:58:// ── Test 4: Fact validation works ─────────────────────────────────────────────
 tests/test_wasm_document_preview.js:59:function test_fact_validation_ud() {
 tests/test_wasm_document_preview.js:61:  const r1 = preview.validateFactsForDocument({service_start_date: '2022-01-01'}, 'particulars_of_claim');
 tests/test_wasm_document_preview.js:67:  const r2 = preview.validateFactsForDocument(
-tests/test_wasm_document_preview.js:73:  console.log("  PASS: fact_validation_ud — correctly identifies missing/complete facts");
-tests/test_wasm_document_preview.js:76:// ── Test 5: WASM deadline calculator — no server call ─────────────────────────
+tests/test_wasm_document_preview.js:73:  console.log("  PASS: fact_validation_ud  -  correctly identifies missing/complete facts");
+tests/test_wasm_document_preview.js:76:// ── Test 5: WASM deadline calculator  -  no server call ─────────────────────────
 tests/test_wasm_document_preview.js:77:function test_deadline_computed_locally() {
 tests/test_wasm_document_preview.js:78:  const result = preview.computeDeadlineLocally('2025-10-01', 3, null, null);
 tests/test_wasm_document_preview.js:82:    assert(result.computed_by === 'client_wasm_or_js_fallback',
-tests/test_wasm_document_preview.js:88:    console.log("  PASS: deadline_computed_locally — WASM/JS, no server call, correct date");
+tests/test_wasm_document_preview.js:88:    console.log("  PASS: deadline_computed_locally  -  WASM/JS, no server call, correct date");
 tests/test_wasm_document_preview.js:96:  const result = preview.computeDeadlineLocally('2025-10-01', 3, '2025-11-01', '2025-11-15');
 tests/test_wasm_document_preview.js:100:    assert(result.limitation_date > '2025-12-31', 'EC pause must extend deadline');
 tests/test_wasm_document_preview.js:109:  assert(typeof preview.LEGAL_BOUNDARY === 'string', 'LEGAL_BOUNDARY must be a string');

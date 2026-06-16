@@ -1,4 +1,4 @@
-TRACK B — B1 RAG corpus expansion
+TRACK B  -  B1 RAG corpus expansion
 Date: 2026-06-15
 Branch: release/lawapp-clean-snapshot
 Scope: legislation.gov.uk + ACAS only (no GOV.UK bulk, no FCL)
@@ -37,5 +37,5 @@ Result:
 - citations include National Minimum Wage Act 1998, Equality Act 2010 corpus (via ERA 2025 s.25), TUPE 2006, Working Time Regs 1998
 
 ## Verdict
-PASS — corpus materially expanded (323 → 889 chunks, +175%)
+PASS  -  corpus materially expanded (323 → 889 chunks, +175%)
 Waiver: >>1000 chunk stretch goal not met (889); 7 ACAS URLs returned HTTP 404 and were skipped (fail-closed, no fake rows)

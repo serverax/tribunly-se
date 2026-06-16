@@ -1,5 +1,5 @@
 ================================================================================
-PHASE 8B — ALGORITHM BRAIN UPGRADE
+PHASE 8B  -  ALGORITHM BRAIN UPGRADE
 Evidence Report
 Date: 2026-06-02
 ================================================================================
@@ -7,9 +7,9 @@ Date: 2026-06-02
 PHASE 8B DELIVERABLES
 ─────────────────────
 Files changed:
-  backend/engine/classify.py             — rewritten (two-stage ML classification)
-  backend/engine/production_readiness.py — added reasoning_model status section
-  tests/integration/test_phase8b_algorithm_brain.py — 25 new tests (all PASS)
+  backend/engine/classify.py              -  rewritten (two-stage ML classification)
+  backend/engine/production_readiness.py  -  added reasoning_model status section
+  tests/integration/test_phase8b_algorithm_brain.py  -  25 new tests (all PASS)
 
 PHASE 8B TEST RESULTS
 ─────────────────────
@@ -17,7 +17,7 @@ Command:
   docker compose run --rm ingestion python -m pytest \
     tests/integration/test_phase8b_algorithm_brain.py -v --tb=short
 
-Result: 25 passed, 0 failed, 1 warning — 55.60s
+Result: 25 passed, 0 failed, 1 warning  -  55.60s
 
 Individual results:
   PASS  test_unfair_dismissal_classification       (Stage A keyword)
@@ -50,7 +50,7 @@ LEGAL ACCURACY GATE (within Phase 8B test suite):   38/38 PASS
 RULES VERIFICATION GATE (within Phase 8B test suite): PASS
 
 ================================================================================
-SYSTEM READINESS EVIDENCE CHECK — SECTIONS 1-9
+SYSTEM READINESS EVIDENCE CHECK  -  SECTIONS 1-9
 ================================================================================
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -79,7 +79,7 @@ TABLE: case_law
                  embedding vector(1536), content_hash, source_url,
                  published_date, updated_date, last_verified_at, created_at
   Tests:         tests/test_case_law_identifier_split.py
-  Note:          Schema DONE. Corpus PARTIAL — only sample URIs ingested.
+  Note:          Schema DONE. Corpus PARTIAL  -  only sample URIs ingested.
                  Bulk FCL licence BLOCKED (requires National Archives licence grant).
 
 TABLE: acas_guidance
@@ -112,10 +112,10 @@ TABLE: cases
   Status:        DONE
   Migration:     db/migrations/001_initial.sql + 012 + 013
   Security fields:
-    facts_encrypted bytea         — DONE (Fernet AES-128-CBC)
-    encryption_version text       — DONE (migration 012)
-    encryption_key_metadata jsonb — DONE (migration 013 — envelope encryption)
-    deleted_at timestamptz        — DONE (soft delete, migration 012)
+    facts_encrypted bytea          -  DONE (Fernet AES-128-CBC)
+    encryption_version text        -  DONE (migration 012)
+    encryption_key_metadata jsonb  -  DONE (migration 013  -  envelope encryption)
+    deleted_at timestamptz         -  DONE (soft delete, migration 012)
   Tests:         tests/integration/test_phase3a_flows.py,
                  tests/integration/test_phase6_production.py
 
@@ -150,11 +150,11 @@ TABLE: assessment_audit_logs
   Tests:         tests/integration/test_phase2e_audit_log.py
 
 Other tables (phase 3-4):
-  document_readiness  — DONE (migration 004)
-  support_sessions    — DONE (migration 004, paralegal_coach only enforced by CHECK)
-  solicitor_reviews   — DONE (migration 004, referral_consent gate enforced by CHECK)
-  reminder_events     — DONE (migration 004)
-  retention_runs      — DONE (migration 012)
+  document_readiness   -  DONE (migration 004)
+  support_sessions     -  DONE (migration 004, paralegal_coach only enforced by CHECK)
+  solicitor_reviews    -  DONE (migration 004, referral_consent gate enforced by CHECK)
+  reminder_events      -  DONE (migration 004)
+  retention_runs       -  DONE (migration 012)
 
 SAR / data request tracking: NOT IMPLEMENTED as a dedicated table.
   GET /admin/dp-report endpoint exists (backend/engine/dp_report.py).
@@ -168,7 +168,7 @@ and cases. Plaintext PII: not stored in applicable columns.
 2. CODE AND WIRING
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-BACKEND — API ROUTES (backend/api/main.py, 1946+ lines):
+BACKEND  -  API ROUTES (backend/api/main.py, 1946+ lines):
   GET  /health                              DONE
   GET  /freshness                           DONE (source_freshness view)
   GET  /rules/{claim_type}                  DONE
@@ -222,7 +222,7 @@ DOCUMENT GENERATION FLOW:
   Status: DONE.
 
 DEADLINE CALCULATION:
-  backend/engine/deadline.py — deterministic, from rules table.
+  backend/engine/deadline.py  -  deterministic, from rules table.
   Mirrored in client/public/js/deadline.js (JS fallback, fetches rules from API).
   Status: DONE (JS fallback). WASM binary: MISSING (see Section 5).
 
@@ -234,11 +234,11 @@ ENCRYPTION/DECRYPTION FLOW:
   Status: DONE.
 
 FRONTEND (client/public/):
-  Intake UI:        client/public/pages/intake.html — wired to POST /assess.
+  Intake UI:        client/public/pages/intake.html  -  wired to POST /assess.
                     Live deadline preview via JS (fetches /rules/unfair_dismissal).
-  Assessment view:  client/public/pages/assessment.html — renders full assessment.
+  Assessment view:  client/public/pages/assessment.html  -  renders full assessment.
   Saved case view:  client/public/pages/saved_case.html
-  Deadline JS:      client/public/js/deadline.js — fetches rules from API, no
+  Deadline JS:      client/public/js/deadline.js  -  fetches rules from API, no
                     hardcoded values. Server-side mirror validation in pipeline.py.
   Legal notices:    Present on intake.html (line 11) and assessment.html (lines 11,
                     130, 279, 309). "Not legal advice / not a law firm" on all pages.
@@ -248,41 +248,41 @@ FRONTEND (client/public/):
 
 INGESTION:
   legislation.gov.uk ingestion:
-    ingestion/legislation/ingest.py — DONE. Targets ERA 1996 s.94, s.98, s.111,
+    ingestion/legislation/ingest.py  -  DONE. Targets ERA 1996 s.94, s.98, s.111,
     s.112, Part II, s.13, s.27, s.23. CLML XML parsed, chunked, seeded.
-    Embeddings: BLOCKED by OpenAI quota (quota exhausted — openai_api_key needed).
+    Embeddings: BLOCKED by OpenAI quota (quota exhausted  -  openai_api_key needed).
   Find Case Law:
-    ingestion/case_law/ingest.py — PARTIAL. Sample URIs only.
+    ingestion/case_law/ingest.py  -  PARTIAL. Sample URIs only.
     Bulk: BLOCKED until FCL_BULK_LICENCE_GRANTED=true (licence application pending).
   ACAS:
-    ingestion/acas/ingest.py — DONE.
+    ingestion/acas/ingest.py  -  DONE.
   Source freshness report:
-    ingestion/freshness/report.py — DONE. Wired to GET /freshness.
+    ingestion/freshness/report.py  -  DONE. Wired to GET /freshness.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 3. ALGORITHM BRAIN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-classify() — backend/engine/classify.py
+classify()  -  backend/engine/classify.py
   Status:      DONE (Phase 8B)
   Logic:       Stage A: keyword rules (deterministic, instant, no model).
                Stage B: ML fallback (Claude Haiku) for genuinely ambiguous queries.
-               Only query[:300] sent to model — never personal facts.
+               Only query[:300] sent to model  -  never personal facts.
                Model failure → conservative fallback (not in_scope).
-  Ambiguous:   YES — Stage B handles beyond-keyword cases.
+  Ambiguous:   YES  -  Stage B handles beyond-keyword cases.
                Without API key → conservative "ambiguous", in_scope=False.
   Tests:       tests/integration/test_phase8b_algorithm_brain.py (11 classify tests)
                tests/test_classify.py
 
-retrieve() — backend/engine/retrieve.py
+retrieve()  -  backend/engine/retrieve.py
   Status:      DONE (rules) / PARTIAL (semantic)
-  Logic:       retrieve_rules(): exact match from rules table — DONE.
+  Logic:       retrieve_rules(): exact match from rules table  -  DONE.
                retrieve_semantic(): pgvector when embeddings exist, BM25 fallback
                when they don't. BM25 ACTIVE. pgvector BLOCKED (OpenAI quota).
   Tests:       tests/integration/test_retrieve_rules.py,
                tests/integration/test_semantic_retrieval.py
 
-reason() — backend/engine/models.py + pipeline.py
+reason()  -  backend/engine/models.py + pipeline.py
   Status:      DONE (deterministic) / CONFIGURED (model, needs key)
   Logic:       select_model() priority: OpenRouter → Anthropic (Claude Haiku) → Stub.
                ClaudeReasoningModel: real reasoning via Anthropic API when key present.
@@ -294,27 +294,27 @@ reason() — backend/engine/models.py + pipeline.py
   Tests:       tests/integration/test_phase8b_algorithm_brain.py (7 reason tests)
                tests/integration/test_phase2_engine.py
 
-score() — backend/engine/score.py
+score()  -  backend/engine/score.py
   Status:      DONE
   Logic:       Computes grounding_score from citation count, confidence_score from
                claim strength + procedural compliance. Real logic, not stub.
   Tests:       tests/integration/test_phase2_engine.py
 
-govern() — backend/engine/govern.py
+govern()  -  backend/engine/govern.py
   Status:      DONE (5 gates, unchanged from Phase 7)
-  Gate 1:      Grounding — every legal claim cited.
-  Gate 2:      Confidence — below threshold → flag.
-  Gate 3:      Determinism — deadline.source must = "rules".
-  Gate 4:      Boundary — blocks reserved-activity phrases ("we will file",
+  Gate 1:      Grounding  -  every legal claim cited.
+  Gate 2:      Confidence  -  below threshold → flag.
+  Gate 3:      Determinism  -  deadline.source must = "rules".
+  Gate 4:      Boundary  -  blocks reserved-activity phrases ("we will file",
                "we will represent", "guaranteed", etc.).
-  Gate 5:      Honesty — key_weaknesses must be populated.
+  Gate 5:      Honesty  -  key_weaknesses must be populated.
   Tests:       tests/test_govern.py,
                test_governance_blocks_reserved_activity (Phase 8B)
 
-respond() — embedded in pipeline.assess()
-  Status:      DONE — assembles final response dict from governed assessment.
+respond()  -  embedded in pipeline.assess()
+  Status:      DONE  -  assembles final response dict from governed assessment.
 
-StructuredAssessment schema — shared/schemas.py
+StructuredAssessment schema  -  shared/schemas.py
   Status:      DONE
   Fields:      claim_type, jurisdiction, has_viable_claim (yes/no/uncertain),
                strength, reasoning_summary, value_range, key_weaknesses,
@@ -322,18 +322,18 @@ StructuredAssessment schema — shared/schemas.py
                recommended_next_step, citations, grounding_score,
                confidence_score, insufficient_grounding.
 
-insufficient_grounding — pipeline.py + models.py + govern.py
-  Status:      DONE — fires when retrieval bundle is weak OR model cannot ground.
+insufficient_grounding  -  pipeline.py + models.py + govern.py
+  Status:      DONE  -  fires when retrieval bundle is weak OR model cannot ground.
                Upgraded to deterministic result when deterministic context available.
 
-handoff trigger — pipeline.py + backend/api/main.py
-  Status:      DONE — recommended_next_step="refer_solicitor" triggers handoff path.
+handoff trigger  -  pipeline.py + backend/api/main.py
+  Status:      DONE  -  recommended_next_step="refer_solicitor" triggers handoff path.
 
 Additional confirms:
-  Out-of-scope rejected safely: YES — classify() + pipeline returns not_supported.
-  No guessing when grounding weak: YES — insufficient_grounding path + govern gate 1.
-  Valid StructuredAssessment always: YES — schema enforced by Pydantic.
-  key_weaknesses populated: YES — govern gate 5 blocks if empty for non-trivial.
+  Out-of-scope rejected safely: YES  -  classify() + pipeline returns not_supported.
+  No guessing when grounding weak: YES  -  insufficient_grounding path + govern gate 1.
+  Valid StructuredAssessment always: YES  -  schema enforced by Pydantic.
+  key_weaknesses populated: YES  -  govern gate 5 blocks if empty for non-trivial.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 4. RAG READINESS
@@ -347,12 +347,12 @@ rules structured retrieval:
 BM25 fallback:
   Status:   DONE. retrieve_keyword() uses PostgreSQL full-text search tsvector.
   File:     backend/engine/retrieve.py:79
-  Active:   YES — fires automatically when embeddings absent.
+  Active:   YES  -  fires automatically when embeddings absent.
 
 pgvector semantic retrieval:
   Status:   IMPLEMENTED, BLOCKED.
   File:     backend/engine/retrieve.py:166
-  Reason:   BLOCKED — OpenAI quota exhausted. No embeddings in corpus.
+  Reason:   BLOCKED  -  OpenAI quota exhausted. No embeddings in corpus.
             retrieve_semantic() detects absence of embeddings and falls back to BM25.
             Code path fully implemented; waiting on openai_api_key or self-hosted model.
 
@@ -406,7 +406,7 @@ JS fallback:
   Status:   DONE. client/public/js/deadline.js
   Logic:    Mirrors backend/engine/deadline.py exactly (addCalendarMonths, EC
             stop-clock). timeLimitMonths always fetched from /rules/unfair_dismissal
-            before any calculation — no hardcoded legal values.
+            before any calculation  -  no hardcoded legal values.
   Wired:    intake.html line 244. Live preview on EDT input.
 
 Server-side mirror validation:
@@ -425,7 +425,7 @@ No unnecessary server transmission for client-side calculation:
   Status:   DONE for deadline (JS computes locally after fetching rules).
             Not applicable for documents (server-side only).
 
-WASM build command: N/A — no Rust source or wasm-pack pipeline exists.
+WASM build command: N/A  -  no Rust source or wasm-pack pipeline exists.
 
 WASM SUMMARY: MISSING real WASM module. JS fallback covers deadline calculation
 adequately for MVP. US-3 AC3 ("recalculates live as user edits dates") is met by
@@ -435,89 +435,89 @@ the JS fallback. Full WASM is a future phase item.
 6. USER STORIES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-US-1 Diagnosis — DONE (MVP core)
-  AC1: Guided plain-English intake — DONE (intake.html, plain language throughout)
-  AC2: Structured assessment with viability, value, deadline, weaknesses — DONE
-  AC3: Out-of-scope → "not supported" — DONE (classify + pipeline guard)
-  AC4: Every legal point traced to citation — DONE (govern gate 1, citations field)
+US-1 Diagnosis  -  DONE (MVP core)
+  AC1: Guided plain-English intake  -  DONE (intake.html, plain language throughout)
+  AC2: Structured assessment with viability, value, deadline, weaknesses  -  DONE
+  AC3: Out-of-scope → "not supported"  -  DONE (classify + pipeline guard)
+  AC4: Every legal point traced to citation  -  DONE (govern gate 1, citations field)
   Files: backend/engine/pipeline.py, classify.py, retrieve.py, govern.py
 
-US-2 Honest truth — DONE (MVP core)
-  AC1: Weak outcome stated plainly — DONE (insufficient_grounding path)
-  AC2: key_weaknesses shown for non-trivial cases — DONE (govern gate 5)
-  AC3: Insufficient grounding → routes to human help — DONE
-  AC4: No guarantee language — DONE (govern gate 4, boundary phrases blocked)
+US-2 Honest truth  -  DONE (MVP core)
+  AC1: Weak outcome stated plainly  -  DONE (insufficient_grounding path)
+  AC2: key_weaknesses shown for non-trivial cases  -  DONE (govern gate 5)
+  AC3: Insufficient grounding → routes to human help  -  DONE
+  AC4: No guarantee language  -  DONE (govern gate 4, boundary phrases blocked)
   Files: backend/engine/govern.py, score.py, models.py
 
-US-3 Deadline awareness — DONE (MVP core)
-  AC1: Limitation date from rules table (deterministic) — DONE
-  AC2: ACAS EC window reflected — DONE (backend/engine/deadline.py + JS)
-  AC3: Recalculates live as user edits dates — DONE (JS fallback, not WASM)
-  AC4: Reminders as date approaches — DONE (reminder_events table + POST /reminders)
+US-3 Deadline awareness  -  DONE (MVP core)
+  AC1: Limitation date from rules table (deterministic)  -  DONE
+  AC2: ACAS EC window reflected  -  DONE (backend/engine/deadline.py + JS)
+  AC3: Recalculates live as user edits dates  -  DONE (JS fallback, not WASM)
+  AC4: Reminders as date approaches  -  DONE (reminder_events table + POST /reminders)
   Files: backend/engine/deadline.py, client/public/js/deadline.js, reminders.py
 
-US-4 Affordable documents — DONE (MVP core, mock payment)
-  AC1: Particulars of Claim + Schedule of Loss after payment — DONE (documents.py)
-  AC2: Populated with user's actual facts — DONE
-  AC3: Marked as self-help drafts, not legal advice — DONE (assessment.html line 242)
-  AC4: Pricing shown before payment — PARTIAL (mock mode only, no live Stripe)
+US-4 Affordable documents  -  DONE (MVP core, mock payment)
+  AC1: Particulars of Claim + Schedule of Loss after payment  -  DONE (documents.py)
+  AC2: Populated with user's actual facts  -  DONE
+  AC3: Marked as self-help drafts, not legal advice  -  DONE (assessment.html line 242)
+  AC4: Pricing shown before payment  -  PARTIAL (mock mode only, no live Stripe)
   Files: backend/engine/documents.py, backend/engine/payment.py
 
-US-5 Honest handoff — DONE (wiring done; no live partner firm)
-  AC1: Beyond self-help cases trigger handoff — DONE (govern + recommended_next_step)
-  AC2: Free to user — DONE
-  AC3: Lead packaged + routed to partner — PARTIAL (POST /handoff/leads wired,
+US-5 Honest handoff  -  DONE (wiring done; no live partner firm)
+  AC1: Beyond self-help cases trigger handoff  -  DONE (govern + recommended_next_step)
+  AC2: Free to user  -  DONE
+  AC3: Lead packaged + routed to partner  -  PARTIAL (POST /handoff/leads wired,
        no live partner firm API; lead stored and encrypted)
   Files: backend/api/main.py, backend/engine/envelope_encryption.py
 
-US-6 Plain understanding — DONE
-  AC1: No unexplained legal jargon — DONE (plain-English intake, assessment UI)
-  AC2: Explanatory notes available — PARTIAL (citations shown, not explanatory notes)
+US-6 Plain understanding  -  DONE
+  AC1: No unexplained legal jargon  -  DONE (plain-English intake, assessment UI)
+  AC2: Explanatory notes available  -  PARTIAL (citations shown, not explanatory notes)
 
-US-7 Trust — DONE
-  AC1: "Not a law firm / not legal advice" on every relevant surface — DONE
+US-7 Trust  -  DONE
+  AC1: "Not a law firm / not legal advice" on every relevant surface  -  DONE
        (intake.html line 11, assessment.html lines 11, 130, 279, 309)
-  AC2: Honesty behaviours consistent — DONE (govern gates 4+5 enforced)
-  AC3: Citations visible — DONE (renderCitations in assessment.html)
+  AC2: Honesty behaviours consistent  -  DONE (govern gates 4+5 enforced)
+  AC3: Citations visible  -  DONE (renderCitations in assessment.html)
 
-US-8 Upload instead of retype — DONE (Phase 4)
-  AC1: PDF/image upload + OCR extraction — DONE (POST /cases/{id}/uploads)
-  AC2: Extracted facts confirmed by user before use — DONE (extract + apply-confirmed)
-  AC3: Uploads encrypted — DONE (facts_encrypted)
+US-8 Upload instead of retype  -  DONE (Phase 4)
+  AC1: PDF/image upload + OCR extraction  -  DONE (POST /cases/{id}/uploads)
+  AC2: Extracted facts confirmed by user before use  -  DONE (extract + apply-confirmed)
+  AC3: Uploads encrypted  -  DONE (facts_encrypted)
   Files: backend/api/main.py (POST /uploads/*/extract, apply-confirmed)
 
-US-9 Full bundle — DONE (Phase 4)
-  AC1: Premium tier generates full bundle — DONE (POST /cases/{id}/bundle/generate)
-  AC2: Correctly structured for unfair dismissal — DONE
+US-9 Full bundle  -  DONE (Phase 4)
+  AC1: Premium tier generates full bundle  -  DONE (POST /cases/{id}/bundle/generate)
+  AC2: Correctly structured for unfair dismissal  -  DONE
   Files: backend/engine/bundle.py, backend/engine/documents.py
 
-US-10 Track my dispute — DONE (Phase 4)
-  AC1: Timeline tracked, next actions surfaced — DONE (GET /cases/{id}/timeline)
-  AC2: Notifications advance correctly — DONE (reminder_events, escalation)
+US-10 Track my dispute  -  DONE (Phase 4)
+  AC1: Timeline tracked, next actions surfaced  -  DONE (GET /cases/{id}/timeline)
+  AC2: Notifications advance correctly  -  DONE (reminder_events, escalation)
   Files: backend/engine/timeline.py, backend/api/main.py
 
-US-11 Funnel metrics — DONE (Phase 5)
-  AC1: Funnel instrumented (diagnosis-start → complete → pay) — DONE
+US-11 Funnel metrics  -  DONE (Phase 5)
+  AC1: Funnel instrumented (diagnosis-start → complete → pay)  -  DONE
   Files: POST /funnel/events, GET /cases/{id}/funnel
 
-US-12 Accuracy regression — DONE (Phase 5)
-  AC1: Test set with expected outcomes; CI gate on regression — DONE
+US-12 Accuracy regression  -  DONE (Phase 5)
+  AC1: Test set with expected outcomes; CI gate on regression  -  DONE
   Files: tests/legal_accuracy/test_legal_accuracy.py (38 tests),
          scripts/run_legal_accuracy.py (CI gate)
 
-US-13 Second claim type — DONE (Phase 5)
-  AC1: unpaid_wages added via rulebook + templates + test set — DONE
-  AC2: Passes accuracy bar — DONE (11 UPW tests in legal accuracy suite)
+US-13 Second claim type  -  DONE (Phase 5)
+  AC1: unpaid_wages added via rulebook + templates + test set  -  DONE
+  AC2: Passes accuracy bar  -  DONE (11 UPW tests in legal accuracy suite)
   Files: ingestion/rules/seed_unpaid_wages.py, tests/legal_accuracy/
 
-US-14 Solicitor partner receives leads — PARTIAL (Phase 6)
-  AC1: Handoff packages assessment + docs as lead — DONE (envelope encrypted)
-  AC2: Referral status tracked — DONE (referrals table)
-  AC3: Referral incentives never distort assessment — DONE (govern gate enforces)
+US-14 Solicitor partner receives leads  -  PARTIAL (Phase 6)
+  AC1: Handoff packages assessment + docs as lead  -  DONE (envelope encrypted)
+  AC2: Referral status tracked  -  DONE (referrals table)
+  AC3: Referral incentives never distort assessment  -  DONE (govern gate enforces)
   Note: No live partner firm API integration; lead storage + encryption DONE.
   Files: backend/api/main.py POST /handoff/leads
 
-US-15 Union/employer white-label — FUTURE PHASE
+US-15 Union/employer white-label  -  FUTURE PHASE
   Status: Not implemented. Not in current approved scope.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -526,10 +526,10 @@ US-15 Union/employer white-label — FUTURE PHASE
 
 No raw personal data sent to third-party models:
   Status:   DONE.
-  Evidence: backend/engine/deidentify.py — strips claimant_name, employer_name,
+  Evidence: backend/engine/deidentify.py  -  strips claimant_name, employer_name,
             email, phone, national_insurance, ni_number, date_of_birth, etc.
             boundary_log records exactly what was stripped / passed.
-            Phase 8B: ML classification call sends only query[:300] — never facts.
+            Phase 8B: ML classification call sends only query[:300]  -  never facts.
   Tests:    test_pii_stripped_before_model_boundary, test_ml_classification_no_personal_facts
             tests/test_deidentify.py
 
@@ -579,8 +579,8 @@ No reserved legal activity (filing/representation):
 
 SECRET SCAN FINDING:
   !! REAL ANTHROPIC_API_KEY found in .env (line 19) !!
-  Key prefix: sk-ant-api03-... (real key — not placeholder)
-  Risk: .env IS in .gitignore — confirmed. Key is NOT committed.
+  Key prefix: sk-ant-api03-... (real key  -  not placeholder)
+  Risk: .env IS in .gitignore  -  confirmed. Key is NOT committed.
   Action required: Rotate this key if it has been exposed outside local dev.
   Do NOT commit .env. Do NOT share .env with CI without secrets management.
 
@@ -591,7 +591,7 @@ SECRET SCAN FINDING:
 Phase 8B tests:
   Command: docker compose run --rm ingestion python -m pytest \
            tests/integration/test_phase8b_algorithm_brain.py -v --tb=short
-  Result:  25 passed, 0 failed — 55.60s  ✓ PASS
+  Result:  25 passed, 0 failed  -  55.60s  ✓ PASS
 
 Legal accuracy gate (38 tests):
   Included in Phase 8B test suite (test_legal_accuracy_gate_passes)
@@ -603,15 +603,15 @@ Rules verification gate:
 
 Full regression (680 tests):
   Command: docker compose run --rm ingestion python -m pytest --tb=short -q
-  Result:  RUNNING at time of report — see note below.
-  Note:    Prior run (Phase 8B pre-work): 655 passed, 9 skipped, 2 warnings — 511s.
+  Result:  RUNNING at time of report  -  see note below.
+  Note:    Prior run (Phase 8B pre-work): 655 passed, 9 skipped, 2 warnings  -  511s.
            Phase 8B adds 25 new tests. Expected: ~680 passed.
            [UPDATE THIS LINE WHEN REGRESSION COMPLETES]
 
 Secret-risk scan:
   Command: grep -rn "sk-ant-\|AKIA\|-----BEGIN" --include="*.py" --include="*.js"
   Result:  CLEAN in source code (no secrets in .py/.js files).
-  FINDING: .env contains real ANTHROPIC_API_KEY — .env IS in .gitignore.
+  FINDING: .env contains real ANTHROPIC_API_KEY  -  .env IS in .gitignore.
            Not committed. Key should be rotated as precaution.
 
 Frontend tests: None implemented (no Jest/Cypress suite).
@@ -639,7 +639,7 @@ RAG tests:      tests/integration/test_semantic_retrieval.py (BM25 path passes;
 |                   |          | Payment live: MISSING. Partner live: MISSING.   |
 | Security          | PARTIAL  | PII encryption DONE. Boundary tested DONE.       |
 |                   |          | Key rotation: PARTIAL. Cases env enc: PARTIAL.  |
-|                   |          | .env has real key — NOT committed, rotate it.   |
+|                   |          | .env has real key  -  NOT committed, rotate it.   |
 | Controlled beta   | NO       | 6 blockers (DPIA not reviewed by DPO, privacy    |
 |                   |          | notice not legally reviewed, ADMIN_API_KEY,      |
 |                   |          | ENCRYPTION_KEY, APP_BASE_URL, AUTH_MODE=none).   |
@@ -657,18 +657,18 @@ PHASE 8B VERDICT: PASS (pending full regression result)
 
 PROPOSED NEXT PHASE ORDER:
   Phase 8C: Cases envelope encryption upgrade
-    — Extend envelope encryption path to POST /cases (mirror Phase 7E pattern)
-    — Smallest safe step; reuses existing kms.py + envelope_encryption.py
+     -  Extend envelope encryption path to POST /cases (mirror Phase 7E pattern)
+     -  Smallest safe step; reuses existing kms.py + envelope_encryption.py
   Phase 8D: pgvector unblock OR self-hosted embedding model
-    — Replace OpenAI embedder with open-source model (e.g. sentence-transformers)
-    — Unblocks semantic retrieval without OpenAI quota dependency
+     -  Replace OpenAI embedder with open-source model (e.g. sentence-transformers)
+     -  Unblocks semantic retrieval without OpenAI quota dependency
   Phase 8E: Corpus deepening
-    — Legislation: extend beyond ERA 1996 sections (EqA 2010, etc.)
-    — Case law: pursue FCL bulk licence or expand sample set
+     -  Legislation: extend beyond ERA 1996 sections (EqA 2010, etc.)
+     -  Case law: pursue FCL bulk licence or expand sample set
   Phase 9: Controlled beta prerequisites
-    — DPO review (DPIA), legal review (privacy notice)
-    — Set ADMIN_API_KEY, ENCRYPTION_KEY, APP_BASE_URL, LAWAPP_AUTH_MODE=jwt
-    — These are human-gate items; no code changes block beta
+     -  DPO review (DPIA), legal review (privacy notice)
+     -  Set ADMIN_API_KEY, ENCRYPTION_KEY, APP_BASE_URL, LAWAPP_AUTH_MODE=jwt
+     -  These are human-gate items; no code changes block beta
 
 DO NOT MARK controlled_beta_ready=true until DPO and legal reviews complete.
 DO NOT MARK production_ready=true.

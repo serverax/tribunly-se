@@ -1,4 +1,4 @@
-=== ORPHAN CHECK (T-003 chunks) — all must be 0 ===
+=== ORPHAN CHECK (T-003 chunks)  -  all must be 0 ===
  null_source_id | null_chunk_hash | null_source_url 
 ----------------+-----------------+-----------------
               0 |               0 |               0

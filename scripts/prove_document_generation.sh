@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_document_generation.sh — Particulars of Claim + Schedule of Loss generation.
+# prove_document_generation.sh  -  Particulars of Claim + Schedule of Loss generation.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 BASE="${LAWAPP_BASE_URL:-http://localhost:8000}"

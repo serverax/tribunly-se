@@ -1,4 +1,4 @@
-# Backup & Restore Proof — 2026-06-10
+# Backup & Restore Proof  -  2026-06-10
 
 ## Backups taken
 
@@ -28,11 +28,11 @@ restored:
   before public launch. The backup currently lives on the operator
   workstation only (`.local/` is git-ignored).
 - The cluster's shared Prometheus (ordinox-monitoring) is CrashLoopBackOff
-  (`/prometheus/queries.active: permission denied` on its local-path PVC —
+  (`/prometheus/queries.active: permission denied` on its local-path PVC  - 
   fix is a chown to 1000:2000 on the volume, which is outside lawapp's
   namespace authority). Until the owner heals it, alert evaluation for the new
   `lawapp-alerts` PrometheusRule is inactive; operational monitoring is
   provided by the lawapp-monitoring CronJobs:
-  - health probe (every 5 min) — PASS (HTTP 200) on 2026-06-10
-  - E2E smoke (every 15 min) — PASS (rules-sourced deadline, no PII) on 2026-06-10
+  - health probe (every 5 min)  -  PASS (HTTP 200) on 2026-06-10
+  - E2E smoke (every 15 min)  -  PASS (rules-sourced deadline, no PII) on 2026-06-10
   - freshness check (daily), legal accuracy check (daily)

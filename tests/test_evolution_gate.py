@@ -1,5 +1,5 @@
 """
-Evolution Gate — proves the automated learning flywheel (System Update 001):
+Evolution Gate  -  proves the automated learning flywheel (System Update 001):
 
   1. ART produces a strategy with a hallucinated citation.
   2. The Critic Agent (real DB verification) rejects it (fail-closed) -> logged to

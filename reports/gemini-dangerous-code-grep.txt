@@ -105,7 +105,7 @@
 ./reports/gemini-lawapp-full-project-audit-and-claude-workpack.md:107:- **XSS**: PASS. No `innerHTML` for user data.
 ./reports/gemini-lawapp-full-qa-security-report.md:55:| Frontend        | PASS (Security)             | Zero `innerHTML` usage.          | Low | - |
 ./reports/gemini-lawapp-full-qa-security-report.md:70:grep -rn "innerHTML" client/public/
-./reports/gemini-lawapp-full-qa-security-report.md:88:### SEC-001 — Unescaped innerHTML Injection (XSS)
+./reports/gemini-lawapp-full-qa-security-report.md:88:### SEC-001  -  Unescaped innerHTML Injection (XSS)
 ./reports/gemini-lawapp-full-qa-security-report.md:90:- **Fix**: Replaced all instances of `.innerHTML =` with safe DOM APIs (`createElement`, `textContent`) across all frontend pages.
 ./reports/gemini-lawapp-full-qa-security-report.md:91:- **Verification**: `grep` returns zero results for `innerHTML` in `client/public/`.
 ./reports/gemini-lawapp-repair-plan.md:7:- **SEC-001 (XSS)**: Refactored `assessment.html`, `intake.html`, and `saved_case.html` to remove all `innerHTML` usage. [DONE]
@@ -126,12 +126,12 @@
 ./reports/gemini-new-tech-grep.txt:15003:./reports/gemini-all-files.txt:31683:./.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/subprocess_handler/__pycache__/subprocess_handler.cpython-312.pyc
 ./reports/gemini-new-tech-grep.txt:18829:./reports/gemini-all-files.txt:48925:./.venv/lib/python3.12/site-packages/uvicorn/__pycache__/_subprocess.cpython-312.pyc
 ./reports/gemini-secret-grep.txt:69:./audit_gather.sh:30:grep -R -E "fetch\(|axios|XMLHttpRequest|localStorage|sessionStorage|document\.cookie|innerHTML|dangerouslySetInnerHTML" client -n > reports/gemini-client-risk-grep.txt || true
-./reports/gemini-secret-grep.txt:684:./reports/lawapp-phase0-push-ci-confirmation-report.txt:7:  60bbfa0 — lawapp: fix run_legal_accuracy.py subprocess DATABASE_URL propagation
+./reports/gemini-secret-grep.txt:684:./reports/lawapp-phase0-push-ci-confirmation-report.txt:7:  60bbfa0  -  lawapp: fix run_legal_accuracy.py subprocess DATABASE_URL propagation
 ./reports/gemini-wasm-grep.txt:93:client/public/pages/intake.html:397:    badge.innerHTML = `<span class="deadline-badge ${badgeClass}">${badgeText}</span>`;
 ./reports/gemini-wasm-grep.txt:475:backend/core/brain.py:447:                lim = _dt.date.fromisoformat(deadline_result["limitation_date"])
 ./reports/gemini-wasm-grep.txt:545:backend/core/models.py:87:            limitation_date=date.fromisoformat(deadline_info["limitation_date"])
-./reports/lawapp-phase0-push-ci-confirmation-report.txt:7:  60bbfa0 — lawapp: fix run_legal_accuracy.py subprocess DATABASE_URL propagation
-./reports/lawapp-phase0-push-ci-confirmation-report.txt:22:  Integration Regression        FAIL — legal accuracy gate subprocess auth failure
+./reports/lawapp-phase0-push-ci-confirmation-report.txt:7:  60bbfa0  -  lawapp: fix run_legal_accuracy.py subprocess DATABASE_URL propagation
+./reports/lawapp-phase0-push-ci-confirmation-report.txt:22:  Integration Regression        FAIL  -  legal accuracy gate subprocess auth failure
 ./reports/lawapp-phase0-push-ci-confirmation-report.txt:25:        to pytest subprocess from POSTGRES_* env vars).
 ./tests/deadlines/test_deadlines.py:76:        lim = dt.date.fromisoformat(result["limitation_date"])
 ./tests/deadlines/test_deadlines.py:83:        lim = dt.date.fromisoformat(result["limitation_date"])

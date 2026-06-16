@@ -1,7 +1,7 @@
 """
-Phase 7C — AWS KMS provider tests.
+Phase 7C  -  AWS KMS provider tests.
 
-All boto3 calls are mocked — no real AWS credentials or connections required.
+All boto3 calls are mocked  -  no real AWS credentials or connections required.
 
 Tests:
   AwsKmsProvider:

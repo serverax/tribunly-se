@@ -1,5 +1,5 @@
 /**
- * lawapp Document Preview — Client-side document assembly.
+ * lawapp Document Preview  -  Client-side document assembly.
  *
  * Generates a basic draft document preview from confirmed case facts,
  * entirely client-side. No sensitive data is sent to the server for preview.
@@ -20,7 +20,7 @@
   'use strict';
 
   const _LEGAL_BOUNDARY = [
-    'SELF-HELP DRAFT — NOT LEGAL ADVICE',
+    'SELF-HELP DRAFT  -  NOT LEGAL ADVICE',
     '─────────────────────────────────────────────────────',
     'This preview was generated client-side from your confirmed facts.',
     'It is NOT a final legal document.',
@@ -64,7 +64,7 @@
       _LEGAL_BOUNDARY,
       'IN THE EMPLOYMENT TRIBUNAL',
       '',
-      'PARTICULARS OF CLAIM — UNFAIR DISMISSAL',
+      'PARTICULARS OF CLAIM  -  UNFAIR DISMISSAL',
       'Claim type: Unfair Dismissal (Employment Rights Act 1996, Part X)',
       '',
       'Claimant:   [YOUR FULL LEGAL NAME]',
@@ -76,8 +76,8 @@
       '─── EMPLOYMENT DETAILS ─────────────────────────────────────────',
       'Employment started: ' + _formatDate(start),
       'Employment ended:   ' + _formatDate(edt),
-      reason ? ('Reason given:       ' + reason) : 'Reason given:       [Not provided — please specify]',
-      weeklyPay ? ('Weekly pay (gross): £' + parseFloat(weeklyPay).toFixed(2)) : 'Weekly pay:         [Not provided — required for compensation calculation]',
+      reason ? ('Reason given:       ' + reason) : 'Reason given:       [Not provided  -  please specify]',
+      weeklyPay ? ('Weekly pay (gross): £' + parseFloat(weeklyPay).toFixed(2)) : 'Weekly pay:         [Not provided  -  required for compensation calculation]',
       '',
       '─── NATURE OF CLAIM ────────────────────────────────────────────',
       '1. The Claimant was employed by the Respondent.',

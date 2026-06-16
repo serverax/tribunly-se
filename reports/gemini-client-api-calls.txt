@@ -5,7 +5,7 @@ client/public/index.html:83:      Start your free diagnosis
 client/public/index.html:89:    <div class="trust-item"><strong>Free diagnosis</strong>Always free. Pay only for documents.</div>
 client/public/index.html:101:  <script src="/js/auth.js"></script>
 client/public/js/auth.js:15:      sessionStorage.removeItem('payment_token');
-client/public/pages/assessment.html:6:  <title>Your diagnosis — lawapp</title>
+client/public/pages/assessment.html:6:  <title>Your diagnosis  -  lawapp</title>
 client/public/pages/assessment.html:43:<script src="/js/auth.js"></script>
 client/public/pages/assessment.html:47:  const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
 client/public/pages/assessment.html:54:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}`)
@@ -16,7 +16,7 @@ client/public/pages/assessment.html:261:      h3.textContent = 'Save this diagno
 client/public/pages/assessment.html:275:      p.textContent = 'Create a free account to save this diagnosis, track your deadline, and generate documents.';
 client/public/pages/assessment.html:301:        const resp = await fetch('/cases', {
 client/public/pages/assessment.html:382:    p.textContent = 'For a claim to be viable at tribunal, these elements are usually assessed. Your diagnosis addresses each of these themes.';
-client/public/pages/assessment.html:567:      'free_diagnosis_only': {label: 'Diagnosis only — seek solicitor', desc: 'Based on the information available, we recommend speaking with a qualified employment solicitor before proceeding.'},
+client/public/pages/assessment.html:567:      'free_diagnosis_only': {label: 'Diagnosis only  -  seek solicitor', desc: 'Based on the information available, we recommend speaking with a qualified employment solicitor before proceeding.'},
 client/public/pages/assessment.html:594:    const isPaid = !!sessionStorage.getItem('payment_token');
 client/public/pages/assessment.html:614:      gate.id = 'payment-gate';
 client/public/pages/assessment.html:630:      gDesc.textContent = 'Preview is free. Activate demo access to copy and use the full draft. No real payment is taken in this demo.';
@@ -49,7 +49,7 @@ client/public/pages/dashboard.html:79:<script src="/js/auth.js"></script>
 client/public/pages/dashboard.html:93:      const userResp = await LAWAPP_AUTH.fetchWithAuth('/auth/me');
 client/public/pages/dashboard.html:98:      const casesResp = await LAWAPP_AUTH.fetchWithAuth('/cases');
 client/public/pages/dashboard.html:143:      sBadge.textContent = (c.status || 'diagnosis').toUpperCase();
-client/public/pages/intake.html:6:  <title>Free diagnosis — lawapp</title>
+client/public/pages/intake.html:6:  <title>Free diagnosis  -  lawapp</title>
 client/public/pages/intake.html:53:  <h1 style="color:var(--primary);margin-bottom:.5rem;" id="form-title">Free diagnosis</h1>
 client/public/pages/intake.html:244:        <button type="submit" class="btn btn-primary" id="submitBtn">Get my free diagnosis →</button>
 client/public/pages/intake.html:262:<script src="/js/auth.js"></script>

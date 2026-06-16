@@ -1,8 +1,8 @@
-# LAWAPP — Full Continuation Evidence Report
+# LAWAPP  -  Full Continuation Evidence Report
 **Generated:** 2026-06-04  
 **Branch:** main  
 **Commit:** 080af6981d03fd412fe43dfec6f67febe4ff758c  
-**Working tree:** DIRTY (uncommitted changes — see section 1)
+**Working tree:** DIRTY (uncommitted changes  -  see section 1)
 
 ---
 
@@ -11,7 +11,7 @@
 | Level | Status | Reason |
 |---|---|---|
 | LOCAL DEMO READY | FAIL | rules=0, payment_events table missing, legislation=0, acas=0 |
-| STAGING READY | FAIL — EXTERNAL BLOCKER | Kubernetes DNS not resolving from workstation; CI test/build failing |
+| STAGING READY | FAIL  -  EXTERNAL BLOCKER | Kubernetes DNS not resolving from workstation; CI test/build failing |
 | PRODUCTION READY | FAIL | All staging/local gaps still open |
 
 ---
@@ -63,11 +63,11 @@ lawapp-redis-1    healthy  :6379
 
 | Table | Count | Status |
 |---|---|---|
-| rules | 0 | FAIL — seed migration not populating |
-| legislation | 0 | FAIL — ingestion not run |
-| acas_guidance | 0 | FAIL — ingestion not run |
+| rules | 0 | FAIL  -  seed migration not populating |
+| legislation | 0 | FAIL  -  ingestion not run |
+| acas_guidance | 0 | FAIL  -  ingestion not run |
 | brain_traces | 0 | expected |
-| payment_events | TABLE MISSING | CRITICAL FAIL — migration absent |
+| payment_events | TABLE MISSING | CRITICAL FAIL  -  migration absent |
 
 ---
 
@@ -83,7 +83,7 @@ lawapp-redis-1    healthy  :6379
 | `time_limit_months` is a parameter (not hardcoded) | PASS |
 | Binary newer than Rust source (not stale) | PASS |
 | CI installs wasm-pack + rebuilds if stale | PASS |
-| Local rebuild (`bash scripts/rebuild-wasm.sh`) | BLOCKED — wasm-pack not on Windows PATH |
+| Local rebuild (`bash scripts/rebuild-wasm.sh`) | BLOCKED  -  wasm-pack not on Windows PATH |
 
 **WASM verdict: CI and code correct. Local rebuild blocked by Windows wasm-pack absence.**
 
@@ -94,14 +94,14 @@ lawapp-redis-1    healthy  :6379
 ```
 SUCCESS  LawApp Deploy to Talos   main  workflow_dispatch  2026-06-04T06:40
 SUCCESS  LawApp Deploy to Talos   main  push               2026-06-04T06:18
-FAIL     lawapp — Build and push  main  push               2026-06-04T06:18
+FAIL     lawapp  -  Build and push  main  push               2026-06-04T06:18
 FAIL     LawApp Docker Proof      main  push               2026-06-04T06:18
-FAIL     lawapp CI — Test/Build   main  push               2026-06-04T06:18
+FAIL     lawapp CI  -  Test/Build   main  push               2026-06-04T06:18
 FAIL     lawapp-ci                main  push               2026-06-04T06:18
 ```
 
 **Talos deploy: PASS.**  
-**CI failure root cause:** "Project-specific migration runner not found" — the committed `lawapp-ci.yml` has a bug. The locally modified version fixes this but has not been pushed.
+**CI failure root cause:** "Project-specific migration runner not found"  -  the committed `lawapp-ci.yml` has a bug. The locally modified version fixes this but has not been pushed.
 
 ---
 
@@ -109,12 +109,12 @@ FAIL     lawapp-ci                main  push               2026-06-04T06:18
 
 ```
 kubectl config current-context: aks-iterlaw-we-prod
-kubectl get ns: ERROR — no such host: aks-iterla-rg-iterlaw-we-pr-58900f-dimr8u4a.hcp.westeurope.azmk8s.io
+kubectl get ns: ERROR  -  no such host: aks-iterla-rg-iterlaw-we-pr-58900f-dimr8u4a.hcp.westeurope.azmk8s.io
 ```
 
 Cluster DNS not resolving from this workstation.  
-**`LawApp Deploy to Talos` CI job SUCCEEDED** — cluster was reachable from GitHub Actions.  
-This is an **external blocker** — owner needs VPN/kubeconfig access to verify from local machine.  
+**`LawApp Deploy to Talos` CI job SUCCEEDED**  -  cluster was reachable from GitHub Actions.  
+This is an **external blocker**  -  owner needs VPN/kubeconfig access to verify from local machine.  
 
 Required namespaces (`lawapp-ai`, `lawapp-rag`, `lawapp-api`, `lawapp-monitoring`, `lawapp-security`) **cannot be verified locally**.
 
@@ -127,8 +127,8 @@ Required namespaces (`lawapp-ai`, `lawapp-rag`, `lawapp-api`, `lawapp-monitoring
 | `stripe>=10.0` in pyproject.toml | PASS |
 | `verify_webhook_signature()` in payment.py (line 96) | PASS |
 | STRIPE_WEBHOOK_SECRET missing = EnvironmentError (line 116) | PASS |
-| `payment_events` table exists | FAIL — table missing from DB schema |
-| `payment_status` on `cases` table | PASS — main.py:569 reads it |
+| `payment_events` table exists | FAIL  -  table missing from DB schema |
+| `payment_status` on `cases` table | PASS  -  main.py:569 reads it |
 
 ---
 
@@ -140,7 +140,7 @@ Frontend has upload file list (case_detail.html, `/cases/{id}/uploads`). No page
 
 ## 10. Legacy Naming
 
-`infra/k8s/iterlaw/` — all files staged for deletion (uncommitted). Active CI/deploy uses `LawApp` naming. Kubernetes cluster name `aks-iterlaw-we-prod` is a cloud resource name (not a lawapp namespace) — requires owner to reprovision to rename.
+`infra/k8s/iterlaw/`  -  all files staged for deletion (uncommitted). Active CI/deploy uses `LawApp` naming. Kubernetes cluster name `aks-iterlaw-we-prod` is a cloud resource name (not a lawapp namespace)  -  requires owner to reprovision to rename.
 
 ---
 
@@ -153,7 +153,7 @@ Frontend has upload file list (case_detail.html, `/cases/{id}/uploads`). No page
 | `scripts/gate-stripe.sh` | EXISTS |
 | `scripts/gate-wasm-no-hardcode.sh` | CREATED this session |
 | `scripts/lawapp-full-local-bootstrap.sh` | CREATED this session |
-| `scripts/gate-full-acceptance.sh` | NOT CREATED — session cost limit |
+| `scripts/gate-full-acceptance.sh` | NOT CREATED  -  session cost limit |
 | `scripts/gate-db-fresh-rebuild.sh` | NOT CREATED |
 | `scripts/gate-rag-grounding.sh` | NOT CREATED |
 | `scripts/gate-security-baseline.sh` | NOT CREATED |

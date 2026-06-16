@@ -1,5 +1,5 @@
 ---
-# lawapp Brain Algorithm — namespace: lawapp-ai
+# lawapp Brain Algorithm  -  namespace: lawapp-ai
 # Runs the 19-step lawapp Brain Algorithm.
 # Routes all legal requests through classification → retrieval → reasoning → governance → audit.
 apiVersion: apps/v1

@@ -1,4 +1,4 @@
-"""P0-005 — assessment.html mutating routes use fetchWithAuth."""
+"""P0-005  -  assessment.html mutating routes use fetchWithAuth."""
 from __future__ import annotations
 
 import pathlib
@@ -10,7 +10,7 @@ ASSESSMENT = ROOT / "client" / "public" / "pages" / "assessment.html"
 
 def test_assessment_mutations_use_fetch_with_auth():
     text = ASSESSMENT.read_text(encoding="utf-8")
-    # Protected POST paths must not use raw fetch( — only fetchWithAuth
+    # Protected POST paths must not use raw fetch(  -  only fetchWithAuth
     protected = [
         r"fetch\([^)]*['\"`](/cases|/api/payments/create-session|/api/documents/generate|/handoff/leads)",
         r"fetch\([^)]*['\"`]\\$\{API_BASE\}/(cases|api/payments/create-session|api/documents/generate|handoff/leads)",

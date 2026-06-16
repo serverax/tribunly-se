@@ -1,5 +1,5 @@
 """
-Brain Gatekeeper Integration Tests — institutionalising CitationGuard.
+Brain Gatekeeper Integration Tests  -  institutionalising CitationGuard.
 As per Engineering Order: Institutionalise CitationGuard Across lawapp.
 """
 
@@ -120,7 +120,7 @@ def test_no_direct_generation_in_production_routes():
     import os
     import re
     
-    # Precise direct-generation CALL signatures only — not bare words like
+    # Precise direct-generation CALL signatures only  -  not bare words like
     # "openai"/"ollama" which legitimately appear in comments, config keys, and
     # provider names. We flag code that actually invokes a model API directly.
     forbidden = [
@@ -139,7 +139,7 @@ def test_no_direct_generation_in_production_routes():
                 # Allowlists
                 # Provider/model-interaction layer is ALLOWED to call model APIs
                 # directly. NOTE: classify.py makes a direct Anthropic call for
-                # intent/scope classification (not legal-answer generation) — it is
+                # intent/scope classification (not legal-answer generation)  -  it is
                 # flagged for future routing through the provider gateway.
                 if file in ["inference.py", "litellm_adapter.py", "llm_provider.py", "models.py",
                             "workflow_c_provider.py", "classify.py"]:

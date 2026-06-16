@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_legal_boundary_notices.sh — every user surface carries the legal-boundary notice
+# prove_legal_boundary_notices.sh  -  every user surface carries the legal-boundary notice
 # and reserved-activity wording is blocked.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1

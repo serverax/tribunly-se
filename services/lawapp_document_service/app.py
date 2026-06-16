@@ -1,8 +1,8 @@
-"""lawapp-document-service — generate legal documents from CONFIRMED facts only.
+"""lawapp-document-service  -  generate legal documents from CONFIRMED facts only.
 
 Wraps backend.core.documents real generators (particulars of claim, schedule of
 loss, letter before action, ET1 wages notes). Fail-closed: tenancy required,
-citations required, unknown document_type rejected. No fabricated values — the
+citations required, unknown document_type rejected. No fabricated values  -  the
 generators surface unconfirmed facts as explicit placeholders. X-Trace-ID via the
 shared factory.
 """

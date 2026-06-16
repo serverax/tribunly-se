@@ -1,5 +1,5 @@
 """
-Compliance sign-off reader and evidence validator — Phase 6D.
+Compliance sign-off reader and evidence validator  -  Phase 6D.
 
 Reads docs/compliance-signoff.json and determines whether the system
 meets controlled-beta and production compliance thresholds.
@@ -10,8 +10,8 @@ Phase 6D: Evidence quality gate added.
   - required_evidence() lists exactly what is needed for each threshold.
 
 GUARDRAIL: Do not mark approved/reviewed unless signoff file explicitly says so.
-GUARDRAIL: A boolean flag alone is not sufficient — evidence fields are mandatory.
-GUARDRAIL: Signoff file is single source of truth — no env var overrides.
+GUARDRAIL: A boolean flag alone is not sufficient  -  evidence fields are mandatory.
+GUARDRAIL: Signoff file is single source of truth  -  no env var overrides.
 """
 
 from __future__ import annotations
@@ -109,7 +109,7 @@ def check_controlled_beta(signoff: dict) -> dict:
 
     # DPIA
     if not dpia.get("drafted", False):
-        blockers.append("DPIA not drafted — create artefact at docs/dpia-artefact.md")
+        blockers.append("DPIA not drafted  -  create artefact at docs/dpia-artefact.md")
     elif not (dpia.get("reviewed_by_dpo", False) or dpia.get("approved", False)):
         blockers.append(
             "DPIA not reviewed by DPO or approved. "
@@ -120,12 +120,12 @@ def check_controlled_beta(signoff: dict) -> dict:
         if not ok:
             blockers.append(
                 f"DPIA sign-off flag set but lacks required evidence: {missing}. "
-                "A boolean flag alone is not sufficient — add reviewer_name and review_date."
+                "A boolean flag alone is not sufficient  -  add reviewer_name and review_date."
             )
 
     # Privacy notice
     if not pn.get("drafted", False):
-        blockers.append("Privacy notice not drafted — create at docs/privacy-notice-draft.md")
+        blockers.append("Privacy notice not drafted  -  create at docs/privacy-notice-draft.md")
     elif not pn.get("legally_reviewed", False):
         blockers.append(
             "Privacy notice not legally reviewed. "
@@ -136,7 +136,7 @@ def check_controlled_beta(signoff: dict) -> dict:
         if not ok:
             blockers.append(
                 f"Privacy notice sign-off flag set but lacks required evidence: {missing}. "
-                "A boolean flag alone is not sufficient — add reviewer_name and review_date."
+                "A boolean flag alone is not sufficient  -  add reviewer_name and review_date."
             )
 
     return {"ready": len(blockers) == 0, "blockers": blockers}
@@ -149,14 +149,14 @@ def check_production(signoff: dict) -> dict:
     pn   = signoff.get("privacy_notice", {})
 
     if not dpia.get("approved", False):
-        blockers.append("DPIA not approved — full legal sign-off required for production.")
+        blockers.append("DPIA not approved  -  full legal sign-off required for production.")
     else:
         ok, missing = _evidence_ok(dpia)
         if not ok:
             blockers.append(f"DPIA approval lacks required evidence: {missing}")
 
     if not pn.get("published", False):
-        blockers.append("Privacy notice not published — must be live for production.")
+        blockers.append("Privacy notice not published  -  must be live for production.")
     else:
         ok, missing = _evidence_ok(pn)
         if not ok:

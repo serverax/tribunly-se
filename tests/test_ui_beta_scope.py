@@ -1,4 +1,4 @@
-"""UI beta scope enforcement — intake/onboarding pickers expose production modules only."""
+"""UI beta scope enforcement  -  intake/onboarding pickers expose production modules only."""
 
 from __future__ import annotations
 
@@ -70,7 +70,7 @@ def test_landing_copy_is_controlled_beta_not_full_coverage():
 
 def test_auth_banner_uses_controlled_beta_copy():
     js = (CLIENT / "js" / "auth.js").read_text(encoding="utf-8")
-    assert "Controlled beta — 11 employment topics" in js
+    assert "Controlled beta  -  11 employment topics" in js
 
 
 def test_deadline_picker_hides_partial_modules():

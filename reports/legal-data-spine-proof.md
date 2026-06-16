@@ -1,4 +1,4 @@
-# Legal Data Spine — Proof Report
+# Legal Data Spine  -  Proof Report
 
 - **Timestamp:** 2026-06-05
 - **Git branch:** main
@@ -40,7 +40,7 @@ vector/full-text/trigram indexes, and all 10 required GB unfair-dismissal rule k
 
 ## Note on embedding dimension
 Embeddings are **vector(384)** (local `BAAI/bge-small-en-v1.5`), not the spec's
-vector(1536) which assumed OpenAI. lawapp runs the local model — 384 is correct and
+vector(1536) which assumed OpenAI. lawapp runs the local model  -  384 is correct and
 consistent across all tables. Documented, not a defect.
 
 ## Blocked / partial

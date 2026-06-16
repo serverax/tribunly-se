@@ -1,6 +1,6 @@
-# Find Case Law Computational Analysis Application — Submission Record
+# Find Case Law Computational Analysis Application  -  Submission Record
 
-**Status:** Submitted — pending grant
+**Status:** Submitted  -  pending grant
 **Submitted by:** serverax@gmail.com (account owner)
 **Submission date:** 2026-05-31
 **Application URL:** https://caselaw.nationalarchives.gov.uk/re-use-find-case-law-records/licence-application-process
@@ -41,11 +41,11 @@ is received from TNA (caselawlicence@nationalarchives.gov.uk).
 ## Current case law corpus
 
 5 EAT decisions ingested per-document under the Open Justice Licence:
-- eat/2026/74 — DHL Services Limited v Pawel Ignatowicz
-- eat/2026/75 — E Komeng v National Highways Limited
-- eat/2026/76 — Noel Deans v RBL Law Ltd (in liquidation) & Ors
-- eat/2026/77 — London Ambulance Service NHS Trust v Ricky Garrett
-- eat/2026/78 — H Rogers v Secretary of State for Justice
+- eat/2026/74  -  DHL Services Limited v Pawel Ignatowicz
+- eat/2026/75  -  E Komeng v National Highways Limited
+- eat/2026/76  -  Noel Deans v RBL Law Ltd (in liquidation) & Ors
+- eat/2026/77  -  London Ambulance Service NHS Trust v Ricky Garrett
+- eat/2026/78  -  H Rogers v Secretary of State for Justice
 
 Stable identifiers (d-{uuid}) stored as document_uri.
 Fetch paths (eat/year/num) stored as fetch_url.

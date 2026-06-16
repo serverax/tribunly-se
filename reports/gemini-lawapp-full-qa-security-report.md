@@ -85,7 +85,7 @@ grep -R "image:" infra/ k8s/ | grep ":latest"
 
 ## 5. Security Findings
 
-### SEC-001 — Unescaped innerHTML Injection (XSS)
+### SEC-001  -  Unescaped innerHTML Injection (XSS)
 - **Status**: FIXED
 - **Fix**: Replaced all instances of `.innerHTML =` with safe DOM APIs (`createElement`, `textContent`) across all frontend pages.
 - **Verification**: `grep` returns zero results for `innerHTML` in `client/public/`.
@@ -94,7 +94,7 @@ grep -R "image:" infra/ k8s/ | grep ":latest"
 
 ## 6. Bug Findings
 
-### BUG-001 — Missing `python-multipart` Dependency
+### BUG-001  -  Missing `python-multipart` Dependency
 - **Status**: FIXED
 - **Fix**: Added to `pyproject.toml` and installed in `.venv`.
 - **Verification**: Tests collect without `RuntimeError`.

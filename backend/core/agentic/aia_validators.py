@@ -3,10 +3,10 @@ The 4 AIA governance validators that gate every provider (OpenRouter) output in
 Workflow C. The provider sits BETWEEN the core algorithm and these validators;
 if ANY validator fails, the result is rejected and the system fails closed.
 
-  AIA 1 — Citation/Retrieval: every cited authority must already be in the RAG bundle.
-  AIA 2 — Rules/Deterministic: deadlines/caps/thresholds must equal the rules table.
-  AIA 3 — PII Boundary: no PII may appear in the outbound payload (or be reintroduced).
-  AIA 4 — Legal Boundary/Honesty: no reserved/guarantee wording; weaknesses required.
+  AIA 1  -  Citation/Retrieval: every cited authority must already be in the RAG bundle.
+  AIA 2  -  Rules/Deterministic: deadlines/caps/thresholds must equal the rules table.
+  AIA 3  -  PII Boundary: no PII may appear in the outbound payload (or be reintroduced).
+  AIA 4  -  Legal Boundary/Honesty: no reserved/guarantee wording; weaknesses required.
 """
 
 from __future__ import annotations

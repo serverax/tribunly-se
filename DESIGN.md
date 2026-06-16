@@ -6,10 +6,10 @@ Generated from `client/public/css/styles.css`. Tokens live in `client/public/des
 
 lawapp's brand promise is **"honest, cited, no overpromising"**. The UI must match that:
 
-- **Tool, not product** — this is a legal instrument, not a consumer app. No gradients, no hero illustrations, no personality flourishes.
-- **Authority through restraint** — navy + white + one orange CTA. Every colour addition requires justification.
-- **Urgency is earned** — red is reserved for deadlines and errors. Don't dilute it.
-- **Clarity first** — tight line-height on headings, generous line-height on body. The user is reading legal information under stress.
+- **Tool, not product**  -  this is a legal instrument, not a consumer app. No gradients, no hero illustrations, no personality flourishes.
+- **Authority through restraint**  -  navy + white + one orange CTA. Every colour addition requires justification.
+- **Urgency is earned**  -  red is reserved for deadlines and errors. Don't dilute it.
+- **Clarity first**  -  tight line-height on headings, generous line-height on body. The user is reading legal information under stress.
 
 ---
 
@@ -45,7 +45,7 @@ These were previously hardcoded Bootstrap 4 values scattered across badge rules.
 ## Typography
 
 ### Font Stack
-`'Segoe UI', system-ui, sans-serif` — system font stack, zero webfont load. Appropriate for a tool that users may access urgently (e.g. missed deadline warning). Do not add a webfont without measuring the tradeoff.
+`'Segoe UI', system-ui, sans-serif`  -  system font stack, zero webfont load. Appropriate for a tool that users may access urgently (e.g. missed deadline warning). Do not add a webfont without measuring the tradeoff.
 
 ### Scale
 The original CSS had **17 distinct font sizes**. This is the reduced scale:
@@ -96,7 +96,7 @@ The original CSS had **17 distinct font sizes**. This is the reduced scale:
 
 ## Shadows
 
-One shadow level only. lawapp is not a layered app — no elevation system needed.
+One shadow level only. lawapp is not a layered app  -  no elevation system needed.
 
 | Token | Value | Use |
 |---|---|---|
@@ -127,8 +127,8 @@ One shadow level only. lawapp is not a layered app — no elevation system neede
 - `badge-uncertain` / `badge-medium` → warning palette
 
 ### Deadline Card
-- Default: `--primary` (navy) background — deadline is safe.
-- `.deadline-urgent`: `--warn` (red) background — ≤30 days.
+- Default: `--primary` (navy) background  -  deadline is safe.
+- `.deadline-urgent`: `--warn` (red) background  -  ≤30 days.
 - `.deadline-card .days` always uses `--text-deadline` (2.5rem). Do not reduce this.
 
 ### Legal Notice

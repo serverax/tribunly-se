@@ -30,7 +30,7 @@ pub fn calculate_statutory_notice(service_months: i32, direction: &str) -> Notic
 
     let mut notes = vec![
         "Continuous service supplied directly; calculator does not assess interruption rules.".to_string(),
-        "Returns statutory MINIMUM only — contract notice prevails if longer.".to_string(),
+        "Returns statutory MINIMUM only  -  contract notice prevails if longer.".to_string(),
     ];
 
     if direction == "employee_to_employer" {

@@ -1,5 +1,5 @@
 """
-/api/auth/* — the lawapp authentication API.
+/api/auth/*  -  the lawapp authentication API.
 
 Thin HTTP layer over backend/core/auth/service.py. Responsibilities here:
   * parse/validate request bodies (Pydantic),
@@ -209,7 +209,7 @@ def magic_link(request: Request, response: Response, body: MagicLinkRequest) -> 
         _set_session_cookies(response, bundle)
         return _with_trace(bundle.to_response(), ctx)
     # Issue path: always generic (no account enumeration). `link_sent` is always
-    # true regardless of whether the address is registered — this preserves the
+    # true regardless of whether the address is registered  -  this preserves the
     # generic response (no enumeration) while giving the client a stable boolean.
     service.request_magic_link(body.email or "", ctx=ctx)
     return _with_trace(

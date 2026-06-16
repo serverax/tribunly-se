@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard — lawapp</title>
+  <title>User Dashboard  -  lawapp</title>
   <link rel="stylesheet" href="/css/styles.css">
   <style>
     .case-list { margin-top: 1.5rem; }
@@ -201,7 +201,7 @@
   }
 
   function formatDate(s) {
-    if (!s) return '—';
+    if (!s) return ' - ';
     try {
       const dt = new Date(s.length === 10 ? s + 'T00:00:00' : s);
       return dt.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });

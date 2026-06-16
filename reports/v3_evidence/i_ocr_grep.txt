@@ -9,8 +9,8 @@ backend/api/main.py:3280:# ── Real-model smoke test (skipped if ANTHROPIC_AP
 backend/api/main.py:3288:    SKIPS if ANTHROPIC_API_KEY is placeholder/missing.
 backend/api/main.py:3292:    api_key = os.getenv("ANTHROPIC_API_KEY", "placeholder")
 backend/api/main.py:3293:    if api_key in ("placeholder", "", "changeme"):
-backend/api/main.py:3296:            "reason":  "ANTHROPIC_API_KEY is placeholder — real model not available",
-backend/core/bundle.py:76:      - value must not start with '[Extracted' (placeholder — skip)
+backend/api/main.py:3296:            "reason":  "ANTHROPIC_API_KEY is placeholder  -  real model not available",
+backend/core/bundle.py:76:      - value must not start with '[Extracted' (placeholder  -  skip)
 backend/core/bundle.py:86:                continue  # skip placeholder values
 backend/core/classify.py:125:        if not api_key or api_key in ("placeholder", "sk-ant-placeholder"):
 backend/core/deidentify.py:40:    "raw_document", "raw_text", "upload_text", "ocr_text", "document_content",
@@ -21,12 +21,12 @@ backend/core/document_extractor.py:160:    OCR requires external tesseract insta
 backend/core/document_extractor.py:290:        "ocr_note": (
 backend/core/document_extractor.py:291:            "For scanned/image PDFs, install tesseract: "
 backend/core/document_extractor.py:292:            "apt-get install tesseract-ocr && pip install pytesseract"
-backend/core/dp_report.py:136:                "handling": "Mock extraction only — placeholders returned, no real OCR",
-backend/core/dp_report.py:137:                "real_ocr_pii_risk": "Phase 5B: real OCR will extract real PII — needs encryption pipeline",
+backend/core/dp_report.py:136:                "handling": "Mock extraction only  -  placeholders returned, no real OCR",
+backend/core/dp_report.py:137:                "real_ocr_pii_risk": "Phase 5B: real OCR will extract real PII  -  needs encryption pipeline",
 backend/core/extraction.py:4:PHASE 4A: This is a mock that returns deterministic placeholder values with
 backend/core/extraction.py:13:  - Extracted values are placeholders clearly marked for user review.
 backend/core/extraction.py:99:def mock_extract(doc_type: str) -> dict:
-backend/core/extraction.py:105:        "value":      str,    # placeholder — user must verify and correct
+backend/core/extraction.py:105:        "value":      str,    # placeholder  -  user must verify and correct
 backend/core/extraction.py:112:    PHASE 4A: values are placeholders. Real extraction is Phase 5.
 backend/core/extraction.py:152:            continue   # don't apply placeholder values
 backend/core/legal_graph.py:92:                placeholders = ",".join(["%s"] * len(node_ids))
@@ -35,7 +35,7 @@ backend/core/models.py:271:        if not api_key or api_key == "placeholder":
 backend/core/models.py:383:    ant_key  = os.getenv("ANTHROPIC_API_KEY", "placeholder")
 backend/core/models.py:389:    if provider == "anthropic" or (not provider and ant_key and ant_key not in ("placeholder", "")):
 backend/core/models.py:390:        configured = ant_key not in ("placeholder", "", "changeme")
-backend/core/models.py:395:            "note": "real reasoning active" if configured else "ANTHROPIC_API_KEY=placeholder — StubReasoningModel active",
+backend/core/models.py:395:            "note": "real reasoning active" if configured else "ANTHROPIC_API_KEY=placeholder  -  StubReasoningModel active",
 backend/core/models.py:421:        key = getattr(settings, "openrouter_api_key", "placeholder")
 backend/core/models.py:423:        if key and key != "placeholder" and mid:
 backend/core/models.py:431:    ant_key = getattr(settings, "anthropic_api_key", "placeholder")
@@ -83,4 +83,4 @@ tests/integration/test_phase4c_timeline.py:15:  10.  Timeline excludes unconfirm
 tests/integration/test_phase4c_timeline.py:267:    """Unconfirmed extraction placeholders must not appear as timeline event descriptions."""
 tests/integration/test_phase4c_timeline.py:280:        "Unconfirmed placeholder text must not appear in timeline"
 tests/security/test_auth_routes.py:166:        if os.environ.get("ANTHROPIC_API_KEY") not in ("placeholder", "", None, "changeme"):
-tests/test_wasm_document_preview.js:55:  console.log("  PASS: missing_facts_flagged — placeholder used, not fabricated");
+tests/test_wasm_document_preview.js:55:  console.log("  PASS: missing_facts_flagged  -  placeholder used, not fabricated");

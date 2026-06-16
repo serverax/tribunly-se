@@ -1,9 +1,9 @@
 """
-Payment flow tests — HARDENED, no-bypass contract.
+Payment flow tests  -  HARDENED, no-bypass contract.
 
 Valid PAYMENT_MODE values are ONLY: disabled, stripe_test, stripe_live.
 There is NO mock and NO test_simulator. Paid access is NEVER granted by a raw
-request token — only by a DB-backed payment record (cases.payment_status /
+request token  -  only by a DB-backed payment record (cases.payment_status /
 payment_sessions.status) set by a real, signature-verified Stripe webhook.
 
 These tests prove the bypasses are rejected/unavailable. They do NOT restore them.

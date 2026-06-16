@@ -1,5 +1,5 @@
 """
-Email/password auth flow — HTTP proof against the real local DB.
+Email/password auth flow  -  HTTP proof against the real local DB.
 
 Endpoints under test (backend/api/auth_routes.py, prefix /api/auth):
   POST /api/auth/register   POST /api/auth/login
@@ -16,7 +16,7 @@ Proven (conftest -> localhost:5435 lawapp DB):
     - missing required field    -> 422 (request validation)
 
 GUARDRAIL: a failed login returns the SAME generic 401 whether the account
-exists or not — no account enumeration via the login endpoint.
+exists or not  -  no account enumeration via the login endpoint.
 """
 
 from __future__ import annotations

@@ -1,10 +1,10 @@
 """
-T-004 local embedder — runs in /tmp/lawapp-audit-venv, connects to lawapp-rag DB
+T-004 local embedder  -  runs in /tmp/lawapp-audit-venv, connects to lawapp-rag DB
 via port-forward (127.0.0.1:15432), embeds NULL corpus_chunks with the SAME model
 as the 92 existing rows (BAAI/bge-small-en-v1.5, fastembed ONNX, 384-dim).
 
 ADDITIVE only: UPDATE embedding WHERE embedding IS NULL. No DROP/TRUNCATE/DELETE.
-Real vectors only — refuses all-zero outputs.
+Real vectors only  -  refuses all-zero outputs.
 """
 import os, sys
 import psycopg2
@@ -39,7 +39,7 @@ def flush(ids, texts):
         lst = v.tolist()
         assert len(lst) == DIM, f"bad dim {len(lst)}"
         if not any(abs(x) > 1e-9 for x in lst):
-            raise RuntimeError(f"all-zero vector for {rid} — refusing")
+            raise RuntimeError(f"all-zero vector for {rid}  -  refusing")
         cur.execute(
             "UPDATE corpus_chunks SET embedding=%s::vector, embedding_model=%s, "
             "embedding_created_at=now(), updated_at=now() "

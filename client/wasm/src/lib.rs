@@ -43,7 +43,7 @@ pub mod notice;
 
 /// Pure-Rust core (testable without a wasm runtime). The `#[wasm_bindgen]` entry point
 /// is a thin serializer around this. FAIL-CLOSED: every error path returns a
-/// `DeadlineResult` with `error: Some(..)` — it never panics on bad input.
+/// `DeadlineResult` with `error: Some(..)`  -  it never panics on bad input.
 pub fn compute_deadline(
     edt_str: &str,
     time_limit_months: i32,
@@ -54,7 +54,7 @@ pub fn compute_deadline(
     // absurd values instead of casting a negative i32 to a huge u32 (which would panic
     // inside checked_add_months .unwrap()).
     if time_limit_months <= 0 || time_limit_months > 120 {
-        return DeadlineResult::err("Invalid time limit (months) — must be between 1 and 120.");
+        return DeadlineResult::err("Invalid time limit (months)  -  must be between 1 and 120.");
     }
 
     let edt = match parse_date(edt_str) {
@@ -62,7 +62,7 @@ pub fn compute_deadline(
         None => return DeadlineResult::err("Invalid EDT date format."),
     };
 
-    // Step 1: Base limit (checked — never panic on date overflow).
+    // Step 1: Base limit (checked  -  never panic on date overflow).
     let anniversary = match edt.checked_add_months(Months::new(time_limit_months as u32)) {
         Some(d) => d,
         None => return DeadlineResult::err("Date out of range for the given time limit."),

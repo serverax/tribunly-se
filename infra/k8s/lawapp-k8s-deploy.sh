@@ -20,7 +20,7 @@ DRY_RUN=${1:-""}
 KUBECTL="kubectl"
 if [[ "${DRY_RUN}" == "--dry-run" ]]; then
   KUBECTL="kubectl --dry-run=client"
-  echo ">>> DRY RUN MODE — no changes will be applied <<<"
+  echo ">>> DRY RUN MODE  -  no changes will be applied <<<"
 fi
 
 echo ""
@@ -122,7 +122,7 @@ cat <<'VERIFY'
 # Namespace check
 kubectl get ns | grep lawapp
 
-# Pod status — wait for Running/Healthy
+# Pod status  -  wait for Running/Healthy
 kubectl get pods -n lawapp-api
 kubectl get pods -n lawapp-ai
 kubectl get pods -n lawapp-rag

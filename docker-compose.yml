@@ -38,19 +38,19 @@ services:
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     environment:
-      # DB — POSTGRES_HOST=db routes to the compose service, not localhost
+      # DB  -  POSTGRES_HOST=db routes to the compose service, not localhost
       POSTGRES_HOST: db
       POSTGRES_PORT: "5432"
       POSTGRES_DB: ${POSTGRES_DB:-lawapp}
       POSTGRES_USER: ${POSTGRES_USER:-lawapp}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-      # LOCAL OLLAMA ONLY — no external LLM providers for lawapp legal routes.
+      # LOCAL OLLAMA ONLY  -  no external LLM providers for lawapp legal routes.
       LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
       LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       ENVIRONMENT: ${ENVIRONMENT:-development}
-      # Auth/security — jwt for proper user isolation; mock also works for dev
+      # Auth/security  -  jwt for proper user isolation; mock also works for dev
       LAWAPP_AUTH_MODE: ${LAWAPP_AUTH_MODE:-jwt}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required (set it in .env or the environment; no insecure default)}
       JWT_ISSUER: ${JWT_ISSUER:-lawapp-issuer}
@@ -62,20 +62,20 @@ services:
       PAYMENT_MODE: ${PAYMENT_MODE:-disabled}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
-      # Rate limiting — Redis backend (in-memory fallback if Redis unavailable)
+      # Rate limiting  -  Redis backend (in-memory fallback if Redis unavailable)
       RATELIMIT_STORAGE_URI: ${RATELIMIT_STORAGE_URI:-redis://redis:6379}
       # Load-test profile: set LAWAPP_LOAD_TEST_MODE=1 to relax POST /assess limits for k6
       LAWAPP_LOAD_TEST_MODE: ${LAWAPP_LOAD_TEST_MODE:-}
       LAWAPP_ASSESS_RATE_LIMIT: ${LAWAPP_ASSESS_RATE_LIMIT:-}
       # External LLM gateways (OpenRouter/Anthropic/OpenAI) are FORBIDDEN for lawapp
-      # legal routes — inference is local Ollama only (see backend/core/inference_policy.py).
+      # legal routes  -  inference is local Ollama only (see backend/core/inference_policy.py).
       RULES_SERVICE_URL: ${RULES_SERVICE_URL:-http://lawapp-rules-service:8016}
       RAG_SERVICE_URL: ${RAG_SERVICE_URL:-http://lawapp-rag-service:8017}
       GRAPH_RAG_SERVICE_URL: ${GRAPH_RAG_SERVICE_URL:-http://lawapp-graph-rag-service:8018}
       AUDIT_SERVICE_URL: ${AUDIT_SERVICE_URL:-http://lawapp-audit-service:8020}
       REDACTION_SERVICE_URL: ${REDACTION_SERVICE_URL:-http://lawapp-redaction-service:8019}
     volumes:
-      # Serve the static frontend (HTML/CSS/JS) from source — read-only.
+      # Serve the static frontend (HTML/CSS/JS) from source  -  read-only.
       # The monolith mounts /css, /js and serves pages from /app/client/public
       # (backend/api/main.py:144). Bind-mounting keeps the served UI in sync with
       # the repo without an image rebuild. Presentation assets only; no app logic.
@@ -163,7 +163,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-lawapp}
       POSTGRES_USER: ${POSTGRES_USER:-lawapp}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-      # LOCAL OLLAMA ONLY — no external LLM providers.
+      # LOCAL OLLAMA ONLY  -  no external LLM providers.
       LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
       LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
@@ -309,7 +309,7 @@ services:
       start_period: 5s
 
   # ────────────────────────────────────────────────────────────────
-  # RAG SERVICES (Phase 1 — 3 core modules)
+  # RAG SERVICES (Phase 1  -  3 core modules)
   # ────────────────────────────────────────────────────────────────
 
   lawapp-rag-service:
@@ -428,7 +428,7 @@ services:
       retries: 6
       start_period: 5s
 
-  # Optional local Ollama for dev — enable with: docker compose --profile ollama up -d ollama
+  # Optional local Ollama for dev  -  enable with: docker compose --profile ollama up -d ollama
   # Then set LAWAPP_OLLAMA_BASE_URL=http://ollama:11434 on backend (or use host.docker.internal).
   ollama:
     image: ollama/ollama:latest

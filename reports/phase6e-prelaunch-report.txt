@@ -1,6 +1,6 @@
-PHASE 6E — PRE-BETA LAUNCH READINESS
+PHASE 6E  -  PRE-BETA LAUNCH READINESS
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 PHASE 6E REPORT
@@ -16,7 +16,7 @@ FILES CHANGED
 
   docs/env-production.template         (NEW)
     Complete production env var reference. All required vars documented.
-    Placeholder values shown — never a real secret. Includes Phase 7 items
+    Placeholder values shown  -  never a real secret. Includes Phase 7 items
     labelled as future.
 
   docs/pre-beta-runbook.md             (NEW)
@@ -58,8 +58,8 @@ CONTROLLED-BETA READINESS STATUS
   controlled_beta_ready: FALSE (confirmed by test_controlled_beta_ready_still_false)
 
   Remaining blockers:
-    1. [HUMAN] DPIA not reviewed by DPO — see docs/dpia-review-checklist.md
-    2. [HUMAN] Privacy notice not legally reviewed — see docs/privacy-review-checklist.md
+    1. [HUMAN] DPIA not reviewed by DPO  -  see docs/dpia-review-checklist.md
+    2. [HUMAN] Privacy notice not legally reviewed  -  see docs/privacy-review-checklist.md
     3. [PHASE 7] JWKS/RS256 not implemented
     4. [PHASE 7] No real HSM/KMS
     5. [PHASE 7] No live deployment environment

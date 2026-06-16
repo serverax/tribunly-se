@@ -1,4 +1,4 @@
-# Phase 1 Correction Brief — for the coding agent
+# Phase 1 Correction Brief  -  for the coding agent
 
 **Context:** Phase 1 reported "PASS pending FCL grant" with 17/17 tests passing. The legal-correctness audit found that the tests validate code against the seed, not the seed against the law. Several `rules` values are likely stale or incomplete. Do NOT treat Phase 1 as passed for the rules-dependent paths until every item below is closed.
 

@@ -1,4 +1,4 @@
-"""lawapp-brain — governed orchestration entrypoint.
+"""lawapp-brain  -  governed orchestration entrypoint.
 
 Wraps backend.core.brain: the deterministic rules-first guide (no LLM) for /assess,
 and the governed generative lane (rules → RAG → LLM → CitationGuard) for the
@@ -46,7 +46,7 @@ def _require_tenancy(req: WorkflowRequest) -> None:
 
 @app.post("/v1/assess")
 def assess(req: WorkflowRequest):
-    """Deterministic rules-first assessment — no LLM, fail-closed on missing rules."""
+    """Deterministic rules-first assessment  -  no LLM, fail-closed on missing rules."""
     _require_tenancy(req)
     from backend.core.brain import get_deterministic_guide
     guide = get_deterministic_guide(req.claim_type, req.jurisdiction)
@@ -109,7 +109,7 @@ def deadline_explain(req: DeadlineExplainRequest, request: Request):
     authority = deadline.get("authority", "ERA 1996 s.111(2)")
 
     # ── Step 2: route the deadline through the llm-gateway for explanation ──────
-    # Dates + legal authority only — no PII crosses the model boundary.
+    # Dates + legal authority only  -  no PII crosses the model boundary.
     prompt = (
         "You are explaining a UK employment tribunal claim deadline to a claimant. "
         "Do NOT recompute or change any date. Using only the values provided, explain "
@@ -133,7 +133,7 @@ def deadline_explain(req: DeadlineExplainRequest, request: Request):
     except Exception as e:
         gateway_status = 503
         explanation = None
-        _gateway_error = str(e)  # noqa: F841 — recorded via gateway_status only
+        _gateway_error = str(e)  # noqa: F841  -  recorded via gateway_status only
 
     return {
         "service": "lawapp-brain",

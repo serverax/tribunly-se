@@ -1,5 +1,5 @@
 """
-Phase 1 — Find Case Law ingestion (EAT decisions).
+Phase 1  -  Find Case Law ingestion (EAT decisions).
 
 LICENCE GATE:
   - Bulk atom-feed pagination: BLOCKED until FCL_BULK_LICENCE_GRANTED=true.
@@ -30,14 +30,14 @@ from ingestion.case_law.akn_parser import parse_judgment_xml, ParsedCase
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
-    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+    format="%(asctime)s %(levelname)s %(name)s  -  %(message)s",
 )
 logger = logging.getLogger(__name__)
 console = Console()
 
 # Sample decisions: (slug, stable_d_uuid) pairs confirmed from live atom feed 2026-05-29.
-# slug:          eat/year/num  — working fetch path (eat/year/num/data.xml returns 200)
-# stable_d_uuid: d-{uuid}      — stable identifier from atom feed <tna:uri>; stored as document_uri
+# slug:          eat/year/num   -  working fetch path (eat/year/num/data.xml returns 200)
+# stable_d_uuid: d-{uuid}       -  stable identifier from atom feed <tna:uri>; stored as document_uri
 #
 # NOTE on d-{uuid}/data.xml: the API appendix says this form should work for fetching,
 # but live tests show 404. The atom feed's explicit <link type="akn+xml"> href (the slug form)
@@ -73,7 +73,7 @@ def ingest_sample() -> None:
     identifier confirmed from the atom feed. The d-uuid is stored as document_uri;
     the slug is used only for XML fetching and stored as fetch_url on the document row.
     """
-    console.print("[bold green]Phase 1 — EAT sample ingestion (per-document, no bulk licence needed)[/bold green]")
+    console.print("[bold green]Phase 1  -  EAT sample ingestion (per-document, no bulk licence needed)[/bold green]")
     console.print(f"Ingesting {len(SAMPLE_EAT_DOCS)} sample documents.")
 
     success = 0
@@ -86,7 +86,7 @@ def ingest_sample() -> None:
 
         xml_bytes = fetch_document_xml(slug)
         if xml_bytes is None:
-            console.print("[yellow]not found — skipped[/yellow]")
+            console.print("[yellow]not found  -  skipped[/yellow]")
             errors.append(f"404: {slug}")
             continue
 
@@ -102,7 +102,7 @@ def ingest_sample() -> None:
             continue
 
         _store_case(parsed)
-        console.print(f"[green]{parsed.neutral_citation or 'no citation'} — {len(parsed.chunks)} chunk(s)[/green]")
+        console.print(f"[green]{parsed.neutral_citation or 'no citation'}  -  {len(parsed.chunks)} chunk(s)[/green]")
         success += 1
 
     console.print(f"\nDone. {success}/{len(SAMPLE_EAT_DOCS)} documents ingested. Errors: {len(errors)}")
@@ -126,7 +126,7 @@ def ingest_bulk(max_pages: int = 10) -> None:
         )
         sys.exit(1)
 
-    console.print(f"[bold green]Phase 1 — EAT bulk ingestion (max_pages={max_pages})[/bold green]")
+    console.print(f"[bold green]Phase 1  -  EAT bulk ingestion (max_pages={max_pages})[/bold green]")
     success = 0
     skipped = 0
 

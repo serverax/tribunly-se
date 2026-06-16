@@ -25,20 +25,20 @@ acas_guidance `(source_url,chunk_index)` (migration 030), official_guidance `sou
 
 | Table | Rows | Distinct docs/sections | Embedded | content_hash |
 |---|---|---|---|---|
-| legislation (ukpga) | 188 | ERA/ETA/TULRCA/ERA2025 | — | 188/188 |
-| legislation (uksi Increase-of-Limits) | 6 | 6 Orders | — | 6/6 |
+| legislation (ukpga) | 188 | ERA/ETA/TULRCA/ERA2025 |  -  | 188/188 |
+| legislation (uksi Increase-of-Limits) | 6 | 6 Orders |  -  | 6/6 |
 | legislation total | 194 | 53 distinct section_refs | 194/194 | 194/194 |
 | acas_guidance | 36 | 9 documents | 36/36 | 36/36 |
 | official_guidance (GOV.UK) | 17 | 17 documents | 17/17 | 17/17 |
-| rules | 32 | 19 tied to UKSI Orders | — | — |
-| legal_sources | 4 | — | — | — |
-| case_law_documents | 0 | — (BLOCKED BY OWNER) | — | — |
+| rules | 32 | 19 tied to UKSI Orders |  -  |  -  |
+| legal_sources | 4 |  -  |  -  |  -  |
+| case_law_documents | 0 |  -  (BLOCKED BY OWNER) |  -  |  -  |
 
 ## Rate limiting / safety
 - legislation.gov.uk: ~1 req/s (client throttle), no API key, `/data.xml`.
 - ACAS / GOV.UK: bounded URL/path lists, single fetch each, thin/404 pages skipped.
 - 404 sections (e.g. `/prospective` variants of s.108/111/124; repealed s.127) are
-  skipped and documented — never faked.
+  skipped and documented  -  never faked.
 - One source failing marks only that batch FAILED AND NEEDS FIX; other batches apply.
 
 ## Resume
@@ -51,7 +51,7 @@ acas_guidance `(source_url,chunk_index)` (migration 030), official_guidance `sou
 - **acas_guidance** ← ACAS static official pages. [OK]
 - **official_guidance** ← GOV.UK content API. [OK]
 - **rules** ← derived from legislation + Increase-of-Limits UKSI, cited URLs. [OK]
-- **case_law** ← Find Case Law API (+ GOV.UK ET pages fallback) — BLOCKED BY OWNER. [GATED]
-- **reform watch** ← UK Parliament Bills API + prospective legislation — monitoring
+- **case_law** ← Find Case Law API (+ GOV.UK ET pages fallback)  -  BLOCKED BY OWNER. [GATED]
+- **reform watch** ← UK Parliament Bills API + prospective legislation  -  monitoring
   only, NOT legal authority (`bills` table present, 0 rows; ERA 2025 prospective rows
   marked prospective). [MONITOR-ONLY]

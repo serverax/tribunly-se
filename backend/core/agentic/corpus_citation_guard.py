@@ -1,6 +1,6 @@
 """Corpus-citation enforcement (LLM Fabric directive).
 
-Every LLM reasoning output MUST reference at least one valid SQL corpus UUID — an
+Every LLM reasoning output MUST reference at least one valid SQL corpus UUID  -  an
 id that resolves to a real row in corpus_chunks. If it does not, the orchestrator
 rejects the output and either regenerates (bounded) or falls back to a deterministic
 guide. This prevents the model from inventing authority that is not in the local DB.
@@ -87,7 +87,7 @@ def cached_valid_corpus_uuids(uuids: list[str], get_conn: Optional[Callable] = N
         if hit is True:
             good.add(u)
         elif hit is False:
-            pass  # cached negative — known-absent, skip DB
+            pass  # cached negative  -  known-absent, skip DB
         else:
             to_check.append(u)  # miss / cache down
 
@@ -109,7 +109,7 @@ def enforce_or_regenerate(reason_fn: Callable[[int], str],
 
     reason_fn(attempt) -> raw LLM text. If an attempt cites a valid corpus UUID, it
     is accepted. After max_regen+1 failed attempts, fall back to the deterministic
-    guide (fallback_fn) — NEVER returns ungrounded model text as accepted.
+    guide (fallback_fn)  -  NEVER returns ungrounded model text as accepted.
 
     Returns: {"status": "accepted"|"fallback", "text"?, "valid_uuids"?, "attempts", ...}
     """
@@ -121,7 +121,7 @@ def enforce_or_regenerate(reason_fn: Callable[[int], str],
                     "attempts": attempt + 1, "fallback_used": False}
     if fallback_fn is not None:
         result = fallback_fn()
-        result["status"] = "fallback"          # force — overrides the guide's own status
+        result["status"] = "fallback"          # force  -  overrides the guide's own status
         result["fallback_used"] = True
         result["attempts"] = max_regen + 1
         result.setdefault("source", "rules_table")
@@ -261,7 +261,7 @@ def validate_governance(answer: dict) -> tuple[bool, list[str]]:
     # Check for raw PII patterns (basic check)
     if text and any(pattern in text.lower() for pattern in
                      ['mr.', 'ms.', 'mrs.', 'dr.', 'phone:', 'email:', 'address:']):
-        # Might contain PII — flag for review
+        # Might contain PII  -  flag for review
         _log.warning("validate_governance: answer may contain raw PII markers")
         errors.append("potential unredacted PII detected")
 

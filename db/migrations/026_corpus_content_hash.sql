@@ -1,4 +1,4 @@
--- 026_corpus_content_hash.sql (addendum §1 — content_hash is required corpus metadata)
+-- 026_corpus_content_hash.sql (addendum §1  -  content_hash is required corpus metadata)
 -- Adds content_hash to the corpus source tables and backfills existing legislation
 -- rows from body_text (SHA-256 hex). Idempotent; safe to re-run.
 -- The ingest script (scripts/ingest-employment-law-corpus.sh) backfills content_hash

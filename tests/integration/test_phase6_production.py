@@ -126,7 +126,7 @@ def test_admin_retention_status_requires_key():
 
 def test_encrypt_decrypt_roundtrip():
     from backend.core.encryption import encrypt_str, decrypt_str
-    plaintext = "Alice Johnson — test PII"
+    plaintext = "Alice Johnson  -  test PII"
     ciphertext = encrypt_str(plaintext)
     recovered  = decrypt_str(ciphertext)
     assert recovered == plaintext
@@ -253,7 +253,7 @@ def test_production_readiness_still_not_production_ready():
     resp = client.get("/admin/production-readiness", headers=_ADMIN_HDR)
     data = resp.json()
     assert data["overall_status"] == "NOT_PRODUCTION_READY", \
-        "Must remain NOT_PRODUCTION_READY — no live deployment or DPIA signed off"
+        "Must remain NOT_PRODUCTION_READY  -  no live deployment or DPIA signed off"
     assert data["ready_for_production"] is False
 
 

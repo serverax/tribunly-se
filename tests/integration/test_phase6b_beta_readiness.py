@@ -1,5 +1,5 @@
 """
-Phase 6B — Controlled-beta readiness tests.
+Phase 6B  -  Controlled-beta readiness tests.
 
 Tests:
   Auth hardening:
@@ -7,7 +7,7 @@ Tests:
    2.  Production mode blocks none auth
    3.  Production mode requires JWT config when auth_mode=jwt
    4.  Dev/test mode allows mock auth
-   5.  JWT mode parses Bearer token (stub — not crypto-verified)
+   5.  JWT mode parses Bearer token (stub  -  not crypto-verified)
    6.  Case owner protection still works (regression)
 
   Admin routes:

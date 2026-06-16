@@ -1,4 +1,4 @@
-"""Deadline calculator tool — delegates to deterministic rules engine."""
+"""Deadline calculator tool  -  delegates to deterministic rules engine."""
 
 from __future__ import annotations
 

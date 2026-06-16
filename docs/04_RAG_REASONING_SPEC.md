@@ -1,7 +1,7 @@
 # RAG + Reasoning Specification (the "Algorithm Brain")
 
 **Pairs with:** `02_HLD_ARCHITECTURE.md` (Layers 3 & 4), `03_DATABASE_DESIGN.md`.
-**Core rule (GUARDRAIL):** Retrieval ALWAYS runs first. The reasoning model answers FROM retrieved, cited sources — never from its own memory. Exact facts (deadlines/caps) come from the structured `rules` table, never from generation. If grounding is insufficient, the system does NOT guess — it flags uncertainty or routes to a human.
+**Core rule (GUARDRAIL):** Retrieval ALWAYS runs first. The reasoning model answers FROM retrieved, cited sources  -  never from its own memory. Exact facts (deadlines/caps) come from the structured `rules` table, never from generation. If grounding is insufficient, the system does NOT guess  -  it flags uncertainty or routes to a human.
 
 ---
 
@@ -34,15 +34,15 @@ query + facts
 [6] RESPOND (+ GENERATE documents on paid path, template-anchored)
 ```
 
-## 2. Stage 1 — Classification
+## 2. Stage 1  -  Classification
 - Input: free text and/or guided answers.
 - Output: `{matter_type, intent, in_scope: bool}`.
 - Method: rules for obvious cases; small/workhorse model otherwise.
 - Out-of-scope (e.g. tenancy) → return "not supported", never a guess.
 
-## 3. Stage 2 — Retrieval (hybrid RAG)
+## 3. Stage 2  -  Retrieval (hybrid RAG)
 
-### 3a. Structured retrieval (deterministic — runs for every legal question)
+### 3a. Structured retrieval (deterministic  -  runs for every legal question)
 Query `rules` by `claim_type` + `jurisdiction` + relevant date. Returns exact values WITH citations:
 ```json
 {
@@ -69,7 +69,7 @@ These values are passed through verbatim. The model may EXPLAIN them but must NO
 ```
 If the bundle is empty/weak for the question → mark `insufficient_grounding = true` and skip generative guessing.
 
-## 4. Stage 3 — Reasoning (tiered)
+## 4. Stage 3  -  Reasoning (tiered)
 
 ### Tiers
 - **Workhorse** (controlled, cheap): default. Handles classification + bulk reasoning.
@@ -78,7 +78,7 @@ If the bundle is empty/weak for the question → mark `insufficient_grounding = 
 ### Job
 Apply the retrieved authority to the user's facts and decide, per legal test, whether the fact pattern meets it. The model's role is the *judgment* layer, strictly bounded by the retrieved bundle.
 
-### Output — the STRUCTURED ASSESSMENT object (canonical schema)
+### Output  -  the STRUCTURED ASSESSMENT object (canonical schema)
 ```json
 {
   "claim_type": "unfair_dismissal",
@@ -96,15 +96,15 @@ Apply the retrieved authority to the user's facts and decide, per legal test, wh
   "insufficient_grounding": false
 }
 ```
-> The assessment is data, not prose — so it can be validated, scored, and rendered consistently. Prose shown to the user is generated FROM this object.
+> The assessment is data, not prose  -  so it can be validated, scored, and rendered consistently. Prose shown to the user is generated FROM this object.
 
-## 5. Stage 4 — Scoring
+## 5. Stage 4  -  Scoring
 
 - **Grounding score**: fraction of material claims in the assessment that map to a retrieved citation. Every legal assertion must trace to `citations`. Unsupported assertion → lower score.
 - **Confidence score**: model-reported + heuristic (retrieval similarity, agreement across sources, fact completeness).
 - Thresholds (tune empirically): below the grounding threshold OR below the confidence threshold → governance routes to uncertainty/handoff rather than display.
 
-## 6. Stage 5 — Governance gate (the honesty layer in code)
+## 6. Stage 5  -  Governance gate (the honesty layer in code)
 Checks, in order:
 1. **Grounding**: every legal claim cited? If not → strip/flag.
 2. **Confidence**: above threshold? If not → "we can't say confidently" + route to human.
@@ -120,7 +120,7 @@ Before ANY call to a third-party/escalation model:
 - Re-attach identity locally after the model returns.
 - Log boundary payloads in test to PROVE no personal data leaves (Phase 2 acceptance criterion).
 
-## 8. Stage 6 — Generation (paid path)
+## 8. Stage 6  -  Generation (paid path)
 - Template-anchored: legal structure comes from validated templates; the model fills/adapts from the assessment + facts.
 - Documents: `particulars_of_claim`, `schedule_of_loss` (Phase 3); witness-statement structure, chronology, evidence checklist (Phase 4).
 - Output marked as a user-owned self-help draft, not legal advice.
@@ -128,7 +128,7 @@ Before ANY call to a third-party/escalation model:
 ## 9. Failure & fallback behaviour (explicit)
 | Situation | Behaviour |
 |---|---|
-| Out-of-scope matter | "Not supported" — no guess |
+| Out-of-scope matter | "Not supported"  -  no guess |
 | Empty/weak retrieval | `insufficient_grounding` → honest uncertainty + route to human |
 | Low confidence | "We can't say confidently" → recommend solicitor |
 | Conflicting authorities | Surface the conflict + recommend human review; never pick silently |

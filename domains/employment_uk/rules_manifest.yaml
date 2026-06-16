@@ -1,4 +1,4 @@
-# employment_uk — deterministic rules manifest (rules table is source of truth).
+# employment_uk  -  deterministic rules manifest (rules table is source of truth).
 # Declares the rule_keys that MUST exist + cited + effective-dated. The corpus
 # AIA / proof fails if a required rule is missing or uncited.
 domain: employment_uk

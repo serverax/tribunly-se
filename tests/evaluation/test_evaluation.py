@@ -18,7 +18,7 @@ _BASE_ASSESSMENT = {
     "status": "ok",
     "has_viable_claim": "yes",
     "reasoning_summary": "Based on ERA 1996, the dismissal appears unfair.",
-    "key_weaknesses": ["Procedure followed — weakens claim"],
+    "key_weaknesses": ["Procedure followed  -  weakens claim"],
     "citations": [{"cite": "ERA 1996 s.111", "url": "https://legislation.gov.uk/ukpga/1996/18/section/111/data.xml"}],
     "deadline_info": {"limitation_date": "2025-12-31", "source": "rules", "authority": "ERA 1996 s.111(2)"},
     "jurisdiction": "EW",

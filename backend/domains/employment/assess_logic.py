@@ -1,5 +1,5 @@
 """
-Phase 2C — Deterministic pre-assessment logic.
+Phase 2C  -  Deterministic pre-assessment logic.
 
 Runs BEFORE any model call. Computes everything that does not require
 judicial judgment: scope, value ranges, key weaknesses from facts, and
@@ -29,7 +29,7 @@ from backend.domains.employment.checklists.tribunal_elements import get_elements
 
 logger = logging.getLogger(__name__)
 
-# Canonical rule_keys — must match the single series in the rules table
+# Canonical rule_keys  -  must match the single series in the rules table
 _QP_KEY   = "unfair_dismissal.qualifying_period"
 _TL_KEY   = "unfair_dismissal.time_limit_months"
 _CAP_KEY  = "unfair_dismissal.compensatory_cap_amount"
@@ -98,9 +98,9 @@ def compute_value_range(rules: list[dict], safe_facts: dict) -> dict:
     # Fail closed: statutory caps MUST come from the rules table. No hardcoded
     # legal values, and no fabricated fallback when a required rule is missing.
     if not (cap_row and cap_row.get("value_numeric") is not None):
-        raise ValueError("compensatory cap rule missing — fail closed (no hardcoded cap)")
+        raise ValueError("compensatory cap rule missing  -  fail closed (no hardcoded cap)")
     if not (wpc_row and wpc_row.get("value_numeric") is not None):
-        raise ValueError("week's pay cap rule missing — fail closed (no hardcoded week's-pay cap)")
+        raise ValueError("week's pay cap rule missing  -  fail closed (no hardcoded week's-pay cap)")
     limb_a = float(cap_row["value_numeric"])
     wpc    = float(wpc_row["value_numeric"])
 
@@ -173,12 +173,12 @@ def build_deterministic_context(
             )
             if day_one_exception:
                 weaknesses.append(
-                    f"Possible day-one exception — needs review: your description "
+                    f"Possible day-one exception  -  needs review: your description "
                     f"mentions {day_one_exception['label']}. Dismissal for this reason "
                     f"can be AUTOMATICALLY UNFAIR ({day_one_exception['authority']}) and "
                     f"does NOT require {qp_required} service. Although your "
                     f"{months:.1f} months falls short of the ordinary qualifying period, "
-                    f"do not be discouraged — this category of claim should be reviewed "
+                    f"do not be discouraged  -  this category of claim should be reviewed "
                     f"by an adviser as a priority."
                 )
             else:
@@ -323,7 +323,7 @@ def build_deterministic_context(
     # ── Viability determination ───────────────────────────────────────────────
     if not meets_qp and qualifying_check and day_one_exception:
         # Short service BUT a possible automatic-unfair category was indicated:
-        # never "no" on service alone — flag for priority review instead.
+        # never "no" on service alone  -  flag for priority review instead.
         has_viable_claim = "uncertain"
         strength = "uncertain"
         next_step = "seek_solicitor"
@@ -395,7 +395,7 @@ def build_deterministic_context_wages(
     Key differences from unfair dismissal:
     - No qualifying period (day-one right for workers)
     - Value range = unpaid amount, not compensation estimate
-    - No EDT — reference date is wages_due_date
+    - No EDT  -  reference date is wages_due_date
 
     GUARDRAIL: Value ranges come from facts (unpaid amount), never from model memory.
     GUARDRAIL: Citations must map to rules table authority_ref.
@@ -413,14 +413,14 @@ def build_deterministic_context_wages(
     # ── Worker status warning ──────────────────────────────────────────────────
     if worker_status in ("self_employed", "contractor"):
         weaknesses.append(
-            "Worker status is self-employed or contractor — ERA 1996 Part II rights "
+            "Worker status is self-employed or contractor  -  ERA 1996 Part II rights "
             "apply to 'workers' (s.230(3)), not to genuinely self-employed contractors. "
             "Seek legal advice on status."
         )
     elif worker_status == "unknown":
         weaknesses.append(
             "Worker status unclear. ERA 1996 Part II applies to 'workers' (wider than "
-            "employees — includes agency and casual workers). If status is disputed, "
+            "employees  -  includes agency and casual workers). If status is disputed, "
             "seek legal advice."
         )
 
@@ -462,7 +462,7 @@ def build_deterministic_context_wages(
         "Employer may claim wages were paid in full and dispute the amount owed.",
         "Employer may argue the 3-month time limit (ERA 1996 s.23(2)) has expired.",
         "Employer may argue claimant is not a 'worker' for ERA 1996 Part II purposes.",
-        "Remedy is gross wages only — no uplift for standard deduction claims (Delaney v Staples [1992]).",
+        "Remedy is gross wages only  -  no uplift for standard deduction claims (Delaney v Staples [1992]).",
         "Claimant has a duty to mitigate financial loss where ongoing.",
     ]
 
@@ -500,9 +500,9 @@ def build_deterministic_context_wages(
         has_viable_claim = "uncertain"
         strength = "uncertain"
 
-    # ── Value range (unpaid amount — no multiplier) ────────────────────────────
+    # ── Value range (unpaid amount  -  no multiplier) ────────────────────────────
     rem_row = _rule(bundle_rules, _UPW_REM_KEY)
-    rem_basis = rem_row["description"] if rem_row else "ERA 1996 s.24 — repayment of gross wages unlawfully deducted."
+    rem_basis = rem_row["description"] if rem_row else "ERA 1996 s.24  -  repayment of gross wages unlawfully deducted."
     value_range = {
         "low":      round(unpaid_amount, 2) if unpaid_amount > 0 else 0,
         "high":     round(unpaid_amount, 2) if unpaid_amount > 0 else 0,
@@ -510,7 +510,7 @@ def build_deterministic_context_wages(
         "basis":    (
             f"Claimed gross wages: £{unpaid_amount:,.2f}. {rem_basis}"
             if unpaid_amount > 0 else
-            "Unpaid amount not provided — cannot estimate."
+            "Unpaid amount not provided  -  cannot estimate."
         ),
     }
 
@@ -543,6 +543,6 @@ def build_deterministic_context_wages(
             f"Worker status: {worker_status}. "
             f"Authorized deduction: {deduction_auth}. "
             f"Series: {is_series}. "
-            f"No qualifying period applies (ERA 1996 s.13 — day-one right)."
+            f"No qualifying period applies (ERA 1996 s.13  -  day-one right)."
         ),
     }

@@ -1,6 +1,6 @@
-PHASE 6C — REAL JWT CRYPTOGRAPHIC VERIFICATION
+PHASE 6C  -  REAL JWT CRYPTOGRAPHIC VERIFICATION
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 1. GIT
@@ -48,18 +48,18 @@ Push result: [to be set after push]
 ═══════════════════════════════════════════════════════════════════════════════
 
   valid token accepted:         test_valid_jwt_accepted PASSED
-  expired token rejected:       test_expired_jwt_rejected PASSED — HTTP 401
-  wrong issuer rejected:        test_wrong_issuer_rejected PASSED — HTTP 401
-  wrong audience rejected:      test_wrong_audience_rejected PASSED — HTTP 401
-  invalid signature rejected:   test_invalid_signature_rejected PASSED — HTTP 401
-  malformed token rejected:     test_malformed_token_rejected PASSED — HTTP 401
+  expired token rejected:       test_expired_jwt_rejected PASSED  -  HTTP 401
+  wrong issuer rejected:        test_wrong_issuer_rejected PASSED  -  HTTP 401
+  wrong audience rejected:      test_wrong_audience_rejected PASSED  -  HTTP 401
+  invalid signature rejected:   test_invalid_signature_rejected PASSED  -  HTTP 401
+  malformed token rejected:     test_malformed_token_rejected PASSED  -  HTTP 401
   missing Authorization → None: test_missing_authorization_returns_none PASSED
   missing JWT_SECRET → 503:     test_missing_jwt_secret_returns_503 PASSED
   token value not in response:  test_token_value_not_in_response PASSED
 
 Algorithm: HS256 (HMAC-SHA256) via PyJWT>=2.8
 Claims required: sub, exp (always); iss and aud when env vars set
-JWKS/RS256: NOT implemented — Phase 7
+JWKS/RS256: NOT implemented  -  Phase 7
 
 ═══════════════════════════════════════════════════════════════════════════════
 4. AUTH MODE PROOF
@@ -100,7 +100,7 @@ JWKS/RS256: NOT implemented — Phase 7
   Current blockers:
     1. DPIA not reviewed by DPO (compliance-signoff.json reviewed_by_dpo=false)
     2. Privacy notice not legally reviewed (legally_reviewed=false)
-    3. JWKS/RS256 not implemented (HS256 only — Phase 7)
+    3. JWKS/RS256 not implemented (HS256 only  -  Phase 7)
     4. No real HSM/KMS (Phase 7)
     5. No live deployment environment (Phase 7)
 
@@ -108,8 +108,8 @@ JWKS/RS256: NOT implemented — Phase 7
                            HSM/KMS, full OAuth/JWT, live deployment)
 
   Blocker CLOSED by Phase 6C:
-    ✓ "JWT not cryptographically verified" — CLOSED (HS256 real verification)
-    ✓ "mock/JWT stub auth only" — PARTIALLY CLOSED
+    ✓ "JWT not cryptographically verified"  -  CLOSED (HS256 real verification)
+    ✓ "mock/JWT stub auth only"  -  PARTIALLY CLOSED
       (jwt mode is now real; mock remains for dev/test only as intended)
 
 ═══════════════════════════════════════════════════════════════════════════════

@@ -5,7 +5,7 @@ These are the 6 fact-patterns from 03a_UNFAIR_DISMISSAL_SEED_SPEC.md §5.
 No DB, no model, no network. Pure Python.
 
 Every test records the expected outcome as a comment so it serves as the
-regression set entry — future changes that silently alter deadline output
+regression set entry  -  future changes that silently alter deadline output
 will break these tests.
 """
 
@@ -84,7 +84,7 @@ def test_ec_floor_bites():
 
 # ── Pattern 4: Older cap figure applies (EDT before 6 Apr 2026) ──────────────
 # This tests the rules table query, not the deadline arithmetic.
-# Proves effective-dating works — tested in test_retrieve_rules.py (integration).
+# Proves effective-dating works  -  tested in test_retrieve_rules.py (integration).
 # Placeholder here so the pattern is documented in the unit test set.
 def test_pattern_4_documented():
     """
@@ -100,11 +100,11 @@ def test_pattern_4_documented():
 
 # ── Pattern 5: Prospective 6-month time limit (not yet commenced) ─────────────
 # The 6-month row has is_prospective=True and is NEVER returned by the rules query.
-# When it is eventually commenced, the arithmetic is unchanged — only the value changes.
-# Proved in test_retrieve_rules.py (integration) — is_prospective=False gate.
+# When it is eventually commenced, the arithmetic is unchanged  -  only the value changes.
+# Proved in test_retrieve_rules.py (integration)  -  is_prospective=False gate.
 # Here we test the arithmetic with time_limit=6 to confirm the code handles it:
 def test_arithmetic_with_6_month_limit():
-    # EDT 1 Jan 2027, 6-month limit (prospective — not in DB yet)
+    # EDT 1 Jan 2027, 6-month limit (prospective  -  not in DB yet)
     # 6 months from Jan 1 → Jul 1 → deadline Jun 30
     result = compute_limitation_date(date(2027, 1, 1), 6)
     assert result["limitation_date"] == "2027-06-30"

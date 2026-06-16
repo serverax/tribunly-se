@@ -3,7 +3,7 @@
 -- source_type, licence_status, parser_type, parent_source_id so the dataset is
 -- organised, cited, versioned and reusable for future law areas / countries.
 -- Idempotent (IF NOT EXISTS); additive; backfills existing rows from the known
--- UK employment provenance. No fake data — these are provenance labels, not content.
+-- UK employment provenance. No fake data  -  these are provenance labels, not content.
 
 -- ── legislation ────────────────────────────────────────────────────────────
 ALTER TABLE legislation ADD COLUMN IF NOT EXISTS country_code     TEXT;

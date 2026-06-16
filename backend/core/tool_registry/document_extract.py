@@ -1,4 +1,4 @@
-"""Document extract tool — interface to upload/OCR fact extraction pipeline."""
+"""Document extract tool  -  interface to upload/OCR fact extraction pipeline."""
 
 from __future__ import annotations
 

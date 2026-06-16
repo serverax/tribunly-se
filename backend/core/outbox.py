@@ -1,5 +1,5 @@
 """
-Event Outbox — transactional outbox pattern for async event delivery.
+Event Outbox  -  transactional outbox pattern for async event delivery.
 Events written atomically with DB transactions, processed by a background worker.
 
 Event types: legal_source_reindex, assessment_complete, payment_received,

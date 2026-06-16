@@ -1,5 +1,5 @@
 """
-backend.domains.shared — generic, domain-agnostic infrastructure.
+backend.domains.shared  -  generic, domain-agnostic infrastructure.
 
 This package MUST stay free of any single legal domain's substance
 (no employment / immigration / housing rules, keywords, citations,

@@ -1,5 +1,5 @@
 """
-backend.domains.housing — PLACEHOLDER (not enabled).
+backend.domains.housing  -  PLACEHOLDER (not enabled).
 
 This package exists so the platform's modular structure is symmetric and a real
 housing domain can be dropped in later. It is registered in

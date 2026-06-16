@@ -1,4 +1,4 @@
-TRACK B — B6 Accessibility & mobile audit
+TRACK B  -  B6 Accessibility & mobile audit
 Date: 2026-06-15
 Scope: client/public (static frontend)
 
@@ -13,7 +13,7 @@ Static review of index.html, intake.html, styles.css, a11y.js, beta-scope.js
 - Responsive: form-row grid collapses @600px
 - Legal notices use role=alert/note
 
-## Findings (in-scope fixes deferred — document only)
+## Findings (in-scope fixes deferred  -  document only)
 | ID | Severity | Page | Issue | Recommendation |
 |----|----------|------|-------|----------------|
 | A1 | medium | intake.html | Nav lacks aria-label; no skip-link | Match index.html nav pattern |
@@ -26,4 +26,4 @@ Static review of index.html, intake.html, styles.css, a11y.js, beta-scope.js
 - No horizontal scroll observed in markup review
 
 ## Verdict
-PASS WITH FINDINGS — no P0 blockers; A1–A4 logged for Track C UX polish
+PASS WITH FINDINGS  -  no P0 blockers; A1–A4 logged for Track C UX polish

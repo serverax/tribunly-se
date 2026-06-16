@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Controlled-beta readiness check — Phase 6E.
+Controlled-beta readiness check  -  Phase 6E.
 
 Checks all pre-beta conditions without requiring a running server or DB.
 Reports ordered next steps. Always exits 0 (reporting only).

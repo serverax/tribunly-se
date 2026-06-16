@@ -1,5 +1,5 @@
 """
-Phase 3D — Paid-path, case saving, and handoff integration tests.
+Phase 3D  -  Paid-path, case saving, and handoff integration tests.
 
 Validates:
   1.  Unpaid document request returns preview + payment_required=True

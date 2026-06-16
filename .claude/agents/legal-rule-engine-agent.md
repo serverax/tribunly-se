@@ -1,6 +1,6 @@
 ---
 name: legal-rule-engine-agent
-description: Owns the deterministic UK employment-law rule engine (code/data, NOT prompt-only) — unfair-dismissal qualifying period, automatic-unfair flags, wrongful dismissal, discrimination/protected characteristic, reasonable adjustments, whistleblowing, redundancy, grievance/disciplinary, wages/holiday, ACAS EC + tribunal time-limit warnings, settlement-advice warning. Each rule links to a legal source reference and its result appears in the Brain trace. Maps to backend/domains/employment + rules table.
+description: Owns the deterministic UK employment-law rule engine (code/data, NOT prompt-only)  -  unfair-dismissal qualifying period, automatic-unfair flags, wrongful dismissal, discrimination/protected characteristic, reasonable adjustments, whistleblowing, redundancy, grievance/disciplinary, wages/holiday, ACAS EC + tribunal time-limit warnings, settlement-advice warning. Each rule links to a legal source reference and its result appears in the Brain trace. Maps to backend/domains/employment + rules table.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 

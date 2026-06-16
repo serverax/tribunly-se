@@ -1,5 +1,5 @@
 /**
- * Controlled-beta employment scope — single source of truth for UI pickers.
+ * Controlled-beta employment scope  -  single source of truth for UI pickers.
  * Must match backend.domains.employment.modules.PRODUCTION_EMPLOYMENT_MODULES.
  */
 (function () {
@@ -68,6 +68,6 @@
     moduleKeys: function () { return MODULES.map(function (m) { return m.key; }); },
     populateSelect: populateSelect,
     populateRadioGroup: populateRadioGroup,
-    betaNotice: "Controlled beta — 11 employment topics (England & Wales). Not full UK employment law coverage.",
+    betaNotice: "Controlled beta  -  11 employment topics (England & Wales). Not full UK employment law coverage.",
   };
 })();

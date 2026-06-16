@@ -1,13 +1,13 @@
-PHASE 3D — PAID-PATH ENFORCEMENT, CASE SAVING, HANDOFF CAPTURE
+PHASE 3D  -  PAID-PATH ENFORCEMENT, CASE SAVING, HANDOFF CAPTURE
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
 ═══════════════════════════════════════════════════════════════════════════════
 
 Phase 3D adds:
-  1. Payment gating on document generation (mock mode — no Stripe)
+  1. Payment gating on document generation (mock mode  -  no Stripe)
   2. Basic case persistence (POST/GET /cases)
   3. Handoff lead capture (POST /handoff/leads)
   4. Updated assessment UI: payment gate, handoff form, copy gate
@@ -18,7 +18,7 @@ PAYMENT GATING (MOCK MODE)
 
 PAYMENT_ENABLED=false (default in Phase 3D):
   - Any non-empty payment_token = paid (mock)
-  - No Stripe integration — Phase 4
+  - No Stripe integration  -  Phase 4
 
 Document gate behaviour:
   - No token → preview (first 28 lines) + payment_required=True + gate notice
@@ -26,7 +26,7 @@ Document gate behaviour:
 
 Preview notice (verbatim in every preview):
   "PREVIEW ENDS HERE / Full document access requires payment. /
-   There are no hidden charges — the full price is shown before any payment
+   There are no hidden charges  -  the full price is shown before any payment
    is taken. lawapp never charges without your consent."
 
 UI: "Activate full access (demo)" button sets payment_token in sessionStorage.
@@ -40,11 +40,11 @@ CASE SAVING
 
 Uses existing `cases` table from migration 001. Fields stored:
   - claim_type, jurisdiction
-  - assessment (jsonb) — structured pipeline output; no PII (de-id'd by pipeline)
-  - key_dates (jsonb) — {edt, deadline_date}
+  - assessment (jsonb)  -  structured pipeline output; no PII (de-id'd by pipeline)
+  - key_dates (jsonb)  -  {edt, deadline_date}
   - status = 'diagnosis'
-  - user_id = NULL — authentication is Phase 4
-  - facts_encrypted = NULL — encryption at rest is Phase 5
+  - user_id = NULL  -  authentication is Phase 4
+  - facts_encrypted = NULL  -  encryption at rest is Phase 5
 
 GUARDRAIL: Raw user facts never stored. Only structured assessment output stored.
 NOTE: Phase 3D is local/test-only. facts_encrypted = NULL is not production-ready.
@@ -76,21 +76,21 @@ Validation:
 
 Response message includes:
   "lawapp is not a solicitor and does not provide regulated legal advice."
-  "This is free to you — no charges apply for this referral."
+  "This is free to you  -  no charges apply for this referral."
 
 Phase 3D: stored locally. No live referral sent. Phase 6 integration.
 
 GUARDRAIL: No solicitor-client relationship created. No representation implied.
-GUARDRAIL: Referral is free to the user — stated explicitly in API response.
+GUARDRAIL: Referral is free to the user  -  stated explicitly in API response.
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES CREATED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  db/migrations/007_phase3d_paid_handoff.sql   — handoff_leads table
-  backend/engine/payment.py                    — mock payment validation + preview
-  tests/integration/test_phase3d_paid_handoff.py — 22 integration tests
-  reports/phase3d-paid-path-report.txt         — this report
+  db/migrations/007_phase3d_paid_handoff.sql    -  handoff_leads table
+  backend/engine/payment.py                     -  mock payment validation + preview
+  tests/integration/test_phase3d_paid_handoff.py  -  22 integration tests
+  reports/phase3d-paid-path-report.txt          -  this report
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES MODIFIED
@@ -112,7 +112,7 @@ FILES MODIFIED
     - Copy button shown only when payment_required=False
 
 ═══════════════════════════════════════════════════════════════════════════════
-TESTS (test_phase3d_paid_handoff.py) — 22 tests
+TESTS (test_phase3d_paid_handoff.py)  -  22 tests
 ═══════════════════════════════════════════════════════════════════════════════
 
   test_unpaid_document_returns_payment_required_true

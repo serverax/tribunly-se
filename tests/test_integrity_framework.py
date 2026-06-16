@@ -1,5 +1,5 @@
 """
-Integrity Framework — adversarial "Red Team" tests for the Critic Gate.
+Integrity Framework  -  adversarial "Red Team" tests for the Critic Gate.
 
 These intentionally inject FAKE laws to prove the system halts before drafting:
   - A fake citation ('Section 999 Equality Act 2010') must be flagged by the Critic,
@@ -24,7 +24,7 @@ FAKE_CITES = [
     {"cite": "Fictional Employment Act 2099 s.1", "type": "legislation", "url": "https://example.invalid/fake"},
 ]
 
-# Legacy /documents/generate fails closed on anonymous callers (401) — these tests
+# Legacy /documents/generate fails closed on anonymous callers (401)  -  these tests
 # target the CITATION gate, so authenticate with a mock identity (LAWAPP_AUTH_MODE=mock).
 AUTH = {"X-User-ID": "00000000-0000-0000-0000-000000000002"}
 

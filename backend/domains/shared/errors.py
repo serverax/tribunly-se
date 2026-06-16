@@ -3,7 +3,7 @@ Fail-closed exception hierarchy for the domain layer.
 
 Every guard in the modular-domain platform raises one of these rather than
 silently degrading. Callers that cannot prove a domain/matter is supported
-must NOT proceed — that is the core safety property (CLAUDE.md §9, §17:
+must NOT proceed  -  that is the core safety property (CLAUDE.md §9, §17:
 fail closed; never guess in_scope=True).
 """
 

@@ -1,28 +1,28 @@
-"""T-010 — RLS / auth SECURITY AT SCALE (100k-concurrent NFR slice).
+"""T-010  -  RLS / auth SECURITY AT SCALE (100k-concurrent NFR slice).
 
 Security must not weaken or slow down under load. This suite proves three scale
 properties of the auth/RLS hot path, on the real DB, with the connection pool:
 
-  1. NO PRIVILEGE ESCALATION UNDER CONCURRENCY — many threads hammer own/cross/anon
+  1. NO PRIVILEGE ESCALATION UNDER CONCURRENCY  -  many threads hammer own/cross/anon
      case reads in parallel through the shared pool; a reused pooled connection must
      NEVER carry another request's identity or transaction state. Expected invariant
      under stress: own->200(+own marker), cross->403(no marker), anon->401. Zero
      violations tolerated.
 
-  2. AUTH LATENCY BUDGET — check_case_ownership (the per-request RLS primitive) runs
+  2. AUTH LATENCY BUDGET  -  check_case_ownership (the per-request RLS primitive) runs
      as a single read-only round trip on cases(id) PK via a warm pooled connection.
      p50 must stay < 20ms. (Absolute tail p95/p99 on a Docker-Desktop-Windows dev box
      is inflated by the port-proxy and is NOT the in-cluster number; we record it but
      gate on p50, which is environment-robust.)
 
-  3. NO CONNECTION BOTTLENECK — the pool reuses warm connections (getconn/putconn is
+  3. NO CONNECTION BOTTLENECK  -  the pool reuses warm connections (getconn/putconn is
      ~microseconds vs ~28ms to establish a fresh connection), and concurrent load
      beyond pool size degrades to a direct connect rather than failing (no 5xx).
 
 Honest scope: this is a scaled-down, real-concurrency proof on one box. True 100k is
 validated with the k6 harness (tests/scale/k6_rls_load.js) against the deployed
 cluster (HPA replicas + PgBouncer); see docs/SCALE_ARCHITECTURE_100K.md. Skips if the
-local DB is unreachable — never faked.
+local DB is unreachable  -  never faked.
 """
 from __future__ import annotations
 
@@ -72,7 +72,7 @@ def env_jwt():
 @pytest.fixture(scope="module")
 def seeded(env_jwt):
     if not _db_ok():
-        pytest.skip("local DB unreachable — scale RLS cannot be proven on mock data")
+        pytest.skip("local DB unreachable  -  scale RLS cannot be proven on mock data")
     from ingestion.db import get_connection
     from backend.core.user_auth import ensure_user_exists
     conn = get_connection(); cur = conn.cursor()
@@ -179,4 +179,4 @@ def test_pool_reuses_warm_connections(seeded):
         conn = get_connection(); conn.close()
     avg_ms = (time.perf_counter() - t) / 50 * 1000
     print(f"\n[T-010 scale] pool acquire+release avg ms: {avg_ms:.4f}")
-    assert avg_ms < 5.0, f"pool acquire+release {avg_ms:.3f}ms too slow — pooling not effective"
+    assert avg_ms < 5.0, f"pool acquire+release {avg_ms:.3f}ms too slow  -  pooling not effective"

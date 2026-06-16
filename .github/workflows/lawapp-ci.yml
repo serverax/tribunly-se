@@ -1,6 +1,6 @@
 name: LawApp CI
 
-# DEPRECATED (2026-06-10): superseded by ci.yml ("lawapp CI — Test, Build, Push"),
+# DEPRECATED (2026-06-10): superseded by ci.yml ("lawapp CI  -  Test, Build, Push"),
 # the canonical release workflow. Kept manual-only for ad-hoc diagnostics.
 on:
   workflow_dispatch:
@@ -119,7 +119,7 @@ jobs:
       - name: Install scanners
         run: pip install bandit pip-audit --quiet
 
-      - name: SAST (bandit — high severity blocks release)
+      - name: SAST (bandit  -  high severity blocks release)
         run: |
           echo "Running bandit static analysis on backend/ + ingestion/ ..."
           bandit -r backend ingestion \
@@ -127,7 +127,7 @@ jobs:
             --severity-level high --confidence-level medium \
             -f screen
 
-      - name: SCA (pip-audit — vulnerable dependencies block release)
+      - name: SCA (pip-audit  -  vulnerable dependencies block release)
         run: |
           echo "Upgrading build toolchain (pip/setuptools/wheel) to patched versions first ..."
           # pip<26.1 and wheel<0.46.2 carry their own CVEs (path traversal / archive handling)
@@ -138,7 +138,7 @@ jobs:
           pip-audit --desc \
             || (echo "FAIL: vulnerable dependencies found" && exit 1)
 
-      - name: Secret scan (working tree — leaked credentials block release)
+      - name: Secret scan (working tree  -  leaked credentials block release)
         run: |
           echo "Scanning working tree for leaked credential patterns ..."
           # Working-tree gate (fail-closed). History remediation is a separate owner action.
@@ -187,7 +187,7 @@ jobs:
           RUST_SRC="client/wasm/src/lib.rs"
           WASM_BIN="client/public/wasm/lawapp_wasm_bg.wasm"
           if [ "$RUST_SRC" -nt "$WASM_BIN" ]; then
-            echo "Rust source ($RUST_SRC) is newer than WASM binary — rebuilding..."
+            echo "Rust source ($RUST_SRC) is newer than WASM binary  -  rebuilding..."
             cd client/wasm
             wasm-pack build --target web --out-dir ../public/wasm
             echo "WASM rebuild complete"

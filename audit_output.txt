@@ -128,7 +128,7 @@ backend/api/main.py:@app.get("/freshness")
 backend/api/main.py:@app.get("/rules/{claim_type}")
 backend/api/main.py:@app.post("/assess")
 backend/api/main.py:@app.post("/api/diagnosis")
-backend/api/main.py:    POST /api/diagnosis — primary diagnosis endpoint for lawapp.
+backend/api/main.py:    POST /api/diagnosis  -  primary diagnosis endpoint for lawapp.
 backend/api/main.py:@app.post("/documents/generate")
 backend/api/main.py:@app.post("/cases", status_code=201)
 backend/api/main.py:@app.get("/cases")
@@ -681,8 +681,8 @@ client/public/pages/saved_case.html:  <a href="/" class="brand">lawapp</a>
 ./.env.example:ANTHROPIC_API_KEY=your_api_key_here
 ./.github/workflows/lawapp-ci.yml:          if grep -RInE "(ghp_|github_pat_|OPENAI_API_KEY=|sk-[A-Za-z0-9]|password *= *['\"][^'\"]{8,})" \
 ./audit_script.sh:grep -R "ANTHROPIC_API_KEY=\|OPENAI_API_KEY=\|STRIPE_SECRET_KEY=\|JWT_SECRET=\|ENCRYPTION_KEY=" . --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv --exclude-dir=venv || true
-./docs/env-production.template:ENCRYPTION_KEY=<REQUIRED: Fernet key — 44-char URL-safe base64>
-./docs/env-production.template:JWT_SECRET=<REQUIRED: long random secret — never share>
+./docs/env-production.template:ENCRYPTION_KEY=<REQUIRED: Fernet key  -  44-char URL-safe base64>
+./docs/env-production.template:JWT_SECRET=<REQUIRED: long random secret  -  never share>
 ./docs/env-production.template:# STRIPE_SECRET_KEY=<Phase 7: required for PAYMENT_MODE=stripe_live>
 ./docs/env-production.template:ANTHROPIC_API_KEY=<optional: sk-ant-...>
 ./docs/env-production.template:# OPENAI_API_KEY=<optional: sk-...>
@@ -702,17 +702,17 @@ client/public/pages/saved_case.html:  <a href="/" class="brand">lawapp</a>
 ./infra/k8s/lawapp-secrets-template.yaml:#     --from-literal=ANTHROPIC_API_KEY='sk-ant-REAL' \
 ./infra/k8s/lawapp-secrets-template.yaml:#     --from-literal=OPENAI_API_KEY='sk-REAL'
 ./inventory_audit.txt:.github/workflows/lawapp-ci.yml:143:          if grep -RInE "(ghp_|github_pat_|OPENAI_API_KEY=|sk-[A-Za-z0-9]|password *= *['\"][^'\"]{8,})" \
-./reports/lawapp-code-change-summary.md:| `ANTHROPIC_API_KEY=placeholder` — stub AI model | Set real key |
-./reports/lawapp-end-to-end-product-completion-report.md:| H1 | `ANTHROPIC_API_KEY=placeholder` — stub model returns insufficient_grounding for complex cases | Owner: set real API key in `.env` and K8s secret |
+./reports/lawapp-code-change-summary.md:| `ANTHROPIC_API_KEY=placeholder`  -  stub AI model | Set real key |
+./reports/lawapp-end-to-end-product-completion-report.md:| H1 | `ANTHROPIC_API_KEY=placeholder`  -  stub model returns insufficient_grounding for complex cases | Owner: set real API key in `.env` and K8s secret |
 ./reports/lawapp-end-to-end-product-completion-report.md:| **ANTHROPIC_API_KEY=placeholder** | Stub model active; complex cases → insufficient_grounding | Set real API key in .env and K8s secret | **OWNER** | YES (full reasoning) | YES | YES |
-./reports/lawapp-feature-function-completion-audit.md:| HIGH | `ANTHROPIC_API_KEY=placeholder` — StubReasoningModel | Set real API key |
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:**READY FOR PUBLIC STAGING:** NO — Real AI model blocked (ANTHROPIC_API_KEY=placeholder), case law embeddings empty  
+./reports/lawapp-feature-function-completion-audit.md:| HIGH | `ANTHROPIC_API_KEY=placeholder`  -  StubReasoningModel | Set real API key |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:**READY FOR PUBLIC STAGING:** NO  -  Real AI model blocked (ANTHROPIC_API_KEY=placeholder), case law embeddings empty  
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:| Real AI Model (Anthropic) | BLOCKED | Step 14 | N/A | N/A | N/A | ANTHROPIC_API_KEY=placeholder | **BLOCKED** | StubReasoningModel active |
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:  --from-literal=JWT_SECRET='...' \
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:  --from-literal=ENCRYPTION_KEY='...' \
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:  --from-literal=ANTHROPIC_API_KEY='sk-ant-...' \
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:  --from-literal=ANTHROPIC_API_KEY='sk-ant-...' \
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:| H1 | **ANTHROPIC_API_KEY=placeholder** — StubReasoningModel active | Owner to set real API key in `.env` and K8s secret |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:| H1 | **ANTHROPIC_API_KEY=placeholder**  -  StubReasoningModel active | Owner to set real API key in `.env` and K8s secret |
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:| Real AI model active | ✗ (ANTHROPIC_API_KEY=placeholder) |
 ./reports/lawapp-talos-owner-runbook.md:export JWT_SECRET="$(openssl rand -base64 32)"
 ./reports/lawapp-talos-owner-runbook.md:export ENCRYPTION_KEY="$(python3 -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')"
@@ -726,7 +726,7 @@ client/public/pages/saved_case.html:  <a href="/" class="brand">lawapp</a>
 ./reports/lawapp-talos-owner-runbook.md:  --from-literal=ENCRYPTION_KEY="$ENCRYPTION_KEY" \
 ./reports/lawapp-talos-owner-runbook.md:  --from-literal=ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
 ./reports/lawapp-talos-owner-runbook.md:  --from-literal=ENCRYPTION_KEY="$ENCRYPTION_KEY" \
-./reports/lawapp-talos-owner-runbook.md:1. **Do not set `ANTHROPIC_API_KEY=placeholder`** — use a real key for AI reasoning. Without it, complex assessments return `insufficient_grounding` (correct safety behaviour but poor demo experience for complex cases).
+./reports/lawapp-talos-owner-runbook.md:1. **Do not set `ANTHROPIC_API_KEY=placeholder`**  -  use a real key for AI reasoning. Without it, complex assessments return `insufficient_grounding` (correct safety behaviour but poor demo experience for complex cases).
 ./reports/lawapp-talos-services-deployment-proof.md:export JWT_SECRET='your-jwt-secret'
 ./reports/lawapp-talos-services-deployment-proof.md:export ENCRYPTION_KEY='your-encryption-key'
 ./reports/lawapp-talos-services-deployment-proof.md:export ANTHROPIC_API_KEY='sk-ant-your-key'
@@ -829,8 +829,8 @@ client/public/pages/saved_case.html:  <a href="/" class="brand">lawapp</a>
 ./audit_output.txt:?? infra/k8s/lawapp-secrets-template.yaml
 ./audit_output.txt:./infra/k8s/lawapp-secrets-template.yaml
 ./audit_output.txt:./.claude-flow/data/pending-insights.jsonl:{"type":"edit","file":"F:\\lawapp\\infra\\k8s\\lawapp-secrets-template.yaml","timestamp":1780533964910,"sessionId":null}
-./audit_output.txt:./docs/env-production.template:ENCRYPTION_KEY=<REQUIRED: Fernet key — 44-char URL-safe base64>
-./audit_output.txt:./docs/env-production.template:JWT_SECRET=<REQUIRED: long random secret — never share>
+./audit_output.txt:./docs/env-production.template:ENCRYPTION_KEY=<REQUIRED: Fernet key  -  44-char URL-safe base64>
+./audit_output.txt:./docs/env-production.template:JWT_SECRET=<REQUIRED: long random secret  -  never share>
 ./audit_output.txt:./docs/env-production.template:# STRIPE_SECRET_KEY=<Phase 7: required for PAYMENT_MODE=stripe_live>
 ./audit_output.txt:./docs/env-production.template:ANTHROPIC_API_KEY=<optional: sk-ant-...>
 ./audit_output.txt:./docs/env-production.template:# OPENAI_API_KEY=<optional: sk-...>

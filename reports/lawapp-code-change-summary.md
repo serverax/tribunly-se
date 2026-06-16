@@ -1,4 +1,4 @@
-# lawapp — Code Change Summary
+# lawapp  -  Code Change Summary
 
 **Branch:** master  
 **Base commit:** 095be01  
@@ -8,12 +8,12 @@
 
 ## Files Created
 
-### Backend — New Modules
+### Backend  -  New Modules
 | File | Purpose |
 |---|---|
-| `backend/core/context_compressor.py` | Brain Step 13 — deduplicate rules, truncate authorities, preserve citations |
-| `backend/core/legal_graph.py` | Brain Step 9 — Graph RAG query (legal_nodes/edges), RAG source selector |
-| `backend/core/mcp_connectors.py` | MCP connector layer — 5 connectors, deny-by-default, audit-logged |
+| `backend/core/context_compressor.py` | Brain Step 13  -  deduplicate rules, truncate authorities, preserve citations |
+| `backend/core/legal_graph.py` | Brain Step 9  -  Graph RAG query (legal_nodes/edges), RAG source selector |
+| `backend/core/mcp_connectors.py` | MCP connector layer  -  5 connectors, deny-by-default, audit-logged |
 
 ### Database
 | File | Purpose |
@@ -30,7 +30,7 @@
 | `infra/k8s/lawapp-security-policies.yaml` | NetworkPolicies + PDB + ResourceQuota |
 | `infra/k8s/lawapp-monitoring.yaml` | Freshness + health CronJobs |
 
-### Tests — New Suites
+### Tests  -  New Suites
 | Directory | Tests | Focus |
 |---|---|---|
 | `tests/conftest.py` | Root conftest | DB redirect, auth mode, payment mode |
@@ -63,7 +63,7 @@
 | File | Purpose |
 |---|---|
 | `scripts/deploy-talos.sh` | One-command Talos cluster deployment |
-| `scripts/run-migrations.sh` | Updated — namespace iterlaw-ai → lawapp-rag |
+| `scripts/run-migrations.sh` | Updated  -  namespace iterlaw-ai → lawapp-rag |
 
 ### Config
 | File | Purpose |
@@ -130,7 +130,7 @@
 
 | Blocker | Fix Required |
 |---|---|
-| `ANTHROPIC_API_KEY=placeholder` — stub AI model | Set real key |
+| `ANTHROPIC_API_KEY=placeholder`  -  stub AI model | Set real key |
 | Kubernetes not deployed | Owner: `bash scripts/deploy-talos.sh` from WSL |
 | Stripe real mode not configured | Set STRIPE_SECRET_KEY |
 | Find Case Law bulk licence pending | Apply at nationalarchives |

@@ -1,5 +1,5 @@
 ---
-# IterLaw — legislation ingestion job (legislation.gov.uk)
+# IterLaw  -  legislation ingestion job (legislation.gov.uk)
 # Run manually when corpus needs updating.
 # Do not run automatically without confirming rate-limits and licence.
 apiVersion: batch/v1

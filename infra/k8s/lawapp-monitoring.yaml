@@ -1,5 +1,5 @@
 ---
-# lawapp Monitoring — namespace: lawapp-monitoring
+# lawapp Monitoring  -  namespace: lawapp-monitoring
 # Health check CronJob + source freshness reporter.
 apiVersion: v1
 kind: Namespace
@@ -8,7 +8,7 @@ metadata:
   labels:
     part-of: lawapp
 ---
-# Source freshness CronJob — runs daily at 06:00 UTC
+# Source freshness CronJob  -  runs daily at 06:00 UTC
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -62,7 +62,7 @@ spec:
                 cpu: 500m
                 memory: 256Mi
 ---
-# Health probe CronJob — every 5 minutes
+# Health probe CronJob  -  every 5 minutes
 apiVersion: batch/v1
 kind: CronJob
 metadata:

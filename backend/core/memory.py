@@ -39,7 +39,7 @@ def save_memory(
     """
     Save a memory item for a specific user+case.
 
-    GUARDRAIL: user_id and case_id are REQUIRED — no orphan memories.
+    GUARDRAIL: user_id and case_id are REQUIRED  -  no orphan memories.
     GUARDRAIL: If encrypted=True, value is encrypted before storage.
     """
     if not user_id or not case_id:
@@ -127,7 +127,7 @@ def get_memory(
                     from backend.core.encryption import decrypt_str
                     val = decrypt_str(val)
                 except Exception:
-                    val = "[ENCRYPTED — decryption failed]"
+                    val = "[ENCRYPTED  -  decryption failed]"
             try:
                 val = json.loads(val)
             except (json.JSONDecodeError, TypeError):

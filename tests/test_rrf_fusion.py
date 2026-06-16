@@ -1,6 +1,6 @@
 """Unit tests for Reciprocal Rank Fusion (backend/core/retrieval/rrf.py).
 
-Pure-function tests — no database. They prove the fusion maths, the
+Pure-function tests  -  no database. They prove the fusion maths, the
 exact-citation priority, score preservation, and the cross-list 'hybrid'
 detection that makes hybrid retrieval beat either path alone.
 """

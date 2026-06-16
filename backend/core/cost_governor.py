@@ -1,5 +1,5 @@
 """
-Cost Governor — controls per-user and per-feature AI spend.
+Cost Governor  -  controls per-user and per-feature AI spend.
 
 Position in Brain: called before the AI Router / LLM call (step 14).
 Over-quota requests are downgraded or blocked.

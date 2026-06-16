@@ -1,4 +1,4 @@
-"""Tests for injection_guard — DB writes fail silently in test env."""
+"""Tests for injection_guard  -  DB writes fail silently in test env."""
 
 import pytest
 from backend.core.injection_guard import check_user_input, check_retrieved_chunk, InjectionResult

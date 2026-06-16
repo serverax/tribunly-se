@@ -1,5 +1,5 @@
 """
-backend.domains.registry — the single source of truth for legal domains.
+backend.domains.registry  -  the single source of truth for legal domains.
 
 Everything that needs to know "is this domain/matter supported, and by whom"
 must ask the registry. Nothing else may hardcode the list of domains or the
@@ -7,7 +7,7 @@ mapping of matter types to domains.
 
 Design properties (CLAUDE.md §4 modular, §9/§17 fail-closed):
 
-  * A new domain is added by registering a DomainSpec — NO edit to shared core.
+  * A new domain is added by registering a DomainSpec  -  NO edit to shared core.
   * Unknown domain            -> UnsupportedDomainError   (fail closed)
   * Registered-but-disabled   -> DomainDisabledError      (fail closed)
   * Unknown matter type       -> UnsupportedMatterError   (fail closed)
@@ -59,7 +59,7 @@ domain_registry: Dict[str, DomainSpec] = {
         "rules_pack": None,
         "retrieval_domain": None,
         "templates_module": None,
-        "label": "Immigration (placeholder — not enabled)",
+        "label": "Immigration (placeholder  -  not enabled)",
     },
     "housing": {
         "name": "housing",
@@ -69,7 +69,7 @@ domain_registry: Dict[str, DomainSpec] = {
         "rules_pack": None,
         "retrieval_domain": None,
         "templates_module": None,
-        "label": "Housing (placeholder — not enabled)",
+        "label": "Housing (placeholder  -  not enabled)",
     },
 }
 
@@ -126,7 +126,7 @@ def is_matter_supported(matter_type: str) -> bool:
 def resolve_domain_for_matter(matter_type: str) -> Optional[str]:
     """Return the enabled domain that owns ``matter_type``, or None.
 
-    Disabled domains are intentionally invisible here — fail closed.
+    Disabled domains are intentionally invisible here  -  fail closed.
     """
     for name in enabled_domains():
         if matter_type in domain_registry[name].get("matter_types", []):
@@ -164,8 +164,8 @@ def retrieval_domain_for(domain: str) -> str:
 def register_domain(spec: DomainSpec, *, overwrite: bool = False) -> None:
     """Register a new domain at runtime from a DomainSpec.
 
-    This is the extensibility seam: a future immigration/housing domain — or a
-    test domain — becomes supported purely by registering a spec here, with no
+    This is the extensibility seam: a future immigration/housing domain  -  or a
+    test domain  -  becomes supported purely by registering a spec here, with no
     change to shared core, classify, retrieve, or this module's logic.
     """
     name = spec.get("name")

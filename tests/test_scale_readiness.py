@@ -8,12 +8,12 @@ degrade gracefully under extreme load:
   - Redis CACHE: per-UUID existence cache; a hit answers WITHOUT touching the DB;
     a fabricated UUID can only ever cache as NEGATIVE (fail-closed preserved).
   - GRACEFUL DEGRADATION: when Redis is down every lookup falls through to the
-    authoritative DB — the request never crashes.
+    authoritative DB  -  the request never crashes.
   - CIRCUIT BREAKER: external-dependency failures trip the breaker so calls fail
     fast instead of piling up; it recovers via HALF_OPEN.
 
 Cache/breaker tests use an injected in-memory fake (and a deterministic fake
-clock) — no live Redis or sleeping required. DB-pool tests use the live DB and
+clock)  -  no live Redis or sleeping required. DB-pool tests use the live DB and
 skip if it is unreachable (they are never faked).
 """
 from __future__ import annotations
@@ -79,7 +79,7 @@ def test_db_pool_reuses_connections():
     try:
         c1 = db.get_connection()
     except Exception:
-        pytest.skip("DB unreachable — pool reuse cannot be proven on mock data")
+        pytest.skip("DB unreachable  -  pool reuse cannot be proven on mock data")
     inner1 = id(getattr(c1, "_conn", c1))
     c1.close()                      # returns to pool (does NOT tear down socket)
     c2 = db.get_connection()
@@ -95,7 +95,7 @@ def test_db_pool_bounded_by_env(monkeypatch):
     db.close_pool()
     pool = db._get_pool()
     if pool is None:
-        pytest.skip("DB unreachable — cannot build pool")
+        pytest.skip("DB unreachable  -  cannot build pool")
     assert pool.maxconn == 4
     db.close_pool()
 
@@ -107,7 +107,7 @@ def test_cache_hit_avoids_database():
     uid = "11111111-1111-1111-1111-111111111111"
     fake.store[cg._CACHE_KEY_PREFIX + uid] = "1"   # pre-cached positive
     cache.reset_for_tests(fake)
-    # get_conn raises if touched — proves the DB was NOT consulted on a hit.
+    # get_conn raises if touched  -  proves the DB was NOT consulted on a hit.
     good = cg.cached_valid_corpus_uuids([uid], get_conn=_boom_conn)
     assert good == {uid}
     assert fake.get_calls == 1

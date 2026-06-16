@@ -1,6 +1,6 @@
 ---
 name: backend-api-engineer
-description: Owns the lawapp backend monolith API (backend/api/**). Implements real, validated, auth/ownership-enforced routes that call real core logic — never static fake success. Grounded legal answers only, via the brain/governance path.
+description: Owns the lawapp backend monolith API (backend/api/**). Implements real, validated, auth/ownership-enforced routes that call real core logic  -  never static fake success. Grounded legal answers only, via the brain/governance path.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 

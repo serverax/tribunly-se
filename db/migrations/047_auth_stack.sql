@@ -2,17 +2,17 @@
 -- ----------------------------------------------------------------------------
 -- Adds the schema for the lawapp auth stack (backend/core/auth/*):
 --   * extra user columns (verification, MFA-ready, provenance)
---   * auth_sessions      — refresh-token-backed sessions (rotation + logout-all)
---   * auth_tokens        — single-use opaque tokens (magic link / verify / reset)
---   * oauth_identities   — provider account linkage (google/microsoft/apple/linkedin)
---   * auth_events        — immutable audit trail for every auth action
+--   * auth_sessions       -  refresh-token-backed sessions (rotation + logout-all)
+--   * auth_tokens         -  single-use opaque tokens (magic link / verify / reset)
+--   * oauth_identities    -  provider account linkage (google/microsoft/apple/linkedin)
+--   * auth_events         -  immutable audit trail for every auth action
 --
 -- GUARDRAILS encoded here:
 --   * refresh tokens are stored ONLY as SHA-256 hashes (token_hash / refresh_token_hash);
 --     the raw token never touches the DB.
---   * IP addresses are stored ONLY as salted hashes (ip_hash) — no raw PII at rest.
+--   * IP addresses are stored ONLY as salted hashes (ip_hash)  -  no raw PII at rest.
 --   * auth_events is append-only audit (never updated/deleted by the app).
--- Additive + idempotent (IF NOT EXISTS) — safe to re-run.
+-- Additive + idempotent (IF NOT EXISTS)  -  safe to re-run.
 -- ----------------------------------------------------------------------------
 
 -- ── users: verification, MFA-readiness, provenance ──────────────────────────

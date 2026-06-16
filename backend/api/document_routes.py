@@ -1,5 +1,5 @@
 """
-Document generation routes — Phase 7: Paid document generation.
+Document generation routes  -  Phase 7: Paid document generation.
 
 ARCHITECTURE:
 - POST /api/documents/generate: Generate a document from assessment + confirmed facts.
@@ -331,7 +331,7 @@ def generate_document(
     safety_result = safety_check(html_content)
     if not safety_result["passed"]:
         logger.error(
-            "Document safety check failed — violations: %s",
+            "Document safety check failed  -  violations: %s",
             safety_result["violations"],
         )
         raise HTTPException(
@@ -363,7 +363,7 @@ def generate_document(
             """, (req.case_id, uid, req.document_type, "generated"))
 
             if cur.fetchone():
-                logger.info("Document already generated (idempotent) — IDs not logged")
+                logger.info("Document already generated (idempotent)  -  IDs not logged")
                 return GenerateDocumentResponse(
                     document_id=document_id,
                     case_id=req.case_id,

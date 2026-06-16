@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_frontend_backend_wiring.sh — frontend pages are served and wired to the backend.
+# prove_frontend_backend_wiring.sh  -  frontend pages are served and wired to the backend.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 BASE="${LAWAPP_BASE_URL:-http://localhost:8000}"

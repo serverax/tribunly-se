@@ -34,7 +34,7 @@ for f in db/migrations/*.sql; do
 done
 
 echo ""
-echo "=== Migration complete — DB state ==="
+echo "=== Migration complete  -  DB state ==="
 kubectl exec -n "$NAMESPACE" "$PGPOD" -- \
   psql -U lawapp -d lawapp -c "
     SELECT schemaname, tablename

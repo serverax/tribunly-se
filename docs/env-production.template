@@ -1,4 +1,4 @@
-# lawapp — Production Environment Variables Template
+# lawapp  -  Production Environment Variables Template
 # Phase 6E | 2026-06-01
 #
 # Copy this file to .env and fill in real values before deployment.
@@ -15,18 +15,18 @@ POSTGRES_HOST=<your-postgres-host>
 POSTGRES_PORT=5432
 POSTGRES_DB=lawapp
 POSTGRES_USER=lawapp
-POSTGRES_PASSWORD=<REQUIRED: strong random password — never default>
+POSTGRES_PASSWORD=<REQUIRED: strong random password  -  never default>
 
 # ── Admin API ─────────────────────────────────────────────────────────────────
 # Protects /admin/* endpoints. Required in production.
-ADMIN_API_KEY=<REQUIRED: strong random string — keep secret>
+ADMIN_API_KEY=<REQUIRED: strong random string  -  keep secret>
 
 # ── Encryption at rest ────────────────────────────────────────────────────────
 # Fernet key (AES-128-CBC + HMAC-SHA256).
 # Generate: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 # NOTE: env-var key is NOT production-grade key management.
 # Phase 7: replace with KMS-backed key (AWS KMS / GCP KMS / HashiCorp Vault).
-ENCRYPTION_KEY=<REQUIRED: Fernet key — 44-char URL-safe base64>
+ENCRYPTION_KEY=<REQUIRED: Fernet key  -  44-char URL-safe base64>
 KEY_MANAGEMENT_MODE=env
 
 # ── End-user authentication ───────────────────────────────────────────────────
@@ -36,7 +36,7 @@ LAWAPP_AUTH_MODE=jwt
 
 # JWT HS256 signing secret. Must be long, random, and secret.
 # Generate: python -c "import secrets; print(secrets.token_urlsafe(64))"
-JWT_SECRET=<REQUIRED: long random secret — never share>
+JWT_SECRET=<REQUIRED: long random secret  -  never share>
 
 # Your token issuer URI (e.g. your auth service or JWKS provider)
 JWT_ISSUER=<REQUIRED: e.g. https://auth.yourdomain.com>
@@ -53,8 +53,8 @@ ALLOWED_ORIGINS=<REQUIRED: comma-separated allowed origins, e.g. https://app.you
 
 # ── Payment ───────────────────────────────────────────────────────────────────
 # disabled: no live payments (recommended for controlled beta)
-# stripe_test: Stripe test mode (Phase 7 — not yet implemented)
-# stripe_live: Stripe live mode (Phase 7 — requires STRIPE_SECRET_KEY)
+# stripe_test: Stripe test mode (Phase 7  -  not yet implemented)
+# stripe_live: Stripe live mode (Phase 7  -  requires STRIPE_SECRET_KEY)
 PAYMENT_MODE=disabled
 
 # STRIPE_SECRET_KEY=<Phase 7: required for PAYMENT_MODE=stripe_live>
@@ -64,7 +64,7 @@ LOG_LEVEL=WARNING
 
 # ── AI model (LOCAL OLLAMA ONLY) ──────────────────────────────────────────────
 # Policy: inference runs exclusively on the in-cluster Ollama service. External
-# LLM providers (Anthropic/OpenAI) are DISABLED — do not set any external API key.
+# LLM providers (Anthropic/OpenAI) are DISABLED  -  do not set any external API key.
 # If the local provider is unreachable, the engine fails closed
 # (insufficient_grounding); it never falls back to an external provider.
 LAWAPP_LLM_PROVIDER=ollama_local

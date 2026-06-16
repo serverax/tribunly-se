@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_retrieval_pipeline.sh — proves jurisdiction-aware retrieval order + provenance.
+# prove_retrieval_pipeline.sh  -  proves jurisdiction-aware retrieval order + provenance.
 # Data-layer proof of the contract: validate jurisdiction -> exact rules -> keyword ->
 # vector -> bundle has source_url+authority_ref -> audit row -> NI fails closed.
 set -uo pipefail

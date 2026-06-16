@@ -1,5 +1,5 @@
 ---
-description: Print the lawapp recovery status board — blockers, owners, current task, QA verdict.
+description: Print the lawapp recovery status board  -  blockers, owners, current task, QA verdict.
 ---
 
 # /status
@@ -13,4 +13,4 @@ Show the current recovery state.
 4. State the current active task, assigned implementation subagent, and QA verdict.
 
 ## Output
-A concise board: blocker → status → owner → evidence path. End with overall verdict (READY / NOT READY) — never fake.
+A concise board: blocker → status → owner → evidence path. End with overall verdict (READY / NOT READY)  -  never fake.

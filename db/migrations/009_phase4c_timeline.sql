@@ -1,4 +1,4 @@
--- Migration 009: Phase 4C — case timeline events
+-- Migration 009: Phase 4C  -  case timeline events
 -- Stores manually entered and user-facing timeline events linked to a case.
 -- System-generated events (from key_dates, documents, etc.) are computed
 -- on demand by the API and not persisted in this table.

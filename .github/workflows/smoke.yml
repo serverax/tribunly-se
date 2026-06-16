@@ -1,4 +1,4 @@
-name: lawapp — Cluster smoke tests
+name: lawapp  -  Cluster smoke tests
 
 on:
   workflow_dispatch:

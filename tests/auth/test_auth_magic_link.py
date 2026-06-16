@@ -1,5 +1,5 @@
 """
-/api/auth/magic-link — passwordless sign-in (issue + consume).
+/api/auth/magic-link  -  passwordless sign-in (issue + consume).
 
 Delivery is asserted against the in-memory email outbox; consuming the link
 yields a real session and marks the email verified.

@@ -2,10 +2,10 @@
 """LawApp baseline load harness (T-014).
 
 Honest, local, scaled-down load probe to surface code-level bottlenecks BEFORE the
-full distributed 100k test (which needs the AKS cluster + load-gen fleet — owner-blocked).
+full distributed 100k test (which needs the AKS cluster + load-gen fleet  -  owner-blocked).
 
 Measures P50/P95/P99 latency, throughput, and error rate against one endpoint using a
-bounded thread pool. NOT a 100k test — it documents current single-node capacity and the
+bounded thread pool. NOT a 100k test  -  it documents current single-node capacity and the
 latency profile that justifies pooling/async/replicas per docs/SCALE_ARCHITECTURE_100K.md.
 
 Usage:

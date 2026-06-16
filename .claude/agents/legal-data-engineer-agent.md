@@ -1,6 +1,6 @@
 ---
 name: legal-data-engineer-agent
-description: Transform RAW UK legal source material (from uk-employment-law-scraper-agent) into validated, effective-dated, fully-cited structured lawapp data — legislation/acas_guidance/case_law rows, corpus_chunks, pgvector embeddings, and the effective-dated rules table. Does NOT scrape the web itself. Proves data quality with before/after counts, sample rows, and one retrieval + one CitationGuard proof. Use as the SECOND stage, after the scraper, before db-rag-ingestion-agent.
+description: Transform RAW UK legal source material (from uk-employment-law-scraper-agent) into validated, effective-dated, fully-cited structured lawapp data  -  legislation/acas_guidance/case_law rows, corpus_chunks, pgvector embeddings, and the effective-dated rules table. Does NOT scrape the web itself. Proves data quality with before/after counts, sample rows, and one retrieval + one CitationGuard proof. Use as the SECOND stage, after the scraper, before db-rag-ingestion-agent.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 

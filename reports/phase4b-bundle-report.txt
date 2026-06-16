@@ -1,6 +1,6 @@
-PHASE 4B — PREMIUM TRIBUNAL BUNDLE FOUNDATION
+PHASE 4B  -  PREMIUM TRIBUNAL BUNDLE FOUNDATION
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -27,27 +27,27 @@ Sources used:
 
 GUARDRAIL: get_confirmed_facts() filters strictly:
   - status must be 'user_confirmed' or 'user_corrected'
-  - value must not start with '[Extracted' (placeholder — excluded)
+  - value must not start with '[Extracted' (placeholder  -  excluded)
   - 'extracted_unconfirmed' and 'rejected' facts are never used
 
-Missing dates: shown as [DATE NOT CONFIRMED] — never invented.
+Missing dates: shown as [DATE NOT CONFIRMED]  -  never invented.
 
-1. Witness Statement — employment background, timeline, procedure concerns,
+1. Witness Statement  -  employment background, timeline, procedure concerns,
    impact/loss, document references. Statement of truth included.
    User must expand narrative sections before filing.
 
-2. Chronology — dated event table: employment start, EDT, ACAS Day A/B,
+2. Chronology  -  dated event table: employment start, EDT, ACAS Day A/B,
    limitation date. Missing dates explicitly flagged.
 
-3. Evidence Checklist — 8 categories: contract, dismissal docs,
+3. Evidence Checklist  -  8 categories: contract, dismissal docs,
    disciplinary docs, appeal docs, communications, ACAS cert, witnesses,
    medical (only if relevant). Uploaded documents shown.
 
-4. ET1 Support Notes — claim type, parties, key facts, legal summary,
+4. ET1 Support Notes  -  claim type, parties, key facts, legal summary,
    remedy, deadline warning. Explicitly states lawapp does not file or submit.
 
 ═══════════════════════════════════════════════════════════════════════════════
-PAYMENT GATE — PREMIUM (SEPARATE FROM CORE)
+PAYMENT GATE  -  PREMIUM (SEPARATE FROM CORE)
 ═══════════════════════════════════════════════════════════════════════════════
 
 premium_token is INDEPENDENT of Phase 3D payment_token.
@@ -64,9 +64,9 @@ Full: complete document returned; metadata saved to documents table
 ENDPOINTS
 ═══════════════════════════════════════════════════════════════════════════════
 
-POST /cases/{id}/bundle/preview       — preview all 4 components (no token)
-POST /cases/{id}/bundle/generate      — full bundle if premium_token supplied
-GET  /cases/{id}/bundle               — bundle metadata/status
+POST /cases/{id}/bundle/preview        -  preview all 4 components (no token)
+POST /cases/{id}/bundle/generate       -  full bundle if premium_token supplied
+GET  /cases/{id}/bundle                -  bundle metadata/status
 
 ═══════════════════════════════════════════════════════════════════════════════
 METADATA STORAGE
@@ -94,9 +94,9 @@ Required phrases: "NOT legal advice", "not a solicitor or law firm",
 FILES CREATED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  backend/engine/bundle.py              — 4 bundle generators + helpers
-  tests/integration/test_phase4b_bundle.py — 25 integration tests
-  reports/phase4b-bundle-report.txt     — this report
+  backend/engine/bundle.py               -  4 bundle generators + helpers
+  tests/integration/test_phase4b_bundle.py  -  25 integration tests
+  reports/phase4b-bundle-report.txt      -  this report
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES MODIFIED
@@ -124,7 +124,7 @@ DATA-PROTECTION NOTES
   - PII in extracted facts (employer_name, employee_name) appears in bundle
     only if the user has explicitly confirmed them from uploaded documents.
     These are shown as [YOUR EMPLOYER] / [YOUR FULL NAME] if not confirmed.
-  - Bundle content is NOT persisted — only metadata (doc_type, timestamps)
+  - Bundle content is NOT persisted  -  only metadata (doc_type, timestamps)
     stored in documents table. No bundle text stored in DB.
   - No raw upload content is used in bundle generation.
   - No external API calls.

@@ -1,4 +1,4 @@
-"""Distributed service extraction proof — each service is REAL (health + a real
+"""Distributed service extraction proof  -  each service is REAL (health + a real
 endpoint wired to existing backend/core logic), via TestClient. No empty wrappers.
 """
 from __future__ import annotations

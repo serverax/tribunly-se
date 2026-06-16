@@ -25,7 +25,7 @@ ingestion/case_law/akn_parser.py:234:        content_hash=content_hash,
 ingestion/case_law/client.py:30:TNA_NS  = "https://caselaw.nationalarchives.gov.uk"   # confirmed from live atom feed XML
 ingestion/case_law/client.py:36:def _throttle() -> None:
 ingestion/case_law/client.py:50:    _throttle()
-ingestion/case_law/client.py:54:            logger.warning("FCL rate limit hit (429) — tenacity will retry with back-off")
+ingestion/case_law/client.py:54:            logger.warning("FCL rate limit hit (429)  -  tenacity will retry with back-off")
 ingestion/case_law/client.py:64:    Fetch a single document's Akoma Ntoso XML.
 ingestion/case_law/client.py:121:        document_uri, xml_slug, published, updated, content_hash, xml_url, pdf_url
 ingestion/case_law/client.py:128:            "https://caselaw.nationalarchives.gov.uk/re-use-find-case-law-records/licence-application-process"
@@ -56,7 +56,7 @@ ingestion/embeddings/embedder.py:47:TABLES = ["legislation", "case_law_chunks", 
 ingestion/freshness/report.py:4:Queries the `source_freshness` view and prints a table showing every source
 ingestion/freshness/report.py:5:with its row count and oldest `last_verified_at`. Flags any source where the
 ingestion/freshness/report.py:41:                FROM source_freshness
-ingestion/freshness/report.py:50:        console.print("[red]No data in source_freshness view — has ingestion run?[/red]")
+ingestion/freshness/report.py:50:        console.print("[red]No data in source_freshness view  -  has ingestion run?[/red]")
 ingestion/govuk/ingest.py:44:    "/acas-early-conciliation",
 ingestion/govuk/ingest.py:48:def _content_hash(text: str) -> str:
 ingestion/govuk/ingest.py:98:    chash        = _content_hash(body)
@@ -66,7 +66,7 @@ ingestion/govuk/ingest.py:113:            content_hash     = EXCLUDED.content_ha
 ingestion/govuk/ingest.py:114:            last_verified_at = now()
 ingestion/govuk/ingest.py:115:        WHERE official_guidance.content_hash != EXCLUDED.content_hash
 ingestion/legislation/client.py:2:HTTP client for legislation.gov.uk with polite throttling.
-ingestion/legislation/client.py:4:No API key required. No published rate limit — Fair Use Policy applies.
+ingestion/legislation/client.py:4:No API key required. No published rate limit  -  Fair Use Policy applies.
 ingestion/legislation/client.py:32:def _throttle() -> None:
 ingestion/legislation/client.py:46:    _throttle()
 ingestion/legislation/client.py:57:    Resolve a plain-text Act title to its canonical legislation.gov.uk URI.
@@ -82,7 +82,7 @@ ingestion/legislation/clml_parser.py:29:NS = "http://www.legislation.gov.uk/name
 ingestion/legislation/clml_parser.py:143:    Parse a CLML section XML response into one or more ParsedChunks.
 ingestion/legislation/clml_parser.py:152:        logger.error("CLML parse error for %s: %s", source_url, exc)
 ingestion/legislation/clml_parser.py:192:    for idx, chunk_text in enumerate(chunks):
-ingestion/legislation/ingest.py:2:Phase 1 — legislation.gov.uk ingestion job.
+ingestion/legislation/ingest.py:2:Phase 1  -  legislation.gov.uk ingestion job.
 ingestion/legislation/ingest.py:4:Fetches sections listed in config.LEGISLATION_TARGETS, parses CLML XML,
 ingestion/legislation/ingest.py:57:            # legislation.gov.uk title resolution returns the Identifier URI form:
 ingestion/legislation/ingest.py:128:                # Always use the configured act_title: the CLML parser reads the
@@ -90,7 +90,7 @@ ingestion/legislation/ingest.py:152:    parser = argparse.ArgumentParser(descrip
 ingestion/rules/seed.py:8:legislation.gov.uk API and SI 2026/310 on 2026-05-29. Values are seeded
 ingestion/rules/seed.py:10:The LLM NEVER generates, recalls, or re-derives these values.
 ingestion/rules/seed.py:289:            "Source: SI 2025/348. Uprated annually each April."
-ingestion/rules/seed.py:309:            "Uprated each April — update this row and add a new one each year."
+ingestion/rules/seed.py:309:            "Uprated each April  -  update this row and add a new one each year."
 ingestion/rules/seed.py:390:        "authority_url":  "https://www.legislation.gov.uk/uksi/2025/1153/made",
 ingestion/rules/seed_unfair_dismissal.py:20:All values confirmed from live legislation.gov.uk API fetches 2026-05-31.
 ingestion/rules/seed_unfair_dismissal.py:88:        "authority_url":  "https://www.legislation.gov.uk/ukpga/1996/18/section/111",
@@ -131,7 +131,7 @@ ingestion/rules/seed_unpaid_wages.py:132:        "authority_url":  "https://www.
 ingestion/rules/seed_unpaid_wages.py:144:         "ERA 1996 s.23(2) confirmed from legislation.gov.uk on 2026-06-01. "
 ingestion/rules/seed_unpaid_wages.py:148:         "ERA 1996 s.13 confirmed from legislation.gov.uk on 2026-06-01. "
 ingestion/rules/seed_unpaid_wages.py:152:         "ERA 1996 s.230(3) confirmed from legislation.gov.uk on 2026-06-01. "
-ingestion/rules/seed_unpaid_wages.py:158:         "Distinguish from statute — case law, not legislation.gov.uk verifiable. "
+ingestion/rules/seed_unpaid_wages.py:158:         "Distinguish from statute  -  case law, not legislation.gov.uk verifiable. "
 ingestion/rules/seed_unpaid_wages.py:162:         "ERA 1996 s.24 confirmed from legislation.gov.uk on 2026-06-01 (repayment remedy). "
 ingestion/rules/seed_unpaid_wages.py:164:         "not legislation.gov.uk verifiable. Both statute and case law aspects verified."),
 ingestion/rules/verify_sources.py:10:Run separately from the standard test suite (network-dependent, slow):
@@ -159,7 +159,7 @@ backend/api/main.py:527:        from backend.core.documents import generate_et1_
 backend/api/main.py:528:        content = generate_et1_support_notes_wages(req.assessment, req.facts)
 backend/api/main.py:765:    Phase 6: integrate with solicitor referral network.
 backend/api/main.py:801:            _data_key, _bundle = provider.generate_data_key()
-backend/api/main.py:803:                raise RuntimeError("KMS generate_data_key returned None — service unavailable")
+backend/api/main.py:803:                raise RuntimeError("KMS generate_data_key returned None  -  service unavailable")
 backend/api/main.py:949:    "acas_not_started", "acas_certificate_missing",
 backend/api/main.py:968:    Phase 4: integrate notification channels.
 backend/api/main.py:1471:    """Record generated bundle component metadata in the documents table."""
@@ -172,7 +172,7 @@ backend/api/main.py:1532:def generate_bundle(case_id: str, req: BundleRequest, _
 backend/api/main.py:1534:    Generate the full premium tribunal bundle for a case.
 backend/api/main.py:1544:        get_confirmed_facts, collect_warnings, generate_full_bundle, BUNDLE_COMPONENTS,
 backend/api/main.py:1559:    components = generate_full_bundle(assessment, key_dates, confirmed, uploads)
-backend/api/main.py:1589:    """Return bundle metadata for a case — which components have been generated."""
+backend/api/main.py:1589:    """Return bundle metadata for a case  -  which components have been generated."""
 backend/api/main.py:1616:                "status":     r[2] or "generated",
 backend/api/main.py:1621:        "bundle_generated": len(rows) > 0,
 backend/api/main.py:1629:    "document_preview_generated", "mock_payment_completed",
@@ -211,7 +211,7 @@ backend/core/agents/registry.py:106:            ec_a = facts.get("ec_day_a") or 
 backend/core/agents/registry.py:107:            ec_b = facts.get("ec_day_b") or facts.get("acas_certificate_date")
 backend/core/agents/registry.py:186:            confidence=result.get("pass_rate", 0.0),
 backend/core/agents/registry.py:317:    Generates self-help legal documents (Particulars of Claim, Schedule of Loss).
-backend/core/agents/registry.py:320:    GUARDRAIL: Only generates from structured assessment — never raw LLM prose.
+backend/core/agents/registry.py:320:    GUARDRAIL: Only generates from structured assessment  -  never raw LLM prose.
 backend/core/agents/registry.py:326:        "Generates Particulars of Claim and Schedule of Loss from structured "
 backend/core/agents/registry.py:329:    allowed_tools = ["generate_particulars", "generate_schedule_of_loss",
 backend/core/agents/registry.py:330:                     "generate_letter_before_action"]
@@ -227,7 +227,7 @@ backend/core/agents/registry.py:373:            findings=generated,
 backend/core/agents/registry.py:376:            confidence=0.9 if generated else 0.0,
 backend/core/agents/registry.py:377:            notes=f"Generated {len(generated)} document(s). All include self-help draft notice.",
 backend/core/brain.py:21:  14. Generate structured draft assessment
-backend/core/brain.py:63:    "generate_draft",         # 14 — generate structured draft via pipeline
+backend/core/brain.py:63:    "generate_draft",         # 14  -  generate structured draft via pipeline
 backend/core/brain.py:468:                     "compress_context", "generate_draft", "evaluate_draft",
 backend/core/brain.py:601:    # ── Step 14: Generate structured draft assessment ─────────────────────────
 backend/core/brain.py:609:    trace.record_step("generate_draft",
@@ -271,7 +271,7 @@ backend/core/documents.py:488:Generated by:      lawapp self-help document tool
 backend/core/documents.py:496:def generate_letter_before_action(assessment: dict, facts: dict) -> str:
 backend/core/documents.py:594:Generated by: lawapp self-help document tool
 backend/core/documents.py:600:def generate_et1_support_notes_wages(assessment: dict, facts: dict) -> str:
-backend/core/documents.py:679:   {reasoning if reasoning else "[Run assessment to generate summary — POST /assess]"}
+backend/core/documents.py:679:   {reasoning if reasoning else "[Run assessment to generate summary  -  POST /assess]"}
 backend/core/documents.py:717:Generated by: lawapp self-help document tool
 backend/core/document_extractor.py:160:    OCR requires external tesseract installation (documented separately).
 backend/core/dp_report.py:4:Generates a plain-English report of the current data-protection posture.
@@ -342,7 +342,7 @@ backend/core/mcp_connectors.py:249:                SELECT 'acas_guidance', COUNT
 backend/core/mcp_connectors.py:250:                FROM acas_guidance
 backend/core/models.py:5:that is a deliberate bake-off decision (01_BUILD_PLAN.md §0). Do not default
 backend/core/models.py:134:    Model selection is a deliberate bake-off decision (Phase 2, post-embeddings).
-backend/core/models.py:151:You must not generate, recall, or re-derive any deadline, cap, or threshold —
+backend/core/models.py:151:You must not generate, recall, or re-derive any deadline, cap, or threshold  - 
 backend/core/payment.py:101:    Return a truncated preview of a generated document.
 backend/core/pipeline.py:69:    The pipeline is structured to demonstrate Phase 2 with the stub model
 backend/core/pipeline.py:309:            "case_id":            None,  # wired in Phase 3 when cases table is integrated
@@ -352,7 +352,7 @@ backend/core/production_readiness.py:47:    from backend.core.dp_report import g
 backend/core/production_readiness.py:48:    dp = generate_dp_report()
 backend/core/production_readiness.py:175:                "Phase 7D: envelope encryption (GenerateDataKey/Decrypt) implemented. "
 backend/core/production_readiness.py:304:                "Phase 7E: envelope encryption integrated into handoff-leads PII path. "
-backend/core/production_readiness.py:313:        # under key "required_evidence" — no separate top-level field needed.
+backend/core/production_readiness.py:313:        # under key "required_evidence"  -  no separate top-level field needed.
 backend/core/production_readiness.py:363:    # Phase 6E: generate ordered next steps for reaching controlled beta
 backend/core/production_readiness.py:381:    Generate ordered, prioritised next steps for reaching controlled beta.
 backend/core/production_readiness.py:431:            'Generate: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"',
@@ -384,10 +384,10 @@ backend/domains/employment/checklists/acas.py:3:Refactored from Iterlaw acas-cod
 backend/domains/employment/checklists/acas.py:12:def assess_acas_code(text: str) -> AcasComplianceAssessment:
 backend/domains/employment/checklists/evidence_weight.py:9:    documentary_support: Literal["strong", "moderate", "weak"]
 backend/domains/employment/checklists/evidence_weight.py:17:    doc: Literal["strong", "moderate", "weak"] = "moderate"
-backend/domains/employment/checklists/evidence_weight.py:20:        notes.append("Limited documentary references — disclosure strategy will matter.")
+backend/domains/employment/checklists/evidence_weight.py:20:        notes.append("Limited documentary references  -  disclosure strategy will matter.")
 backend/domains/employment/checklists/tribunal_elements.py:20:        "Causation and less favourable / disparate impact analysis",
 backend/domains/employment/deadline.py:5:`rules` table. The LLM never sees raw date arithmetic and never generates or
-backend/domains/employment/deadline.py:125:    separate rules not handled here — they have qualifying_period=0.
+backend/domains/employment/deadline.py:125:    separate rules not handled here  -  they have qualifying_period=0.
 backend/domains/employment/timeline.py:4:Timeline events are generated deterministically from case data:
 backend/domains/employment/timeline.py:7:  - generated bundle docs (document_generated events)
 backend/domains/employment/timeline.py:34:    "acas_day_a", "acas_day_b", "et_deadline", "document_uploaded",
@@ -433,13 +433,13 @@ db/migrations/002_case_law_split.sql:57:    SELECT 'case_law',     count(*), min
 db/migrations/002_case_law_split.sql:59:    SELECT 'acas_guidance',count(*), min(last_verified_at) FROM acas_guidance
 db/migrations/002_case_law_split.sql:61:    SELECT 'rules',        count(*), min(last_verified_at) FROM rules;
 db/migrations/004_phase3_tables.sql:14:    can_generate        boolean     NOT NULL DEFAULT false,
-db/migrations/004_phase3_tables.sql:53:-- Message templates are static strings with placeholders — never LLM-generated.
+db/migrations/004_phase3_tables.sql:53:-- Message templates are static strings with placeholders  -  never LLM-generated.
 db/migrations/004_phase3_tables.sql:57:    reminder_type       text        NOT NULL,    -- deadline_approaching | acas_not_started | acas_certificate_missing
 db/migrations/009_phase4c_timeline.sql:3:-- System-generated events (from key_dates, documents, etc.) are computed
 db/migrations/009_phase4c_timeline.sql:11:    -- acas_day_a | acas_day_b | et_deadline | document_uploaded |
 db/migrations/009_phase4c_timeline.sql:12:    -- document_generated | handoff_triggered | custom_user_event
 db/migrations/009_phase4c_timeline.sql:17:    -- user_entered | rules_engine | confirmed_extraction | system_generated
-db/migrations/011_phase5c_verification.sql:4:--   verified           — confirmed against primary statutory source (legislation.gov.uk)
+db/migrations/011_phase5c_verification.sql:4:--   verified            -  confirmed against primary statutory source (legislation.gov.uk)
 db/migrations/014_legal_corpus_expansion.sql:18:    content_hash     text        NOT NULL,
 db/migrations/014_legal_corpus_expansion.sql:24:    last_verified_at timestamptz NOT NULL DEFAULT now(),
 db/migrations/014_legal_corpus_expansion.sql:53:    last_verified_at timestamptz NOT NULL DEFAULT now(),
@@ -459,20 +459,20 @@ db/migrations/016_vector_dim_384.sql:12:DROP INDEX IF EXISTS acas_embedding_idx;
 db/migrations/016_vector_dim_384.sql:18:ALTER TABLE acas_guidance      ALTER COLUMN embedding TYPE vector(384);
 db/migrations/016_vector_dim_384.sql:29:CREATE INDEX IF NOT EXISTS acas_embedding_idx
 db/migrations/016_vector_dim_384.sql:30:    ON acas_guidance USING ivfflat (embedding vector_cosine_ops) WITH (lists = 10);
-db/migrations/018_brain_architecture.sql:177:  ('ud_claim',            'claim_type',          'Unfair Dismissal',                 'ERA 1996 Part X — right not to be unfairly dismissed',                               'EW', 1, 'ERA 1996 s.94',  'https://www.legislation.gov.uk/ukpga/1996/18/section/94'),
-db/migrations/018_brain_architecture.sql:178:  ('employee_status',     'legal_test',          'Employee Status',                  'Must be an employee (not worker/self-employed) — ERA 1996 s.230',                    'EW', 1, 'ERA 1996 s.230', 'https://www.legislation.gov.uk/ukpga/1996/18/section/230'),
+db/migrations/018_brain_architecture.sql:177:  ('ud_claim',            'claim_type',          'Unfair Dismissal',                 'ERA 1996 Part X  -  right not to be unfairly dismissed',                               'EW', 1, 'ERA 1996 s.94',  'https://www.legislation.gov.uk/ukpga/1996/18/section/94'),
+db/migrations/018_brain_architecture.sql:178:  ('employee_status',     'legal_test',          'Employee Status',                  'Must be an employee (not worker/self-employed)  -  ERA 1996 s.230',                    'EW', 1, 'ERA 1996 s.230', 'https://www.legislation.gov.uk/ukpga/1996/18/section/230'),
 db/migrations/018_brain_architecture.sql:179:  ('qualifying_service',  'legal_test',          'Qualifying Period',                '2 years continuous employment (or day-one rights exception)',                         'EW', 1, 'ERA 1996 s.108', 'https://www.legislation.gov.uk/ukpga/1996/18/section/108'),
 db/migrations/018_brain_architecture.sql:180:  ('dismissal',           'legal_test',          'Fact of Dismissal',                'Actual dismissal, constructive dismissal, or expiry of fixed-term contract',          'EW', 1, 'ERA 1996 s.95',  'https://www.legislation.gov.uk/ukpga/1996/18/section/95'),
-db/migrations/018_brain_architecture.sql:181:  ('fair_reason',         'legal_test',          'Fair Reason for Dismissal',        'Capability, conduct, redundancy, statutory restriction, or SOSR — s.98(2)',           'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
-db/migrations/018_brain_architecture.sql:182:  ('reasonableness_test', 'legal_test',          'Range of Reasonable Responses',    'Was dismissal within band of reasonable responses? — s.98(4)',                       'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
-db/migrations/018_brain_architecture.sql:183:  ('procedure',           'procedure',           'Dismissal Procedure',              'ACAS Code of Practice — invite, meeting, appeal. Polkey reduction if not followed.',  'EW', 5, 'ACAS Code',      'https://www.acas.org.uk/acas-code-of-practice-on-disciplinary-and-grievance-procedures'),
-db/migrations/018_brain_architecture.sql:184:  ('acas_ec',             'procedure',           'ACAS Early Conciliation',          'Mandatory before ET1. Pauses limitation period — ERA 1996 s.207B',                   'EW', 1, 'ERA 1996 s.207B','https://www.legislation.gov.uk/ukpga/1996/18/section/207B'),
+db/migrations/018_brain_architecture.sql:181:  ('fair_reason',         'legal_test',          'Fair Reason for Dismissal',        'Capability, conduct, redundancy, statutory restriction, or SOSR  -  s.98(2)',           'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
+db/migrations/018_brain_architecture.sql:182:  ('reasonableness_test', 'legal_test',          'Range of Reasonable Responses',    'Was dismissal within band of reasonable responses?  -  s.98(4)',                       'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
+db/migrations/018_brain_architecture.sql:183:  ('procedure',           'procedure',           'Dismissal Procedure',              'ACAS Code of Practice  -  invite, meeting, appeal. Polkey reduction if not followed.',  'EW', 5, 'ACAS Code',      'https://www.acas.org.uk/acas-code-of-practice-on-disciplinary-and-grievance-procedures'),
+db/migrations/018_brain_architecture.sql:184:  ('acas_ec',             'procedure',           'ACAS Early Conciliation',          'Mandatory before ET1. Pauses limitation period  -  ERA 1996 s.207B',                   'EW', 1, 'ERA 1996 s.207B','https://www.legislation.gov.uk/ukpga/1996/18/section/207B'),
 db/migrations/018_brain_architecture.sql:185:  ('limitation_date',     'deadline',            'ET Limitation Date',               '3 months less one day from EDT (or EC floor). ERA 1996 s.111(2)',                     'EW', 1, 'ERA 1996 s.111', 'https://www.legislation.gov.uk/ukpga/1996/18/section/111'),
 db/migrations/018_brain_architecture.sql:186:  ('basic_award',         'remedy',              'Basic Award',                      'Statutory formula: age × service years × weekly pay cap. ERA 1996 s.119',            'EW', 1, 'ERA 1996 s.119', 'https://www.legislation.gov.uk/ukpga/1996/18/section/119'),
 db/migrations/018_brain_architecture.sql:187:  ('compensatory_award',  'remedy',              'Compensatory Award',               'Loss of earnings, future loss, benefits. Capped at lower of 52 weeks pay or £123,543', 'EW', 1, 'ERA 1996 s.123', 'https://www.legislation.gov.uk/ukpga/1996/18/section/123'),
-db/migrations/018_brain_architecture.sql:189:  ('contributory_fault',  'defence',             'Contributory Fault',               'Award reduced for claimant conduct contributing to dismissal — ERA 1996 s.122/123',   'EW', 1, 'ERA 1996 s.122', 'https://www.legislation.gov.uk/ukpga/1996/18/section/122'),
-db/migrations/018_brain_architecture.sql:190:  ('upw_claim',           'claim_type',          'Unpaid Wages / Unlawful Deduction','ERA 1996 Part II — right not to have unlawful deductions from wages',                 'EW', 1, 'ERA 1996 s.13',  'https://www.legislation.gov.uk/ukpga/1996/18/section/13'),
-db/migrations/018_brain_architecture.sql:191:  ('upw_limitation',      'deadline',            'UPW Limitation Date',              '3 months less one day from date of deduction — ERA 1996 s.23(2)',                     'EW', 1, 'ERA 1996 s.23',  'https://www.legislation.gov.uk/ukpga/1996/18/section/23')
+db/migrations/018_brain_architecture.sql:189:  ('contributory_fault',  'defence',             'Contributory Fault',               'Award reduced for claimant conduct contributing to dismissal  -  ERA 1996 s.122/123',   'EW', 1, 'ERA 1996 s.122', 'https://www.legislation.gov.uk/ukpga/1996/18/section/122'),
+db/migrations/018_brain_architecture.sql:190:  ('upw_claim',           'claim_type',          'Unpaid Wages / Unlawful Deduction','ERA 1996 Part II  -  right not to have unlawful deductions from wages',                 'EW', 1, 'ERA 1996 s.13',  'https://www.legislation.gov.uk/ukpga/1996/18/section/13'),
+db/migrations/018_brain_architecture.sql:191:  ('upw_limitation',      'deadline',            'UPW Limitation Date',              '3 months less one day from date of deduction  -  ERA 1996 s.23(2)',                     'EW', 1, 'ERA 1996 s.23',  'https://www.legislation.gov.uk/ukpga/1996/18/section/23')
 db/migrations/018_brain_architecture.sql:201:  ('ud_claim',           'acas_ec',             'requires',    'ACAS EC mandatory before ET1'),
 db/migrations/018_brain_architecture.sql:211:  ('upw_claim',          'acas_ec',             'requires',    'ACAS EC mandatory before ET1 for UPW too')
 tests/brain/test_brain.py:93:            "generate_draft",
@@ -521,7 +521,7 @@ tests/ingestion/test_ingestion.py:108:    def test_acas_guidance_table_exists(se
 tests/ingestion/test_ingestion.py:112:            "WHERE table_name='acas_guidance' AND table_schema='public'"
 tests/ingestion/test_ingestion.py:116:    def test_acas_guidance_has_rows(self, db):
 tests/ingestion/test_ingestion.py:118:        cur.execute("SELECT count(*) FROM acas_guidance")
-tests/ingestion/test_ingestion.py:119:        assert cur.fetchone()[0] > 0, "acas_guidance is empty — run ingestion"
+tests/ingestion/test_ingestion.py:119:        assert cur.fetchone()[0] > 0, "acas_guidance is empty  -  run ingestion"
 tests/ingestion/test_ingestion.py:121:    def test_acas_guidance_has_embeddings(self, db):
 tests/ingestion/test_ingestion.py:123:        cur.execute("SELECT count(*) FROM acas_guidance WHERE embedding IS NOT NULL")
 tests/ingestion/test_ingestion.py:125:        cur.execute("SELECT count(*) FROM acas_guidance")
@@ -530,8 +530,8 @@ tests/integration/test_phase2_engine.py:5:acas_guidance 14 chunks, rules 14 rows
 tests/integration/test_phase2_engine.py:281:    assert "legislation" in types or "case_law" in types or "acas" in types
 tests/integration/test_phase2_engine.py:284:def test_bm25_finds_acas():
 tests/integration/test_phase2_real_model.py:62:            "acas_code_followed":     False,
-tests/integration/test_phase2_real_model.py:126:            # Deliberately minimal — should trigger low confidence or insufficient_grounding
-tests/integration/test_phase2_real_model.py:183:            "deadline.source must be 'rules' — model must not generate deadlines"
+tests/integration/test_phase2_real_model.py:126:            # Deliberately minimal  -  should trigger low confidence or insufficient_grounding
+tests/integration/test_phase2_real_model.py:183:            "deadline.source must be 'rules'  -  model must not generate deadlines"
 tests/integration/test_phase2_real_model.py:239:    # Deliberately PII-rich input
 tests/integration/test_phase3b_deadline.py:5:  1. Rules API returns time_limit_months with authority_ref and last_verified_at
 tests/integration/test_phase3b_deadline.py:72:def test_rules_api_has_last_verified_at():
@@ -677,8 +677,8 @@ tests/integration/test_phase7c_aws_kms.py:197:    """Mock GenerateDataKey failur
 tests/integration/test_phase7c_aws_kms.py:199:    mock_client.generate_data_key.side_effect = Exception("AccessDenied")
 tests/integration/test_phase7c_aws_kms.py:357:    """Generated key material must not appear in log output."""
 tests/integration/test_phase7c_aws_kms.py:361:    mock_client.generate_data_key.return_value = {
-tests/integration/test_phase7d_envelope_encryption.py:2:Phase 7D — Envelope encryption (GenerateDataKey + CiphertextBlob) tests.
-tests/integration/test_phase7d_envelope_encryption.py:12:  AwsKmsProvider — generate_data_key:
+tests/integration/test_phase7d_envelope_encryption.py:2:Phase 7D  -  Envelope encryption (GenerateDataKey + CiphertextBlob) tests.
+tests/integration/test_phase7d_envelope_encryption.py:12:  AwsKmsProvider  -  generate_data_key:
 tests/integration/test_phase7d_envelope_encryption.py:13:   4.  generate_data_key returns (plaintext_key, bundle) on success
 tests/integration/test_phase7d_envelope_encryption.py:26:  13.  generate_data_key: no plaintext key in logs
 tests/integration/test_phase7d_envelope_encryption.py:30:  15.  EnvKeyProvider.generate_data_key returns key + empty bundle (dev mode)
@@ -716,7 +716,7 @@ tests/integration/test_phase7e_envelope_integration.py:203:    mock_client.gener
 tests/integration/test_phase7e_envelope_integration.py:389:    """KMS generate_data_key failure → 503, no unencrypted storage."""
 tests/integration/test_phase7e_envelope_integration.py:391:    mock_client.generate_data_key.side_effect = Exception("AccessDenied")
 tests/integration/test_phase7e_envelope_integration.py:472:        _, bundle = AwsKmsProvider().generate_data_key()
-tests/integration/test_phase8b_algorithm_brain.py:38:  23.  Full regression (tested separately — confirmed 655 passed)
+tests/integration/test_phase8b_algorithm_brain.py:38:  23.  Full regression (tested separately  -  confirmed 655 passed)
 tests/integration/test_phase8b_algorithm_brain.py:84:        "ENCRYPTION_KEY":   Fernet.generate_key().decode(),
 tests/integration/test_phase8b_algorithm_brain.py:276:        citations=[Citation(cite="ERA 1996 s.98", url="https://legislation.gov.uk/...")],
 tests/integration/test_pipeline_stub.py:144:    The stub model deliberately returns insufficient_grounding=True and no citations.
@@ -742,7 +742,7 @@ tests/rate_limiting/test_rate_limiting.py:4:Tests that rate limiting is wired to
 tests/rate_limiting/test_rate_limiting.py:29:    def test_rate_limit_exceeded_handler_registered(self):
 tests/rate_limiting/test_rate_limiting.py:38:    def test_assess_endpoint_has_rate_limit(self, client):
 tests/rate_limiting/test_rate_limiting.py:47:    def test_health_endpoint_no_rate_limit(self, client):
-tests/rate_limiting/test_rate_limiting.py:48:        """Health endpoint must always respond — no rate limiting."""
+tests/rate_limiting/test_rate_limiting.py:48:        """Health endpoint must always respond  -  no rate limiting."""
 tests/router/test_router.py:19:    def test_generic_acas_question_routes_to_lite_llm(self):
 tests/security/test_encryption.py:68:    def test_generate_key_returns_valid_key(self):
 tests/security/test_encryption.py:69:        from backend.core.encryption import generate_key

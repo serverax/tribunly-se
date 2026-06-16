@@ -1,5 +1,5 @@
 """
-Phase 7B — KMS/HSM-ready key management provider tests.
+Phase 7B  -  KMS/HSM-ready key management provider tests.
 
 Tests:
   Provider interface:
@@ -139,7 +139,7 @@ def test_kms_stub_is_production_grade_when_configured():
 
 
 def test_kms_stub_kms_connected_always_false():
-    """kms_connected is always False in Phase 7B — honest about stub limitation."""
+    """kms_connected is always False in Phase 7B  -  honest about stub limitation."""
     from backend.core.kms import KmsStubProvider
     os.environ["KMS_KEY_ID"] = _MOCK_KMS_KEY_ID
     try:
@@ -238,7 +238,7 @@ def test_disabled_mode_fails_in_production():
 
 def test_encrypt_decrypt_str_roundtrip():
     from backend.core.encryption import encrypt_str, decrypt_str
-    plaintext = "Phase 7B test — encryption unchanged"
+    plaintext = "Phase 7B test  -  encryption unchanged"
     ciphertext = encrypt_str(plaintext)
     assert ciphertext != plaintext
     assert len(ciphertext) > len(plaintext)

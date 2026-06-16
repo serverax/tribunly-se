@@ -21,7 +21,7 @@ Configuration is entirely from environment variables:
     OAUTH_<PROVIDER>_JWKS_URL     (optional override of the default JWKS endpoint)
 
 GUARDRAILS:
-  * A provider with no client id configured is treated as DISABLED — its endpoint
+  * A provider with no client id configured is treated as DISABLED  -  its endpoint
     fails closed with 503 (ProviderNotConfigured), never a fake success.
   * Signature, issuer, audience and expiry are ALL verified. A token that fails any
     check raises ProviderVerificationError (401). No identity is trusted otherwise.
@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 
 SUPPORTED_PROVIDERS = ("google", "microsoft", "apple", "linkedin")
 
-# Explicitly unsupported (task constraint) — reject by name with a clear message.
+# Explicitly unsupported (task constraint)  -  reject by name with a clear message.
 BLOCKED_PROVIDERS = ("facebook", "twitter", "x", "tiktok")
 
 

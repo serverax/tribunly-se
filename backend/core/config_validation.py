@@ -1,5 +1,5 @@
 """
-Startup configuration validation — Phase 6C.
+Startup configuration validation  -  Phase 6C.
 
 Validates required environment variables at startup.
 Also provides static analysis (no server needed) for CI production-readiness check.
@@ -33,7 +33,7 @@ JWT_KEY_VARS:     list[str] = ["JWT_SECRET", "JWT_JWKS_URL"]
 # Recommended in production
 RECOMMENDED_PRODUCTION_VARS: list[str] = [
     "SECRET_KEY",           # future JWT signing
-    "LAWAPP_LLM_PROVIDER",  # must be ollama_local — local Ollama only, no external LLM
+    "LAWAPP_LLM_PROVIDER",  # must be ollama_local  -  local Ollama only, no external LLM
     "ALLOWED_ORIGINS",      # CORS config
     "DATABASE_URL",         # alternative DB connection string
 ]
@@ -59,7 +59,7 @@ def validate_startup_config(fail_fast: bool = True) -> dict:
         {"status": "OK"|"FAILED"|"WARNING", "missing": [...], "warnings": [...], ...}
     """
     deployment_mode = os.getenv("DEPLOYMENT_MODE", "development").lower()
-    payment_mode    = os.getenv("PAYMENT_MODE", "disabled").lower()  # safe default — never test_simulator
+    payment_mode    = os.getenv("PAYMENT_MODE", "disabled").lower()  # safe default  -  never test_simulator
     auth_mode       = os.getenv("LAWAPP_AUTH_MODE", "none").lower()
     kms_mode        = os.getenv("KEY_MANAGEMENT_MODE", "env").lower()
 
@@ -87,7 +87,7 @@ def validate_startup_config(fail_fast: bool = True) -> dict:
         # (mock is the only mode that trusts X-User-ID, and it is test/dev only).
         if auth_mode != "jwt":
             missing_required.append(
-                f"LAWAPP_AUTH_MODE='{auth_mode}' not allowed in production — requires 'jwt' "
+                f"LAWAPP_AUTH_MODE='{auth_mode}' not allowed in production  -  requires 'jwt' "
                 "(mock/none/invalid auth modes are blocked: no X-User-ID trust in production)"
             )
         if auth_mode == "jwt":
@@ -105,7 +105,7 @@ def validate_startup_config(fail_fast: bool = True) -> dict:
             )
         if kms_mode == "disabled":
             missing_required.append(
-                "KEY_MANAGEMENT_MODE=disabled not allowed in production — encryption required."
+                "KEY_MANAGEMENT_MODE=disabled not allowed in production  -  encryption required."
             )
         if kms_mode == "kms_stub" and not os.getenv("KMS_KEY_ID"):
             missing_required.append(
@@ -113,7 +113,7 @@ def validate_startup_config(fail_fast: bool = True) -> dict:
             )
         if kms_mode == "aws_kms" and not os.getenv("AWS_KMS_KEY_ARN"):
             missing_required.append(
-                "AWS_KMS_KEY_ARN (required for KEY_MANAGEMENT_MODE=aws_kms — "
+                "AWS_KMS_KEY_ARN (required for KEY_MANAGEMENT_MODE=aws_kms  -  "
                 "e.g. arn:aws:kms:us-east-1:123456789012:key/key-id)"
             )
         # AWS credential validation is handled by boto3 at runtime (not here).
@@ -123,7 +123,7 @@ def validate_startup_config(fail_fast: bool = True) -> dict:
             warnings.append(f"PAYMENT_MODE='{payment_mode}' invalid.")
         if payment_mode not in ("stripe", "stripe_live"):
             missing_required.append(
-                f"PAYMENT_MODE='{payment_mode}' not allowed in production — requires 'stripe' or 'stripe_live'"
+                f"PAYMENT_MODE='{payment_mode}' not allowed in production  -  requires 'stripe' or 'stripe_live'"
             )
         if payment_mode in ("stripe", "stripe_live"):
             if not os.getenv("STRIPE_SECRET_KEY"):
@@ -131,7 +131,7 @@ def validate_startup_config(fail_fast: bool = True) -> dict:
             if not os.getenv("STRIPE_WEBHOOK_SECRET"):
                 missing_required.append("STRIPE_WEBHOOK_SECRET (required for production Stripe webhooks)")
 
-    # Logging — names only, never values
+    # Logging  -  names only, never values
     if missing_required:
         if deployment_mode == "production":
             logger.critical("STARTUP FAILED: Missing required production vars: %s", missing_required)
@@ -153,7 +153,7 @@ def validate_startup_config(fail_fast: bool = True) -> dict:
 
     if fail_fast and deployment_mode == "production" and missing_required:
         raise StartupConfigError(
-            f"Production startup failed — missing/invalid: {missing_required}"
+            f"Production startup failed  -  missing/invalid: {missing_required}"
         )
 
     return result

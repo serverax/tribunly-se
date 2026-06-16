@@ -1,5 +1,5 @@
 """
-/api/auth/{google,microsoft,apple,linkedin} — real OIDC ID-token verification.
+/api/auth/{google,microsoft,apple,linkedin}  -  real OIDC ID-token verification.
 
 The `oidc` fixture installs an in-test RSA key as the provider JWKS and signs
 ID tokens with the matching private key, so the full verify path (signature →

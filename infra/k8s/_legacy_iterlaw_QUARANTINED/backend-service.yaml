@@ -1,5 +1,5 @@
 ---
-# IterLaw lawapp — backend ClusterIP service (internal only)
+# IterLaw lawapp  -  backend ClusterIP service (internal only)
 # No public ingress until service health is proven internally.
 apiVersion: v1
 kind: Service

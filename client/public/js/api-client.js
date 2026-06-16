@@ -1,5 +1,5 @@
 /* ============================================================================
-   lawapp — api-client.js
+   lawapp  -  api-client.js
    Single source of truth for every browser → backend fetch call.
 
    SECURITY MODEL:

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Docker proof — brings up all services and curls key endpoints.
+# Docker proof  -  brings up all services and curls key endpoints.
 # WSL-safe: uses docker compose, no local venv.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
 echo "======================================================================"
-echo "LAWAPP — DOCKER PROOF"
+echo "LAWAPP  -  DOCKER PROOF"
 echo "======================================================================"
 
 # Ensure services are up

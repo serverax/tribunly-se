@@ -8,7 +8,7 @@ documents, or user response (AC-003). Rules:
   * confidence/grounding scores in [0,1]; viability in [0,100]
   * dates are ISO-8601 (YYYY-MM-DD) or null where allowed
   * conversational / markdown-fenced JSON is rejected (AC-004) by
-    ``strict_json_parse_no_wrappers`` — output is never silently repaired
+    ``strict_json_parse_no_wrappers``  -  output is never silently repaired
 """
 
 from __future__ import annotations

@@ -1,10 +1,10 @@
 """
-Free-tool login gate — the login wall for the lawapp acquisition funnel.
+Free-tool login gate  -  the login wall for the lawapp acquisition funnel.
 
-PUBLIC (anonymous) capabilities — open to everyone:
+PUBLIC (anonymous) capabilities  -  open to everyone:
     browse, teaser, preview.
 
-GATED capabilities — require an authenticated user (login wall):
+GATED capabilities  -  require an authenticated user (login wall):
     full_result, upload_document, save_case, timeline, redaction, save_citations.
 
 Anonymous visitors may start a free tool and answer the teaser questions. Those
@@ -37,7 +37,7 @@ from ingestion.db import get_connection
 logger = logging.getLogger(__name__)
 
 # ── Capability registry ───────────────────────────────────────────────────────
-# The brief's contract, encoded once. Routes/services consult this — they never
+# The brief's contract, encoded once. Routes/services consult this  -  they never
 # hardcode their own allow/deny logic.
 
 PUBLIC_CAPABILITIES: frozenset[str] = frozenset({
@@ -58,7 +58,7 @@ GATED_CAPABILITIES: frozenset[str] = frozenset({
 
 def is_gated(capability: str) -> bool:
     """True if `capability` requires login. Unknown capabilities are treated as
-    GATED (fail closed) — a new capability is private until explicitly opened."""
+    GATED (fail closed)  -  a new capability is private until explicitly opened."""
     if capability in PUBLIC_CAPABILITIES:
         return False
     return True
@@ -69,7 +69,7 @@ def require_capability(user_id: Optional[str], capability: str) -> None:
 
     Returns None when access is allowed (public capability, or any capability for
     an authenticated user). Raises HTTPException(401) with a structured,
-    machine-readable body when an anonymous caller hits a gated capability — the
+    machine-readable body when an anonymous caller hits a gated capability  -  the
     frontend keys off detail.login_required to show the login wall.
     """
     if not is_gated(capability):
@@ -82,7 +82,7 @@ def require_capability(user_id: Optional[str], capability: str) -> None:
             "login_required": True,
             "capability": capability,
             "message": (
-                "Please sign in to continue. Your answers are saved — you'll pick "
+                "Please sign in to continue. Your answers are saved  -  you'll pick "
                 "up exactly where you left off."
             ),
         },
@@ -98,7 +98,7 @@ def generate_resume_token() -> str:
 
 
 def hash_resume_token(raw_token: str) -> str:
-    """SHA-256 hex digest — the at-rest representation of a resume token."""
+    """SHA-256 hex digest  -  the at-rest representation of a resume token."""
     return hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
 
 
@@ -212,7 +212,7 @@ def claim_teaser_state(resume_token: str, user_id: str) -> dict:
     GUARDRAIL: user ids are never logged.
     """
     if not user_id:
-        # Defence in depth — routes already enforce auth, but never claim anon.
+        # Defence in depth  -  routes already enforce auth, but never claim anon.
         raise HTTPException(status_code=401, detail="Authentication required to resume.")
     _require_encryption()
     token_hash = hash_resume_token(resume_token)
@@ -235,9 +235,9 @@ def claim_teaser_state(resume_token: str, user_id: str) -> dict:
 
             existing_owner = str(row[2]) if row[2] else None
             if existing_owner and existing_owner != str(user_id):
-                # Already claimed by someone else — never hand over another user's
+                # Already claimed by someone else  -  never hand over another user's
                 # answers.
-                logger.warning("Teaser claim rejected — already owned by another user.")
+                logger.warning("Teaser claim rejected  -  already owned by another user.")
                 raise HTTPException(
                     status_code=403,
                     detail="This saved session belongs to a different account.",

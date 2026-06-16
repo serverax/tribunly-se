@@ -1,8 +1,8 @@
 """
-Legal accuracy regression fixtures — Phase 5A.
+Legal accuracy regression fixtures  -  Phase 5A.
 
 Eight known fact patterns for unfair dismissal (England & Wales).
-Tests use StubReasoningModel — deterministic layer only, no real model.
+Tests use StubReasoningModel  -  deterministic layer only, no real model.
 
 Each fixture specifies:
   - facts: intake facts
@@ -20,10 +20,10 @@ from datetime import date
 
 FACT_PATTERNS: list[dict] = [
 
-    # FP1: Ordinary unfair dismissal — 4 years service, conduct, no procedure
+    # FP1: Ordinary unfair dismissal  -  4 years service, conduct, no procedure
     {
         "id": "FP1",
-        "description": "Ordinary UD — 4yr service, conduct, no hearing or procedure",
+        "description": "Ordinary UD  -  4yr service, conduct, no hearing or procedure",
         "facts": {
             "edt":                    "2026-04-01",
             "service_start_date":     "2022-04-01",
@@ -43,10 +43,10 @@ FACT_PATTERNS: list[dict] = [
         },
     },
 
-    # FP2: Under qualifying period — 14 months service
+    # FP2: Under qualifying period  -  14 months service
     {
         "id": "FP2",
-        "description": "Under 2-year qualifying period — 14 months service",
+        "description": "Under 2-year qualifying period  -  14 months service",
         "facts": {
             "edt":                  "2026-03-15",
             "service_start_date":   "2025-01-01",
@@ -64,11 +64,11 @@ FACT_PATTERNS: list[dict] = [
         },
     },
 
-    # FP3: Auto-unfair candidate — day-one service, unprotected category
-    # (Dismissed on first day — might be protected characteristic; system flags for review)
+    # FP3: Auto-unfair candidate  -  day-one service, unprotected category
+    # (Dismissed on first day  -  might be protected characteristic; system flags for review)
     {
         "id": "FP3",
-        "description": "Day-one service — auto-unfair candidate needing legal review",
+        "description": "Day-one service  -  auto-unfair candidate needing legal review",
         "facts": {
             "edt":                  "2026-04-03",
             "service_start_date":   "2026-04-01",
@@ -86,10 +86,10 @@ FACT_PATTERNS: list[dict] = [
         },
     },
 
-    # FP4: EC applied — floor does NOT bite
+    # FP4: EC applied  -  floor does NOT bite
     {
         "id": "FP4",
-        "description": "EC applied — pause days extend deadline, floor does not bite",
+        "description": "EC applied  -  pause days extend deadline, floor does not bite",
         "facts": {
             "edt":                  "2026-01-01",
             "service_start_date":   "2022-01-01",
@@ -111,10 +111,10 @@ FACT_PATTERNS: list[dict] = [
         },
     },
 
-    # FP5: EC applied — floor BITES
+    # FP5: EC applied  -  floor BITES
     {
         "id": "FP5",
-        "description": "EC applied — 1-month-after-Day-B floor bites",
+        "description": "EC applied  -  1-month-after-Day-B floor bites",
         "facts": {
             "edt":                  "2026-01-01",
             "service_start_date":   "2022-01-01",
@@ -136,10 +136,10 @@ FACT_PATTERNS: list[dict] = [
         },
     },
 
-    # FP6: Missed deadline — deadline in the past
+    # FP6: Missed deadline  -  deadline in the past
     {
         "id": "FP6",
-        "description": "Missed deadline — EDT was 2025-01-01, deadline long past",
+        "description": "Missed deadline  -  EDT was 2025-01-01, deadline long past",
         "facts": {
             "edt":                  "2025-01-01",
             "service_start_date":   "2022-01-01",
@@ -155,10 +155,10 @@ FACT_PATTERNS: list[dict] = [
         },
     },
 
-    # FP7: Insufficient facts — no EDT provided
+    # FP7: Insufficient facts  -  no EDT provided
     {
         "id": "FP7",
-        "description": "Insufficient facts — no EDT provided",
+        "description": "Insufficient facts  -  no EDT provided",
         "facts": {
             "jurisdiction": "EW",
             "reason_for_dismissal": "conduct",
@@ -172,7 +172,7 @@ FACT_PATTERNS: list[dict] = [
     # FP8: Seek-solicitor / beyond self-help
     {
         "id": "FP8",
-        "description": "Complex case — constructive dismissal with 3yr service",
+        "description": "Complex case  -  constructive dismissal with 3yr service",
         "facts": {
             "edt":                  "2026-04-01",
             "service_start_date":   "2023-04-01",
@@ -199,8 +199,8 @@ UPW_FACT_PATTERNS: list[dict] = [
     # UPW1: Clear unpaid final salary
     {
         "id": "UPW1",
-        "description": "Clear unpaid final salary — last month not paid",
-        "query": "My employer hasn't paid my wages — final salary of £2,500 is missing",
+        "description": "Clear unpaid final salary  -  last month not paid",
+        "query": "My employer hasn't paid my wages  -  final salary of £2,500 is missing",
         "facts": {
             "wages_due_date": "2026-03-31",
             "unpaid_amount":  2500.0,
@@ -220,7 +220,7 @@ UPW_FACT_PATTERNS: list[dict] = [
     # UPW2: Repeated underpayments (series of deductions)
     {
         "id": "UPW2",
-        "description": "Repeated underpayments — series of monthly deductions",
+        "description": "Repeated underpayments  -  series of monthly deductions",
         "query": "My employer has been deducting £100 per month without authorisation for 6 months",
         "facts": {
             "wages_due_date":          "2026-03-31",
@@ -242,7 +242,7 @@ UPW_FACT_PATTERNS: list[dict] = [
     # UPW3: Disputed deduction (employer claims authorized)
     {
         "id": "UPW3",
-        "description": "Disputed deduction — employer claims it was authorised by contract",
+        "description": "Disputed deduction  -  employer claims it was authorised by contract",
         "query": "Employer deducted £500 claiming it was in my contract",
         "facts": {
             "wages_due_date":      "2026-03-31",
@@ -263,7 +263,7 @@ UPW_FACT_PATTERNS: list[dict] = [
     # UPW4: Missing wages_due_date
     {
         "id": "UPW4",
-        "description": "Insufficient facts — no wages_due_date provided",
+        "description": "Insufficient facts  -  no wages_due_date provided",
         "query": "My employer hasn't paid my wages",
         "facts": {
             "unpaid_amount": 1000.0,
@@ -278,7 +278,7 @@ UPW_FACT_PATTERNS: list[dict] = [
     # UPW5: Old/stale claim near or beyond limitation
     {
         "id": "UPW5",
-        "description": "Stale claim — wages_due_date more than 3 months ago",
+        "description": "Stale claim  -  wages_due_date more than 3 months ago",
         "query": "My employer didn't pay my wages 6 months ago",
         "facts": {
             "wages_due_date": "2025-11-30",   # >3 months before 2026-06-01
@@ -298,7 +298,7 @@ UPW_FACT_PATTERNS: list[dict] = [
     # UPW6: Uncertain worker status (self-employed)
     {
         "id": "UPW6",
-        "description": "Uncertain worker status — claims to be self-employed",
+        "description": "Uncertain worker status  -  claims to be self-employed",
         "query": "I'm a contractor and my client hasn't paid me",
         "facts": {
             "wages_due_date": "2026-03-31",
@@ -318,7 +318,7 @@ UPW_FACT_PATTERNS: list[dict] = [
     # UPW7: Insufficient facts (no amount)
     {
         "id": "UPW7",
-        "description": "Insufficient facts — no unpaid amount specified",
+        "description": "Insufficient facts  -  no unpaid amount specified",
         "query": "Employer hasn't paid me correctly",
         "facts": {
             "wages_due_date": "2026-03-31",
@@ -333,10 +333,10 @@ UPW_FACT_PATTERNS: list[dict] = [
         },
     },
 
-    # UPW8: Complex case — agency worker with unclear status
+    # UPW8: Complex case  -  agency worker with unclear status
     {
         "id": "UPW8",
-        "description": "Complex case — agency worker, series of deductions, status unclear",
+        "description": "Complex case  -  agency worker, series of deductions, status unclear",
         "query": "I work through an agency and they've been underpaying me for months",
         "facts": {
             "wages_due_date":          "2026-03-31",

@@ -73,7 +73,7 @@ backend/api/main.py:2987:        "reason":            result["reason"],
 backend/api/main.py:3028:        "reason":       result.get("reason"),
 backend/api/main.py:3139:                "       confidence, status, extraction_method, created_at "
 backend/api/main.py:3167:            "confidence":      r[5],
-backend/api/main.py:3276:            "reason":  "ANTHROPIC_API_KEY is placeholder — real model not available",
+backend/api/main.py:3276:            "reason":  "ANTHROPIC_API_KEY is placeholder  -  real model not available",
 backend/api/main.py:3291:                "reason": "select_model returned StubReasoningModel despite key being set",
 backend/api/main.py:3301:                "reason_for_dismissal": "conduct",
 backend/api/main.py:3311:            "citations_count":   len(result.get("citations", [])),
@@ -96,7 +96,7 @@ backend/core/agents/base.py:46:    """Abstract base for all lawapp legal agents.
 backend/core/agents/base.py:48:    name: str = "base_agent"
 backend/core/agents/base.py:49:    description: str = "Base agent"
 backend/core/agents/base.py:71:        GUARDRAIL: Never fabricate citations.
-backend/core/agents/registry.py:2:Agent registry — the Brain uses this to look up and instantiate agents.
+backend/core/agents/registry.py:2:Agent registry  -  the Brain uses this to look up and instantiate agents.
 backend/core/agents/registry.py:4:Every agent is registered here with its claim-type routing configuration.
 backend/core/agents/registry.py:5:The Brain calls get_agents_for_claim() to get the right set for a query.
 backend/core/agents/registry.py:13:from backend.core.agents.base import LegalAgent, AgentResult
@@ -172,11 +172,11 @@ backend/core/brain.py:15:  8.  Select legal agents
 backend/core/brain.py:19:  12. Verify citations
 backend/core/brain.py:20:  13. Compress context while preserving citations
 backend/core/brain.py:28:GUARDRAIL: The Brain is the ONLY authorised entry point to the reasoning layer.
-backend/core/brain.py:56:    "detect_missing_facts",   # 7  — evidence gaps before agent selection
-backend/core/brain.py:57:    "select_agents",          # 8  — choose legal agents based on claim + urgency
-backend/core/brain.py:60:    "retrieve_legal_evidence",# 11 — hybrid retrieval (SQL + BM25 + pgvector)
-backend/core/brain.py:61:    "verify_citations",       # 12 — verify every citation against DB
-backend/core/brain.py:62:    "compress_context",       # 13 — compress context preserving all citations
+backend/core/brain.py:56:    "detect_missing_facts",   # 7   -  evidence gaps before agent selection
+backend/core/brain.py:57:    "select_agents",          # 8   -  choose legal agents based on claim + urgency
+backend/core/brain.py:60:    "retrieve_legal_evidence",# 11  -  hybrid retrieval (SQL + BM25 + pgvector)
+backend/core/brain.py:61:    "verify_citations",       # 12  -  verify every citation against DB
+backend/core/brain.py:62:    "compress_context",       # 13  -  compress context preserving all citations
 backend/core/brain.py:78:        "citation_verification",
 backend/core/brain.py:85:        "citation_verification",
 backend/core/brain.py:92:        "citation_verification",
@@ -295,7 +295,7 @@ backend/core/citation_verifier.py:161:    Verify all citations in a retrieval bu
 backend/core/citation_verifier.py:179:        result = verify_citation(cite, source_type)
 backend/core/citation_verifier.py:197:    """Remove unverified citations from a bundle. Logs what was removed."""
 backend/core/citation_verifier.py:200:    result = verify_bundle_citations(authorities)
-backend/core/citation_verifier.py:207:                "Citation removed (unverified): %s — reason: %s",
+backend/core/citation_verifier.py:207:                "Citation removed (unverified): %s  -  reason: %s",
 backend/core/citation_verifier.py:209:                detail["reason"],
 backend/core/classify.py:95:If you cannot determine the category with confidence, reply: out_of_scope
 backend/core/classify.py:113:def _classify_with_model(query: str) -> Optional[str]:
@@ -313,7 +313,7 @@ backend/core/classify.py:218:        ml_result = _classify_with_model(query)
 backend/core/classify.py:220:        logger.warning("classify: _classify_with_model raised unexpectedly. Conservative fallback.")
 backend/core/context_compressor.py:4:Compresses the retrieved legal context bundle before passing it to the model.
 backend/core/context_compressor.py:7:GUARDRAIL: No citation (cite + url) may be removed during compression.
-backend/core/context_compressor.py:50:          "citations":        list[str] — every cite reference (guaranteed complete),
+backend/core/context_compressor.py:50:          "citations":        list[str]  -  every cite reference (guaranteed complete),
 backend/core/context_compressor.py:60:            "citations_preserved": int,
 backend/core/context_compressor.py:79:    all_citations: list[str] = []
 backend/core/context_compressor.py:84:            all_citations.append(cite)
@@ -328,7 +328,7 @@ backend/core/deidentify.py:16:The boundary payload log is written to `deidentify
 backend/core/deidentify.py:53:    "reason_for_dismissal",
 backend/core/deidentify.py:67:def deidentify(facts: dict) -> tuple[dict, dict]:
 backend/core/deidentify.py:72:      - safe_facts: the de-identified dict to pass to the model
-backend/core/deidentify.py:104:        logger.error("PII fields found in de-identified output: %s — stripping", pii_in_output)
+backend/core/deidentify.py:104:        logger.error("PII fields found in de-identified output: %s  -  stripping", pii_in_output)
 backend/core/documents.py:121:def _reason_label(reason: Optional[str]) -> str:
 backend/core/documents.py:126:        "some_other_substantial_reason": "some other substantial reason (SOSR)",
 backend/core/documents.py:127:        "unknown":                     "no clear reason given by the Respondent",
@@ -361,7 +361,7 @@ backend/core/documents.py:616:    reasoning      = (assessment.get("reasoning_su
 backend/core/documents.py:618:    citations      = assessment.get("citations") or []
 backend/core/documents.py:624:    if citations:
 backend/core/documents.py:626:            f"• {c.get('cite','')}  {c.get('url','')}" for c in citations[:4]
-backend/core/documents.py:679:   {reasoning if reasoning else "[Run assessment to generate summary — POST /assess]"}
+backend/core/documents.py:679:   {reasoning if reasoning else "[Run assessment to generate summary  -  POST /assess]"}
 backend/core/document_extractor.py:85:def _extract_reason(text: str) -> Optional[str]:
 backend/core/document_extractor.py:86:    """Extract reason for dismissal."""
 backend/core/document_extractor.py:88:        r"(?:reason for (?:your )?dismissal|dismissed (?:for|due to|because of))[:\s]+([^\n.]{5,100})",
@@ -378,8 +378,8 @@ backend/core/dp_report.py:84:            "proof":                      "test_pha
 backend/core/dp_report.py:131:                "handling": "De-identified by deidentify.py before any model call",
 backend/core/dp_report.py:201:                "Model boundary de-identification (14 PII field types stripped)",
 backend/core/evaluator.py:5:Evaluation checks mirror and extend the governance gate.
-backend/core/evaluator.py:8:  1. Citation validity — citations exist in DB
-backend/core/evaluator.py:13:  6. Hallucination risk — reasoning summary doesn't invent facts
+backend/core/evaluator.py:8:  1. Citation validity  -  citations exist in DB
+backend/core/evaluator.py:13:  6. Hallucination risk  -  reasoning summary doesn't invent facts
 backend/core/evaluator.py:31:# ── Blocked phrases (extended from govern.py) ────────────────────────────────
 backend/core/evaluator.py:71:      {"passed": bool, "reason": str | None, "checks": list[dict]}
 backend/core/evaluator.py:77:    citations = assessment.get("citations", [])
@@ -388,7 +388,7 @@ backend/core/evaluator.py:80:            from backend.core.citation_verifier imp
 backend/core/evaluator.py:82:                        for c in citations[:10]]
 backend/core/evaluator.py:83:            result = verify_bundle_citations(cit_list)
 backend/core/evaluator.py:84:            citation_ok = result["pass_rate"] >= 0.5
-backend/core/evaluator.py:86:            citation_ok = True  # DB unavailable — don't block
+backend/core/evaluator.py:86:            citation_ok = True  # DB unavailable  -  don't block
 backend/core/evaluator.py:87:        check = {"check": "citation_validity", "passed": citation_ok, "severity": "high"}
 backend/core/evaluator.py:89:        if not citation_ok:
 backend/core/evaluator.py:90:            failures.append("citation_validity_low_pass_rate")
@@ -457,7 +457,7 @@ backend/core/mcp_connectors.py:179:    rules = retrieve_rules(claim_type, jurisd
 backend/core/memory.py:100:        raise ValueError("user_id and case_id are required to retrieve memory")
 backend/core/models.py:10:pipeline (including governance gate) without any model call. Used for unit tests
 backend/core/models.py:11:and pipeline wiring verification. It returns insufficient_grounding=True because
-backend/core/models.py:12:it has no real reasoning to offer — this is the correct and honest result.
+backend/core/models.py:12:it has no real reasoning to offer  -  this is the correct and honest result.
 backend/core/models.py:34:    """Interface all reasoning models must implement."""
 backend/core/models.py:37:    def reason(
 backend/core/models.py:39:        safe_facts: dict,           # de-identified facts (PII already stripped)
@@ -468,12 +468,12 @@ backend/core/models.py:65:    Pipeline-test stub. No model call. Returns honest 
 backend/core/models.py:69:    - Verify that the governance gate correctly handles insufficient_grounding.
 backend/core/models.py:70:    - Confirm the de-identification boundary is enforced before this is called.
 backend/core/models.py:72:    Returns insufficient_grounding=True because it has no actual reasoning.
-backend/core/models.py:73:    The governance gate will route this to seek_solicitor — correct behaviour.
+backend/core/models.py:73:    The governance gate will route this to seek_solicitor  -  correct behaviour.
 backend/core/models.py:76:    def reason(
-backend/core/models.py:83:        logger.info("StubReasoningModel.reason called — no external API call made")
-backend/core/models.py:103:            basis="from rules — model reasoning not yet configured",
+backend/core/models.py:83:        logger.info("StubReasoningModel.reason called  -  no external API call made")
+backend/core/models.py:103:            basis="from rules  -  model reasoning not yet configured",
 backend/core/models.py:111:            reasoning_summary=(
-backend/core/models.py:112:                "Stub model — reasoning engine not yet configured. "
+backend/core/models.py:112:                "Stub model  -  reasoning engine not yet configured. "
 backend/core/models.py:113:                "Rules data retrieved successfully. Cite your legal adviser."
 backend/core/models.py:119:            citations=[],
 backend/core/models.py:120:            grounding_score=0.0,
@@ -492,9 +492,9 @@ backend/core/models.py:188:  "insufficient_grounding": false
 backend/core/models.py:193:    def reason(
 backend/core/models.py:200:        import anthropic
 backend/core/models.py:202:        # Assert de-identification happened
-backend/core/models.py:205:                "boundary_log is empty — deidentify() must be called before reason(). "
+backend/core/models.py:205:                "boundary_log is empty  -  deidentify() must be called before reason(). "
 backend/core/models.py:219:        client = anthropic.Anthropic(api_key=self._api_key)
-backend/core/models.py:234:        # Enforce deadline.source = "rules" — governance gate also checks this,
+backend/core/models.py:234:        # Enforce deadline.source = "rules"  -  governance gate also checks this,
 backend/core/models.py:247:    Optional reasoning provider via OpenRouter (openai-compatible API).
 backend/core/models.py:254:      - de-identified safe_facts (no PII)
 backend/core/models.py:255:      - retrieved authority bundle (rules + BM25)
@@ -505,18 +505,18 @@ backend/core/models.py:279:        "You receive ONLY de-identified facts and ret
 backend/core/models.py:281:        "You must cite every legal claim to a retrieved source. "
 backend/core/models.py:282:        "If grounding is insufficient, set insufficient_grounding=true. "
 backend/core/models.py:286:    def reason(
-backend/core/models.py:297:                "boundary_log is empty — deidentify() must be called before "
+backend/core/models.py:297:                "boundary_log is empty  -  deidentify() must be called before "
 backend/core/models.py:298:                "OpenRouterReasoningModel.reason(). Raw personal facts must never reach this method."
 backend/core/models.py:313:            "provider":         "openrouter",
-backend/core/models.py:347:                reasoning_summary="Model unavailable — insufficient grounding.",
+backend/core/models.py:347:                reasoning_summary="Model unavailable  -  insufficient grounding.",
 backend/core/models.py:356:                citations=[],
 backend/core/models.py:357:                grounding_score=0.0,
 backend/core/models.py:358:                confidence_score=0.0,
 backend/core/models.py:359:                insufficient_grounding=True,
-backend/core/models.py:388:                "note": "AI_PROVIDER=disabled — returns insufficient_grounding for all requests"}
+backend/core/models.py:388:                "note": "AI_PROVIDER=disabled  -  returns insufficient_grounding for all requests"}
 backend/core/models.py:389:    if provider == "anthropic" or (not provider and ant_key and ant_key not in ("placeholder", "")):
 backend/core/models.py:392:            "provider": "anthropic",
-backend/core/models.py:395:            "note": "real reasoning active" if configured else "ANTHROPIC_API_KEY=placeholder — StubReasoningModel active",
+backend/core/models.py:395:            "note": "real reasoning active" if configured else "ANTHROPIC_API_KEY=placeholder  -  StubReasoningModel active",
 backend/core/models.py:403:    Select the reasoning model provider based on AI_PROVIDER env var and available keys.
 backend/core/models.py:406:    AI_PROVIDER=anthropic (or key set) → attempts Anthropic/Claude
 backend/core/models.py:407:    Fallback → StubReasoningModel (safe: governance gate handles insufficient_grounding)
@@ -526,7 +526,7 @@ backend/core/models.py:421:        key = getattr(settings, "openrouter_api_key",
 backend/core/models.py:422:        mid = getattr(settings, "openrouter_model_fast", "")
 backend/core/models.py:431:    ant_key = getattr(settings, "anthropic_api_key", "placeholder")
 backend/core/models.py:443:            "Complex assessments will return insufficient_grounding."
-backend/core/pipeline.py:2:Phase 2 — Assessment pipeline orchestrator.
+backend/core/pipeline.py:2:Phase 2  -  Assessment pipeline orchestrator.
 backend/core/pipeline.py:4:Stages: classify → retrieve → reason → score → govern → respond.
 backend/core/pipeline.py:7:- Retrieval always runs before reasoning.
 backend/core/pipeline.py:10:- Out-of-scope and insufficient-grounding routes are hard exits.
@@ -537,9 +537,9 @@ backend/core/pipeline.py:36:from backend.core.govern import (
 backend/core/pipeline.py:38:    govern,
 backend/core/pipeline.py:40:    build_insufficient_grounding_response,
 backend/core/pipeline.py:41:    build_low_confidence_response,
-backend/core/pipeline.py:64:      - {"status": "insufficient_grounding", ...}    — retrieval too weak
-backend/core/pipeline.py:65:      - {"status": "low_confidence", ...}             — below threshold
-backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}         — passes governance
+backend/core/pipeline.py:64:      - {"status": "insufficient_grounding", ...}     -  retrieval too weak
+backend/core/pipeline.py:65:      - {"status": "low_confidence", ...}              -  below threshold
+backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}          -  passes governance
 backend/core/pipeline.py:70:    (all stages run, governance gate exercises correctly) and to work correctly
 backend/core/pipeline.py:75:    classification = classify(query, facts)
 backend/core/pipeline.py:109:    # ── Stage 2: Retrieve (always, before reasoning) ───────────────────────
@@ -563,7 +563,7 @@ backend/core/pipeline.py:225:        "Scores: grounding=%.2f confidence=%.2f ins
 backend/core/pipeline.py:226:        assessment.grounding_score, assessment.confidence_score, assessment.insufficient_grounding,
 backend/core/pipeline.py:230:    gov_result = govern(assessment)
 backend/core/pipeline.py:231:    logger.info("Governance: passes=%s reason=%s", gov_result.passes, gov_result.failure_reason)
-backend/core/pipeline.py:233:    # ── Stage 6b: Audit log — written regardless of governance outcome ─────────
+backend/core/pipeline.py:233:    # ── Stage 6b: Audit log  -  written regardless of governance outcome ─────────
 backend/core/pipeline.py:255:        "governance_result": {
 backend/core/pipeline.py:257:            "failure_reason": gov_result.failure_reason,
 backend/core/pipeline.py:263:        reason = gov_result.failure_reason
@@ -645,7 +645,7 @@ backend/core/router.py:190:                    "citation_verification", "evaluat
 backend/core/router.py:196:            reason="personal_case_facts_present",
 backend/core/router.py:204:        agents=["employment_law", "citation_verification"],
 backend/core/router.py:210:        reason="generic_legal_question_with_rag",
-backend/core/score.py:2:Stage 4 — Grounding and confidence scoring.
+backend/core/score.py:2:Stage 4  -  Grounding and confidence scoring.
 backend/core/score.py:5:citation in the citations list. Every legal assertion must map to a retrieved
 backend/core/score.py:22:# Minimum grounding score to proceed through governance
 backend/core/score.py:24:# Minimum confidence score to proceed through governance
@@ -674,7 +674,7 @@ backend/core/score.py:95:    if assessment.insufficient_grounding:
 backend/core/score.py:100:    # Rules retrieved: deterministic facts available
 backend/core/score.py:104:    # Semantic authorities retrieved
 backend/core/score.py:123:    Check whether either score falls below the governance threshold.
-backend/core/score.py:124:    Returns (failed, reason) — called by the governance gate.
+backend/core/score.py:124:    Returns (failed, reason)  -  called by the governance gate.
 backend/core/score.py:126:    if assessment.grounding_score < GROUNDING_THRESHOLD:
 backend/core/score.py:128:            f"Grounding score {assessment.grounding_score:.2f} below threshold "
 backend/core/score.py:131:    if assessment.confidence_score < CONFIDENCE_THRESHOLD:
@@ -733,18 +733,18 @@ backend/domains/employment/assess_logic.py:411:                citations.append(
 backend/domains/employment/assess_logic.py:412:            if len(citations) >= 6:
 backend/domains/employment/assess_logic.py:469:        "citations":             citations,
 backend/domains/employment/assess_logic.py:470:        "reasoning_notes": (
-backend/domains/employment/checklists/acas.py:20:        gaps.append("Appeal stage not evidenced — Code expects reasonable appeal where practicable.")
+backend/domains/employment/checklists/acas.py:20:        gaps.append("Appeal stage not evidenced  -  Code expects reasonable appeal where practicable.")
 backend/domains/employment/checklists/burchell.py:10:    reasonable_grounds: Literal["likely", "unclear", "weak"]
 backend/domains/employment/checklists/burchell.py:11:    reasonable_investigation: Literal["likely", "unclear", "weak"]
-backend/domains/employment/checklists/burchell.py:24:        notes.append("Narrative suggests absent or minimal investigation — Burchell 'reasonable investigation' harder for employer.")
+backend/domains/employment/checklists/burchell.py:24:        notes.append("Narrative suggests absent or minimal investigation  -  Burchell 'reasonable investigation' harder for employer.")
 backend/domains/employment/checklists/burchell.py:34:        notes.append("Weak or unclear factual basis may undermine reasonable grounds for belief.")
 backend/domains/employment/checklists/burchell.py:40:        "reasonable_grounds": grounds,
 backend/domains/employment/checklists/burchell.py:41:        "reasonable_investigation": investigation,
-backend/domains/employment/checklists/tribunal_elements.py:2:Tribunal-level legal reasoning elements — deterministic scaffolds.
+backend/domains/employment/checklists/tribunal_elements.py:2:Tribunal-level legal reasoning elements  -  deterministic scaffolds.
 backend/domains/employment/checklists/tribunal_elements.py:10:        "Potentially fair reason under s.98(1)–(2) ERA 1996",
 backend/domains/employment/checklists/tribunal_elements.py:14:        "Sanction within band of reasonable responses",
 backend/domains/employment/deadline.py:4:GUARDRAIL: This module computes dates in Python from values retrieved from the
-backend/domains/employment/deadline.py:65:    DOES NOT compute the 'not reasonably practicable' extension — that is a
+backend/domains/employment/deadline.py:65:    DOES NOT compute the 'not reasonably practicable' extension  -  that is a
 backend/domains/employment/timeline.py:231:                         f"Trigger: {latest.get('trigger_reason','unknown')}. "
 backend/domains/employment/timeline.py:294:    insufficient = bool(assessment.get("insufficient_grounding"))
 ingestion/case_law/akn_parser.py:8:  - document_uri, neutral_citation, fclid
@@ -755,7 +755,7 @@ ingestion/case_law/akn_parser.py:131:            neutral_citation = (cite_el.tex
 ingestion/case_law/akn_parser.py:132:        if not neutral_citation:
 ingestion/case_law/akn_parser.py:136:                neutral_citation = _extract_text(nc_el) or None
 ingestion/case_law/akn_parser.py:226:        neutral_citation=neutral_citation,
-ingestion/case_law/ingest.py:105:        console.print(f"[green]{parsed.neutral_citation or 'no citation'} — {len(parsed.chunks)} chunk(s)[/green]")
+ingestion/case_law/ingest.py:105:        console.print(f"[green]{parsed.neutral_citation or 'no citation'}  -  {len(parsed.chunks)} chunk(s)[/green]")
 ingestion/case_law/ingest.py:158:        console.print(f"  [green]{parsed.neutral_citation or doc_uri}[/green]")
 ingestion/case_law/ingest.py:171:            "neutral_citation": parsed.neutral_citation,
 ingestion/config.py:39:    openai_api_key: str = "placeholder"
@@ -765,7 +765,7 @@ ingestion/config.py:51:    # Never enable this until de-id is proven (test_deide
 ingestion/config.py:52:    openrouter_api_key: str = "placeholder"
 ingestion/config.py:53:    openrouter_model_fast: str = "meta-llama/llama-3.1-8b-instruct"    # fast/cheap tier
 ingestion/config.py:54:    openrouter_model_strong: str = "anthropic/claude-haiku-4-5"         # strong tier
-ingestion/config.py:55:    openrouter_enabled: bool = False   # default OFF — must be explicitly enabled
+ingestion/config.py:55:    openrouter_enabled: bool = False   # default OFF  -  must be explicitly enabled
 ingestion/config.py:89:        "98",   # Fairness / reasons
 ingestion/db.py:86:            document_uri, fetch_url, neutral_citation, fclid, case_name, court_code,
 ingestion/db.py:90:            %(document_uri)s, %(fetch_url)s, %(neutral_citation)s, %(fclid)s,
@@ -778,10 +778,10 @@ ingestion/db.py:202:            %(governance_result)s::jsonb, %(output_version)s
 ingestion/db.py:213:            "grounding_score":    payload.get("grounding_score"),
 ingestion/db.py:214:            "confidence_score":   payload.get("confidence_score"),
 ingestion/db.py:215:            "governance_result":  json.dumps(payload["governance_result"]),
-ingestion/db.py:222:    """SHA256 of de-identified safe_facts — fingerprint only, no PII stored."""
+ingestion/db.py:222:    """SHA256 of de-identified safe_facts  -  fingerprint only, no PII stored."""
 ingestion/govuk/ingest.py:4:Fetches official government guidance from https://www.gov.uk/api/content/{path}
-ingestion/rules/seed.py:131:            "ERA 1996 s.111(2). A 'not reasonably practicable' extension may apply — "
-ingestion/rules/seed.py:150:            "PROSPECTIVE — COMMENCEMENT NOT CONFIRMED: government stated 'no earlier than "
+ingestion/rules/seed.py:131:            "ERA 1996 s.111(2). A 'not reasonably practicable' extension may apply  -  "
+ingestion/rules/seed.py:150:            "PROSPECTIVE  -  COMMENCEMENT NOT CONFIRMED: government stated 'no earlier than "
 ingestion/rules/seed_unfair_dismissal.py:79:            "Not-reasonably-practicable extension is a merits question; never computed."
 ingestion/rules/seed_unfair_dismissal.py:117:            "effective_from is PROVISIONAL from government statements"
 ingestion/rules/verify_sources.py:72:    Returns: 'PASS', 'FAIL: <reason>', or 'RETRY_LATER'.
@@ -1094,7 +1094,7 @@ tests/integration/test_phase2_engine.py:52:    "reason_for_dismissal":   "conduc
 tests/integration/test_phase2_engine.py:61:    "reason_for_dismissal": "conduct",
 tests/integration/test_phase2_engine.py:71:    result = classify("I was dismissed without any warning after 3 years", _UD_FACTS)
 tests/integration/test_phase2_engine.py:77:    """In-scope UD with EDT reaches an assessment (stub routes to insufficient_grounding)."""
-tests/integration/test_phase2_engine.py:79:    # Stub returns insufficient_grounding=True — that IS the correct gate behaviour
+tests/integration/test_phase2_engine.py:79:    # Stub returns insufficient_grounding=True  -  that IS the correct gate behaviour
 tests/integration/test_phase2_engine.py:80:    # for a model that has no real reasoning. The pipeline must have run through
 tests/integration/test_phase2_engine.py:81:    # all stages (classify, retrieve, deadline, de-id, reason, score, govern).
 tests/integration/test_phase2_engine.py:82:    assert result["status"] in ("ok", "insufficient_grounding", "model_not_configured")
@@ -1150,12 +1150,12 @@ tests/integration/test_phase2_real_model.py:74:        "query": "I was sacked af
 tests/integration/test_phase2_real_model.py:78:            "reason_for_dismissal": "unknown",
 tests/integration/test_phase2_real_model.py:93:            "reason_for_dismissal":   "constructive_dismissal",
 tests/integration/test_phase2_real_model.py:109:            "reason_for_dismissal":   "redundancy",
-tests/integration/test_phase2_real_model.py:126:            # Deliberately minimal — should trigger low confidence or insufficient_grounding
+tests/integration/test_phase2_real_model.py:126:            # Deliberately minimal  -  should trigger low confidence or insufficient_grounding
 tests/integration/test_phase2_real_model.py:156:        print(f"GROUNDING: {a.get('grounding_score')}  confidence={a.get('confidence_score')}")
 tests/integration/test_phase2_real_model.py:159:        print(f"CITATIONS ({len(a.get('citations',[]))}): {[c['cite'] for c in a.get('citations',[])]}")
 tests/integration/test_phase2_real_model.py:171:    correctly computed deadline, and citations that support each stated point.
 tests/integration/test_phase2_real_model.py:177:    assert result["status"] in ("ok", "insufficient_grounding", "low_confidence", "missing_edt"), \
-tests/integration/test_phase2_real_model.py:186:    assert "boundary_log" in result, "boundary_log must be present — de-identification gate"
+tests/integration/test_phase2_real_model.py:186:    assert "boundary_log" in result, "boundary_log must be present  -  de-identification gate"
 tests/integration/test_phase2_real_model.py:198:    # If governance passed, check structural validity
 tests/integration/test_phase2_real_model.py:203:        assert 0.0 <= result["grounding_score"] <= 1.0
 tests/integration/test_phase2_real_model.py:204:        assert 0.0 <= result["confidence_score"] <= 1.0
@@ -1166,7 +1166,7 @@ tests/integration/test_phase2_real_model.py:230:    assert result["status"] in (
 tests/integration/test_phase2_real_model.py:250:        "reason_for_dismissal": "conduct",
 tests/integration/test_phase2_real_model.py:256:    safe, boundary_log = deidentify(raw_facts)
 tests/integration/test_phase2_real_model.py:277:    assert "reason_for_dismissal" in safe
-tests/integration/test_phase3a_flows.py:14:  7. POST /assess — citations present in response for viable claim
+tests/integration/test_phase3a_flows.py:14:  7. POST /assess  -  citations present in response for viable claim
 tests/integration/test_phase3a_flows.py:35:    "reason_for_dismissal": "conduct",
 tests/integration/test_phase3a_flows.py:120:    for key in ("has_viable_claim", "strength", "citations"):
 tests/integration/test_phase3a_flows.py:126:def test_citations_present_in_assessment():
@@ -1262,7 +1262,7 @@ tests/integration/test_phase5b_unpaid_wages.py:56:from backend.core.classify imp
 tests/integration/test_phase5b_unpaid_wages.py:76:    "reasoning_summary": "Employer has not paid final month's salary.",
 tests/integration/test_phase5b_unpaid_wages.py:88:    "citations": [{"cite": "ERA 1996 s.13", "url": "https://legislation.gov.uk/ukpga/1996/18/section/13"}],
 tests/integration/test_phase5b_unpaid_wages.py:89:    "grounding_score": 0.85, "confidence_score": 0.75, "insufficient_grounding": False,
-tests/integration/test_phase5b_unpaid_wages.py:103:    result = classify("My employer hasn't paid my wages — final salary missing", {})
+tests/integration/test_phase5b_unpaid_wages.py:103:    result = classify("My employer hasn't paid my wages  -  final salary missing", {})
 tests/integration/test_phase5b_unpaid_wages.py:116:        r = classify(q, {})
 tests/integration/test_phase5b_unpaid_wages.py:121:    result = classify("I was unfairly dismissed without a hearing", {})
 tests/integration/test_phase5b_unpaid_wages.py:126:    result = classify("My landlord wants to evict me", {})
@@ -1303,7 +1303,7 @@ tests/integration/test_phase8b_algorithm_brain.py:104:    result = classify("My 
 tests/integration/test_phase8b_algorithm_brain.py:110:    result = classify("My landlord is trying to evict me from my flat")
 tests/integration/test_phase8b_algorithm_brain.py:117:    with patch("backend.core.classify._classify_with_model", return_value=None):
 tests/integration/test_phase8b_algorithm_brain.py:118:        result = classify("I have a problem with my employer")
-tests/integration/test_phase8b_algorithm_brain.py:123:    """Employment signal overrides OOS keyword — should classify as employment."""
+tests/integration/test_phase8b_algorithm_brain.py:123:    """Employment signal overrides OOS keyword  -  should classify as employment."""
 tests/integration/test_phase8b_algorithm_brain.py:124:    result = classify("I was dismissed and now facing eviction")
 tests/integration/test_phase8b_algorithm_brain.py:134:    with patch("backend.core.classify._classify_with_model",
 tests/integration/test_phase8b_algorithm_brain.py:136:        result = classify("what should I do about my work situation")
@@ -1353,10 +1353,10 @@ tests/integration/test_pipeline_stub.py:9:- The pipeline stages connect correctl
 tests/integration/test_pipeline_stub.py:12:- The de-identification boundary fires before the model call (boundary_log populated)
 tests/integration/test_pipeline_stub.py:13:- The governance gate routes stub output to the correct fallback (insufficient_grounding)
 tests/integration/test_pipeline_stub.py:17:- Real assessment with citations supporting each claim: pending model + embeddings
-tests/integration/test_pipeline_stub.py:31:# Facts without PII — the de-identification test is in test_deidentify.py
+tests/integration/test_pipeline_stub.py:31:# Facts without PII  -  the de-identification test is in test_deidentify.py
 tests/integration/test_pipeline_stub.py:36:    "reason_for_dismissal": "conduct",
 tests/integration/test_pipeline_stub.py:66:def test_ud_with_stub_gets_rules_retrieved():
-tests/integration/test_pipeline_stub.py:68:    # Stub model returns insufficient_grounding — governance routes accordingly
+tests/integration/test_pipeline_stub.py:68:    # Stub model returns insufficient_grounding  -  governance routes accordingly
 tests/integration/test_pipeline_stub.py:69:    assert result["status"] in ("insufficient_grounding", "ok")
 tests/integration/test_pipeline_stub.py:70:    # Rules were retrieved regardless
 tests/integration/test_pipeline_stub.py:71:    assert result.get("rules_retrieved", 0) > 0 or (
@@ -1367,7 +1367,7 @@ tests/integration/test_pipeline_stub.py:140:# ── Stub model routes to insuff
 tests/integration/test_pipeline_stub.py:142:def test_stub_governance_routes_to_insufficient_grounding():
 tests/integration/test_pipeline_stub.py:144:    The stub model deliberately returns insufficient_grounding=True and no citations.
 tests/integration/test_pipeline_stub.py:145:    The governance gate must route this to the insufficient_grounding path.
-tests/integration/test_pipeline_stub.py:146:    This proves the governance gate fires correctly — it's not a bug.
+tests/integration/test_pipeline_stub.py:146:    This proves the governance gate fires correctly  -  it's not a bug.
 tests/integration/test_pipeline_stub.py:149:    # Stub has no real reasoning → governance routes to insufficient_grounding
 tests/integration/test_pipeline_stub.py:150:    assert result["status"] == "insufficient_grounding", \
 tests/integration/test_pipeline_stub.py:151:        f"Expected insufficient_grounding, got {result['status']}"
@@ -1435,7 +1435,7 @@ tests/legal_accuracy/fixtures.py:164:            "reason_for_dismissal": "conduc
 tests/legal_accuracy/fixtures.py:179:            "reason_for_dismissal": "some_other_substantial_reason",
 tests/legal_accuracy/test_legal_accuracy.py:271:# ── Cross-fixture: deadline authority and de-identification ───────────────────
 tests/legal_accuracy/test_legal_accuracy.py:288:    missing_edt / not_supported exit before de-identification is needed
-tests/legal_accuracy/test_legal_accuracy.py:296:            f"{fp['id']}: boundary_log missing — de-identification gate not proven"
+tests/legal_accuracy/test_legal_accuracy.py:296:            f"{fp['id']}: boundary_log missing  -  de-identification gate not proven"
 tests/mcp/test_mcp.py:31:    "retrieve_legislation_section",
 tests/mcp/test_mcp.py:32:    "retrieve_case_law",
 tests/mcp/test_mcp.py:33:    "retrieve_acas_guidance",
@@ -1594,21 +1594,21 @@ tests/test_case_law_identifier_split.py:15:        neutral_citation="[2026] EAT 
 tests/test_classify.py:8:from backend.core.classify import classify
 tests/test_classify.py:14:    r = classify("I was dismissed from my job last week")
 tests/test_classify.py:20:    r = classify("I got sacked without any warning or process")
-tests/test_classify.py:25:    r = classify("My employer made my life so difficult I had to resign — constructive dismissal")
+tests/test_classify.py:25:    r = classify("My employer made my life so difficult I had to resign  -  constructive dismissal")
 tests/test_classify.py:30:    r = classify("employment ended", {"reason_for_dismissal": "conduct", "edt": "2026-05-01"})
-tests/test_classify.py:35:    r = classify("I was dismissed — what's my deadline to claim?")
+tests/test_classify.py:35:    r = classify("I was dismissed  -  what's my deadline to claim?")
 tests/test_classify.py:41:    r = classify("I need to prepare particulars of claim for my dismissal")
-tests/test_classify.py:50:    r = classify("My landlord wants to evict me — can they do this?")
+tests/test_classify.py:50:    r = classify("My landlord wants to evict me  -  can they do this?")
 tests/test_classify.py:54:    r = classify("I want to divorce my husband and need help with custody")
-tests/test_classify.py:58:    r = classify("I got arrested for speeding — what are my rights?")
+tests/test_classify.py:58:    r = classify("I got arrested for speeding  -  what are my rights?")
 tests/test_classify.py:62:    r = classify("My visa has expired and I need advice on immigration")
 tests/test_classify.py:66:    r = classify("I have a problem with my tax return and HMRC")
 tests/test_classify.py:70:    r = classify("I want to return a faulty TV I bought last month")
 tests/test_classify.py:80:    r = classify("I was dismissed from my job and now I can't pay my rent")
 tests/test_classify.py:91:    r = classify("I need some legal advice please")
-tests/test_deadline.py:87:# Proves effective-dating works — tested in test_retrieve_rules.py (integration).
+tests/test_deadline.py:87:# Proves effective-dating works  -  tested in test_retrieve_rules.py (integration).
 tests/test_deadline.py:93:    Verified in tests/integration/test_retrieve_rules.py against live DB.
-tests/test_deadline.py:104:# Proved in test_retrieve_rules.py (integration) — is_prospective=False gate.
+tests/test_deadline.py:104:# Proved in test_retrieve_rules.py (integration)  -  is_prospective=False gate.
 tests/test_deidentify.py:2:Tests for the de-identification boundary.
 tests/test_deidentify.py:9:from backend.core.deidentify import deidentify, _PII_FIELDS, _SAFE_FIELDS
 tests/test_deidentify.py:18:        "reason_for_dismissal": "conduct",
@@ -1644,9 +1644,9 @@ tests/test_govern.py:60:    assert "score_threshold" in result.failure_reason
 tests/test_govern.py:64:        grounding_score=GROUNDING_THRESHOLD + 0.1,
 tests/test_govern.py:65:        confidence_score=CONFIDENCE_THRESHOLD + 0.1,
 tests/test_govern.py:67:    result = govern(a)
-tests/test_govern.py:68:    # May still fail on other checks — just verify scores aren't the reason
+tests/test_govern.py:68:    # May still fail on other checks  -  just verify scores aren't the reason
 tests/test_govern.py:70:        assert "score_threshold" not in result.failure_reason
-tests/test_govern.py:78:    at construction time. This is the enforcement point — governance check 3
+tests/test_govern.py:78:    at construction time. This is the enforcement point  -  governance check 3
 tests/test_govern.py:98:    result = govern(a)
 tests/test_govern.py:100:        assert "determinism_violation" not in result.failure_reason
 tests/test_govern.py:107:        reasoning_summary="We will file your claim at the tribunal next week."
@@ -1659,7 +1659,7 @@ tests/test_govern.py:126:    result = govern(a)
 tests/test_govern.py:128:    assert "honesty_violation" in result.failure_reason
 tests/test_govern.py:132:    result = govern(a)
 tests/test_govern.py:134:    assert "honesty_violation" in result.failure_reason
-tests/test_govern.py:137:    # "no" claim — governance doesn't require weaknesses (it's already the honest answer)
+tests/test_govern.py:137:    # "no" claim  -  governance doesn't require weaknesses (it's already the honest answer)
 tests/test_govern.py:144:    result = govern(a)
 tests/test_govern.py:146:        assert "honesty_violation" not in result.failure_reason
 tests/test_govern.py:153:        grounding_score=0.8,

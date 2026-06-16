@@ -1,14 +1,14 @@
 """
 Legacy ↔ canonical route security parity (route-repair regression suite).
 
-Background — a QA audit found the legacy `@app` shim routes in backend/api/main.py
+Background  -  a QA audit found the legacy `@app` shim routes in backend/api/main.py
 did NOT enforce the same auth/payment gates as their canonical equivalents:
 
   * POST /api/payment/create-session   returned 200 unauthenticated (canonical 401)
   * POST /documents/generate           ran past the auth check (no explicit 401)
   * GET  /api/documents/{id}/download  served files with NO auth gate, ownership
                                        skipped when user_id was None, and NO payment
-                                       check at all — an unauthenticated document leak.
+                                       check at all  -  an unauthenticated document leak.
 
 These tests pin the fix: every legacy shim must block unauthenticated callers and must
 never deliver a paid document to an unpaid caller, matching the canonical route.
@@ -32,7 +32,7 @@ client = TestClient(app)
 
 ZERO_UUID = "00000000-0000-0000-0000-000000000000"
 
-# (method, path) pairs — canonical first, legacy second, grouped by capability.
+# (method, path) pairs  -  canonical first, legacy second, grouped by capability.
 PROTECTED_ROUTES = [
     ("post", "/api/payments/create-session"),   # canonical payment
     ("post", "/api/payment/create-session"),    # legacy payment shim
@@ -61,7 +61,7 @@ def unpaid_case():
     conn = get_connection()
     try:
         with conn.cursor() as cur:
-            # cases.user_id has a FK to users(id) — seed the user first.
+            # cases.user_id has a FK to users(id)  -  seed the user first.
             cur.execute(
                 "INSERT INTO users (id) VALUES (%s::uuid) ON CONFLICT (id) DO NOTHING",
                 (user_id,),
@@ -150,7 +150,7 @@ def test_unpaid_legacy_generate_does_not_unlock(unpaid_case):
             "facts": {},
         },
     )
-    # Either it preview-gates (200 + payment_required) or hard-blocks — never a paid unlock.
+    # Either it preview-gates (200 + payment_required) or hard-blocks  -  never a paid unlock.
     assert resp.status_code in (200, 402), f"unexpected {resp.status_code}: {resp.text[:200]}"
     if resp.status_code == 200:
         body = resp.json()

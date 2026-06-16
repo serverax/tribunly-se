@@ -1,5 +1,5 @@
 """
-Real OCR/extraction pipeline — Phase 5.
+Real OCR/extraction pipeline  -  Phase 5.
 
 Supports PDF text extraction and template-based parsing. 
 Returns structured facts with confidence scores.

@@ -1,6 +1,6 @@
 name: lawapp-ci-cd
 
-# DEPRECATED (2026-06-10): superseded by ci.yml ("lawapp CI — Test, Build, Push"),
+# DEPRECATED (2026-06-10): superseded by ci.yml ("lawapp CI  -  Test, Build, Push"),
 # the canonical release workflow. Kept manual-only for ad-hoc diagnostics.
 on:
   workflow_dispatch:

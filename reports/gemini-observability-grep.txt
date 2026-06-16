@@ -12,19 +12,19 @@ backend/api/main.py:630:        logger.error("Case save failed: %s", exc)
 backend/api/main.py:720:                    logger.warning("Failed to decrypt facts for case %s: %s", case_id, exc)
 backend/api/main.py:784:    from backend.core.encryption import is_configured as _enc_ready
 backend/api/main.py:814:            logger.info(
-backend/api/main.py:820:            logger.error("Handoff lead envelope encryption failed: %s — failing closed.", type(exc).__name__)
+backend/api/main.py:820:            logger.error("Handoff lead envelope encryption failed: %s  -  failing closed.", type(exc).__name__)
 backend/api/main.py:823:    elif _enc_ready():
 backend/api/main.py:834:            logger.info("Handoff lead PII encrypted (env key). Plaintext not stored.")
-backend/api/main.py:836:            logger.error("Handoff lead env-key encryption failed — storing plaintext: %s", exc)
+backend/api/main.py:836:            logger.error("Handoff lead env-key encryption failed  -  storing plaintext: %s", exc)
 backend/api/main.py:889:        logger.error("Handoff lead capture failed: %s", exc)
 backend/api/main.py:950:    "document_incomplete", "paid_document_ready",
 backend/api/main.py:1013:        logger.error("Reminder creation failed: %s", exc)
-backend/api/main.py:1060:# Local upload directory — Phase 4A only, NOT production-ready.
+backend/api/main.py:1060:# Local upload directory  -  Phase 4A only, NOT production-ready.
 backend/api/main.py:1092:    Phase 4A storage: local filesystem (/tmp). NOT production-ready.
 backend/api/main.py:1116:    from backend.core.encryption import is_configured as _enc_ready, encrypt_bytes as _enc_b
 backend/api/main.py:1118:    if _enc_ready():
-backend/api/main.py:1123:            logger.error("Upload file encryption failed — storing plaintext: %s", exc)
-backend/api/main.py:1125:    # Store to local filesystem (NOT production-ready — no HSM key management)
+backend/api/main.py:1123:            logger.error("Upload file encryption failed  -  storing plaintext: %s", exc)
+backend/api/main.py:1125:    # Store to local filesystem (NOT production-ready  -  no HSM key management)
 backend/api/main.py:1131:    logger.info(
 backend/api/main.py:1156:                    f"local:{storage_path}",   # NOT production-ready
 backend/api/main.py:1175:                "No encryption at rest. Not production-ready."
@@ -57,7 +57,7 @@ backend/core/agents/registry.py:368:                logger.debug("SoL generation
 backend/core/brain.py:25:  18. Store decision trace and audit log
 backend/core/brain.py:37:import logging
 backend/core/brain.py:43:logger = logging.getLogger(__name__)
-backend/core/brain.py:67:    "store_audit_log",        # 18 — immutable brain_traces + evaluation_results
+backend/core/brain.py:67:    "store_audit_log",        # 18  -  immutable brain_traces + evaluation_results
 backend/core/brain.py:154:def _run_safety_checks(assessment: dict, trace_id: str, user_id: Optional[str]) -> dict:
 backend/core/brain.py:227:    _write_safety_checks(trace_id, user_id, checks, failures)
 backend/core/brain.py:238:    trace_id: str,
@@ -69,7 +69,7 @@ backend/core/brain.py:288:        self.trace_id        = trace_id
 backend/core/brain.py:310:        self.audit_id: Optional[str]           = None
 backend/core/brain.py:324:            "trace_id":            self.trace_id,
 backend/core/brain.py:345:            "audit_id":            self.audit_id,
-backend/core/brain.py:376:        - "trace":          BrainTrace.to_dict() — full 19-step audit
+backend/core/brain.py:376:        - "trace":          BrainTrace.to_dict()  -  full 19-step audit
 backend/core/brain.py:389:    trace_id   = str(uuid.uuid4())
 backend/core/brain.py:391:    trace      = BrainTrace(trace_id=trace_id, started_at=started_at)
 backend/core/brain.py:450:            logger.debug("Urgency calculation skipped: %s", exc)
@@ -104,7 +104,7 @@ backend/core/brain.py:797:                    trace_id,
 backend/core/brain.py:816:            return trace_id
 backend/core/bundle.py:24:import logging
 backend/core/bundle.py:27:logger = logging.getLogger(__name__)
-backend/core/bundle.py:424:  [ ] Medical evidence — only include if disability/health is directly
+backend/core/bundle.py:424:  [ ] Medical evidence  -  only include if disability/health is directly
 backend/core/citation_verifier.py:14:import logging
 backend/core/citation_verifier.py:18:logger = logging.getLogger(__name__)
 backend/core/citation_verifier.py:88:        logger.debug("Legislation DB check failed: %s", exc)
@@ -138,11 +138,11 @@ backend/core/context_compressor.py:191:        logger.debug("context_compression
 backend/core/deidentify.py:23:import logging
 backend/core/deidentify.py:26:logger = logging.getLogger(__name__)
 backend/core/deidentify.py:63:    "health_safety_involved",
-backend/core/deidentify.py:104:        logger.error("PII fields found in de-identified output: %s — stripping", pii_in_output)
+backend/core/deidentify.py:104:        logger.error("PII fields found in de-identified output: %s  -  stripping", pii_in_output)
 backend/core/deidentify.py:110:    logger.info(
 backend/core/documents.py:16:import logging
 backend/core/documents.py:21:logger = logging.getLogger(__name__)
-backend/core/documents.py:78:        logger.error("Document safety check FAILED — violations: %s", violations)
+backend/core/documents.py:78:        logger.error("Document safety check FAILED  -  violations: %s", violations)
 backend/core/documents.py:284:   [Note: If dismissal was related to health and safety, whistleblowing, trade
 backend/core/document_extractor.py:18:import logging
 backend/core/document_extractor.py:22:logger = logging.getLogger(__name__)
@@ -206,7 +206,7 @@ backend/core/kms.py:197:        logger.debug("EnvKeyProvider.generate_data_key()
 backend/core/kms.py:203:            logger.warning("EnvKeyProvider.decrypt_data_key(): bundle provider mismatch.")
 backend/core/kms.py:219:    def status(self, run_health_check: bool = False) -> dict:
 backend/core/kms.py:220:        base = super().status(run_health_check)
-backend/core/kms.py:236:        logger.warning("KmsStubProvider: using env key (stub — value not logged).")
+backend/core/kms.py:236:        logger.warning("KmsStubProvider: using env key (stub  -  value not logged).")
 backend/core/kms.py:252:    def status(self, run_health_check: bool = False) -> dict:
 backend/core/kms.py:253:        base = super().status(run_health_check)
 backend/core/kms.py:310:            logger.error("AwsKmsProvider.generate_data_key(): AWS_KMS_KEY_ARN not set.")
@@ -260,22 +260,22 @@ backend/core/models.py:21:import logging
 backend/core/models.py:30:logger = logging.getLogger(__name__)
 backend/core/models.py:39:        safe_facts: dict,           # de-identified facts (PII already stripped)
 backend/core/models.py:42:        boundary_log: dict,         # de-identification audit record
-backend/core/models.py:83:        logger.info("StubReasoningModel.reason called — no external API call made")
+backend/core/models.py:83:        logger.info("StubReasoningModel.reason called  -  no external API call made")
 backend/core/models.py:216:            # NOT logging prompt text to avoid any edge-case PII in the log itself
-backend/core/models.py:341:            logger.warning("OpenRouter unavailable: %s — returning MODEL_UNAVAILABLE", exc)
+backend/core/models.py:341:            logger.warning("OpenRouter unavailable: %s  -  returning MODEL_UNAVAILABLE", exc)
 backend/core/models.py:379:    Used by /health endpoint to report provider mode transparently.
 backend/core/models.py:416:        logger.info("Model provider: DISABLED (AI_PROVIDER=disabled)")
 backend/core/models.py:424:            logger.info("Model provider: OpenRouter (%s)", mid)
-backend/core/models.py:428:                logger.warning("OpenRouter init failed: %s — trying Anthropic", exc)
+backend/core/models.py:428:                logger.warning("OpenRouter init failed: %s  -  trying Anthropic", exc)
 backend/core/models.py:434:        logger.info("Model provider: Anthropic (%s)", ant_mid)
-backend/core/models.py:438:            logger.warning("Anthropic init failed: %s — using stub", exc)
+backend/core/models.py:438:            logger.warning("Anthropic init failed: %s  -  using stub", exc)
 backend/core/models.py:440:        logger.info(
 backend/core/payment.py:19:import logging
 backend/core/payment.py:22:logger = logging.getLogger(__name__)
 backend/core/payment.py:54:        logger.debug("Payment mode=disabled: all paid requests blocked.")
 backend/core/payment.py:60:        logger.debug("Mock payment accepted (PAYMENT_MODE=mock, token present).")
 backend/core/payment.py:68:            logger.info("Test simulator payment accepted (PAYMENT_MODE=test_simulator).")
-backend/core/payment.py:70:        logger.debug("Test simulator: token does not start with 'test_' — rejected.")
+backend/core/payment.py:70:        logger.debug("Test simulator: token does not start with 'test_'  -  rejected.")
 backend/core/pipeline.py:26:import logging
 backend/core/pipeline.py:48:from ingestion.db import get_connection, insert_audit_log, _safe_fact_hash
 backend/core/pipeline.py:50:logger = logging.getLogger(__name__)
@@ -335,7 +335,7 @@ backend/core/user_auth.py:338:            # RS256+JWKS with full config IS produ
 backend/core/user_auth.py:350:    return {"ready": len(blockers) == 0, "blockers": blockers}
 backend/core/user_auth.py:353:def is_auth_controlled_beta_ready() -> dict:
 backend/core/user_auth.py:365:    return {"ready": len(blockers) == 0, "blockers": blockers}
-backend/core/user_auth.py:440:            logger.warning("Case ownership check failed — identity mismatch (IDs not logged).")
+backend/core/user_auth.py:440:            logger.warning("Case ownership check failed  -  identity mismatch (IDs not logged).")
 backend/domains/employment/assess_logic.py:20:import logging
 backend/domains/employment/assess_logic.py:30:logger = logging.getLogger(__name__)
 backend/domains/employment/assess_logic.py:126:                f"Day-one exceptions (discrimination, whistleblowing, health & safety) "
@@ -358,11 +358,11 @@ infra/k8s/iterlaw/backend-service.yaml:3:# No public ingress until service healt
 infra/k8s/iterlaw/configmap.yaml:12:  PAYMENT_MODE: "mock"              # change to "stripe_test" or "stripe_live" when ready
 infra/k8s/iterlaw/ingress-staging.yaml:5:#   2. lawapp-backend pod Running and healthy
 infra/k8s/iterlaw/ingress-staging.yaml:11:# Only apply this if a staging subdomain is already configured.
-infra/k8s/iterlaw/namespace.yaml:2:# IterLaw namespaces — all five already exist in cluster.
+infra/k8s/iterlaw/namespace.yaml:2:# IterLaw namespaces  -  all five already exist in cluster.
 infra/k8s/iterlaw/namespace.yaml:3:# This file documents them for IaC parity. Do not re-apply if already present.
 infra/k8s/iterlaw/networkpolicy.yaml:4:# No public ingress until health is proven.
 infra/k8s/iterlaw/postgres-staging.yaml:54:              command: ["pg_isready", "-U", "lawapp", "-d", "lawapp"]
-infra/k8s/iterlaw/README.md:34:# 1. Namespaces (already exist — skip if present)
+infra/k8s/iterlaw/README.md:34:# 1. Namespaces (already exist  -  skip if present)
 infra/k8s/iterlaw/README.md:65:- NEVER create public ingress until internal `/health` passes
 infra/k8s/iterlaw/README.md:67:- NEVER set `controlled_beta_ready=true` or `production_ready=true`
 infra/k8s/lawapp-ai-brain.yaml:4:# Routes all legal requests through classification → retrieval → reasoning → governance → audit.
@@ -403,7 +403,7 @@ tests/e2e/lawapp-journey.spec.js:302:  // Already proven in 'intake page loads w
 tests/integration/test_api_smoke.py:61:        c.get("/health")
 tests/integration/test_api_smoke.py:71:def test_health(client):
 tests/integration/test_api_smoke.py:72:    r = client.get("/health")
-tests/integration/test_phase2e_audit_log.py:2:Phase 2E — Assessment audit log integration tests.
+tests/integration/test_phase2e_audit_log.py:2:Phase 2E  -  Assessment audit log integration tests.
 tests/integration/test_phase2e_audit_log.py:5:  1. A passing governed assessment writes exactly one audit row
 tests/integration/test_phase2e_audit_log.py:6:  2. An insufficient_grounding assessment also writes one audit row
 tests/integration/test_phase2e_audit_log.py:9:  5. governance_result in audit matches what the pipeline returned
@@ -437,8 +437,8 @@ tests/integration/test_phase2e_audit_log.py:137:    row = _latest_audit_row()
 tests/integration/test_phase2e_audit_log.py:138:    audit_json = json.dumps(row, default=str).lower()
 tests/integration/test_phase2e_audit_log.py:140:    # PII VALUES must never appear in the audit row (names, emails, IDs, addresses)
 tests/integration/test_phase2e_audit_log.py:150:        assert value not in audit_json, \
-tests/integration/test_phase2e_audit_log.py:151:            f"PII value '{value}' found in audit row JSON — must never be stored"
-tests/integration/test_phase2e_audit_log.py:163:    print(f"\nAudit row PII check: PASS — no PII values in audit, "
+tests/integration/test_phase2e_audit_log.py:151:            f"PII value '{value}' found in audit row JSON  -  must never be stored"
+tests/integration/test_phase2e_audit_log.py:163:    print(f"\nAudit row PII check: PASS  -  no PII values in audit, "
 tests/integration/test_phase2e_audit_log.py:187:# ── Test 5: governance_result in audit matches pipeline response ───────────────
 tests/integration/test_phase2e_audit_log.py:189:def test_audit_governance_result_matches_pipeline():
 tests/integration/test_phase2e_audit_log.py:190:    """The governance_result stored in the audit must match what the pipeline returned."""
@@ -573,7 +573,7 @@ tests/integration/test_phase6d_compliance.py:329:    assert client.get("/health"
 tests/integration/test_phase6e_prelaunch.py:22:  13.  controlled_beta_ready remains false (human review not done)
 tests/integration/test_phase6e_prelaunch.py:185:def test_controlled_beta_ready_still_false():
 tests/integration/test_phase6e_prelaunch.py:188:    assert data["controlled_beta_ready"] is False, \
-tests/integration/test_phase6e_prelaunch.py:189:        "controlled_beta_ready must be false — no human sign-offs have occurred"
+tests/integration/test_phase6e_prelaunch.py:189:        "controlled_beta_ready must be false  -  no human sign-offs have occurred"
 tests/integration/test_phase6e_prelaunch.py:243:def test_health_regression():
 tests/integration/test_phase6e_prelaunch.py:244:    assert client.get("/health").json()["status"] == "ok"
 tests/integration/test_phase6_production.py:250:def test_production_readiness_still_not_production_ready():
@@ -603,7 +603,7 @@ tests/integration/test_phase7a_jwks.py:399:def test_production_ready_still_false
 tests/integration/test_phase7a_jwks.py:401:    assert resp.json()["production_ready"] is False
 tests/integration/test_phase7a_jwks.py:429:def test_health_regression():
 tests/integration/test_phase7a_jwks.py:430:    assert client.get("/health").json()["status"] == "ok"
-tests/integration/test_phase7b_kms.py:2:Phase 7B — KMS/HSM-ready key management provider tests.
+tests/integration/test_phase7b_kms.py:2:Phase 7B  -  KMS/HSM-ready key management provider tests.
 tests/integration/test_phase7b_kms.py:33:  20.  production_ready remains false
 tests/integration/test_phase7b_kms.py:306:def test_production_ready_still_false():
 tests/integration/test_phase7b_kms.py:308:    assert resp.json()["production_ready"] is False
@@ -665,4 +665,4 @@ tests/security/test_auth_routes.py:157:    def test_health_reports_payment_mode(
 tests/security/test_auth_routes.py:158:        r = client.get("/health")
 tests/security/test_auth_routes.py:163:    def test_health_ai_active_false_without_real_key(self, client):
 tests/security/test_auth_routes.py:168:        r = client.get("/health")
-tests/test_govern.py:137:    # "no" claim — governance doesn't require weaknesses (it's already the honest answer)
+tests/test_govern.py:137:    # "no" claim  -  governance doesn't require weaknesses (it's already the honest answer)

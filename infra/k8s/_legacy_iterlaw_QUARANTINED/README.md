@@ -11,7 +11,7 @@ Namespaces: `iterlaw-ai`, `iterlaw-api`, `iterlaw-rag`, `iterlaw-monitoring`, `i
 
 | Resource                | Namespace   | Status    | Notes                                     |
 |-------------------------|-------------|-----------|-------------------------------------------|
-| Node                    | cluster     | NotReady  | Kubelet stopped posting status — fix via Azure |
+| Node                    | cluster     | NotReady  | Kubelet stopped posting status  -  fix via Azure |
 | legal-orchestrator      | iterlaw-ai  | Pending   | Wrong image (rightsnow); node taint blocks scheduling |
 | lawapp-backend          | iterlaw-ai  | MISSING   | Not yet deployed (manifests in this dir)  |
 
@@ -31,7 +31,7 @@ Before running `kubectl apply -f`:
 ## Apply Order
 
 ```bash
-# 1. Namespaces (already exist — skip if present)
+# 1. Namespaces (already exist  -  skip if present)
 kubectl apply -f namespace.yaml
 
 # 2. ConfigMap

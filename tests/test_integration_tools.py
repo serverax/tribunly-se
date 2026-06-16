@@ -1,5 +1,5 @@
 """
-Integration — the acquisition funnel + all four tools end-to-end (API level).
+Integration  -  the acquisition funnel + all four tools end-to-end (API level).
 
 Maps the spec's INTEGRATION scenarios onto the REAL endpoints:
 

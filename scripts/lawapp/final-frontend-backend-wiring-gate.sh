@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Frontend/backend wiring gate — every frontend route exists in backend; no mock legal data;
+# Frontend/backend wiring gate  -  every frontend route exists in backend; no mock legal data;
 # real test gate exists (echo-stub build/test scripts are NOT acceptable as proof).
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"; . scripts/lawapp/_gate_lib.sh
@@ -32,7 +32,7 @@ done
 
 # 3. Real frontend test gate must exist (echo-stub scripts are a fake gate → FAIL)
 if grep -qE '"(build|test|lint)":\s*"echo' client/package.json 2>/dev/null; then
-  fail "frontend build/test/lint are echo stubs (fake gate) — replace with real checks (e.g. playwright e2e)"
+  fail "frontend build/test/lint are echo stubs (fake gate)  -  replace with real checks (e.g. playwright e2e)"
 else pass "frontend scripts are not echo stubs"; fi
 
 # 4. A real e2e harness must be present (playwright)

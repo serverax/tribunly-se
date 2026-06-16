@@ -2,7 +2,7 @@ backend/api/main.py:3248:        "authority":        result.get("authority", "ER
 backend/api/main.py:3370:        authority = tl_rule["authority_ref"] if tl_rule else "ERA 1996 s.111(2)"
 backend/core/agents/registry.py:25:        "Uses legislation (ERA 1996, TULRCA) and ACAS guidance."
 backend/core/agents/registry.py:116:                    "authority": result.get("authority", "ERA 1996 s.111(2)"),
-backend/core/bundle.py:288:        events.append((deadline, "ET claim limitation date (from rules — ERA 1996 s.111(2))", "rules-derived"))
+backend/core/bundle.py:288:        events.append((deadline, "ET claim limitation date (from rules  -  ERA 1996 s.111(2))", "rules-derived"))
 backend/core/bundle.py:328:Claim type: Unfair Dismissal (ERA 1996 Part X)
 backend/core/bundle.py:378:Claim type: Unfair Dismissal (ERA 1996 Part X)
 backend/core/bundle.py:388:  [ ] Recent payslips (last 3 months recommended)
@@ -20,7 +20,7 @@ backend/core/documents.py:299:       (i)  Basic award (ERA 1996 s.119)
 backend/core/documents.py:300:       (ii) Compensatory award (ERA 1996 s.123)
 backend/core/documents.py:349:    basis = value_range.get("basis", "Source: ERA 1996 statutory rules.")
 backend/core/documents.py:364:Claim type:  Unfair Dismissal (ERA 1996 Part X)
-backend/core/documents.py:383:   arrangements may affect the calculation — see ERA 1996 s.221–224.]
+backend/core/documents.py:383:   arrangements may affect the calculation  -  see ERA 1996 s.221–224.]
 backend/core/documents.py:386:B. BASIC AWARD (ERA 1996 s.119)
 backend/core/documents.py:391:   Age multipliers (ERA 1996 s.119(2)):
 backend/core/documents.py:410:C. COMPENSATORY AWARD (ERA 1996 s.123)
@@ -52,15 +52,15 @@ backend/domains/employment/assess_logic.py:230:            "under ERA 1996 s.98(
 backend/domains/employment/assess_logic.py:236:            "ERA 1996 s.98(2)(c) and that a fair selection and consultation process "
 backend/domains/employment/assess_logic.py:242:            "ERA 1996 s.98(2)(a) and that adequate support, warnings, and opportunity "
 backend/domains/employment/assess_logic.py:323:    Deterministic pre-assessment for unlawful deduction from wages (ERA 1996 Part II).
-backend/domains/employment/assess_logic.py:346:            "Worker status is self-employed or contractor — ERA 1996 Part II rights "
+backend/domains/employment/assess_logic.py:346:            "Worker status is self-employed or contractor  -  ERA 1996 Part II rights "
 backend/domains/employment/assess_logic.py:352:            "Worker status unclear. ERA 1996 Part II applies to 'workers' (wider than "
 backend/domains/employment/assess_logic.py:361:            "provision, or prior written worker consent (ERA 1996 s.13(1)). "
 backend/domains/employment/assess_logic.py:377:            "A gap of more than 3 months between deductions may break the series "
 backend/domains/employment/assess_logic.py:391:        "Employer may argue the deduction was authorised by contract or statute (ERA 1996 s.13(1)).",
 backend/domains/employment/assess_logic.py:393:        "Employer may argue the 3-month time limit (ERA 1996 s.23(2)) has expired.",
 backend/domains/employment/assess_logic.py:394:        "Employer may argue claimant is not a 'worker' for ERA 1996 Part II purposes.",
-backend/domains/employment/assess_logic.py:435:    rem_basis = rem_row["description"] if rem_row else "ERA 1996 s.24 — repayment of gross wages unlawfully deducted."
-backend/domains/employment/assess_logic.py:476:            f"No qualifying period applies (ERA 1996 s.13 — day-one right)."
+backend/domains/employment/assess_logic.py:435:    rem_basis = rem_row["description"] if rem_row else "ERA 1996 s.24  -  repayment of gross wages unlawfully deducted."
+backend/domains/employment/assess_logic.py:476:            f"No qualifying period applies (ERA 1996 s.13  -  day-one right)."
 backend/domains/employment/checklists/tribunal_elements.py:9:        "Qualifying service (usually two years) unless automatic unfair dismissal",
 backend/domains/employment/checklists/tribunal_elements.py:10:        "Potentially fair reason under s.98(1)–(2) ERA 1996",
 backend/domains/employment/deadline.py:8:All logic is derived from ERA 1996 s.111(2) and s.207B as verified in Phase 1.
@@ -81,7 +81,7 @@ client/public/js/document_preview.js:86:      '4. The Claimant contends the dism
 client/public/js/document_preview.js:92:      '(b) Compensation comprising the basic award (ERA 1996 s.119) and',
 client/public/js/document_preview.js:93:      '    the compensatory award (ERA 1996 s.123).',
 client/public/pages/case_detail.html:290:    small.textContent = 'Statute-derived (ERA 1996 s.111(2))';
-client/public/pages/intake.html:148:            Based on rules from ERA 1996 s.111(2). This is indicative only — verify with ACAS or a solicitor.
+client/public/pages/intake.html:148:            Based on rules from ERA 1996 s.111(2). This is indicative only  -  verify with ACAS or a solicitor.
 client/public/pages/saved_case.html:245:    small.textContent = 'Statute-derived (ERA 1996 s.111(2))';
 client/wasm/Cargo.lock:198:checksum = "9a8e94ea7f378bd32cbbd37198a4a91436180c5bb472411e48b5ec2e2124ae9e"
 client/wasm/src/lib.rs:62:                authority: Some("ERA 1996 s.111(2)".to_string()),
@@ -94,12 +94,12 @@ client/wasm/target/wasm32-unknown-unknown/release/.fingerprint/cfg-if-87412499c4
 client/wasm/target/wasm32-unknown-unknown/release/.fingerprint/js-sys-648792cf7542997c/lib-js_sys.json:1:{"rustc":16696009966390864400,"features":"[\"default\", \"std\", \"unsafe-eval\"]","declared_features":"[\"default\", \"futures-core-03-stream\", \"std\", \"unsafe-eval\"]","target":4913466754190795764,"profile":13180848661409974975,"path":9471966604300452559,"deps":[[1353426359723253673,"wasm_bindgen",false,9669950866505064106],[5855319743879205494,"once_cell",false,16634141488723289152],[5898568623609459682,"futures_util",false,8220133189854199065],[7667230146095136825,"cfg_if",false,11698984388270047226]],"local":[{"CheckDepInfo":{"dep_info":"wasm32-unknown-unknown/release/.fingerprint/js-sys-648792cf7542997c/dep-lib-js_sys","checksum":false}}],"rustflags":[],"config":8247474407144887393,"compile_kind":14682669768258224367}
 client/wasm/target/wasm32-unknown-unknown/release/build/wasm-bindgen-shared-e037a3bcded2e424/output:1:cargo:rustc-env=SCHEMA_FILE_HASH=8427143144775135195
 ingestion/case_law/ingest.py:47:    ("eat/2026/78", "d-d7719042-c198-4514-b5da-74b3b100176b"),  # H Rogers v SoS Justice
-ingestion/config.py:84:    # ERA 1996 — unfair dismissal sections (Phase 1 priority)
+ingestion/config.py:84:    # ERA 1996  -  unfair dismissal sections (Phase 1 priority)
 ingestion/legislation/ingest.py:40:    ("ukpga", 1996, "18"): ["108", "111", "124"],  # ERA 1996 sections amended by ERA 2025 s.25/s.152
 ingestion/rules/seed.py:5:Source:    SI 2026/310 (Increase of Limits Order 2026), ERA 1996, ETA 1996.
 ingestion/rules/seed.py:14:    s.227(1)    week's pay cap:           £719 → £751  (effective 2026-04-06) ✓
 ingestion/rules/seed.py:15:    s.124(1ZA)  compensatory cap:    £118,223 → £123,543 (effective 2026-04-06) ✓
-ingestion/rules/seed.py:59:# these GB-wide ERA 1996 provisions — documented as EW per 03_DATABASE_DESIGN.md).
+ingestion/rules/seed.py:59:# these GB-wide ERA 1996 provisions  -  documented as EW per 03_DATABASE_DESIGN.md).
 ingestion/rules/seed.py:86:            "Ordinary unfair dismissal requires 2 years' continuous service "
 ingestion/rules/seed.py:87:            "(ERA 1996 s.108(1)). Applies to dismissals with EDT up to 2026-12-31 "
 ingestion/rules/seed.py:92:        "authority_ref":  "ERA 1996 s.108(1)",
@@ -107,9 +107,9 @@ ingestion/rules/seed.py:106:            "Qualifying period reduced to 6 months f
 ingestion/rules/seed.py:107:            "2027-01-01 (ERA 2025 s.25 amending ERA 1996 s.108). "
 ingestion/rules/seed.py:113:        "authority_ref":  "ERA 1996 s.108 as amended by ERA 2025 s.25",
 ingestion/rules/seed.py:129:            "Complaint must be presented before the end of 3 months 'beginning with' "
-ingestion/rules/seed.py:131:            "ERA 1996 s.111(2). A 'not reasonably practicable' extension may apply — "
+ingestion/rules/seed.py:131:            "ERA 1996 s.111(2). A 'not reasonably practicable' extension may apply  -  "
 ingestion/rules/seed.py:135:        "authority_ref":  "ERA 1996 s.111(2)",
-ingestion/rules/seed.py:137:        "effective_from": date(1996, 8, 22),  # ERA 1996 commencement — verify exact date
+ingestion/rules/seed.py:137:        "effective_from": date(1996, 8, 22),  # ERA 1996 commencement  -  verify exact date
 ingestion/rules/seed.py:149:            "Time limit extended to 6 months 'beginning with' the EDT under ERA 2025 s.152. "
 ingestion/rules/seed.py:152:            "The effective_from date is provisional. DEADLINE CALC MUST apply 3 months "
 ingestion/rules/seed.py:154:            "set to false. Applying 6 months early tells claimants they have longer than "
@@ -123,7 +123,7 @@ ingestion/rules/seed.py:215:        "value_numeric":  123543,
 ingestion/rules/seed.py:219:            "Maximum compensatory award: £123,543 OR 52 weeks' gross actual pay, "
 ingestion/rules/seed.py:226:        "authority_ref":  "ERA 1996 s.124(1ZA)(a) + Employment Rights (Increase of Limits) Order 2026 (SI 2026/310)",
 ingestion/rules/seed.py:244:            "OPEN ITEM: verify whether the 52-week alternative (s.124(1ZA)(b)) is also "
-ingestion/rules/seed.py:245:            "removed or retained — confirm against amended s.124 prospective text."
+ingestion/rules/seed.py:245:            "removed or retained  -  confirm against amended s.124 prospective text."
 ingestion/rules/seed.py:248:        "authority_ref":  "ERA 1996 s.124 as amended by ERA 2025 s.25",
 ingestion/rules/seed.py:264:            "Alternative compensatory cap: 52 weeks' gross actual pay if this is lower "
 ingestion/rules/seed.py:265:            "than the £ figure. ERA 1996 s.124(1ZA)(b). "
@@ -141,9 +141,9 @@ ingestion/rules/seed.py:334:        "authority_ref":  "ERA 1996 s.120(1) + SI 20
 ingestion/rules/seed.py:356:            "Age-banded formula for basic award (ERA 1996 s.119). "
 ingestion/rules/seed.py:357:            "The derived maximum (currently 20 × 1.5 × £751 = £22,530) is NOT stored "
 ingestion/rules/seed.py:362:        "authority_ref":  "ERA 1996 s.119",
-ingestion/rules/seed.py:364:        "effective_from": date(1996, 8, 22),  # ERA 1996 commencement — verify exact date
-ingestion/rules/seed.py:437:        "Whether s.124(1ZA)(b) 52-week cap survives ERA 2025 cap removal — check prospective text.",
-ingestion/rules/seed.py:438:        "ERA 1996 commencement date for s.119 and s.111 — verify exact date against the Act.",
+ingestion/rules/seed.py:364:        "effective_from": date(1996, 8, 22),  # ERA 1996 commencement  -  verify exact date
+ingestion/rules/seed.py:437:        "Whether s.124(1ZA)(b) 52-week cap survives ERA 2025 cap removal  -  check prospective text.",
+ingestion/rules/seed.py:438:        "ERA 1996 commencement date for s.119 and s.111  -  verify exact date against the Act.",
 ingestion/rules/seed_unfair_dismissal.py:57:    # ── 1a. Limitation period (current: 3 months) ────────────────────────────
 ingestion/rules/seed_unfair_dismissal.py:58:    # s.111(2) ERA 1996: "before the end of the period of three months
 ingestion/rules/seed_unfair_dismissal.py:61:    # ERA 1996: Royal Assent 22 May 1996; commencement 22 August 1996 (s.243).
@@ -154,7 +154,7 @@ ingestion/rules/seed_unfair_dismissal.py:84:            "ERA 1996 s.207B (in for
 ingestion/rules/seed_unfair_dismissal.py:94:    # ── 1b. Limitation period (prospective: 6 months, ERA 2025 s.152) ─────────
 ingestion/rules/seed_unfair_dismissal.py:95:    # ERA 2025 s.152 + Schedule 12 para 4(25): extends to 6 months.
 ingestion/rules/seed_unfair_dismissal.py:108:            "extends the time limit to 6 months. Confirmed from ERA 2025 enacted text "
-ingestion/rules/seed_unfair_dismissal.py:116:            "(amending ERA 1996 s.111(2)); commencement SI pending — "
+ingestion/rules/seed_unfair_dismissal.py:116:            "(amending ERA 1996 s.111(2)); commencement SI pending  -  "
 ingestion/rules/seed_unfair_dismissal.py:156:    # ── 3a. Qualifying period (current: 2 years from 6 April 2012) ──────────
 ingestion/rules/seed_unfair_dismissal.py:157:    # s.108(1) ERA 1996: "not less than two years ending with the EDT."
 ingestion/rules/seed_unfair_dismissal.py:167:            "Continuous employment of not less than 2 years ending with the EDT "
@@ -162,14 +162,14 @@ ingestion/rules/seed_unfair_dismissal.py:168:            "(ERA 1996 s.108(1)). I
 ingestion/rules/seed_unfair_dismissal.py:174:            "ERA 1996 s.108(1); SI 2012/989 "
 ingestion/rules/seed_unfair_dismissal.py:184:    # ── 3b. Qualifying period (prospective: 6 months, ERA 2025 s.25) ────────
 ingestion/rules/seed_unfair_dismissal.py:185:    # ERA 2025 s.25(2): "for 'two years' substitute 'six months'."
-ingestion/rules/seed_unfair_dismissal.py:196:            "PROSPECTIVE — NOT IN FORCE. ERA 2025 s.25(2) substitutes 'six months' "
+ingestion/rules/seed_unfair_dismissal.py:196:            "PROSPECTIVE  -  NOT IN FORCE. ERA 2025 s.25(2) substitutes 'six months' "
 ingestion/rules/seed_unfair_dismissal.py:197:            "for 'two years' in ERA 1996 s.108(1) and (2). Verified from ERA 2025 "
 ingestion/rules/seed_unfair_dismissal.py:203:            "Employment Rights Act 2025 s.25(2) (amending ERA 1996 s.108(1) and (2)); "
-ingestion/rules/seed_unfair_dismissal.py:212:    # ── 4a. Week's pay cap — prior year (£719, to 5 April 2026) ────────────
+ingestion/rules/seed_unfair_dismissal.py:212:    # ── 4a. Week's pay cap  -  prior year (£719, to 5 April 2026) ────────────
 ingestion/rules/seed_unfair_dismissal.py:217:        "value_numeric":  719,
 ingestion/rules/seed_unfair_dismissal.py:221:            "Maximum week's pay for basic award (ERA 1996 s.227(1)), SI 2025/348. "
 ingestion/rules/seed_unfair_dismissal.py:226:        "authority_ref":  "ERA 1996 s.227(1) + SI 2025/348",
-ingestion/rules/seed_unfair_dismissal.py:233:    # ── 4b. Week's pay cap — current (£751, from 6 April 2026) ──────────────
+ingestion/rules/seed_unfair_dismissal.py:233:    # ── 4b. Week's pay cap  -  current (£751, from 6 April 2026) ──────────────
 ingestion/rules/seed_unfair_dismissal.py:234:    # SI 2026/310 schedule: s.227(1) £719 -> £751. Confirmed 2026-05-31.
 ingestion/rules/seed_unfair_dismissal.py:239:        "value_numeric":  751,
 ingestion/rules/seed_unfair_dismissal.py:243:            "Maximum week's pay for basic award (ERA 1996 s.227(1)), SI 2026/310. "
@@ -201,9 +201,9 @@ ingestion/rules/seed_unpaid_wages.py:49:        "authority_ref":  "ERA 1996 s.23
 ingestion/rules/seed_unpaid_wages.py:63:            "No qualifying period. Day-one right for 'workers' (ERA 1996 s.13). "
 ingestion/rules/seed_unpaid_wages.py:68:        "authority_ref":  "ERA 1996 s.13, s.230(3)",
 ingestion/rules/seed_unpaid_wages.py:87:        "authority_ref":  "ERA 1996 s.13, s.230(3); Uber v Aslam [2021] UKSC 5",
-ingestion/rules/seed_unpaid_wages.py:102:            "Each deduction must be sufficiently linked — a break of more than 3 months "
+ingestion/rules/seed_unpaid_wages.py:102:            "Each deduction must be sufficiently linked  -  a break of more than 3 months "
 ingestion/rules/seed_unpaid_wages.py:108:            "ERA 1996 s.23(3A); Bear Scotland Ltd v Fulton [2015] IRLR 15 (EAT)"
-ingestion/rules/seed_unpaid_wages.py:130:            "ERA 1996 s.24; Delaney v Staples [1992] 1 AC 687 (HL) — gross wages"
+ingestion/rules/seed_unpaid_wages.py:130:            "ERA 1996 s.24; Delaney v Staples [1992] 1 AC 687 (HL)  -  gross wages"
 ingestion/rules/seed_unpaid_wages.py:144:         "ERA 1996 s.23(2) confirmed from legislation.gov.uk on 2026-06-01. "
 ingestion/rules/seed_unpaid_wages.py:148:         "ERA 1996 s.13 confirmed from legislation.gov.uk on 2026-06-01. "
 ingestion/rules/seed_unpaid_wages.py:152:         "ERA 1996 s.230(3) confirmed from legislation.gov.uk on 2026-06-01. "
@@ -257,8 +257,8 @@ tests/integration/test_phase2_engine.py:195:    assert int(cap["value_numeric"])
 tests/integration/test_phase2_engine.py:237:                          authority="ERA 1996 s.111(2)"),
 tests/integration/test_phase2_engine.py:262:                          authority="ERA 1996 s.111(2)"),
 tests/integration/test_phase2_engine.py:303:    legislation text (ERA 1996 s.108 is in the corpus). 'Reasonable responses'
-tests/integration/test_phase2_real_model.py:217:        # 14 months < 2 years — should not qualify for ordinary UD
-tests/integration/test_phase3a_flows.py:149:        "service_start_date": "2025-01-01",   # ~13 months — below 2yr QP
+tests/integration/test_phase2_real_model.py:217:        # 14 months < 2 years  -  should not qualify for ordinary UD
+tests/integration/test_phase3a_flows.py:149:        "service_start_date": "2025-01-01",   # ~13 months  -  below 2yr QP
 tests/integration/test_phase3a_flows.py:156:        "query": "I was dismissed after 13 months",
 tests/integration/test_phase3b_deadline.py:68:    assert "s.111" in rule["authority_ref"] or "111" in rule["authority_ref"], \
 tests/integration/test_phase3b_deadline.py:69:        f"authority_ref should reference ERA 1996 s.111: {rule['authority_ref']}"
@@ -293,7 +293,7 @@ tests/integration/test_phase6_production.py:72:    "deadline_info": {"limitation
 tests/integration/test_phase7a_jwks.py:334:                                   "authority": "ERA 1996 s.111(2)", "ec_applied": False},
 tests/integration/test_phase8b_algorithm_brain.py:273:            limitation_date="2026-06-30", source="rules", authority="ERA 1996 s.111(2)"
 tests/integration/test_phase8b_algorithm_brain.py:276:        citations=[Citation(cite="ERA 1996 s.98", url="https://legislation.gov.uk/...")],
-tests/integration/test_pipeline_stub.py:124:    Full pipeline with EDT 2026-05-01 — time limit must be 3 months from rules,
+tests/integration/test_pipeline_stub.py:124:    Full pipeline with EDT 2026-05-01  -  time limit must be 3 months from rules,
 tests/integration/test_pipeline_stub.py:159:    After embeddings are created, this should return ERA 1996 s.98 and s.94
 tests/integration/test_retrieve_rules.py:58:    Current value must be 2 years.
 tests/integration/test_retrieve_rules.py:97:    assert int(cap["value_numeric"]) == 118223, \
@@ -324,7 +324,7 @@ tests/legal_accuracy/fixtures.py:39:            "deadline_authority":    "ERA 19
 tests/legal_accuracy/fixtures.py:61:            "qp_passes":       False,    # ~14 months < 2 years
 tests/legal_accuracy/fixtures.py:213:            # 3 months from 2026-03-31: anniversary=2026-06-30 (clamped), deadline=2026-06-29
 tests/legal_accuracy/fixtures.py:224:        "query": "My employer has been deducting £100 per month without authorisation for 6 months",
-tests/legal_accuracy/fixtures.py:281:        "description": "Stale claim — wages_due_date more than 3 months ago",
+tests/legal_accuracy/fixtures.py:281:        "description": "Stale claim  -  wages_due_date more than 3 months ago",
 tests/legal_accuracy/fixtures.py:282:        "query": "My employer didn't pay my wages 6 months ago",
 tests/legal_accuracy/fixtures.py:284:            "wages_due_date": "2025-11-30",   # >3 months before 2026-06-01
 tests/legal_accuracy/fixtures.py:291:            # 3 months from 2025-11-30: anniversary=2026-02-28 (clamped), deadline=2026-02-27
@@ -332,7 +332,7 @@ tests/legal_accuracy/test_legal_accuracy.py:54:    """FP1: Deadline must be 2026
 tests/legal_accuracy/test_legal_accuracy.py:74:    assert "ERA 1996" in auth or "s.111" in auth, \
 tests/legal_accuracy/test_legal_accuracy.py:75:        f"Authority must reference ERA 1996 s.111, got: {auth}"
 tests/legal_accuracy/test_legal_accuracy.py:107:    """FP2: Deadline must be 2026-06-14 (3 months from 2026-03-15)."""
-tests/legal_accuracy/test_legal_accuracy.py:358:    """UPW5: Stale claim — deadline 2026-02-27 (Nov 30 + 3 months = Feb 28, -1 = Feb 27)."""
+tests/legal_accuracy/test_legal_accuracy.py:358:    """UPW5: Stale claim  -  deadline 2026-02-27 (Nov 30 + 3 months = Feb 28, -1 = Feb 27)."""
 tests/mcp/test_mcp.py:125:        assert any("ERA 1996" in r for r in refs)
 tests/mcp/test_mcp.py:130:            "section_ref": "ERA 1996",
 tests/rag/test_rag.py:85:        bundle = retrieve("unfair dismissal ERA 1996", "unfair_dismissal", "EW", "2025-10-01")
@@ -352,18 +352,18 @@ tests/test_govern.py:95:            authority="ERA 1996 s.111(2)",
 tests/test_govern.py:159:            authority="ERA 1996 s.111(2)",
 tests/test_wasm_fallback.js:35:    let n = calculateStatutoryNotice(10, 'employer_to_employee'); // < 2 years
 db/migrations/001_initial.sql:106:    authority_ref    text        NOT NULL,              -- e.g. "ERA 1996 s.111(2)"
-db/migrations/018_brain_architecture.sql:177:  ('ud_claim',            'claim_type',          'Unfair Dismissal',                 'ERA 1996 Part X — right not to be unfairly dismissed',                               'EW', 1, 'ERA 1996 s.94',  'https://www.legislation.gov.uk/ukpga/1996/18/section/94'),
-db/migrations/018_brain_architecture.sql:178:  ('employee_status',     'legal_test',          'Employee Status',                  'Must be an employee (not worker/self-employed) — ERA 1996 s.230',                    'EW', 1, 'ERA 1996 s.230', 'https://www.legislation.gov.uk/ukpga/1996/18/section/230'),
+db/migrations/018_brain_architecture.sql:177:  ('ud_claim',            'claim_type',          'Unfair Dismissal',                 'ERA 1996 Part X  -  right not to be unfairly dismissed',                               'EW', 1, 'ERA 1996 s.94',  'https://www.legislation.gov.uk/ukpga/1996/18/section/94'),
+db/migrations/018_brain_architecture.sql:178:  ('employee_status',     'legal_test',          'Employee Status',                  'Must be an employee (not worker/self-employed)  -  ERA 1996 s.230',                    'EW', 1, 'ERA 1996 s.230', 'https://www.legislation.gov.uk/ukpga/1996/18/section/230'),
 db/migrations/018_brain_architecture.sql:179:  ('qualifying_service',  'legal_test',          'Qualifying Period',                '2 years continuous employment (or day-one rights exception)',                         'EW', 1, 'ERA 1996 s.108', 'https://www.legislation.gov.uk/ukpga/1996/18/section/108'),
 db/migrations/018_brain_architecture.sql:180:  ('dismissal',           'legal_test',          'Fact of Dismissal',                'Actual dismissal, constructive dismissal, or expiry of fixed-term contract',          'EW', 1, 'ERA 1996 s.95',  'https://www.legislation.gov.uk/ukpga/1996/18/section/95'),
-db/migrations/018_brain_architecture.sql:181:  ('fair_reason',         'legal_test',          'Fair Reason for Dismissal',        'Capability, conduct, redundancy, statutory restriction, or SOSR — s.98(2)',           'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
-db/migrations/018_brain_architecture.sql:182:  ('reasonableness_test', 'legal_test',          'Range of Reasonable Responses',    'Was dismissal within band of reasonable responses? — s.98(4)',                       'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
-db/migrations/018_brain_architecture.sql:184:  ('acas_ec',             'procedure',           'ACAS Early Conciliation',          'Mandatory before ET1. Pauses limitation period — ERA 1996 s.207B',                   'EW', 1, 'ERA 1996 s.207B','https://www.legislation.gov.uk/ukpga/1996/18/section/207B'),
+db/migrations/018_brain_architecture.sql:181:  ('fair_reason',         'legal_test',          'Fair Reason for Dismissal',        'Capability, conduct, redundancy, statutory restriction, or SOSR  -  s.98(2)',           'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
+db/migrations/018_brain_architecture.sql:182:  ('reasonableness_test', 'legal_test',          'Range of Reasonable Responses',    'Was dismissal within band of reasonable responses?  -  s.98(4)',                       'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
+db/migrations/018_brain_architecture.sql:184:  ('acas_ec',             'procedure',           'ACAS Early Conciliation',          'Mandatory before ET1. Pauses limitation period  -  ERA 1996 s.207B',                   'EW', 1, 'ERA 1996 s.207B','https://www.legislation.gov.uk/ukpga/1996/18/section/207B'),
 db/migrations/018_brain_architecture.sql:185:  ('limitation_date',     'deadline',            'ET Limitation Date',               '3 months less one day from EDT (or EC floor). ERA 1996 s.111(2)',                     'EW', 1, 'ERA 1996 s.111', 'https://www.legislation.gov.uk/ukpga/1996/18/section/111'),
 db/migrations/018_brain_architecture.sql:186:  ('basic_award',         'remedy',              'Basic Award',                      'Statutory formula: age × service years × weekly pay cap. ERA 1996 s.119',            'EW', 1, 'ERA 1996 s.119', 'https://www.legislation.gov.uk/ukpga/1996/18/section/119'),
 db/migrations/018_brain_architecture.sql:187:  ('compensatory_award',  'remedy',              'Compensatory Award',               'Loss of earnings, future loss, benefits. Capped at lower of 52 weeks pay or £123,543', 'EW', 1, 'ERA 1996 s.123', 'https://www.legislation.gov.uk/ukpga/1996/18/section/123'),
-db/migrations/018_brain_architecture.sql:189:  ('contributory_fault',  'defence',             'Contributory Fault',               'Award reduced for claimant conduct contributing to dismissal — ERA 1996 s.122/123',   'EW', 1, 'ERA 1996 s.122', 'https://www.legislation.gov.uk/ukpga/1996/18/section/122'),
-db/migrations/018_brain_architecture.sql:190:  ('upw_claim',           'claim_type',          'Unpaid Wages / Unlawful Deduction','ERA 1996 Part II — right not to have unlawful deductions from wages',                 'EW', 1, 'ERA 1996 s.13',  'https://www.legislation.gov.uk/ukpga/1996/18/section/13'),
-db/migrations/018_brain_architecture.sql:191:  ('upw_limitation',      'deadline',            'UPW Limitation Date',              '3 months less one day from date of deduction — ERA 1996 s.23(2)',                     'EW', 1, 'ERA 1996 s.23',  'https://www.legislation.gov.uk/ukpga/1996/18/section/23')
+db/migrations/018_brain_architecture.sql:189:  ('contributory_fault',  'defence',             'Contributory Fault',               'Award reduced for claimant conduct contributing to dismissal  -  ERA 1996 s.122/123',   'EW', 1, 'ERA 1996 s.122', 'https://www.legislation.gov.uk/ukpga/1996/18/section/122'),
+db/migrations/018_brain_architecture.sql:190:  ('upw_claim',           'claim_type',          'Unpaid Wages / Unlawful Deduction','ERA 1996 Part II  -  right not to have unlawful deductions from wages',                 'EW', 1, 'ERA 1996 s.13',  'https://www.legislation.gov.uk/ukpga/1996/18/section/13'),
+db/migrations/018_brain_architecture.sql:191:  ('upw_limitation',      'deadline',            'UPW Limitation Date',              '3 months less one day from date of deduction  -  ERA 1996 s.23(2)',                     'EW', 1, 'ERA 1996 s.23',  'https://www.legislation.gov.uk/ukpga/1996/18/section/23')
 db/migrations/018_brain_architecture.sql:198:  ('ud_claim',           'qualifying_service',  'requires',    'Must have 2 years service (ERA 1996 s.108)'),
 db/migrations/018_brain_architecture.sql:210:  ('upw_claim',          'upw_limitation',      'applies_to',  'Must claim within 3 months of deduction'),

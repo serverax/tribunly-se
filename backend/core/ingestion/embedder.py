@@ -1,4 +1,4 @@
-"""Embedder — Perpetual Law Brain stage 4.
+"""Embedder  -  Perpetual Law Brain stage 4.
 
 Chunks and vectorises content ONLY after the critic and graph linker have
 approved it. Writes provenance-complete rows into corpus_chunks (the unified

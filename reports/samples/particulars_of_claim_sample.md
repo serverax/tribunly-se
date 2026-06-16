@@ -2,7 +2,7 @@ IN THE EMPLOYMENT TRIBUNAL
 
 ─────────────────────────────────────────────────────────────────────────────
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-IMPORTANT — READ BEFORE USE
+IMPORTANT  -  READ BEFORE USE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 This document is a SELF-HELP DRAFT prepared using lawapp.
 It is NOT legal advice. lawapp is not a solicitor or law firm.
@@ -17,7 +17,7 @@ consult the Employment Tribunal's published guidance notes.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ─────────────────────────────────────────────────────────────────────────────
 
-PARTICULARS OF CLAIM — UNFAIR DISMISSAL
+PARTICULARS OF CLAIM  -  UNFAIR DISMISSAL
 Claim type:  Unfair Dismissal (Employment Rights Act 1996, Part X)
 
 Claimant:    [YOUR FULL LEGAL NAME]
@@ -107,7 +107,7 @@ Generation method: template (no freeform AI drafting)
 Viability indicator: uncertain [not a legal opinion; does not predict outcome]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-IMPORTANT — READ BEFORE USE
+IMPORTANT  -  READ BEFORE USE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 This document is a SELF-HELP DRAFT prepared using lawapp.
 It is NOT legal advice. lawapp is not a solicitor or law firm.

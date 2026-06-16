@@ -1,4 +1,4 @@
-"""Perpetual Law Brain — autonomous ingestion proof (real assertions, no vacuous PASS).
+"""Perpetual Law Brain  -  autonomous ingestion proof (real assertions, no vacuous PASS).
 
 Pure tests (no DB): whitelist allow/block, redirect-target block, critic accept/reject.
 DB tests (compose db): node + citation edge creation, chunk storage, searchable,
@@ -35,7 +35,7 @@ def _db_up() -> bool:
         return False
 
 
-db_required = pytest.mark.skipif(not _db_up(), reason="UNPROVEN — DB not accessible")
+db_required = pytest.mark.skipif(not _db_up(), reason="UNPROVEN  -  DB not accessible")
 
 
 def _valid_doc(content: str = "Section 98 of the Employment Rights Act 1996 sets out the fair reasons for dismissal. See s.98.") -> IngestionDoc:
@@ -147,7 +147,7 @@ def test_rejected_document_is_never_chunked(clean_db):
     try:
         with conn.cursor() as cur:
             cur.execute("SELECT count(*) FROM corpus_chunks WHERE source_url=%s", (bad.source_url,))
-            assert cur.fetchone()[0] == 0, "rejected doc was chunked — gate breached"
+            assert cur.fetchone()[0] == 0, "rejected doc was chunked  -  gate breached"
     finally:
         conn.close()
 

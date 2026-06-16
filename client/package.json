@@ -1,7 +1,7 @@
 {
   "name": "lawapp-frontend",
   "version": "1.0.0",
-  "description": "Static frontend for lawapp — UK Employment Claim Co-Pilot",
+  "description": "Static frontend for lawapp  -  UK Employment Claim Co-Pilot",
   "type": "module",
   "scripts": {
     "lint": "node scripts/check.mjs --lint",

@@ -1,5 +1,5 @@
 ---
-description: Measure lawapp readiness for the 10k concurrent-user target — load test + resource/headroom evidence.
+description: Measure lawapp readiness for the 10k concurrent-user target  -  load test + resource/headroom evidence.
 ---
 
 # /load-readiness

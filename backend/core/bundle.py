@@ -1,5 +1,5 @@
 """
-Premium tribunal bundle generation — Phase 4B.
+Premium tribunal bundle generation  -  Phase 4B.
 
 Generates four structured components:
   1. Witness statement structure
@@ -11,7 +11,7 @@ GUARDRAILS:
   - Only user_confirmed or user_corrected extracted facts are used.
   - extracted_unconfirmed and rejected facts are never included.
   - Placeholder values ("[Extracted from...") are excluded automatically.
-  - Missing dates are flagged — never invented.
+  - Missing dates are flagged  -  never invented.
   - Every component includes the legal boundary notice verbatim.
   - No LLM involvement. Template generation only.
   - "we will file", "we will submit", "we will represent", "guaranteed" are
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 BUNDLE_BOUNDARY_NOTICE = """\
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-IMPORTANT — READ BEFORE USE
+IMPORTANT  -  READ BEFORE USE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 This document is a SELF-HELP DRAFT prepared using lawapp.
 It is NOT legal advice. lawapp is not a solicitor or law firm.
@@ -73,7 +73,7 @@ def get_confirmed_facts(uploads: list[dict]) -> dict:
 
     Rules:
       - status must be 'user_confirmed' or 'user_corrected'
-      - value must not start with '[Extracted' (placeholder — skip)
+      - value must not start with '[Extracted' (placeholder  -  skip)
       - Later uploads override earlier ones for the same field
     """
     result: dict[str, str] = {}
@@ -92,11 +92,11 @@ def collect_warnings(assessment: dict, key_dates: dict, confirmed: dict) -> list
     """Return a list of warnings about missing data that the user should address."""
     warnings: list[str] = []
     if not key_dates.get("edt"):
-        warnings.append("EDT (dismissal date) not recorded — essential for all bundle documents.")
+        warnings.append("EDT (dismissal date) not recorded  -  essential for all bundle documents.")
     if not key_dates.get("deadline_date"):
-        warnings.append("Tribunal deadline not stored — check /cases/{id}/deadline.")
+        warnings.append("Tribunal deadline not stored  -  check /cases/{id}/deadline.")
     if not assessment.get("reasoning_summary"):
-        warnings.append("Assessment summary missing — run /assess first.")
+        warnings.append("Assessment summary missing  -  run /assess first.")
     if not confirmed.get("edt_candidate") and not key_dates.get("edt"):
         warnings.append("No confirmed dismissal date from uploaded documents.")
     return warnings
@@ -112,8 +112,8 @@ def generate_witness_statement(
 ) -> str:
     edt           = key_dates.get("edt") or confirmed.get("edt_candidate")
     start_date    = key_dates.get("employment_start_date") or confirmed.get("employment_start_date")
-    employer      = confirmed.get("employer_name", "[YOUR EMPLOYER — add before filing]")
-    employee      = confirmed.get("employee_name", "[YOUR FULL NAME — add before filing]")
+    employer      = confirmed.get("employer_name", "[YOUR EMPLOYER  -  add before filing]")
+    employee      = confirmed.get("employee_name", "[YOUR FULL NAME  -  add before filing]")
     reason        = confirmed.get("dismissal_reason") or assessment.get("reason_for_dismissal", "")
     procedure_ok  = assessment.get("was_procedure_followed")
     weaknesses    = assessment.get("key_weaknesses") or []
@@ -166,7 +166,7 @@ def generate_witness_statement(
 {BUNDLE_BOUNDARY_NOTICE}
 
 ─────────────────────────────────────────────────────────────────────────────
-WITNESS STATEMENT — SELF-HELP DRAFT
+WITNESS STATEMENT  -  SELF-HELP DRAFT
 ─────────────────────────────────────────────────────────────────────────────
 IN THE EMPLOYMENT TRIBUNAL
 
@@ -181,7 +181,7 @@ I, {employee}, will say as follows:
    I was employed by {employer}{"from " + _fmt(start_date) if start_date else ""} until
    {_fmt(edt)} (my effective date of termination).
 
-   [Add further background — role, department, duties — before filing.]
+   [Add further background  -  role, department, duties  -  before filing.]
 
 ─────────────────────────────────────────────────────────────────────────────
 2. EMPLOYMENT HISTORY
@@ -197,7 +197,7 @@ I, {employee}, will say as follows:
 ─────────────────────────────────────────────────────────────────────────────
    [Complete with specific dates and details before filing.]
 
-   {_fmt(edt)} — Employment terminated (EDT).
+   {_fmt(edt)}  -  Employment terminated (EDT).
    [Add any prior warnings, meetings, or correspondence here.]
 
 ─────────────────────────────────────────────────────────────────────────────
@@ -229,7 +229,7 @@ I, {employee}, will say as follows:
 ─────────────────────────────────────────────────────────────────────────────
    Uploaded documents associated with this case:{upload_list}
 
-   [Reference documents by exhibit number (e.g. "Exhibit A — dismissal letter").]
+   [Reference documents by exhibit number (e.g. "Exhibit A  -  dismissal letter").]
 
 ─────────────────────────────────────────────────────────────────────────────
 STATEMENT OF TRUTH
@@ -264,28 +264,28 @@ def generate_chronology(
     day_a      = key_dates.get("ec_day_a") or confirmed.get("edt_candidate")
     day_b      = key_dates.get("ec_day_b")
 
-    # Build event list — never invent missing dates
+    # Build event list  -  never invent missing dates
     events: list[tuple[str, str, str]] = []
 
     if start_date:
         events.append((start_date, "Employment commenced", "case record"))
     else:
-        events.append(("[DATE NOT CONFIRMED]", "Employment commenced", "not confirmed — do not invent"))
+        events.append(("[DATE NOT CONFIRMED]", "Employment commenced", "not confirmed  -  do not invent"))
 
     if edt:
-        events.append((edt, "Employment terminated — effective date of termination (EDT)", "case record"))
+        events.append((edt, "Employment terminated  -  effective date of termination (EDT)", "case record"))
     else:
-        events.append(("[DATE NOT CONFIRMED]", "Dismissal — EDT", "not confirmed — do not invent"))
+        events.append(("[DATE NOT CONFIRMED]", "Dismissal  -  EDT", "not confirmed  -  do not invent"))
 
     if key_dates.get("ec_day_a"):
         events.append((key_dates["ec_day_a"], "ACAS Early Conciliation started (Day A)", "case record"))
     if key_dates.get("ec_day_b"):
         events.append((key_dates["ec_day_b"], "ACAS EC certificate received (Day B)", "case record"))
     elif key_dates.get("ec_day_a") and not key_dates.get("ec_day_b"):
-        events.append(("[PENDING]", "ACAS EC certificate (Day B) — not yet received", "pending"))
+        events.append(("[PENDING]", "ACAS EC certificate (Day B)  -  not yet received", "pending"))
 
     if deadline:
-        events.append((deadline, "ET claim limitation date (from rules — ERA 1996 s.111(2))", "rules-derived"))
+        events.append((deadline, "ET claim limitation date (from rules  -  ERA 1996 s.111(2))", "rules-derived"))
 
     # Sort by date (ISO sort; non-dates sort to top/bottom)
     def sort_key(e):
@@ -311,9 +311,9 @@ def generate_chronology(
     # Missing confirmed dates warning
     missing = []
     if not start_date:
-        missing.append("Employment start date — not confirmed from uploads or intake")
+        missing.append("Employment start date  -  not confirmed from uploads or intake")
     if not edt:
-        missing.append("EDT (dismissal date) — not confirmed")
+        missing.append("EDT (dismissal date)  -  not confirmed")
     if missing:
         missing_block = "\nMissing dates (do not invent):\n" + "\n".join(f"  • {m}" for m in missing)
     else:
@@ -323,7 +323,7 @@ def generate_chronology(
 {BUNDLE_BOUNDARY_NOTICE}
 
 ─────────────────────────────────────────────────────────────────────────────
-CHRONOLOGY OF EVENTS — SELF-HELP DRAFT
+CHRONOLOGY OF EVENTS  -  SELF-HELP DRAFT
 ─────────────────────────────────────────────────────────────────────────────
 Claim type: Unfair Dismissal (ERA 1996 Part X)
 
@@ -336,8 +336,8 @@ Add only dates you can verify from documents in your possession.
 {chr(10).join(rows)}
 {missing_block}
 
-[Add further events — e.g. disciplinary invite date, outcome date,
-appeal date — with corresponding document references before filing.]
+[Add further events  -  e.g. disciplinary invite date, outcome date,
+appeal date  -  with corresponding document references before filing.]
 
 ─────────────────────────────────────────────────────────────────────────────
 DOCUMENT INFORMATION
@@ -363,7 +363,7 @@ def generate_evidence_checklist(
             status = u.get("extraction_status", "pending")
             lines.append(
                 f"  [✓] {u.get('doc_type','').replace('_',' ').title()} "
-                f"— {u.get('original_filename','[unnamed]')} (extraction: {status})"
+                f" -  {u.get('original_filename','[unnamed]')} (extraction: {status})"
             )
         upload_lines = "\n".join(lines)
     else:
@@ -373,11 +373,11 @@ def generate_evidence_checklist(
 {BUNDLE_BOUNDARY_NOTICE}
 
 ─────────────────────────────────────────────────────────────────────────────
-EVIDENCE CHECKLIST — SELF-HELP DRAFT
+EVIDENCE CHECKLIST  -  SELF-HELP DRAFT
 ─────────────────────────────────────────────────────────────────────────────
 Claim type: Unfair Dismissal (ERA 1996 Part X)
 
-This is a preparation checklist — not all items are required.
+This is a preparation checklist  -  not all items are required.
 Gather what is available and relevant to your circumstances.
 
 ─────────────────────────────────────────────────────────────────────────────
@@ -421,7 +421,7 @@ WITNESSES
 ─────────────────────────────────────────────────────────────────────────────
 MEDICAL / DISABILITY (ONLY IF RELEVANT TO YOUR CLAIM)
 ─────────────────────────────────────────────────────────────────────────────
-  [ ] Medical evidence — only include if disability/health is directly
+  [ ] Medical evidence  -  only include if disability/health is directly
       relevant to the reason for dismissal or protected characteristics.
       Seek advice before including sensitive medical records.
 
@@ -449,8 +449,8 @@ def generate_et1_support_notes(
     edt         = key_dates.get("edt")
     start_date  = key_dates.get("employment_start_date") or confirmed.get("employment_start_date")
     deadline    = key_dates.get("deadline_date")
-    employer    = confirmed.get("employer_name", "[YOUR EMPLOYER — required on ET1]")
-    employee    = confirmed.get("employee_name", "[YOUR FULL NAME — required on ET1]")
+    employer    = confirmed.get("employer_name", "[YOUR EMPLOYER  -  required on ET1]")
+    employee    = confirmed.get("employee_name", "[YOUR FULL NAME  -  required on ET1]")
     reasoning   = (assessment.get("reasoning_summary") or "").strip()
     vr          = assessment.get("value_range") or {}
     dl_auth     = (assessment.get("deadline_info") or {}).get("authority", "ERA 1996 s.111(2)")
@@ -480,10 +480,10 @@ def generate_et1_support_notes(
 {BUNDLE_BOUNDARY_NOTICE}
 
 ─────────────────────────────────────────────────────────────────────────────
-ET1 SUPPORT NOTES — SELF-HELP DRAFT
+ET1 SUPPORT NOTES  -  SELF-HELP DRAFT
 ─────────────────────────────────────────────────────────────────────────────
 
-⚠ IMPORTANT — READ CAREFULLY
+⚠ IMPORTANT  -  READ CAREFULLY
 These are support notes to help you complete ET1 sections.
 lawapp does NOT file, submit, or send your ET1.
 You must complete and submit the ET1 yourself, or instruct a solicitor.
@@ -533,7 +533,7 @@ ET1 SECTION 10: REMEDY
    Schedule of Loss. Do not leave blank.]
 
 ─────────────────────────────────────────────────────────────────────────────
-DEADLINE — CRITICAL
+DEADLINE  -  CRITICAL
 ─────────────────────────────────────────────────────────────────────────────
    Your ET claim deadline: {_fmt(deadline)}
    Authority: {dl_auth}

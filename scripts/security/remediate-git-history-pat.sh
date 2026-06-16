@@ -2,14 +2,14 @@
 # remediate-git-history-pat.sh
 # OWNER-RUN history remediation for the leaked GitHub PAT(s) in lawapp git history.
 #
-# This script DOES NOT force-push and DOES NOT rotate tokens — those are owner-only.
+# This script DOES NOT force-push and DOES NOT rotate tokens  -  those are owner-only.
 # It prepares a CLEANED MIRROR using git-filter-repo (preferred) or BFG, verifies the
 # history is clean, and then PRINTS the exact (manual) force-push command for the owner
 # to run consciously. Nothing destructive to the public remote happens automatically.
 #
 # Prereqs (owner machine):
 #   1. ROTATE/REVOKE the exposed PAT in GitHub > Settings > Developer settings FIRST.
-#      (Rewriting history does NOT invalidate a live token — rotation is mandatory and primary.)
+#      (Rewriting history does NOT invalidate a live token  -  rotation is mandatory and primary.)
 #   2. Install git-filter-repo:  pip install git-filter-repo   (or use BFG jar)
 #   3. Ensure all collaborators have pushed; history rewrite invalidates existing clones.
 #
@@ -56,14 +56,14 @@ rm -f "$REPLACE_FILE"
 
 echo "[4/5] Verify cleaned mirror has NO PAT pattern:"
 if ( cd "$WORK" && git log --all -p 2>/dev/null | grep -nE 'ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{40,}' >/dev/null ); then
-  echo "FAIL: PAT pattern still present in cleaned mirror — do NOT push."; exit 1
+  echo "FAIL: PAT pattern still present in cleaned mirror  -  do NOT push."; exit 1
 fi
 echo "OK: cleaned mirror is free of GitHub PAT patterns."
 
 cat <<EOF
 
 [5/5] READY. The cleaned mirror is at: $WORK
-The following step is DESTRUCTIVE and rewrites public history — run it CONSCIOUSLY,
+The following step is DESTRUCTIVE and rewrites public history  -  run it CONSCIOUSLY,
 only after the PAT is already rotated, and after telling collaborators to re-clone:
 
     cd "$WORK"

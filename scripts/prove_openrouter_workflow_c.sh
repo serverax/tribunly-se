@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_openrouter_workflow_c.sh — proves the Workflow C OpenRouter provider plug
+# prove_openrouter_workflow_c.sh  -  proves the Workflow C OpenRouter provider plug
 # and the 4 AIA validators WITHOUT a real key (mocked/stub). Exits non-zero on
 # any failure. No secret is printed; no network call is made.
 set -uo pipefail

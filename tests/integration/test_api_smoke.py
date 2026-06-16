@@ -1,5 +1,5 @@
 """
-Phase 2C — /assess API smoke tests.
+Phase 2C  -  /assess API smoke tests.
 
 Tests the HTTP endpoint directly via httpx to confirm the JSON shape is
 production-correct. These run against the live backend container.
@@ -61,7 +61,7 @@ def client():
         c.get("/health")
     except (httpx.ConnectError, httpx.TimeoutException) as exc:
         c.close()
-        pytest.skip(f"Backend not reachable at {API_BASE} — skipping live-stack smoke tests ({exc})")
+        pytest.skip(f"Backend not reachable at {API_BASE}  -  skipping live-stack smoke tests ({exc})")
     yield c
     c.close()
 

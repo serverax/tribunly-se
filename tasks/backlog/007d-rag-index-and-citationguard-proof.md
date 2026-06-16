@@ -1,4 +1,4 @@
-# 007d — RAG Index and CitationGuard Proof
+# 007d  -  RAG Index and CitationGuard Proof
 
 **Owner agents:** db-rag-ingestion-agent → ai-brain-citationguard-agent → qa-release-gatekeeper
 **Stage:** 3–5 of legal-data chain · **State:** backlog · **Depends on:** 007c

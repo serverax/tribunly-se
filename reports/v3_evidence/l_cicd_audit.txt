@@ -79,7 +79,7 @@ infra/k8s/iterlaw/namespace.yaml:41:    project: iterlaw
 infra/k8s/iterlaw/networkpolicy.yaml:9:  namespace: iterlaw-ai
 infra/k8s/iterlaw/networkpolicy.yaml:21:              kubernetes.io/metadata.name: iterlaw-ai
 infra/k8s/iterlaw/networkpolicy.yaml:24:              kubernetes.io/metadata.name: iterlaw-monitoring
-infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw — Staging Postgres + pgvector in iterlaw-ai
+infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw  -  Staging Postgres + pgvector in iterlaw-ai
 infra/k8s/iterlaw/postgres-staging.yaml:9:#   kubectl apply -f infra/k8s/iterlaw/postgres-staging.yaml -n iterlaw-ai
 infra/k8s/iterlaw/postgres-staging.yaml:14:  namespace: iterlaw-ai
 infra/k8s/iterlaw/postgres-staging.yaml:17:    project: iterlaw
@@ -117,5 +117,5 @@ scripts/deploy-staging.sh:23:kubectl apply -f infra/k8s/iterlaw/configmap.yaml -
 scripts/deploy-staging.sh:35:bash scripts/smoke-iterlaw-ai.sh
 scripts/smoke-iterlaw-ai.sh:4:NAMESPACE="iterlaw-ai"
 scripts/smoke-iterlaw-ai.sh:17:echo "=== iterlaw-ai smoke tests ==="
-scripts/smoke-staging.sh:3:# Alias for smoke-iterlaw-ai.sh — kept for automation naming consistency.
+scripts/smoke-staging.sh:3:# Alias for smoke-iterlaw-ai.sh  -  kept for automation naming consistency.
 scripts/smoke-staging.sh:6:exec bash scripts/smoke-iterlaw-ai.sh

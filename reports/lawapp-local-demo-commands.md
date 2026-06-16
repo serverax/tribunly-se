@@ -1,6 +1,6 @@
-# lawapp — Local Demo Command Pack
+# lawapp  -  Local Demo Command Pack
 
-**Project:** lawapp — UK Employment Law AI Assistant  
+**Project:** lawapp  -  UK Employment Law AI Assistant  
 **Environment:** Docker Compose on Windows/WSL  
 **Backend:** http://localhost:8000  
 **Frontend:** http://localhost:8000  
@@ -75,15 +75,15 @@ Open your browser: **http://localhost:8000**
 ### Register and diagnose
 
 1. Click **"Start free diagnosis"**
-2. Step 1 — Select **Unfair dismissal**
-3. Step 2 — Fill:
+2. Step 1  -  Select **Unfair dismissal**
+3. Step 2  -  Fill:
    - Dismissal date (EDT): e.g. `2026-03-01`
    - Employment start date: e.g. `2022-01-01`
    - Reason: **Misconduct**
    - ACAS: tick "I haven't contacted ACAS yet" (or enter Day A/B dates)
 4. **Live deadline preview will appear** showing tribunal deadline
-5. Step 3 — Select: **No procedure followed**, **No hearing**
-6. Step 4 — Enter weekly pay: `£700`
+5. Step 3  -  Select: **No procedure followed**, **No hearing**
+6. Step 4  -  Enter weekly pay: `£700`
 7. Click **"Get my free diagnosis"**
 8. Assessment page shows result
 
@@ -92,16 +92,16 @@ Open your browser: **http://localhost:8000**
 Use short service (under 2 years) to get a clear deterministic answer:
 
 - EDT: `2026-03-01`
-- Service start: `2025-05-01` (10 months only — QP fails)
+- Service start: `2025-05-01` (10 months only  -  QP fails)
 
-Result: `has_viable_claim: no` — full citations, deadline, weaknesses returned without AI model.
+Result: `has_viable_claim: no`  -  full citations, deadline, weaknesses returned without AI model.
 
 ### For a complex result (needs real AI key)
 
 - EDT: `2026-03-01`
 - Service start: `2022-01-01` (4+ years)
 
-Result with stub model: `insufficient_grounding` (correct — requires real AI)  
+Result with stub model: `insufficient_grounding` (correct  -  requires real AI)  
 Result with real `ANTHROPIC_API_KEY`: full assessment with reasoning
 
 ---
@@ -203,7 +203,7 @@ Expected output shows values from DB rules table with ERA 1996 citations.
 curl -s -X POST http://localhost:8000/api/brain/trace \
   -H "Content-Type: application/json" \
   -d '{
-    "message": "I was dismissed after 10 months — qualifying period check",
+    "message": "I was dismissed after 10 months  -  qualifying period check",
     "facts": {
       "edt": "2026-03-01",
       "service_start_date": "2025-05-01",

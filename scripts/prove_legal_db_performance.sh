@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_legal_db_performance.sh — extensions, indexes, and EXPLAIN ANALYZE proof.
+# prove_legal_db_performance.sh  -  extensions, indexes, and EXPLAIN ANALYZE proof.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp (service 'db')"
@@ -14,7 +14,7 @@ for e in vector pgcrypto pg_trgm; do
   n=$(Q "SELECT count(*) FROM pg_extension WHERE extname='$e';"); [ "${n:-0}" -ge 1 ] && ok "extension $e" || bad "missing $e"
 done
 pss=$(Q "SELECT count(*) FROM pg_extension WHERE extname='pg_stat_statements';")
-[ "${pss:-0}" -ge 1 ] && ok "pg_stat_statements available" || echo "  NOTE: pg_stat_statements not installed (needs shared_preload_libraries) — slow-query report degraded"
+[ "${pss:-0}" -ge 1 ] && ok "pg_stat_statements available" || echo "  NOTE: pg_stat_statements not installed (needs shared_preload_libraries)  -  slow-query report degraded"
 
 echo "########## 2. required indexes ##########"
 for ix in corpus_chunks_emb_hnsw legislation_emb_hnsw corpus_chunks_fts_idx legislation_fts_idx legislation_acttitle_trgm rules_rulekey_trgm rules_key_juris_eff_idx rules_claim_juris_eff_idx; do
@@ -54,7 +54,7 @@ echo "########## 9. slow query report ##########"
 if [ "${pss:-0}" -ge 1 ]; then
   P "SELECT round(mean_exec_time::numeric,2) ms, calls, left(query,60) q FROM pg_stat_statements ORDER BY mean_exec_time DESC LIMIT 5;" 2>&1 | head -10
 else
-  echo "  pg_stat_statements unavailable — see reports/legal-db-performance-proof.md for note"
+  echo "  pg_stat_statements unavailable  -  see reports/legal-db-performance-proof.md for note"
 fi
 
 [ "$fail" -ne 0 ] && { echo "LEGAL DB PERFORMANCE PROOF: FAIL"; exit 1; }

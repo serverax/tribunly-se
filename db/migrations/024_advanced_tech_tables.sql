@@ -1,4 +1,4 @@
--- Migration 024 — Advanced technology tables
+-- Migration 024  -  Advanced technology tables
 -- Idempotent (CREATE TABLE IF NOT EXISTS / CREATE INDEX IF NOT EXISTS)
 
 -- injection_guard_log

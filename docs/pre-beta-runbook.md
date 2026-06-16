@@ -1,8 +1,8 @@
 # Pre-Beta Operational Runbook
 
-**lawapp — UK Employment Claim Co-Pilot**
+**lawapp  -  UK Employment Claim Co-Pilot**
 **Phase:** 6E | Date: 2026-06-01
-**Status:** CONTROLLED BETA NOT YET READY — see blockers below
+**Status:** CONTROLLED BETA NOT YET READY  -  see blockers below
 
 ---
 
@@ -15,7 +15,7 @@ Controlled beta requires ALL items in this runbook to be complete.
 
 ---
 
-## Step 1 — DPIA DPO Review [BLOCKED: human review required]
+## Step 1  -  DPIA DPO Review [BLOCKED: human review required]
 
 **Owner:** Data Protection Officer (DPO)
 **Document:** `docs/dpia-artefact.md`
@@ -39,7 +39,7 @@ Controlled beta requires ALL items in this runbook to be complete.
 
 ---
 
-## Step 2 — Privacy Notice Legal Review [BLOCKED: human review required]
+## Step 2  -  Privacy Notice Legal Review [BLOCKED: human review required]
 
 **Owner:** Legal Counsel
 **Document:** `docs/privacy-notice-draft.md`
@@ -63,29 +63,29 @@ Controlled beta requires ALL items in this runbook to be complete.
 
 ---
 
-## Step 3 — Configure Production Environment
+## Step 3  -  Configure Production Environment
 
 **Owner:** Platform / DevOps
 **Template:** `docs/env-production.template`
 
 1. Copy `docs/env-production.template` to `.env` (never commit `.env`)
 2. Fill in all `<REQUIRED: ...>` values:
-   - `POSTGRES_PASSWORD` — strong random password
-   - `ADMIN_API_KEY` — strong random string
-   - `ENCRYPTION_KEY` — Fernet key (generate: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`)
+   - `POSTGRES_PASSWORD`  -  strong random password
+   - `ADMIN_API_KEY`  -  strong random string
+   - `ENCRYPTION_KEY`  -  Fernet key (generate: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`)
    - `LAWAPP_AUTH_MODE=jwt`
-   - `JWT_SECRET` — long random secret (`python -c "import secrets; print(secrets.token_urlsafe(64))"`)
-   - `JWT_ISSUER` — your auth service URI
-   - `JWT_AUDIENCE` — e.g. `lawapp-api`
-   - `APP_BASE_URL` — your deployment URL
-   - `ALLOWED_ORIGINS` — comma-separated allowed origins
+   - `JWT_SECRET`  -  long random secret (`python -c "import secrets; print(secrets.token_urlsafe(64))"`)
+   - `JWT_ISSUER`  -  your auth service URI
+   - `JWT_AUDIENCE`  -  e.g. `lawapp-api`
+   - `APP_BASE_URL`  -  your deployment URL
+   - `ALLOWED_ORIGINS`  -  comma-separated allowed origins
    - `PAYMENT_MODE=disabled` (recommended for beta)
    - `DEPLOYMENT_MODE=production`
-3. Verify startup: `docker compose up` — look for "Startup config OK" in logs
+3. Verify startup: `docker compose up`  -  look for "Startup config OK" in logs
 
 ---
 
-## Step 4 — Run All Quality Gates
+## Step 4  -  Run All Quality Gates
 
 ```bash
 # Legal accuracy gate (mandatory)
@@ -105,7 +105,7 @@ All must exit 0 before proceeding.
 
 ---
 
-## Step 5 — Verify Controlled Beta Ready
+## Step 5  -  Verify Controlled Beta Ready
 
 With production environment configured:
 
@@ -120,7 +120,7 @@ If `false`, check `controlled_beta_blockers` in the response for remaining items
 
 ---
 
-## Step 6 — Controlled Beta Scope and Limits
+## Step 6  -  Controlled Beta Scope and Limits
 
 Before launching:
 - [ ] Define invited user list (controlled beta = invited users only)
@@ -132,7 +132,7 @@ Before launching:
 
 ---
 
-## Step 7 — Post-Launch Monitoring
+## Step 7  -  Post-Launch Monitoring
 
 - Monitor `/health` endpoint
 - Monitor `GET /admin/production-readiness` for any status changes

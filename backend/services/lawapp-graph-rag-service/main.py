@@ -1,5 +1,5 @@
 """
-LAWAPP GraphRAG Service (Port 8018) — Legal Path Finding API
+LAWAPP GraphRAG Service (Port 8018)  -  Legal Path Finding API
 
 Endpoints:
   POST /api/graphrag/traverse → traverse legal path for claim type

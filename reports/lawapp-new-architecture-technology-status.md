@@ -1,6 +1,6 @@
-# lawapp — New Architecture Technology Status Report
+# lawapp  -  New Architecture Technology Status Report
 
-**Project:** lawapp — UK Employment Law AI Assistant  
+**Project:** lawapp  -  UK Employment Law AI Assistant  
 **Date:** 2026-06-04  
 **Git commit:** 095be01 (+ uncommitted Phase 1 changes)  
 **Branch:** master  
@@ -49,26 +49,26 @@ python -m pytest tests/brain/ tests/legal_accuracy/ tests/security/ tests/router
 
 | Technology | Implemented | Wired to Brain | DB/Migration | API Exposed | Tests | Command Proof | Status | Remaining Work |
 |---|---|---|---|---|---|---|---|---|
-| **Brain Algorithm** (19-step) | YES | N/A (is the brain) | migration 018, 019 | `/api/brain/trace` | 43 passing | `curl + pytest` | **PASS** | — |
+| **Brain Algorithm** (19-step) | YES | N/A (is the brain) | migration 018, 019 | `/api/brain/trace` | 43 passing | `curl + pytest` | **PASS** |  -  |
 | **Agentic AI** (8 agents) | YES | Step 8 (select_agents) | brain_traces.agents_used | `/api/agents` | tests/agents/ 15 passing | `pytest tests/agents/` | **PASS** | Document generation agent stub only |
 | **Hybrid Search** | YES | Step 11 (retrieve_legal_evidence) | rules table + pgvector | `/api/retrieve` | tests/retrieval/ 18 passing | `pytest tests/retrieval/` | **PASS** | Embeddings not ingested locally (no OpenAI key) |
 | **Graph RAG** | YES | Step 9 (select_rag_source) | legal_nodes, legal_edges | via brain trace | tests/graph_rag/ 24 passing | `pytest tests/graph_rag/` | **PASS** | Graph enrichment is additive to hybrid |
 | **Knowledge Graph** | YES | Step 9 (KG context enrichment) | legal_nodes, legal_edges | get_concept_context() | tests/knowledge_graph/ 21 passing | `pytest tests/knowledge_graph/` | **PASS** | Needs richer node types for discrimination/whistleblowing |
-| **Context Compression** | YES | Step 13 (compress_context) | context_compression_log | logged in trace | tests/brain/ (step recorded) | brain API trace | **PASS** | — |
+| **Context Compression** | YES | Step 13 (compress_context) | context_compression_log | logged in trace | tests/brain/ (step recorded) | brain API trace | **PASS** |  -  |
 | **Memory Engine** | YES | Step 17 (save_case_memory, consent-gated) | legal_memory table | consent gate in brain | tests/memory/ 9 passing | `pytest tests/memory/` | **PASS** | Returning-user case load UI not yet wired |
-| **Evaluation AI** | YES | Step 15 (evaluate_draft) | evaluation_results table | via brain trace | tests/evaluation/ passing | `pytest tests/evaluation/` | **PASS** | — |
+| **Evaluation AI** | YES | Step 15 (evaluate_draft) | evaluation_results table | via brain trace | tests/evaluation/ passing | `pytest tests/evaluation/` | **PASS** |  -  |
 | **MCP Connectors** | PARTIAL | Step 18 (mcp_tool_calls logged) | mcp_tool_calls table | deny-by-default | tests/mcp/ 9 passing | `pytest tests/mcp/` | **PARTIAL** | Runtime connector wiring pending (interface + deny-by-default done) |
 | **Multimodal Upload Readiness** | PARTIAL | deidentify strips raw_document | documents table exists | `/api/documents/upload` exists | tests/uploads/ 11 passing | `pytest tests/uploads/` | **PARTIAL** | OCR/extraction not implemented (Phase 4) |
-| **AI Router** | YES | Step 9 (select_rag_source), router.py | routing_decisions table | `/api/router/classify` | tests/router/ passing | `pytest tests/router/` | **PASS** | — |
+| **AI Router** | YES | Step 9 (select_rag_source), router.py | routing_decisions table | `/api/router/classify` | tests/router/ passing | `pytest tests/router/` | **PASS** |  -  |
 | **Semantic Cache** | YES | Between steps 11-13 | semantic_cache table | cache checks in retrieve | tests/cache/ passing | `pytest tests/cache/` | **PASS** | Cache invalidation on source version change PARTIAL |
 | **WASM** | PARTIAL | Not wired to brain (client-only) | N/A | Client WASM binary exists | test_wasm_fallback.js | JS tests | **PARTIAL** | Rule values must come from server /api/rules endpoint |
 | **Security/Data Protection** | YES | Steps 1/3/16 (auth/jurisdiction/safety) | audit_logs, model_call_audit | enforced at all endpoints | tests/security/ 15 passing | `pytest tests/security/` | **PASS** | Rate limiting not implemented |
-| **Audit Logging** | YES | Step 18 (store_audit_log) | brain_traces, safety_boundary_checks, assessment_audit_logs | via brain trace | brain tests | brain API trace | **PASS** | — |
+| **Audit Logging** | YES | Step 18 (store_audit_log) | brain_traces, safety_boundary_checks, assessment_audit_logs | via brain trace | brain tests | brain API trace | **PASS** |  -  |
 | **Kubernetes Deployment** | BLOCKED | N/A | N/A | N/A | N/A | kubectl not available on this machine | **BLOCKED** | See Section D |
 
 ---
 
-## D. Kubernetes — Commands for Owner to Run
+## D. Kubernetes  -  Commands for Owner to Run
 
 `kubectl` is not available in this development environment. Run these from your WSL terminal or a machine with kubeconfig:
 
@@ -187,8 +187,8 @@ All "OrdinoxAI Brain Algorithm" references in runtime code have been renamed to 
 | `backend/api/main.py` line 2225 | OrdinoxAI 16-step → lawapp 19-step |
 
 Remaining OrdinoxAI references are in:
-- `reports/phase8b-system-readiness-full-audit.txt` — old historical report, not runtime code
-- `.claude/memory/lawapp-memory.json` — assistant memory, not runtime code
+- `reports/phase8b-system-readiness-full-audit.txt`  -  old historical report, not runtime code
+- `.claude/memory/lawapp-memory.json`  -  assistant memory, not runtime code
 
 ---
 
@@ -219,24 +219,24 @@ python -c "import fastembed; print('fastembed', fastembed.__version__, 'OK')"
 ## J. Files Created / Modified
 
 ### Created:
-- `backend/core/context_compressor.py` — Brain Step 13
-- `backend/core/legal_graph.py` — Brain Step 9 (Graph RAG + KG source selection)
-- `db/migrations/019_phase1_brain_safety.sql` — safety_boundary_checks + context_compression_log tables
-- `tests/conftest.py` — DB redirect for all tests
-- `tests/graph_rag/test_graph_rag.py` — 24 tests
-- `tests/knowledge_graph/test_knowledge_graph.py` — 21 tests
-- `tests/memory/test_memory.py` — 9 tests
-- `tests/mcp/test_mcp.py` — 9 tests
-- `tests/uploads/test_uploads.py` — 11 tests
-- `tests/retrieval/test_retrieval.py` — 18 tests
+- `backend/core/context_compressor.py`  -  Brain Step 13
+- `backend/core/legal_graph.py`  -  Brain Step 9 (Graph RAG + KG source selection)
+- `db/migrations/019_phase1_brain_safety.sql`  -  safety_boundary_checks + context_compression_log tables
+- `tests/conftest.py`  -  DB redirect for all tests
+- `tests/graph_rag/test_graph_rag.py`  -  24 tests
+- `tests/knowledge_graph/test_knowledge_graph.py`  -  21 tests
+- `tests/memory/test_memory.py`  -  9 tests
+- `tests/mcp/test_mcp.py`  -  9 tests
+- `tests/uploads/test_uploads.py`  -  11 tests
+- `tests/retrieval/test_retrieval.py`  -  18 tests
 
 ### Modified:
-- `backend/core/brain.py` — 16 → 19 steps, renamed to lawapp Brain
-- `backend/core/deidentify.py` — added raw_document to PII strip list
-- `backend/api/main.py` — renamed OrdinoxAI → lawapp Brain, 16 → 19 steps
-- `pyproject.toml` — added fastembed>=0.4
-- `tests/brain/test_brain.py` — updated to test all 19 steps
-- `.env` — POSTGRES_PORT=5435 to avoid native PG18 conflict
+- `backend/core/brain.py`  -  16 → 19 steps, renamed to lawapp Brain
+- `backend/core/deidentify.py`  -  added raw_document to PII strip list
+- `backend/api/main.py`  -  renamed OrdinoxAI → lawapp Brain, 16 → 19 steps
+- `pyproject.toml`  -  added fastembed>=0.4
+- `tests/brain/test_brain.py`  -  updated to test all 19 steps
+- `.env`  -  POSTGRES_PORT=5435 to avoid native PG18 conflict
 
 ---
 
@@ -244,8 +244,8 @@ python -c "import fastembed; print('fastembed', fastembed.__version__, 'OK')"
 
 | Blocker | Severity | Owner Action Required |
 |---|---|---|
-| kubectl not available locally — K8s deployment unverified | HIGH | Owner to run kubectl commands from WSL terminal |
-| Embeddings not ingested (OpenAI API key needed) — pgvector queries return empty; insufficient_grounding on real queries | HIGH | Run `make embed` with real OPENAI_API_KEY or switch to fastembed for local ingestion |
+| kubectl not available locally  -  K8s deployment unverified | HIGH | Owner to run kubectl commands from WSL terminal |
+| Embeddings not ingested (OpenAI API key needed)  -  pgvector queries return empty; insufficient_grounding on real queries | HIGH | Run `make embed` with real OPENAI_API_KEY or switch to fastembed for local ingestion |
 | MCP runtime connectors not wired (interface only) | MEDIUM | Implement source retrieval connectors in Phase 2 |
 | WASM rule values: deadline shown from client-side hardcode may drift from rules table | MEDIUM | Wire `/api/rules/unfair_dismissal` to WASM JS loader |
 | Rate limiting not implemented | LOW | Add middleware in Phase 2 |
@@ -256,9 +256,9 @@ python -c "import fastembed; print('fastembed', fastembed.__version__, 'OK')"
 
 ## L. Next Phase Tasks
 
-1. **Ingest legal content** — Run legislation/case_law/ACAS ingestion with real API keys to populate pgvector. Until done, all semantic search returns empty and `insufficient_grounding=true`.
-2. **Wire WASM to rules API** — WASM deadline preview must fetch rule values from `/api/rules/{claim_type}` not hardcode them.
-3. **Implement MCP runtime connectors** — Start with legislation source fetcher and document generation tool.
-4. **K8s deployment verification** — Owner to run kubectl proof commands.
-5. **Load real model** — Set `ANTHROPIC_API_KEY` to get real reasoning instead of stub responses.
-6. **Phase 4: Document generation** — Implement Particulars of Claim and Schedule of Loss generation end-to-end.
+1. **Ingest legal content**  -  Run legislation/case_law/ACAS ingestion with real API keys to populate pgvector. Until done, all semantic search returns empty and `insufficient_grounding=true`.
+2. **Wire WASM to rules API**  -  WASM deadline preview must fetch rule values from `/api/rules/{claim_type}` not hardcode them.
+3. **Implement MCP runtime connectors**  -  Start with legislation source fetcher and document generation tool.
+4. **K8s deployment verification**  -  Owner to run kubectl proof commands.
+5. **Load real model**  -  Set `ANTHROPIC_API_KEY` to get real reasoning instead of stub responses.
+6. **Phase 4: Document generation**  -  Implement Particulars of Claim and Schedule of Loss generation end-to-end.

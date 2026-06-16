@@ -2,7 +2,7 @@
 Tribunal Deadline Engine tests.
 
 Tests deterministic deadline calculations using the actual function signature.
-Every deadline must come from the rules engine — never from LLM estimation.
+Every deadline must come from the rules engine  -  never from LLM estimation.
 """
 
 import datetime as dt
@@ -56,7 +56,7 @@ class TestDeadlineEngine:
         )
         # When Day B < Day A, function either returns an error OR produces
         # a negative pause_days which is caught by the JS layer.
-        # Accept either behaviour — the key requirement is no crash.
+        # Accept either behaviour  -  the key requirement is no crash.
         assert result is not None
         if result.get("error"):
             assert "after" in result["error"].lower() or "before" in result["error"].lower()

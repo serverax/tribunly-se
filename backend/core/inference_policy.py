@@ -1,10 +1,10 @@
-"""Central inference policy — LOCAL OLLAMA ONLY for lawapp legal routes.
+"""Central inference policy  -  LOCAL OLLAMA ONLY for lawapp legal routes.
 
 Hard mandate: the only permitted inference backend is the internal Kubernetes
 Ollama DaemonSet (CPU). No OpenAI / Anthropic / Gemini / Mistral / Cohere /
 Together / Groq / Azure OpenAI / OpenRouter / any hosted inference. No silent
 cloud fallback. If Ollama is unavailable, callers must fail closed with
-INFERENCE_UNAVAILABLE — never a cloud model, never a fabricated answer.
+INFERENCE_UNAVAILABLE  -  never a cloud model, never a fabricated answer.
 
 Routing contract (enforced by the brain/orchestrator, grounded here):
     RULES FIRST -> GRAPHRAG SECOND -> LOCAL_OLLAMA LAST RESORT -> CITATION_GUARD
@@ -37,7 +37,7 @@ class ExternalLLMForbidden(RuntimeError):
 
 
 class InferenceUnavailable(RuntimeError):
-    """Raised when the local Ollama backend cannot be reached. Fail closed —
+    """Raised when the local Ollama backend cannot be reached. Fail closed  - 
     the system must surface INFERENCE_UNAVAILABLE, never a cloud fallback."""
     code = "INFERENCE_UNAVAILABLE"
 
@@ -51,7 +51,7 @@ def assert_no_external_llm_enabled() -> None:
     """Fail closed if an external/cloud LLM provider mode is selected.
 
     Note: the mere PRESENCE of OPENAI_API_KEY / ANTHROPIC_API_KEY does NOT enable
-    those providers — only an explicit AI_PROVIDER (or LLM_PROVIDER) mode does.
+    those providers  -  only an explicit AI_PROVIDER (or LLM_PROVIDER) mode does.
     This function forbids that explicit selection so a stray cloud key can never
     route legal traffic off-box.
     """
@@ -62,7 +62,7 @@ def assert_no_external_llm_enabled() -> None:
                 f"External LLM provider '{mode}' (via {var}) is forbidden for lawapp "
                 f"legal routes. Only the internal Ollama backend is permitted."
             )
-    # OpenRouter is a hosted gateway — forbid even if only the legacy flag is on.
+    # OpenRouter is a hosted gateway  -  forbid even if only the legacy flag is on.
     try:
         from ingestion.config import settings
         if bool(getattr(settings, "openrouter_enabled", False)):
@@ -114,7 +114,7 @@ def require_ollama_local_provider() -> None:
 
 def external_llm_keys_present_redacted() -> dict:
     """Report WHICH external provider keys are present in the environment, REDACTED
-    (booleans only — never values). Presence is allowed on dev machines but must
+    (booleans only  -  never values). Presence is allowed on dev machines but must
     NOT activate any legal route; this exists for transparency/audit only."""
     keys = (
         "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "OPENROUTER_API_KEY",
@@ -130,7 +130,7 @@ def build_legal_inference_model():
     """Build the ONLY permitted legal reasoning model (local Ollama).
 
     Enforces no-external first, then constructs LocalInferenceReasoningModel.
-    Raises InferenceUnavailable if it cannot be constructed — NO cloud fallback.
+    Raises InferenceUnavailable if it cannot be constructed  -  NO cloud fallback.
     Raises ExternalLLMForbidden unless LAWAPP_LLM_PROVIDER=ollama_local.
     """
     require_ollama_local_provider()

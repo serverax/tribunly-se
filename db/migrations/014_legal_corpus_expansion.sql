@@ -33,7 +33,7 @@ CREATE INDEX IF NOT EXISTS official_guidance_embedding_idx
     ON official_guidance USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
 
 -- ── UK Parliament Bills ───────────────────────────────────────────────────────
--- Track bills through Parliament — NOT active law until commenced.
+-- Track bills through Parliament  -  NOT active law until commenced.
 -- GUARDRAIL: never use as an active rule without verifying commencement.
 CREATE TABLE IF NOT EXISTS bills (
     id               uuid        PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -15,4 +15,4 @@ Pick the next task and route it.
 6. Record CURRENT TASK + assigned subagent in `tasks/SUBAGENT_OPERATING_STATUS.md`.
 
 ## Output
-CURRENT TASK / IMPLEMENTATION SUBAGENT / QA SUBAGENT / TASK FILE — and the first action.
+CURRENT TASK / IMPLEMENTATION SUBAGENT / QA SUBAGENT / TASK FILE  -  and the first action.

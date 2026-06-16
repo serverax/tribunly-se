@@ -5,7 +5,7 @@ Proves that run_brain() Step 18b publishes a REAL ``assessment_complete`` event
 to the REAL outbox when the assessment status is 'ok', and that the REAL worker
 then drains it pending → processed.
 
-Only ``backend.core.pipeline.assess`` is substituted — that is the
+Only ``backend.core.pipeline.assess`` is substituted  -  that is the
 corpus/LLM-dependent stage which is gated on owner blocker #13 (legal corpus
 ingestion). Everything else is real: the full brain pipeline, the audit write,
 Step 18b publish, the worker claim (FOR UPDATE SKIP LOCKED), and the database.
@@ -58,7 +58,7 @@ def db_isolation():
     Cross-test bleed vector: ``outbox_worker.run_once()`` drains the GLOBAL pending
     queue, so a stale non-terminal event left by another test could be claimed
     (and a malformed one could abort the drain) before THIS test's event is
-    processed — making the test pass alone but flake in a batch. db_setup gives the
+    processed  -  making the test pass alone but flake in a batch. db_setup gives the
     worker a deterministic clean queue; db_teardown removes whatever this test
     created. Safe: the compose ``db`` is a disposable test database, and we only
     delete non-``processed`` (stale) rows, never terminal audit history.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_source_freshness.sh — source_freshness works, groups by jurisdiction, flags stale.
+# prove_source_freshness.sh  -  source_freshness works, groups by jurisdiction, flags stale.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp"

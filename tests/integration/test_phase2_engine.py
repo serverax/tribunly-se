@@ -1,18 +1,18 @@
 """
-Phase 2 engine tests — 8 required scenarios.
+Phase 2 engine tests  -  8 required scenarios.
 
 Runs against the existing corpus (legislation 80 chunks, case_law 5 decisions,
 acas_guidance 14 chunks, rules 14 rows across 9 canonical keys).
 
 Retrieval path: structured rules (always) + BM25 keyword fallback (active
-while OpenAI quota is blocked — semantic stub returns [] but keyword runs).
+while OpenAI quota is blocked  -  semantic stub returns [] but keyword runs).
 
 BLOCKED_BY_OPENAI_QUOTA: semantic/pgvector retrieval is inactive.
 BM25 fallback is active; tests run against real corpus text.
 
 Model: StubReasoningModel for scenarios that test routing/gate logic.
        ClaudeReasoningModel (Haiku) for scenarios requiring real reasoning
-       (imported from conftest or via fixture — skipped if key absent).
+       (imported from conftest or via fixture  -  skipped if key absent).
 
 Run:
     docker compose run --rm ingestion python -m pytest \
@@ -45,7 +45,7 @@ def _haiku() -> ClaudeReasoningModel:
     return ClaudeReasoningModel(model_id=mid, api_key=key)
 
 
-# Standard facts — no PII; safe to use in all tests
+# Standard facts  -  no PII; safe to use in all tests
 _UD_FACTS = {
     "edt":                    "2026-04-01",
     "service_start_date":     "2023-04-01",
@@ -57,14 +57,14 @@ _UD_FACTS = {
 
 _SHORT_SERVICE_FACTS = {
     "edt":                "2026-03-15",
-    "service_start_date": "2025-01-01",   # ~14 months — below 2-year threshold
+    "service_start_date": "2025-01-01",   # ~14 months  -  below 2-year threshold
     "reason_for_dismissal": "conduct",
     "weekly_pay":         450,
     "jurisdiction":       "EW",
 }
 
 
-# ── Scenario 1: In-scope unfair dismissal — classifies correctly ──────────────
+# ── Scenario 1: In-scope unfair dismissal  -  classifies correctly ──────────────
 
 def test_in_scope_ud_classified():
     """An unfair dismissal query classifies as in-scope."""
@@ -76,7 +76,7 @@ def test_in_scope_ud_classified():
 def test_in_scope_ud_pipeline_reaches_assessment():
     """In-scope UD with EDT reaches an assessment (stub routes to insufficient_grounding)."""
     result = assess("I was unfairly dismissed", _UD_FACTS, model=STUB)
-    # Stub returns insufficient_grounding=True — that IS the correct gate behaviour
+    # Stub returns insufficient_grounding=True  -  that IS the correct gate behaviour
     # for a model that has no real reasoning. The pipeline must have run through
     # all stages (classify, retrieve, deadline, de-id, reason, score, govern).
     assert result["status"] in ("ok", "insufficient_grounding", "model_not_configured")
@@ -260,7 +260,7 @@ def test_governance_blocks_outcome_guarantee():
         strength="high",
         reasoning_summary="You are guaranteed to win this claim.",
         value_range=ValueRange(low=5000, high=15000, currency="GBP", basis="estimate"),
-        key_weaknesses=["None — certain win."],
+        key_weaknesses=["None  -  certain win."],
         deadline=Deadline(limitation_date=date(2026, 8, 9), source="rules",
                           authority="ERA 1996 s.111(2)"),
         recommended_next_step="prepare_documents",
@@ -279,7 +279,7 @@ def test_governance_blocks_outcome_guarantee():
 def test_bm25_finds_legislation():
     """BM25 fallback must return legislation chunks for an UD query."""
     results = retrieve_keyword("unfair dismissal qualifying period employment rights", k=5)
-    assert len(results) > 0, "BM25 returned no results — corpus may not be ingested"
+    assert len(results) > 0, "BM25 returned no results  -  corpus may not be ingested"
     types = {r["source_type"] for r in results}
     assert "legislation" in types or "case_law" in types or "acas" in types
 
@@ -302,7 +302,7 @@ def test_bm25_returns_citations():
 def test_retrieve_bundle_has_both_rules_and_keyword():
     """Full retrieve() must return rules AND keyword authorities (not just rules).
 
-    Uses 'unfair dismissal qualifying period' — confirmed present in the ingested
+    Uses 'unfair dismissal qualifying period'  -  confirmed present in the ingested
     legislation text (ERA 1996 s.108 is in the corpus). 'Reasonable responses'
     is judicial doctrine in case law, not verbatim in the statute text, so is
     a poor BM25 query over the current corpus.
@@ -315,7 +315,7 @@ def test_retrieve_bundle_has_both_rules_and_keyword():
     )
     assert len(bundle.exact_rules) > 0, "No rules in bundle"
     assert len(bundle.authorities) > 0, \
-        "No text authorities in bundle — BM25 fallback may not be reaching the corpus"
+        "No text authorities in bundle  -  BM25 fallback may not be reaching the corpus"
     assert bundle.insufficient_grounding is False
 
 
@@ -371,5 +371,5 @@ def test_deidentification_boundary_logged():
     assert "reason_for_dismissal" in log["fields_passed"]
     assert "weekly_pay" in log["fields_passed"]
 
-    print(f"\nDE-IDENTIFICATION: PASS — {len(pii_keys)} PII field types stripped, "
+    print(f"\nDE-IDENTIFICATION: PASS  -  {len(pii_keys)} PII field types stripped, "
           f"0 in model payload, legal facts preserved.")

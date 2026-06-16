@@ -47,7 +47,7 @@ def test_stream_chat_fail_soft_when_unreachable():
     assert chunks == ["[MODEL_UNAVAILABLE]"]
 
 
-@pytest.mark.skipif(not _ollama_up(), reason="UNPROVEN — local Ollama not reachable from test container")
+@pytest.mark.skipif(not _ollama_up(), reason="UNPROVEN  -  local Ollama not reachable from test container")
 def test_stream_chat_real_tokens_from_qwen():
     m = LocalInferenceReasoningModel(base_url=OLLAMA, model_id="qwen2.5:3b")
     chunks = list(m.stream_chat([{"role": "user", "content": "Reply with the single word: yes"}], max_tokens=8))

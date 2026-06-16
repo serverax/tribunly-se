@@ -1,5 +1,5 @@
 """
-Rate limiting tests — lawapp FastAPI endpoint protection.
+Rate limiting tests  -  lawapp FastAPI endpoint protection.
 
 Tests that rate limiting is wired to sensitive endpoints:
   - /auth/register: 10/minute
@@ -45,7 +45,7 @@ class TestRateLimiterWired:
         assert response.status_code != 404, "/assess endpoint missing"
 
     def test_health_endpoint_no_rate_limit(self, client):
-        """Health endpoint must always respond — no rate limiting."""
+        """Health endpoint must always respond  -  no rate limiting."""
         for _ in range(5):
             r = client.get("/health")
             assert r.status_code == 200

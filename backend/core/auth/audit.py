@@ -7,7 +7,7 @@ rolls back (e.g. a failed login), and a DB hiccup in audit never breaks the auth
 request itself (best-effort, logged on failure).
 
 GUARDRAILS:
-  * Raw IP addresses are NEVER stored — only a salted SHA-256 (ip_hash).
+  * Raw IP addresses are NEVER stored  -  only a salted SHA-256 (ip_hash).
   * Tokens / passwords / secrets are NEVER placed in the detail payload.
   * email_attempted is lower()'d; used only for failed/unknown-user correlation.
 """
@@ -75,5 +75,5 @@ def record_event(
                 )
         finally:
             conn.close()
-    except Exception as exc:  # noqa: BLE001 — audit must never break the request
+    except Exception as exc:  # noqa: BLE001  -  audit must never break the request
         logger.warning("auth audit write failed for event=%s (%s)", event_type, type(exc).__name__)

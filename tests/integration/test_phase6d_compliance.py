@@ -1,5 +1,5 @@
 """
-Phase 6D — Compliance evidence structure and DPO/legal review gate tests.
+Phase 6D  -  Compliance evidence structure and DPO/legal review gate tests.
 
 Tests:
   Evidence quality gate:
@@ -290,7 +290,7 @@ def test_controlled_beta_ready_remains_false_current_state():
     resp = client.get("/admin/production-readiness", headers=_ADMIN_HDR)
     data = resp.json()
     assert data["controlled_beta_ready"] is False, \
-        "Controlled beta must remain FALSE — DPIA and privacy not yet reviewed"
+        "Controlled beta must remain FALSE  -  DPIA and privacy not yet reviewed"
 
 
 def test_production_readiness_compliance_has_required_evidence():

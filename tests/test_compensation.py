@@ -1,5 +1,5 @@
 """
-Compensation tool (Schedule of Loss) — HTTP endpoint + logic proof.
+Compensation tool (Schedule of Loss)  -  HTTP endpoint + logic proof.
 
 Endpoint under test (backend/api/main.py): POST /documents/generate
                                             (document_type="schedule_of_loss")

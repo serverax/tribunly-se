@@ -1,5 +1,5 @@
 """
-Security tests — red team and injection protection.
+Security tests  -  red team and injection protection.
 
 Tests:
   - Prompt injection blocked

@@ -1,0 +1,15 @@
+em_dash_removal_cursor
+before_count: 9910 (U+2014 in HEAD git ls-files, tracked text)
+before_files_with_em_dash: 700
+files_changed_tracked_unstaged: 689
+after_count: 0 (utf-8 text under F:/lawapp excluding .git, node_modules, __pycache__, .venv, target, lawapp_uploads, common binaries)
+
+replacement: U+2014 em dash -> ' - ' (space-hyphen-space)
+
+skipped_intentionally:
+  - Binary/non-utf8 under .venv/ and client/wasm/target/ (UTF-8 em-dash byte sequence may appear coincidentally in .so/.rlib)
+  - Image/lock/wasm binary suffixes
+
+agentic_foundation_phase1:
+  Commit 7eb7cea on branch already contains Phase 1 scaffolding; e9d73eb7 not in repo history.
+  Uncommitted agent_memory.py / orchestrator.py diffs are em-dash docstring normalization only.

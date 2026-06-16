@@ -200,7 +200,7 @@ def verify_citation(cite: str, source_type: str | None = None) -> dict:
     if _verify_legislation_in_db(act, section):
         return {"cite": cite, "verified": True, "reason": None, "method": "legislation_db_fallback"}
 
-    # Cannot verify — mark as unverified (do not remove, just flag)
+    # Cannot verify  -  mark as unverified (do not remove, just flag)
     return {
         "cite": cite,
         "verified": False,
@@ -257,7 +257,7 @@ def filter_verified_only(authorities: list[dict]) -> list[dict]:
             kept.append(auth)
         else:
             logger.warning(
-                "Citation removed (unverified): %s — reason: %s",
+                "Citation removed (unverified): %s  -  reason: %s",
                 detail["cite"],
                 detail["reason"],
             )

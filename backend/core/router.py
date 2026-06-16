@@ -1,5 +1,5 @@
 """
-AI Router — controlled by Brain.
+AI Router  -  controlled by Brain.
 
 Routes queries to the appropriate processing path:
   - lite_llm_plus_glossary: simple generic questions
@@ -135,7 +135,7 @@ def route(message: str, facts: dict, claim_type: Optional[str] = None) -> Routin
     """
     dims = _score_query(message, facts)
 
-    # ── Path 1: Generic question — lite LLM + glossary ───────────────────────
+    # ── Path 1: Generic question  -  lite LLM + glossary ───────────────────────
     if dims["is_generic"] and not dims["has_personal_facts"]:
         return RoutingDecision(
             path="lite_llm_plus_glossary",
@@ -150,7 +150,7 @@ def route(message: str, facts: dict, claim_type: Optional[str] = None) -> Routin
             lite_llm_safe=True,
         )
 
-    # ── Path 2: Deadline-only — rules engine ─────────────────────────────────
+    # ── Path 2: Deadline-only  -  rules engine ─────────────────────────────────
     if dims["is_deadline_only"] and not dims["is_high_risk"]:
         return RoutingDecision(
             path="rules_engine_only",
@@ -165,7 +165,7 @@ def route(message: str, facts: dict, claim_type: Optional[str] = None) -> Routin
             lite_llm_safe=False,
         )
 
-    # ── Path 3: High-risk — full pipeline + human review ─────────────────────
+    # ── Path 3: High-risk  -  full pipeline + human review ─────────────────────
     if dims["is_high_risk"]:
         return RoutingDecision(
             path="full_legal_pipeline_plus_human_review",
@@ -181,7 +181,7 @@ def route(message: str, facts: dict, claim_type: Optional[str] = None) -> Routin
             lite_llm_safe=False,
         )
 
-    # ── Path 4: Personal case — full pipeline ────────────────────────────────
+    # ── Path 4: Personal case  -  full pipeline ────────────────────────────────
     if dims["is_personal"] or dims["has_personal_facts"]:
         return RoutingDecision(
             path="full_legal_pipeline",

@@ -1,5 +1,5 @@
 ---
-# lawapp ConfigMap — shared non-secret config for lawapp-api namespace
+# lawapp ConfigMap  -  shared non-secret config for lawapp-api namespace
 # DB DNS: lawapp-postgres.lawapp-api.svc.cluster.local (DB in lawapp-api namespace)
 apiVersion: v1
 kind: ConfigMap
@@ -25,7 +25,7 @@ data:
   JWT_ISSUER: "lawapp-issuer"
   JWT_AUDIENCE: "lawapp-audience"
   # ── Social sign-in (OIDC) ────────────────────────────────────────────
-  # OAuth CLIENT IDs are PUBLIC values (sent to the browser) — they are
+  # OAuth CLIENT IDs are PUBLIC values (sent to the browser)  -  they are
   # config, not secrets, and the OIDC id-token flow uses NO client secret
   # (see backend/core/auth/providers.py). A provider with no client id is
   # cleanly DISABLED (fail-closed 503), never a fake success. To enable a
@@ -41,7 +41,7 @@ data:
   LOG_LEVEL: "INFO"
   FCL_BULK_LICENCE_GRANTED: "false"
 ---
-# lawapp ConfigMap — shared config for lawapp-ai namespace
+# lawapp ConfigMap  -  shared config for lawapp-ai namespace
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -64,7 +64,7 @@ data:
   JWT_AUDIENCE: "lawapp-audience"
   LOG_LEVEL: "INFO"
 ---
-# lawapp ConfigMap — shared config for lawapp-rag namespace
+# lawapp ConfigMap  -  shared config for lawapp-rag namespace
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -82,7 +82,7 @@ data:
   LOG_LEVEL: "INFO"
   FCL_BULK_LICENCE_GRANTED: "false"
 ---
-# lawapp ConfigMap — shared config for lawapp-security namespace
+# lawapp ConfigMap  -  shared config for lawapp-security namespace
 apiVersion: v1
 kind: ConfigMap
 metadata:

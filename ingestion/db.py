@@ -59,7 +59,7 @@ def _get_pool() -> "psycopg2.pool.ThreadedConnectionPool | None":
                         os.getenv("DB_POOL_MIN", "1"), os.getenv("DB_POOL_MAX", "16"),
                     )
                 except Exception as exc:  # pragma: no cover - infra failure path
-                    logger.warning("DB pool init failed (%s) — using direct connects", exc)
+                    logger.warning("DB pool init failed (%s)  -  using direct connects", exc)
                     _pool = None
     return _pool
 
@@ -70,7 +70,7 @@ class _PooledConnection:
     Behaves like a real connection (cursor/commit/rollback, attribute access,
     context-manager) but `.close()` RETURNS the connection to the pool instead of
     tearing down the socket. Before returning, any open transaction is rolled back
-    so a reused connection never carries another request's uncommitted state — an
+    so a reused connection never carries another request's uncommitted state  -  an
     isolation safeguard that matters directly for cross-user (RLS) correctness.
     """
 
@@ -136,11 +136,11 @@ def get_connection() -> PGConnection:
             conn.autocommit = False
             return _PooledConnection(pool, conn)  # type: ignore[return-value]
         except psycopg2.pool.PoolError as exc:
-            # Pool exhausted under burst — degrade to a direct connect rather than
+            # Pool exhausted under burst  -  degrade to a direct connect rather than
             # failing the request. PgBouncer + HPA absorb sustained 100k load.
-            logger.warning("DB pool exhausted (%s) — direct connect fallback", exc)
+            logger.warning("DB pool exhausted (%s)  -  direct connect fallback", exc)
         except Exception as exc:  # pragma: no cover
-            logger.warning("DB pool getconn failed (%s) — direct connect fallback", exc)
+            logger.warning("DB pool getconn failed (%s)  -  direct connect fallback", exc)
     conn = psycopg2.connect(settings.database_url)
     conn.autocommit = False
     return conn
@@ -251,7 +251,7 @@ def upsert_case_law_document(cur: Any, doc: dict) -> str:
     Returns the document UUID (for use when inserting chunks).
 
     Keyed on document_uri (the stable d-{uuid} identifier).
-    Metadata always updates (parser may improve). Body text is in chunks — not here.
+    Metadata always updates (parser may improve). Body text is in chunks  -  not here.
     """
     cur.execute(
         """
@@ -295,7 +295,7 @@ def upsert_case_law_chunk(cur: Any, document_id: str, chunk_index: int, body_tex
     """
     Insert or update a case_law_chunks row.
     Body text only updated when the parent document's content_hash changes
-    (caller is responsible for that logic — here we always upsert the text
+    (caller is responsible for that logic  -  here we always upsert the text
     so re-ingest after a parser fix works correctly).
     """
     cur.execute(
@@ -417,7 +417,7 @@ def insert_audit_log(cur: Any, payload: dict) -> None:
     """
     Insert one row into assessment_audit_logs.
 
-    GUARDRAIL: stores only safe metadata — no raw user facts, no personal data
+    GUARDRAIL: stores only safe metadata  -  no raw user facts, no personal data
     (names, employers, addresses, DOB, emails, medical details), no free-text
     case narrative. The fact_snapshot_hash is SHA256 of de-identified facts only.
 
@@ -453,7 +453,7 @@ def insert_audit_log(cur: Any, payload: dict) -> None:
 
 
 def _safe_fact_hash(safe_facts: dict) -> str:
-    """SHA256 of de-identified safe_facts — fingerprint only, no PII stored."""
+    """SHA256 of de-identified safe_facts  -  fingerprint only, no PII stored."""
     hashable = {k: v for k, v in safe_facts.items() if not k.startswith("_")}
     return hashlib.sha256(
         json.dumps(hashable, sort_keys=True, default=str).encode()

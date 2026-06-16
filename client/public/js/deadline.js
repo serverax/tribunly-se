@@ -1,5 +1,5 @@
 /**
- * Client-side deadline calculator — Phase 10 WASM Integration.
+ * Client-side deadline calculator  -  Phase 10 WASM Integration.
  *
  * Uses Rust WASM for deterministic legal arithmetic.
  * Falls back to strict JS equivalent if WASM fails to load.
@@ -35,7 +35,7 @@
     if (serviceMonths < 0) return { ok: false, error: 'Service months must be positive.' };
     const notes = [
       'Continuous service supplied directly; calculator does not assess interruption rules.',
-      'Returns statutory MINIMUM only — contract notice prevails if longer.',
+      'Returns statutory MINIMUM only  -  contract notice prevails if longer.',
     ];
     if (direction === 'employee_to_employer') {
       const weeks = serviceMonths < 1 ? 0 : 1;

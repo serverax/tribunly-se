@@ -26,7 +26,7 @@ def _db_up():
         return False
 
 
-pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN — DB not accessible")
+pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN  -  DB not accessible")
 
 CHEF = ("I have been a chef at a restaurant in Bradford since January 2025 on a "
         "zero hours contract. Yesterday my manager told me not to come back because "

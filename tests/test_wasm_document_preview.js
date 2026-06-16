@@ -33,7 +33,7 @@ function test_preview_is_client_side() {
     'Preview must include dismissal date');
   assert(result.includes('SELF-HELP DRAFT'), 'Preview must have self-help disclaimer');
   assert(result.includes('NOT LEGAL ADVICE'), 'Preview must say not legal advice');
-  console.log("  PASS: preview_is_client_side — no HTTP calls, all local");
+  console.log("  PASS: preview_is_client_side  -  no HTTP calls, all local");
 }
 
 // ── Test 2: Legal boundary always present ─────────────────────────────────────
@@ -43,7 +43,7 @@ function test_legal_boundary_present() {
   assert(result.includes('NOT LEGAL ADVICE'), 'Must have NOT LEGAL ADVICE notice');
   assert(result.includes('lawapp is not a solicitor'), 'Must disclaim not a solicitor');
   assert(result.includes('does not file'), 'Must say does not file');
-  console.log("  PASS: legal_boundary_present — disclaimer on all previews");
+  console.log("  PASS: legal_boundary_present  -  disclaimer on all previews");
 }
 
 // ── Test 3: Missing facts flagged, not invented ────────────────────────────────
@@ -52,7 +52,7 @@ function test_missing_facts_flagged_not_invented() {
   assert(result.includes('[Date not provided]') || result.includes('[YOUR') || result.includes('[Not provided'),
     'Missing facts must be flagged as [Not provided], never invented');
   assert(!result.includes('undefined'), 'No undefined values must appear in preview');
-  console.log("  PASS: missing_facts_flagged — placeholder used, not fabricated");
+  console.log("  PASS: missing_facts_flagged  -  placeholder used, not fabricated");
 }
 
 // ── Test 4: Fact validation works ─────────────────────────────────────────────
@@ -70,10 +70,10 @@ function test_fact_validation_ud() {
   );
   assert(r2.valid === true, 'Must be valid with all required facts');
   assert(r2.missing.length === 0, 'Must have no missing fields');
-  console.log("  PASS: fact_validation_ud — correctly identifies missing/complete facts");
+  console.log("  PASS: fact_validation_ud  -  correctly identifies missing/complete facts");
 }
 
-// ── Test 5: WASM deadline calculator — no server call ─────────────────────────
+// ── Test 5: WASM deadline calculator  -  no server call ─────────────────────────
 function test_deadline_computed_locally() {
   const result = preview.computeDeadlineLocally('2025-10-01', 3, null, null);
   assert(result !== null, 'Must return a result');
@@ -85,7 +85,7 @@ function test_deadline_computed_locally() {
     assert(result.no_personal_data_sent === true, 'Must confirm no data sent');
     assert(result.limitation_date === '2025-12-31',
       `Expected 2025-12-31, got ${result.limitation_date}`);
-    console.log("  PASS: deadline_computed_locally — WASM/JS, no server call, correct date");
+    console.log("  PASS: deadline_computed_locally  -  WASM/JS, no server call, correct date");
   } else {
     console.log("  SKIP: LawappDeadline not initialized in Node (expected):", result.error);
   }
@@ -98,7 +98,7 @@ function test_ec_pause_computed_locally() {
     assert(result.ec_applied === true, 'EC must be applied');
     assert(result.server_call === false, 'No server call');
     assert(result.limitation_date > '2025-12-31', 'EC pause must extend deadline');
-    console.log("  PASS: ec_pause_locally — extension computed without server call");
+    console.log("  PASS: ec_pause_locally  -  extension computed without server call");
   } else {
     console.log("  SKIP:", result.error);
   }
@@ -109,7 +109,7 @@ function test_legal_boundary_constant() {
   assert(typeof preview.LEGAL_BOUNDARY === 'string', 'LEGAL_BOUNDARY must be a string');
   assert(preview.LEGAL_BOUNDARY.includes('SELF-HELP DRAFT'), 'Must contain SELF-HELP DRAFT');
   assert(preview.LEGAL_BOUNDARY.length > 100, 'Must be a substantial disclaimer');
-  console.log("  PASS: legal_boundary_constant — exportable for use in all documents");
+  console.log("  PASS: legal_boundary_constant  -  exportable for use in all documents");
 }
 
 // ── Run all tests ─────────────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ for (const test of tests) {
     test();
     passed++;
   } catch (e) {
-    console.error(`  FAIL: ${test.name} — ${e.message}`);
+    console.error(`  FAIL: ${test.name}  -  ${e.message}`);
     failed++;
   }
 }

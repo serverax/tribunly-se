@@ -1,5 +1,5 @@
 """
-Unpaid wages / unlawful deduction from wages — rules seeder.
+Unpaid wages / unlawful deduction from wages  -  rules seeder.
 
 Statutory basis: Employment Rights Act 1996 Part II (ss.13-27).
 Populates the rules table with cited, effective-dated deterministic facts.
@@ -9,7 +9,7 @@ Live verification against legislation.gov.uk was not possible at time of
 Phase 5B development. Rules are marked is_prospective=false but should be
 verified against current legislation before production use.
 
-Idempotent: ON CONFLICT DO UPDATE — safe to run multiple times.
+Idempotent: ON CONFLICT DO UPDATE  -  safe to run multiple times.
 
 Run:
     docker compose run --rm ingestion python -m ingestion.rules.seed_unpaid_wages
@@ -57,11 +57,11 @@ ROWS: list[dict] = [
         "claim_type":     "unpaid_wages",
         "jurisdiction":   "EW",
         "value_numeric":  0,
-        "value_text":     "none — day-one right",
+        "value_text":     "none  -  day-one right",
         "unit":           "years",
         "description":    (
             "No qualifying period. Day-one right for 'workers' (ERA 1996 s.13). "
-            "Wider than employees — includes agency workers, casual workers, "
+            "Wider than employees  -  includes agency workers, casual workers, "
             "zero-hours workers. Excludes genuinely self-employed."
         ),
         "authority_type": "legislation",
@@ -81,7 +81,7 @@ ROWS: list[dict] = [
         "description":    (
             "Right applies to 'workers' (s.230(3)): employees, agency workers, "
             "casual/zero-hours workers. Self-employed independent contractors excluded. "
-            "Worker status disputes are complex — seek legal advice if uncertain."
+            "Worker status disputes are complex  -  seek legal advice if uncertain."
         ),
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.13, s.230(3); Uber v Aslam [2021] UKSC 5",
@@ -99,7 +99,7 @@ ROWS: list[dict] = [
         "unit":           None,
         "description":    (
             "For a series of deductions, time runs from the last deduction (s.23(3A)). "
-            "Each deduction must be sufficiently linked — a break of more than 3 months "
+            "Each deduction must be sufficiently linked  -  a break of more than 3 months "
             "may break the series (Bear Scotland Ltd v Fulton [2015] IRLR 15, EAT). "
             "Complex series should be reviewed by a solicitor. VERIFICATION_REQUIRED."
         ),
@@ -127,7 +127,7 @@ ROWS: list[dict] = [
         ),
         "authority_type": "case_law",
         "authority_ref":  (
-            "ERA 1996 s.24; Delaney v Staples [1992] 1 AC 687 (HL) — gross wages"
+            "ERA 1996 s.24; Delaney v Staples [1992] 1 AC 687 (HL)  -  gross wages"
         ),
         "authority_url":  "https://www.legislation.gov.uk/ukpga/1996/18/section/24",
         "effective_from": date(1996, 8, 22),
@@ -146,7 +146,7 @@ _UPW_VERIFICATION = {
     ("unlawful_deduction_wages.qualifying_period_years", date(1996, 8, 22)):
         ("verified",
          "ERA 1996 s.13 confirmed from legislation.gov.uk on 2026-06-01. "
-         "Day-one right for workers — no qualifying period for unlawful deduction claims."),
+         "Day-one right for workers  -  no qualifying period for unlawful deduction claims."),
     ("unlawful_deduction_wages.worker_status", date(1996, 8, 22)):
         ("verified",
          "ERA 1996 s.230(3) confirmed from legislation.gov.uk on 2026-06-01. "
@@ -155,12 +155,12 @@ _UPW_VERIFICATION = {
         ("case_law_verified",
          "Bear Scotland Ltd v Fulton [2015] IRLR 15 (EAT). "
          "Case law authority: series deductions require sufficient link; time from last deduction. "
-         "Distinguish from statute — case law, not legislation.gov.uk verifiable. "
+         "Distinguish from statute  -  case law, not legislation.gov.uk verifiable. "
          "Note: subsequent case law may have modified this; solicitor review recommended for long series."),
     ("unlawful_deduction_wages.remedy_basis", date(1996, 8, 22)):
         ("case_law_verified",
          "ERA 1996 s.24 confirmed from legislation.gov.uk on 2026-06-01 (repayment remedy). "
-         "Delaney v Staples [1992] 1 AC 687 (HL) — gross wages basis: case law authority, "
+         "Delaney v Staples [1992] 1 AC 687 (HL)  -  gross wages basis: case law authority, "
          "not legislation.gov.uk verifiable. Both statute and case law aspects verified."),
 }
 

@@ -1,5 +1,5 @@
 ---
-# IterLaw lawapp — non-secret runtime configuration
+# IterLaw lawapp  -  non-secret runtime configuration
 apiVersion: v1
 kind: ConfigMap
 metadata:

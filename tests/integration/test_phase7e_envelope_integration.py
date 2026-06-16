@@ -1,7 +1,7 @@
 """
-Phase 7E — Envelope encryption integration tests.
+Phase 7E  -  Envelope encryption integration tests.
 
-All boto3 calls are mocked — no real AWS credentials.
+All boto3 calls are mocked  -  no real AWS credentials.
 
 Tests:
   envelope_encryption module:
@@ -363,7 +363,7 @@ def test_aws_kms_mode_encryption_method_envelope(mock_boto3_client):
 
 
 def test_env_mode_encryption_key_metadata_null():
-    """Env mode: no envelope bundle — encryption_key_metadata should be NULL."""
+    """Env mode: no envelope bundle  -  encryption_key_metadata should be NULL."""
     from ingestion.db import get_connection
     resp = client.post("/handoff/leads", json=_HANDOFF_BODY)
     assert resp.status_code == 201

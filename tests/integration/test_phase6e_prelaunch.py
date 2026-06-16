@@ -1,5 +1,5 @@
 """
-Phase 6E — Pre-beta launch readiness tests.
+Phase 6E  -  Pre-beta launch readiness tests.
 
 Tests:
   Operational artifacts:
@@ -186,7 +186,7 @@ def test_controlled_beta_ready_still_false():
     resp = client.get("/admin/production-readiness", headers=_ADMIN_HDR)
     data = resp.json()
     assert data["controlled_beta_ready"] is False, \
-        "controlled_beta_ready must be false — no human sign-offs have occurred"
+        "controlled_beta_ready must be false  -  no human sign-offs have occurred"
 
 
 def test_next_steps_is_nonempty():

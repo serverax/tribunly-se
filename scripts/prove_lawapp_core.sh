@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_lawapp_core.sh — master proof. Accepted only if it exits 0.
+# prove_lawapp_core.sh  -  master proof. Accepted only if it exits 0.
 # DB-FIRST order (LEGAL DB FIRST -> CORPUS FIRST -> RULES FIRST -> CITATIONS FIRST -> AI SECOND):
 #   1. UK legal dataset proof        (domain pack, registry, sections, rules, provenance, freshness)
 #   2. employment-law corpus proof   (corpus cited/embedded/RAG, FCL fail-closed)

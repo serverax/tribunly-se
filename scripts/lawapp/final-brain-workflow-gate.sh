@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Brain workflow gate — Brain is the only legal-answer path; trace persists; local LLM only.
+# Brain workflow gate  -  Brain is the only legal-answer path; trace persists; local LLM only.
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"; . scripts/lawapp/_gate_lib.sh
 

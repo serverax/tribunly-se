@@ -1,4 +1,4 @@
-"""Path-Splitter — deterministic vs generative routing (ADR: Deterministic vs.
+"""Path-Splitter  -  deterministic vs generative routing (ADR: Deterministic vs.
 Generative Routing).
 
 Splits an incoming query into two lanes:
@@ -32,7 +32,7 @@ _FACTUAL_PATTERNS = [
     re.compile(r"\bcurrent (cap|limit|maximum) (for|on)\b", re.I),
 ]
 
-# Phrasings that require synthesis/assessment — always REASONING.
+# Phrasings that require synthesis/assessment  -  always REASONING.
 _REASONING_PATTERNS = [
     re.compile(r"\b(do i have|have i got) (a|any) (claim|case)\b", re.I),
     re.compile(r"\b(was|were) (i|we) (unfairly|wrongfully|constructively) dismissed\b", re.I),
@@ -78,12 +78,12 @@ def route(query: str, facts: Optional[dict] = None) -> PathDecision:
     if intent == FACTUAL:
         return PathDecision(
             intent=FACTUAL, lane=FAST_DETERMINISTIC,
-            reason="factual rule/DB lookup — deterministic engine, <400ms target, no LLM",
+            reason="factual rule/DB lookup  -  deterministic engine, <400ms target, no LLM",
             invokes_llm=False,
         )
     return PathDecision(
         intent=REASONING, lane=STREAMING_GENERATIVE,
-        reason="requires synthesis/assessment — generative lane, SSE stream, 400ms gate N/A",
+        reason="requires synthesis/assessment  -  generative lane, SSE stream, 400ms gate N/A",
         invokes_llm=True,
     )
 

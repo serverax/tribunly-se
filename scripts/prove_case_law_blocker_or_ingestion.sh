@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_case_law_blocker_or_ingestion.sh — Find Case Law is either lawfully ingested
+# prove_case_law_blocker_or_ingestion.sh  -  Find Case Law is either lawfully ingested
 # (licence granted) OR its blocker is recorded with ZERO fake rows. Fail-closed.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
@@ -15,7 +15,7 @@ g=$(Q "SELECT application_status FROM legal_sources WHERE source_id='find_case_l
 cl=$(Q "SELECT count(*) FROM case_law_documents;")
 
 if [ "${FCL_BULK_LICENCE_GRANTED:-false}" = "true" ] && [ "$g" = "granted" ]; then
-  echo "$out" | grep -q "completed" && ok "FCL licence granted — ingestion ran" || bad "FCL granted but ingestion did not run"
+  echo "$out" | grep -q "completed" && ok "FCL licence granted  -  ingestion ran" || bad "FCL granted but ingestion did not run"
 else
   echo "$out" | grep -q "blocked" && ok "FCL bulk fail-closed (status=blocked)" || bad "FCL module did not fail closed"
   [ "${cl:-0}" -eq 0 ] && ok "case_law empty (no fake/placeholder rows)" || bad "case_law has $cl rows without licence"

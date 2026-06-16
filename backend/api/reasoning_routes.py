@@ -7,7 +7,7 @@
 Safety:
   - the FACTUAL lane never invokes the LLM (rules table only),
   - the REASONING lane de-identifies facts before the model sees them and is gated
-    behind LOCAL_INFERENCE_ENABLED; the streamed text is an analysis PREVIEW — the
+    behind LOCAL_INFERENCE_ENABLED; the streamed text is an analysis PREVIEW  -  the
     authoritative, Critic-gated assessment remains the /assess pipeline.
 """
 from __future__ import annotations
@@ -105,7 +105,7 @@ def reasoning_stream(req: ReasonRequest):
     if decision.lane == FAST_DETERMINISTIC:
         return _serve_factual(req)
 
-    # REASONING lane — SSE stream of model tokens.
+    # REASONING lane  -  SSE stream of model tokens.
     if not _local_enabled():
         raise HTTPException(status_code=503,
                             detail="reasoning streaming disabled (LOCAL_INFERENCE_ENABLED is off)")
@@ -123,7 +123,7 @@ def reasoning_stream(req: ReasonRequest):
     messages = [{"role": "system", "content": _SYSTEM},
                 {"role": "user", "content": user_content}]
     # Institutionalised CitationGuard (LLM Fabric directive): the stream emits ONLY
-    # governed output — accepted corpus-cited text, or the deterministic rules guide.
+    # governed output  -  accepted corpus-cited text, or the deterministic rules guide.
     # Raw, ungoverned model tokens never reach the client.
     governed = execute_generative_lane(req.query, messages=messages, model=model,
                                        jurisdiction=req.jurisdiction)

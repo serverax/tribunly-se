@@ -111,7 +111,7 @@ def _extract_metadata(root: etree._Element) -> dict:
     if num_el is not None and num_el.text:
         meta["chapter"] = num_el.text.strip()
 
-    # Jurisdiction — look for Extent element
+    # Jurisdiction  -  look for Extent element
     extent_el = root.find(f".//{_tag('Extent')}")
     if extent_el is not None and extent_el.text:
         extent_text = extent_el.text.strip()
@@ -143,7 +143,7 @@ def parse_section_xml(
     Parse a CLML section XML response into one or more ParsedChunks.
 
     A single section rarely exceeds 3000 chars; chunking handles long sections
-    (e.g. schedules). chunk_size_chars is a soft limit — splits at paragraph
+    (e.g. schedules). chunk_size_chars is a soft limit  -  splits at paragraph
     boundaries where possible.
     """
     try:

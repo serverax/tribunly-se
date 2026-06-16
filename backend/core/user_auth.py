@@ -1,15 +1,15 @@
 """
-End-user authentication — Phase 7A.
+End-user authentication  -  Phase 7A.
 
 LAWAPP_AUTH_MODE env var:
   none  (default): no auth; all case endpoints open (backward compat / dev)
   mock:            X-User-ID header; any valid UUID accepted (dev/test only)
-  jwt:             Authorization: Bearer <token> — HS256 or RS256/JWKS
+  jwt:             Authorization: Bearer <token>  -  HS256 or RS256/JWKS
 
 JWT VERIFICATION (Phase 7A):
   Algorithm routing in 'jwt' mode:
     JWT_JWKS_URL set → RS256/JWKS key discovery (Phase 7A, production-grade)
-    JWT_SECRET set   → HS256 (Phase 6C, test/dev quality — not production-grade)
+    JWT_SECRET set   → HS256 (Phase 6C, test/dev quality  -  not production-grade)
     Neither          → 503 (server misconfigured)
 
   RS256/JWKS (JWT_JWKS_URL):
@@ -110,14 +110,14 @@ def _find_jwks_key(keys: list[dict], kid: Optional[str]) -> dict:
         if not matching:
             raise HTTPException(
                 status_code=401,
-                detail="Unknown key ID (kid) in token header — key not found in JWKS.",
+                detail="Unknown key ID (kid) in token header  -  key not found in JWKS.",
             )
         return matching[0]
     if len(keys) == 1:
         return keys[0]
     raise HTTPException(
         status_code=401,
-        detail="Token has no kid and JWKS has multiple keys — cannot select unambiguously.",
+        detail="Token has no kid and JWKS has multiple keys  -  cannot select unambiguously.",
     )
 
 
@@ -216,7 +216,7 @@ def _verify_jwt_rs256(token: str) -> str:
     return str(sub)
 
 
-# ── HS256 verification (Phase 6C — test/dev quality) ─────────────────────────
+# ── HS256 verification (Phase 6C  -  test/dev quality) ─────────────────────────
 
 def _verify_jwt_hs256(token: str) -> str:
     """
@@ -338,7 +338,7 @@ def is_auth_production_ready() -> dict:
         jwt_secret = os.getenv("JWT_SECRET", "")
 
         if jwks_url:
-            # RS256/JWKS — production-grade
+            # RS256/JWKS  -  production-grade
             missing_base = [v for v in JWT_REQUIRED_VARS if not os.getenv(v)]
             if missing_base:
                 blockers.append(f"JWT+JWKS mode requires: {missing_base}")
@@ -385,7 +385,7 @@ def get_current_user(
 ) -> Optional[str]:
     """
     Extract and verify user identity from request header values.
-    Takes plain string values — NOT FastAPI Header() objects.
+    Takes plain string values  -  NOT FastAPI Header() objects.
     GUARDRAIL: user identity values are NEVER logged.
     """
     mode = get_auth_mode()
@@ -408,7 +408,7 @@ def get_current_user(
     if mode == "mock":
         # TEST/DEV ONLY: trust X-User-ID as identity. Production startup REJECTS
         # mock auth (config_validation.validate_startup_config requires 'jwt'), so
-        # this branch is unreachable in production — X-User-ID is never trusted there.
+        # this branch is unreachable in production  -  X-User-ID is never trusted there.
         if not x_user_id:
             return None
         try:
@@ -455,7 +455,7 @@ def check_case_ownership(
     if user_id is None:
         # PRODUCTION (jwt) MUST NOT fall through to an unguarded read. An anonymous
         # request (no Bearer token) yields user_id=None; a bare early-return here
-        # would let ANY caller read/modify ANY case by id — an RLS bypass and
+        # would let ANY caller read/modify ANY case by id  -  an RLS bypass and
         # cross-user confidentiality breach. In jwt mode we therefore fail closed
         # with 401.
         #
@@ -473,7 +473,7 @@ def check_case_ownership(
         # SCALE: the ownership check is a single read-only point lookup on cases(id)
         # (primary key). Running it in autocommit avoids opening a transaction, so the
         # request costs ONE DB round trip instead of two (no trailing ROLLBACK on
-        # connection return) — halving auth-path latency on the 100k hot path.
+        # connection return)  -  halving auth-path latency on the 100k hot path.
         conn.autocommit = True
         with conn.cursor() as cur:
             cur.execute(
@@ -485,10 +485,10 @@ def check_case_ownership(
             raise HTTPException(status_code=404, detail="Case not found")
         case_owner = str(row[0]) if row[0] else None
         if case_owner and case_owner != user_id:
-            logger.warning("Case ownership check failed — identity mismatch (IDs not logged).")
+            logger.warning("Case ownership check failed  -  identity mismatch (IDs not logged).")
             raise HTTPException(
                 status_code=403,
-                detail="Access denied — this case belongs to a different user.",
+                detail="Access denied  -  this case belongs to a different user.",
             )
     finally:
         conn.close()

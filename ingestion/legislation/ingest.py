@@ -1,5 +1,5 @@
 """
-Phase 1 — legislation.gov.uk ingestion job.
+Phase 1  -  legislation.gov.uk ingestion job.
 
 Fetches sections listed in config.LEGISLATION_TARGETS, parses CLML XML,
 stores chunks in the `legislation` table. For sections amended by ERA 2025,
@@ -29,7 +29,7 @@ from ingestion.legislation.clml_parser import parse_section_xml
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
-    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+    format="%(asctime)s %(levelname)s %(name)s  -  %(message)s",
 )
 logger = logging.getLogger(__name__)
 console = Console()
@@ -52,14 +52,14 @@ def _resolve_targets() -> list[tuple]:
         if targets:
             console.print(f"[dim]Legislation targets loaded from domain pack: {pack.root}[/dim]")
             return targets
-    except Exception as exc:  # pragma: no cover — pack-missing fallback
+    except Exception as exc:  # pragma: no cover  -  pack-missing fallback
         console.print(f"[yellow]domain pack targets unavailable ({exc}); using config fallback[/yellow]")
     return list(LEGISLATION_TARGETS)
 
 
 def ingest_all() -> None:
     """Run the full legislation ingestion."""
-    console.print("[bold green]Phase 1 — Legislation ingestion starting[/bold green]")
+    console.print("[bold green]Phase 1  -  Legislation ingestion starting[/bold green]")
 
     total_chunks = 0
     errors: list[str] = []
@@ -81,7 +81,7 @@ def ingest_all() -> None:
             if not resolved_normalised.startswith(expected_suffix):
                 msg = (
                     f"MISMATCH: '{act_title}' resolved to {resolved}, "
-                    f"expected type/year/chapter {leg_type}/{year}/{chapter}. Flagging — not ingesting."
+                    f"expected type/year/chapter {leg_type}/{year}/{chapter}. Flagging  -  not ingesting."
                 )
                 logger.error(msg)
                 errors.append(msg)
@@ -89,7 +89,7 @@ def ingest_all() -> None:
                 continue
             console.print(f"  Chapter verified: {resolved} ✓")
         else:
-            console.print(f"  [yellow]Warning: could not resolve title for {act_title} — proceeding with configured chapter[/yellow]")
+            console.print(f"  [yellow]Warning: could not resolve title for {act_title}  -  proceeding with configured chapter[/yellow]")
 
         for section in sections:
             _ingest_section(leg_type, year, chapter, section, act_title, False, total_chunks, errors)
@@ -122,7 +122,7 @@ def _ingest_section(
 
     xml_bytes = fetch_section_xml(leg_type, year, chapter, section, version)
     if xml_bytes is None:
-        console.print("[yellow]not found — skipped[/yellow]")
+        console.print("[yellow]not found  -  skipped[/yellow]")
         return 0
 
     chunks = parse_section_xml(

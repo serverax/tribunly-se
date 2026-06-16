@@ -1,6 +1,6 @@
 # 10 - Lawapp Feature Roadmap (additive to 01_BUILD_PLAN.md)
 
-**Type:** Phased feature specification — adds to and extends the original six-phase plan.
+**Type:** Phased feature specification  -  adds to and extends the original six-phase plan.
 **Project root:** `F:\lawapp`
 **Positioning:** AI-first UK employment claim co-pilot. Instant cited diagnosis, rules-backed
 engine, deadline protection, evidence intelligence, document readiness, audit trail, optional
@@ -22,11 +22,11 @@ human coaching, optional solicitor review. Transparent one-off pricing with opti
 7. Legal facts come from rules/retrieval, not model memory.
 8. Governance gate is mandatory on every assessment output.
 9. FCL bulk ingestion blocked until licence grant.
-10. OpenAI quota blocks embeddings only — structured engine work continues.
+10. OpenAI quota blocks embeddings only  -  structured engine work continues.
 
 ---
 
-## PHASE 2C — Structured assessment and audit foundation
+## PHASE 2C  -  Structured assessment and audit foundation
 
 ### Task list
 
@@ -84,7 +84,7 @@ See `db/migrations/003_phase2c_audit.sql`.
 
 ---
 
-## PHASE 3 — MVP dashboard, retention, pricing, coaching
+## PHASE 3  -  MVP dashboard, retention, pricing, coaching
 
 ### Task list
 
@@ -118,11 +118,11 @@ No dashboard text is generated outside the governed pipeline + assessment schema
 
 ### 3-2 Deadline protection
 
-Deterministic only — no LLM:
+Deterministic only  -  no LLM:
 - Tribunal deadline from `rules` table + deadline engine
 - ACAS EC status: not_started | in_progress | certificate_received
 - Urgency tier: >90 days = normal; 30–90 = elevated; <30 = critical; 0 = missed
-- Missed-deadline triage: surface s.111(2)(b) "not reasonably practicable" — route to solicitor; never compute
+- Missed-deadline triage: surface s.111(2)(b) "not reasonably practicable"  -  route to solicitor; never compute
 
 ### 3-3 Next action checklist
 
@@ -156,7 +156,7 @@ Readiness = % of required fields present and confirmed. `can_generate = true` on
 
 - Show readiness percentage before unlocking payment
 - Warn/block if required facts missing
-- All generated documents marked: "Self-help draft — not legal advice — prepared by the user using lawapp"
+- All generated documents marked: "Self-help draft  -  not legal advice  -  prepared by the user using lawapp"
 - Never imply solicitor-authored
 
 ### 3-6 Human coaching flow
@@ -183,7 +183,7 @@ Provider type: `paralegal_coach`. Must never be labelled "solicitor" unless SRA-
 
 Trigger on:
 - Urgent deadline (< 14 days)
-- Missed deadline (s.111(2)(b) — discretionary)
+- Missed deadline (s.111(2)(b)  -  discretionary)
 - Confidence < 0.3 after full assessment
 - Insufficient grounding after evidence added
 - Discrimination/whistleblowing/health-safety facts (auto-unfair)
@@ -198,10 +198,10 @@ Referral incentives must never alter the assessment. Free tier's honesty is a ha
 ### 3-8 Pricing
 
 MVP pricing (in order, no forced subscription):
-1. Free diagnosis — always free
-2. One-off document pack — Particulars of Claim + Schedule of Loss
-3. One-off human coaching — fixed session fee
-4. One-off solicitor review — fixed review fee (or referral fee model Phase 6)
+1. Free diagnosis  -  always free
+2. One-off document pack  -  Particulars of Claim + Schedule of Loss
+3. One-off human coaching  -  fixed session fee
+4. One-off solicitor review  -  fixed review fee (or referral fee model Phase 6)
 
 Optional subscription (Phase 6, not MVP):
 - £9/month: case tracker + reminders
@@ -213,7 +213,7 @@ No hidden auto-renewal. Show "pay once" options clearly.
 
 Reminder types: deadline_approaching, acas_not_started, acas_certificate_missing, evidence_missing, document_incomplete, paid_document_ready, solicitor_review_recommended.
 
-Message templates are static strings with placeholders — never generatively produced.
+Message templates are static strings with placeholders  -  never generatively produced.
 
 ### 3-10 Phase 3 tests
 
@@ -230,7 +230,7 @@ Message templates are static strings with placeholders — never generatively pr
 
 ---
 
-## PHASE 4 — Evidence intelligence and upload
+## PHASE 4  -  Evidence intelligence and upload
 
 ### Task list
 
@@ -281,7 +281,7 @@ User must confirm extracted facts before they enter the assessment. Never silent
 
 ---
 
-## PHASE 5 — Validation, safety, accuracy, market trust
+## PHASE 5  -  Validation, safety, accuracy, market trust
 
 ### Task list
 
@@ -327,7 +327,7 @@ See `db/migrations/006_phase5_feedback.sql`.
 
 ---
 
-## PHASE 6 — Revenue, B2B, solicitor network
+## PHASE 6  -  Revenue, B2B, solicitor network
 
 ### Task list
 

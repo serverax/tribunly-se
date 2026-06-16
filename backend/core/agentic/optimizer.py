@@ -1,5 +1,5 @@
 """
-DSPy Optimizer — Evolving Intelligence Stack, Component B (DETACHED CI ONLY).
+DSPy Optimizer  -  Evolving Intelligence Stack, Component B (DETACHED CI ONLY).
 
 NEVER runs in the request path (would add latency + unpredictability). It is invoked
 by the CI job `dsp_optimize_prompts`. The flywheel:
@@ -11,12 +11,12 @@ by the CI job `dsp_optimize_prompts`. The flywheel:
            AND introduce ZERO safety/AIA regression
         -> write to prompt_versions (is_production=true only if promoted)
 
-Prompts are versioned DATA in `prompt_versions` — agents load the production prompt
+Prompts are versioned DATA in `prompt_versions`  -  agents load the production prompt
 from the DB at startup; production prompts are never hand-edited.
 
 OWNER-BLOCKED: real DSPy *compilation* calls an LLM. Without a model/OpenRouter key,
 `dspy_available()` is False and the optimizer runs the deterministic, rule-based
-candidate path (a real candidate derived from the recorded critiques) — it does NOT
+candidate path (a real candidate derived from the recorded critiques)  -  it does NOT
 fabricate a "compiled" prompt or a fake metric.
 """
 
@@ -185,7 +185,7 @@ class Optimizer:
         }
 
 
-if __name__ == "__main__":  # pragma: no cover — detached CI entrypoint
+if __name__ == "__main__":  # pragma: no cover  -  detached CI entrypoint
     import json
     opt = Optimizer()
     print(json.dumps({"dspy_available": dspy_available()}))

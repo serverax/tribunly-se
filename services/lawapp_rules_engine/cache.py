@@ -1,22 +1,22 @@
-"""Hot-path cache for the rules-engine — built for 100k concurrent.
+"""Hot-path cache for the rules-engine  -  built for 100k concurrent.
 
 The deterministic legal values (statutory time limits, caps, qualifying periods)
-live in the `rules` table and change only when legislation changes — effectively
+live in the `rules` table and change only when legislation changes  -  effectively
 never within a request window. Hitting Postgres on every rule evaluation is the
-scaling bottleneck (a fresh psycopg connection per call, no pool — see
+scaling bottleneck (a fresh psycopg connection per call, no pool  -  see
 ingestion/db.py). This module removes the DB from the hot path:
 
-  * read-through TTL cache keyed by (claim_type, jurisdiction, edt) — a cache hit
+  * read-through TTL cache keyed by (claim_type, jurisdiction, edt)  -  a cache hit
     returns the rules with ZERO database work, in microseconds.
   * single-flight on miss: the per-key compute runs under the lock, so a cold key
     hit by N concurrent requests triggers exactly ONE database read, not N. This is
     what prevents a connection-storm / lock contention at scale.
   * pure per-process state (a plain dict). Each pod owns its cache, shares nothing,
-    and is therefore horizontally scalable — add pods to add capacity. No cross-pod
+    and is therefore horizontally scalable  -  add pods to add capacity. No cross-pod
     coordination, no sticky sessions, no shared mutable state.
 
 The deadline arithmetic is a pure function of (edt, time_limit_months, ec dates),
-so it is memoized with an LRU — the second identical calculation is free.
+so it is memoized with an LRU  -  the second identical calculation is free.
 
 Tuning via env: RULES_CACHE_TTL_SECONDS (default 300), RULES_CACHE_MAXSIZE (10000),
 DEADLINE_MEMO_MAXSIZE (50000). All are read once at import.
@@ -58,7 +58,7 @@ class TTLCache:
     On a hit within TTL the value is returned with no recompute. On a miss the
     loader runs under the lock (single-flight) so concurrent callers for the same
     key cause exactly one load. Eviction is best-effort: when full, the oldest
-    entry by insertion order is dropped (FIFO — adequate for a small rules set).
+    entry by insertion order is dropped (FIFO  -  adequate for a small rules set).
     """
 
     def __init__(self, ttl_seconds: int, maxsize: int) -> None:
@@ -79,7 +79,7 @@ class TTLCache:
             if entry is not None and (now - entry[0]) < self._ttl:
                 self.metrics.hits += 1
                 return entry[1], True
-            # miss or expired — load under lock (single-flight)
+            # miss or expired  -  load under lock (single-flight)
             value = loader()
             if len(self._store) >= self._maxsize and key not in self._store:
                 # drop oldest inserted key (FIFO)
@@ -145,7 +145,7 @@ def memoized_limitation_date(edt: date, tl_months: int,
 
 
 def cache_stats() -> dict:
-    """Observability snapshot — rules cache + deadline memo, for /metrics-style use."""
+    """Observability snapshot  -  rules cache + deadline memo, for /metrics-style use."""
     memo = _memo_limitation_date.cache_info()
     return {
         "rules_cache": _rules_cache.stats(),
@@ -157,6 +157,6 @@ def cache_stats() -> dict:
 
 
 def reset_caches() -> None:
-    """Test helper — clear all cached state."""
+    """Test helper  -  clear all cached state."""
     _rules_cache.clear()
     _memo_limitation_date.cache_clear()

@@ -1,4 +1,4 @@
-# LAWAPP — PERMANENT LOOP ACCEPTANCE RULEBOOK
+# LAWAPP  -  PERMANENT LOOP ACCEPTANCE RULEBOOK
 ## Zero Partial, Zero Mock-Only, Full End-to-End Integration Required
 
 **File name:** `LAWAPP_PERMANENT_LOOP_ACCEPTANCE_RULEBOOK.md`  
@@ -9,7 +9,7 @@
 
 ---
 
-# 0. OWNER POSITION — NO NEGOTIATION
+# 0. OWNER POSITION  -  NO NEGOTIATION
 
 The owner does **not** accept:
 
@@ -366,7 +366,7 @@ It must not be a confident answer.
 
 ---
 
-# 8. DB ACCEPTANCE — TABLES ARE NOT ENOUGH
+# 8. DB ACCEPTANCE  -  TABLES ARE NOT ENOUGH
 
 DB is accepted only when it is used by the live system.
 

@@ -1,4 +1,4 @@
-# CURSOR DEEP QA REPORT — lawapp
+# CURSOR DEEP QA REPORT  -  lawapp
 
 **Date:** 2026-06-14  
 **Auditor:** Cursor QA / architecture audit (subagent)  
@@ -11,36 +11,36 @@
 
 **YES, BUT ONLY AFTER P0/P1 REPAIRS**
 
-LawApp is a real, wired monolith-plus-microservices UK employment-law platform — not a mock shell. Local Docker is currently healthy, core workflows pass live proof, and DB-backed rules drive governed assessments. It is **not** production-ready: 13/24 employment modules remain `partial`, RAG corpus is critically sparse (28 chunks, 0 retrieval hits), full pytest is not green (59 failures in last full run), load gates fail, and K8s/production observability are unproven from this machine.
+LawApp is a real, wired monolith-plus-microservices UK employment-law platform  -  not a mock shell. Local Docker is currently healthy, core workflows pass live proof, and DB-backed rules drive governed assessments. It is **not** production-ready: 13/24 employment modules remain `partial`, RAG corpus is critically sparse (28 chunks, 0 retrieval hits), full pytest is not green (59 failures in last full run), load gates fail, and K8s/production observability are unproven from this machine.
 
 ### Honest % complete by category
 
 | Category | % | Rating | Evidence summary |
 |----------|---|--------|------------------|
-| A — Architecture & service map | 72% | PARTIAL | Monolith + 8 compose microservices healthy; dual `backend/services/` + `services/` layout; canonical K8s namespaces defined |
-| B — Database & migrations | 82% | PARTIAL | 91 tables, 68 SQL migrations, 125 rules; integrity script fails go-live module gate only |
-| C — Legal rules engine | 74% | PARTIAL | 125 `rules` rows with authority refs; 11/24 modules `production`, 13 `partial` |
-| D — RAG retrieval | 35% | FAIL | Service healthy; `/api/rag/search` returns **0 results**; only **28** `corpus_chunks` |
-| E — Graph RAG | 58% | PARTIAL | Service healthy; assessments use `graph_context_used`; graph tables populated |
-| F — Brain / governance pipeline | 78% | PARTIAL | 19-step pipeline in `backend/core/brain.py`; workflow proof shows citations + trace_id |
-| G — Security / auth / payment | 76% | PARTIAL | JWT fail-closed proven; test payment workflow passes; 59 stale test failures include auth drift |
-| H — Frontend | 68% | PARTIAL | Static HTML/JS served from monolith; pages wired to real API routes |
-| I — Documents / OCR / bundles | 70% | PARTIAL | Paid/unpaid gating proven in workflow script; integration tests failing on auth |
-| J — CI/CD | 62% | PARTIAL | `.github/workflows/ci.yml` canonical; full suite not green in container |
-| K — Kubernetes / deploy | 45% | FAIL | Manifests under `infra/k8s/` + `k8s/`; cluster not reachable / not proven this session |
-| L — Monitoring / OTEL | 50% | PARTIAL | OTEL deps in Dockerfile; Prometheus rules manifest exists; end-to-end trace not proven |
+| A  -  Architecture & service map | 72% | PARTIAL | Monolith + 8 compose microservices healthy; dual `backend/services/` + `services/` layout; canonical K8s namespaces defined |
+| B  -  Database & migrations | 82% | PARTIAL | 91 tables, 68 SQL migrations, 125 rules; integrity script fails go-live module gate only |
+| C  -  Legal rules engine | 74% | PARTIAL | 125 `rules` rows with authority refs; 11/24 modules `production`, 13 `partial` |
+| D  -  RAG retrieval | 35% | FAIL | Service healthy; `/api/rag/search` returns **0 results**; only **28** `corpus_chunks` |
+| E  -  Graph RAG | 58% | PARTIAL | Service healthy; assessments use `graph_context_used`; graph tables populated |
+| F  -  Brain / governance pipeline | 78% | PARTIAL | 19-step pipeline in `backend/core/brain.py`; workflow proof shows citations + trace_id |
+| G  -  Security / auth / payment | 76% | PARTIAL | JWT fail-closed proven; test payment workflow passes; 59 stale test failures include auth drift |
+| H  -  Frontend | 68% | PARTIAL | Static HTML/JS served from monolith; pages wired to real API routes |
+| I  -  Documents / OCR / bundles | 70% | PARTIAL | Paid/unpaid gating proven in workflow script; integration tests failing on auth |
+| J  -  CI/CD | 62% | PARTIAL | `.github/workflows/ci.yml` canonical; full suite not green in container |
+| K  -  Kubernetes / deploy | 45% | FAIL | Manifests under `infra/k8s/` + `k8s/`; cluster not reachable / not proven this session |
+| L  -  Monitoring / OTEL | 50% | PARTIAL | OTEL deps in Dockerfile; Prometheus rules manifest exists; end-to-end trace not proven |
 
 **Weighted overall:** ~**65%** toward controlled beta; ~**45%** toward public go-live.
 
 ---
 
-## Phase 1 — Project map
+## Phase 1  -  Project map
 
 ### Frontend
 
 | Item | Status |
 |------|--------|
-| Framework | Static HTML/CSS/JS (`client/public/`) — no React/Next SPA |
+| Framework | Static HTML/CSS/JS (`client/public/`)  -  no React/Next SPA |
 | Serving | Monolith bind-mounts `./client/public:ro` → port 8000 |
 | Pages | 17 HTML pages (intake, assessment, dashboard, case_detail, login, register, tools, etc.) |
 | API wiring | `fetch` / `LAWAPP_AUTH.fetchWithAuth` to `/assess`, `/cases`, `/api/documents/*`, `/api/payments/*`, `/auth/*` |
@@ -50,7 +50,7 @@ LawApp is a real, wired monolith-plus-microservices UK employment-law platform �
 | Item | Status |
 |------|--------|
 | Framework | FastAPI monolith (`backend/api/main.py`) |
-| Brain | `backend/core/brain.py` — mandatory 19-step pipeline |
+| Brain | `backend/core/brain.py`  -  mandatory 19-step pipeline |
 | Domains | Employment UK (`backend/domains/employment/`, `domains/employment_uk/`) |
 | Auth | JWT (`LAWAPP_AUTH_MODE=jwt`), sessions in Postgres |
 | Payment | Stripe + test mode; fail-closed when disabled |
@@ -71,7 +71,7 @@ LawApp is a real, wired monolith-plus-microservices UK employment-law platform �
 | lawapp-admin-service | 8007 | healthy |
 | lawapp-case-service | 8008 | healthy |
 | lawapp-notification-service | 8009 | healthy |
-| outbox-worker | — | healthy |
+| outbox-worker |  -  | healthy |
 
 **Not running in compose:** citation-guard, ingestion-worker, LLM gateway, crawler (manifests exist under `services/` and `backend/services/`).
 
@@ -83,26 +83,26 @@ LawApp is a real, wired monolith-plus-microservices UK employment-law platform �
 
 ### CI/CD
 
-- **Canonical:** `.github/workflows/ci.yml` — migrations via raw SQL + pytest
+- **Canonical:** `.github/workflows/ci.yml`  -  migrations via raw SQL + pytest
 - **Deprecated:** `lawapp-ci.yml` (workflow_dispatch only)
 - Additional: `build-images.yml`, `smoke.yml`, `docker-proof.yml`, deploy workflows
 
 ### DB migrations
 
-- **Not Alembic** — zero `alembic` references in repo; `import alembic` fails in backend container (expected)
-- Runner: `db/init-migrations.sh` — idempotent `_migrations` table
+- **Not Alembic**  -  zero `alembic` references in repo; `import alembic` fails in backend container (expected)
+- Runner: `db/init-migrations.sh`  -  idempotent `_migrations` table
 - 68 files in `db/migrations/` (001–068+)
 - Seeds: `db-bootstrap` profile, `ingestion/` pipelines, employment module migrations 058–068
 
 ### Tests
 
-- `tests/` — 1700+ tests (full suite)
-- `backend/tests/` — smaller subset (83 tests in container run)
+- `tests/`  -  1700+ tests (full suite)
+- `backend/tests/`  -  smaller subset (83 tests in container run)
 - Proof scripts: `scripts/proof/prove_lawapp_full_workflows.sh`, `prove_database_integrity.sh`
 
 ---
 
-## Phase 2 — Proof commands (exact output)
+## Phase 2  -  Proof commands (exact output)
 
 ### `docker compose ps`
 
@@ -132,7 +132,7 @@ POSTGRES_PORT = 5432
 POSTGRES_USER = lawapp
 ```
 
-*(Aligned via `docker-compose.override.yml` — resolves prior `password authentication failed` when `.env` used `change_this_password`.)*
+*(Aligned via `docker-compose.override.yml`  -  resolves prior `password authentication failed` when `.env` used `change_this_password`.)*
 
 ### Backend psycopg2 connect
 
@@ -193,7 +193,7 @@ Body: {"query":"unfair dismissal qualifying period","top_k":3}
 Response: {"query":"...","results":[],"total_found":0}
 ```
 
-**FAIL for grounded RAG** — service up but corpus too sparse for retrieval.
+**FAIL for grounded RAG**  -  service up but corpus too sparse for retrieval.
 
 ### Alembic check
 
@@ -202,21 +202,21 @@ docker compose exec -T backend python -c "import alembic"
 ModuleNotFoundError: No module named 'alembic'
 ```
 
-**Non-blocker** — project uses SQL migrations, not Alembic.
+**Non-blocker**  -  project uses SQL migrations, not Alembic.
 
 ### pytest
 
 | Command | Result |
 |---------|--------|
-| `docker compose run --rm backend python -m pytest -q` | **2 failed, 83 passed** (runs `backend/tests/` only — image does not COPY root `tests/`) |
+| `docker compose run --rm backend python -m pytest -q` | **2 failed, 83 passed** (runs `backend/tests/` only  -  image does not COPY root `tests/`) |
 | Full suite (cached `reports/full_suite_results.txt`) | **59 failed, 1619 passed, 47 skipped** in 1774s |
 | `bash scripts/proof/prove_lawapp_full_workflows.sh` | **PASS** (all steps including paid docs) |
 | `bash scripts/proof/prove_database_integrity.sh` | **FAIL** at go-live employment-module gate (13 partial modules) |
 
 ### Service logs
 
-- **backend:** Only `/health` 200 lines — no FATAL/password errors in tail-300
-- **rules/audit/redaction/rag/graph-rag:** Health-check 200 lines only — no restart loops at audit time (contrasts with user's earlier session)
+- **backend:** Only `/health` 200 lines  -  no FATAL/password errors in tail-300
+- **rules/audit/redaction/rag/graph-rag:** Health-check 200 lines only  -  no restart loops at audit time (contrasts with user's earlier session)
 
 ### k6 load (cached `reports/k6_100k_readiness.txt`)
 
@@ -228,22 +228,22 @@ p(95) duration: 1.05s (threshold <1000ms crossed)
 
 ---
 
-## Phase 3 — P0 blocker investigation
+## Phase 3  -  P0 blocker investigation
 
 | # | Issue | Root cause | Status this session |
 |---|-------|------------|---------------------|
-| 1 | Backend DB password mismatch | `.env` POSTGRES_PASSWORD vs override | **RESOLVED** — override sets `lawapp`; backend connects |
-| 2 | Alembic missing | Never part of design | **N/A** — use `db/init-migrations.sh` |
-| 3 | psql not in backend | Backend image has `postgresql-client` but proof uses `db` container | **DOCUMENTED** — `docker compose exec -T db psql ...` |
-| 4 | Docker health checks | curl /health endpoints | **PASS** — all services healthy |
-| 5 | RAG/graph-rag restarting | Not reproducing now; logs clean | **INTERMITTENT / RESOLVED locally** — monitor on cold start |
-| 6 | datetime.utcnow warnings | ~30 usages across services | **P3** — deprecation warnings only |
+| 1 | Backend DB password mismatch | `.env` POSTGRES_PASSWORD vs override | **RESOLVED**  -  override sets `lawapp`; backend connects |
+| 2 | Alembic missing | Never part of design | **N/A**  -  use `db/init-migrations.sh` |
+| 3 | psql not in backend | Backend image has `postgresql-client` but proof uses `db` container | **DOCUMENTED**  -  `docker compose exec -T db psql ...` |
+| 4 | Docker health checks | curl /health endpoints | **PASS**  -  all services healthy |
+| 5 | RAG/graph-rag restarting | Not reproducing now; logs clean | **INTERMITTENT / RESOLVED locally**  -  monitor on cold start |
+| 6 | datetime.utcnow warnings | ~30 usages across services | **P3**  -  deprecation warnings only |
 
-**No code fixes applied this session** — runtime blockers from user context are already mitigated by existing `docker-compose.override.yml`; remaining gaps are data coverage, test debt, and production proof.
+**No code fixes applied this session**  -  runtime blockers from user context are already mitigated by existing `docker-compose.override.yml`; remaining gaps are data coverage, test debt, and production proof.
 
 ---
 
-## Phase 4 — Area ratings (A–L)
+## Phase 4  -  Area ratings (A–L)
 
 | Area | Verdict | Key evidence |
 |------|---------|--------------|
@@ -262,9 +262,9 @@ p(95) duration: 1.05s (threshold <1000ms crossed)
 
 ---
 
-## Phase 5 — Recommendations
+## Phase 5  -  Recommendations
 
-1. **P0:** Run `docker compose --profile bootstrap run --rm db-bootstrap` (or full ingestion) to populate `corpus_chunks` — prove RAG returns ≥1 hit for employment queries.
+1. **P0:** Run `docker compose --profile bootstrap run --rm db-bootstrap` (or full ingestion) to populate `corpus_chunks`  -  prove RAG returns ≥1 hit for employment queries.
 2. **P0:** Promote or honestly gate remaining 13 `partial` modules; until then fail-closed in product UI.
 3. **P1:** Copy `tests/` into backend Docker image OR mount in compose so CI/container matches local full suite.
 4. **P1:** Repair 59 failing tests (mostly auth fixture drift in `tests/integration/test_phase3*.py`).
@@ -276,7 +276,7 @@ p(95) duration: 1.05s (threshold <1000ms crossed)
 
 ## Files changed this audit
 
-**None** — audit and documentation only.
+**None**  -  audit and documentation only.
 
 ---
 

@@ -20,10 +20,10 @@ PREPARED, INACTIVE · BLOCKED BY OWNER · FAILED AND NEEDS FIX.
 - **Chunked, resumable, idempotent ingestion** + per-batch checkpoints; no duplicate rows.
 
 ## IMPLEMENTED BUT PARTIAL
-- **ACAS standalone guidance breadth** — 9 documents (Code + disciplinary, grievance,
+- **ACAS standalone guidance breadth**  -  9 documents (Code + disciplinary, grievance,
   dismissal, notice, early conciliation, settlement, redundancy, unfair dismissal).
   Next: deeper sub-pages of multi-page ACAS guides (only first page captured per guide).
-- **GOV.UK tribunal-procedure depth** — 17 documents incl. employment-tribunals,
+- **GOV.UK tribunal-procedure depth**  -  17 documents incl. employment-tribunals,
   redundancy, dismissal, grievance, whistleblowing. Next: ET1/ET3 procedural detail,
   current tribunal fees/procedure pages.
 
@@ -32,14 +32,14 @@ PREPARED, INACTIVE · BLOCKED BY OWNER · FAILED AND NEEDS FIX.
 - **Deeper backdated cap history** beyond 2021 (week's-pay / comp-award / basic-award).
 - **Full document-generation workflow** (intake exists; generation partial).
 - **UK Parliament Bills API reform-watch ingestion** (table present, monitoring-only;
-  not yet populated — by design, not legal authority).
+  not yet populated  -  by design, not legal authority).
 
 ## PREPARED, INACTIVE
-- **Equality Act 2010** — declared in `sources.yaml` (`active:false`); ingest when the
+- **Equality Act 2010**  -  declared in `sources.yaml` (`active:false`); ingest when the
   discrimination (Vento) workflow is activated.
 
 ## BLOCKED BY OWNER
-- **Find Case Law bulk ingestion** — pending computational-analysis approval/licence.
+- **Find Case Law bulk ingestion**  -  pending computational-analysis approval/licence.
   Pipeline/gate/schema prepared; `FCL_BULK_LICENCE_GRANTED=false`; 0 fake rows.
 
 ## FAILED AND NEEDS FIX

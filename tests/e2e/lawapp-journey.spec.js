@@ -154,18 +154,18 @@ test('user A can read own case', async ({ request }) => {
   expect(body.case_id).toBe(caseIdA);
 });
 
-// ── Test: User isolation — B cannot read A's case ────────────────────────────
+// ── Test: User isolation  -  B cannot read A's case ────────────────────────────
 
 test('user B CANNOT read user A case (HTTP 403)', async ({ request }) => {
   if (!tokenB || !caseIdA) { test.skip(); return; }
   const r = await request.get(`${BASE}/cases/${caseIdA}`, {
     headers: { 'Authorization': `Bearer ${tokenB}` },
   });
-  // In jwt/mock mode: 403. In none mode: 200 (isolation bypassed — staging blocker)
+  // In jwt/mock mode: 403. In none mode: 200 (isolation bypassed  -  staging blocker)
   const status = r.status();
-  // Accept 403 (proper isolation) or note if 200 (auth mode=none — staging blocker)
+  // Accept 403 (proper isolation) or note if 200 (auth mode=none  -  staging blocker)
   if (status === 200) {
-    console.warn('USER ISOLATION BYPASSED: LAWAPP_AUTH_MODE may be "none" — set to "mock" or "jwt"');
+    console.warn('USER ISOLATION BYPASSED: LAWAPP_AUTH_MODE may be "none"  -  set to "mock" or "jwt"');
   }
   // In mock mode this SHOULD be 403
   expect(status).toBe(403);
@@ -278,7 +278,7 @@ test('intake page loads with ACAS fields', async ({ page }) => {
 // ── Test: Live deadline preview ───────────────────────────────────────────────
 
 test('intake deadline preview: rules API returns correct values for WASM/JS', async ({ request }) => {
-  // Pure API test — verifies the data that drives the deadline preview
+  // Pure API test  -  verifies the data that drives the deadline preview
   const r = await request.get(`${BASE}/rules/unfair_dismissal`);
   expect(r.status()).toBe(200);
   const body = await r.json();

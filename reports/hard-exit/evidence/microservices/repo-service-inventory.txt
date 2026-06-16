@@ -23,7 +23,7 @@ lawapp_worker  app=app.py  create_service=N  routes=0  []
 
 --- FINDINGS ---
 [OK]   8 HTTP services use services._common.create_service (shared factory): brain, citation_guard, crawler, document_service, llm_gateway, rag_ingestion, rag_retrieval, rules_engine.
-[OK]   lawapp_worker: background sleep-loop worker (no HTTP routes) — matches deployment with no ports/probes. Trivial placeholder body (sleeps WORKER_SLEEP_SECONDS); NO real work loop. Classify: REAL-process / NO-OP-BODY.
-[DEAD] services/lawapp-brain, lawapp-citation-guard, lawapp-document-service, lawapp-llm-gateway, lawapp-rag-retrieval, lawapp-rules-engine (HYPHEN dirs) are EMPTY leftovers — DEAD-CODE-DIR, not deployed.
+[OK]   lawapp_worker: background sleep-loop worker (no HTTP routes)  -  matches deployment with no ports/probes. Trivial placeholder body (sleeps WORKER_SLEEP_SECONDS); NO real work loop. Classify: REAL-process / NO-OP-BODY.
+[DEAD] services/lawapp-brain, lawapp-citation-guard, lawapp-document-service, lawapp-llm-gateway, lawapp-rag-retrieval, lawapp-rules-engine (HYPHEN dirs) are EMPTY leftovers  -  DEAD-CODE-DIR, not deployed.
 [DRIFT] Deployed lawapp-brain Deployment runs image ghcr.io/serverax/lawapp/backend:latest on port 8000 serving the full backend main.py (NOT services.lawapp_brain.app:8080 from its Dockerfile). The slim brain service code exists but the LIVE brain is the full backend image.
 [DRIFT] Deployed lawapp-citation-guard image (b13c59d…) returns {valid:true} for the all-zeros fake UUID and for empty citations, and omits claimed/valid_uuids/reason fields present in current services/lawapp_citation_guard/app.py source. Deployed image is STALE / divergent and validates permissively (effective stub).

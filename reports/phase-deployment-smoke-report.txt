@@ -1,5 +1,5 @@
 ================================================================================
-DEPLOYMENT SMOKE REPORT — iterlaw-ai
+DEPLOYMENT SMOKE REPORT  -  iterlaw-ai
 Date: 2026-06-02
 Context: admin@ordinox-talos
 ================================================================================

@@ -1,12 +1,12 @@
 """
-/api/tools/* — free, no-login PREVIEW tools.
+/api/tools/*  -  free, no-login PREVIEW tools.
 
 Thin HTTP layer over backend/core/tools.py. These endpoints are the public funnel:
 anonymous visitors may run a quick screen / estimate and see a preview. The full,
 saved, citation-backed result lives behind login + the governed brain pipeline.
 
 Every statutory value used by these tools is loaded from the effective-dated
-`rules` table (DB-first, fail-closed) — see backend/core/tools.py. When a required
+`rules` table (DB-first, fail-closed)  -  see backend/core/tools.py. When a required
 statutory rule is missing the tool raises ToolDataUnavailable and this layer maps
 it to an honest 503, never a fabricated legal answer (constitution §9).
 
@@ -73,7 +73,7 @@ def deadline_calculator(request: Request, body: DeadlineRequest) -> dict:
     try:
         return tools.calculate_deadline(body.event_date, body.event_type, body.jurisdiction)
     except tools.ToolDataUnavailable as exc:
-        # Fail closed — statutory rule missing. Honest 503, never a fabricated date.
+        # Fail closed  -  statutory rule missing. Honest 503, never a fabricated date.
         raise HTTPException(status_code=503, detail=str(exc))
     except (ValueError, TypeError) as exc:
         raise HTTPException(status_code=422, detail=f"Invalid input: {exc}")

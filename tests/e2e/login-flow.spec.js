@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 /**
- * Login flow (browser) — login.html UI, both methods.
+ * Login flow (browser)  -  login.html UI, both methods.
  *
  * Covers the spec's "test_login_flow: magic link + email/password" against the
  * REAL served page at http://localhost:8000/pages/login.html (no mocks).
@@ -87,7 +87,7 @@ test('email/password: a wrong password shows a visible error', async ({ page, re
 
   await expect(page.locator('#login-error')).toBeVisible();
   await expect(page.locator('#login-error-text')).not.toBeEmpty();
-  // Still on the login page — no silent "success".
+  // Still on the login page  -  no silent "success".
   await expect(page).toHaveURL(/login\.html/);
 });
 

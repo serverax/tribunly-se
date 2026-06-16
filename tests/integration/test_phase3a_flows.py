@@ -1,18 +1,18 @@
 """
-Phase 3A — MVP client integration tests.
+Phase 3A  -  MVP client integration tests.
 
 Validates the FastAPI app serves the static client and wires the intake
 submission correctly to the existing assessment pipeline.
 
 Tests:
-  1. Landing page served at GET / — contains legal notice text
+  1. Landing page served at GET /  -  contains legal notice text
   2. Intake page served at GET /pages/intake.html
   3. Assessment page served at GET /pages/assessment.html
   4. Legal notice present on all three pages
-  5. POST /assess — intake submit path returns structured assessment
-  6. POST /assess — out-of-scope returns not_supported (OOS rejection)
-  7. POST /assess — citations present in response for viable claim
-  8. POST /assess — key_weaknesses shown for weak case
+  5. POST /assess  -  intake submit path returns structured assessment
+  6. POST /assess  -  out-of-scope returns not_supported (OOS rejection)
+  7. POST /assess  -  citations present in response for viable claim
+  8. POST /assess  -  key_weaknesses shown for weak case
 
 Run:
     docker compose run --rm ingestion python -m pytest \
@@ -95,7 +95,7 @@ def test_intake_submit_returns_assessment():
         "query": "I was unfairly dismissed",
         "facts": _FULL_FACTS,
         "jurisdiction": "EW",
-        "use_model": False,     # StubReasoningModel — no external call
+        "use_model": False,     # StubReasoningModel  -  no external call
     })
     assert resp.status_code == 200
     data = resp.json()
@@ -146,7 +146,7 @@ def test_weak_case_shows_weaknesses():
     """Assessment with low qualifying service must expose key_weaknesses."""
     short_service_facts = {
         "edt": "2026-02-15",
-        "service_start_date": "2025-01-01",   # ~13 months — below 2yr QP
+        "service_start_date": "2025-01-01",   # ~13 months  -  below 2yr QP
         "reason_for_dismissal": "conduct",
         "was_procedure_followed": True,
         "weekly_pay": 400,

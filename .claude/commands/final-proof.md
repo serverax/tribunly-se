@@ -1,5 +1,5 @@
 ---
-description: Run the full hard-exit final gate — all blockers + e2e workflow proof — and issue READY / NOT READY.
+description: Run the full hard-exit final gate  -  all blockers + e2e workflow proof  -  and issue READY / NOT READY.
 ---
 
 # /final-proof
@@ -14,6 +14,6 @@ Final release gate across all layers.
 5. No `|| true`, no continue-on-error, no static PASS anywhere.
 
 ## Output
-`READY — LAWAPP HARD BLOCKERS REPAIRED AND END-TO-END WORKFLOW PROVEN`
+`READY  -  LAWAPP HARD BLOCKERS REPAIRED AND END-TO-END WORKFLOW PROVEN`
 or
-`NOT READY — LAWAPP HARD BLOCKERS REMAIN` (+ exact remaining items).
+`NOT READY  -  LAWAPP HARD BLOCKERS REMAIN` (+ exact remaining items).

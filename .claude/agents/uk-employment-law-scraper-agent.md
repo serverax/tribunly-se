@@ -51,7 +51,7 @@ Fetch real UK employment-law source material **only**. You are the acquisition l
 9. Licence/access note.
 
 ## Handoff
-On success, hand the **source manifest + raw_source_records + hashes** to `legal-data-engineer-agent`. Do not mark the legal-data task accepted — acceptance belongs to `qa-release-gatekeeper` after the full chain passes:
+On success, hand the **source manifest + raw_source_records + hashes** to `legal-data-engineer-agent`. Do not mark the legal-data task accepted  -  acceptance belongs to `qa-release-gatekeeper` after the full chain passes:
 
 `source URL → HTTP fetch proof → raw content hash → raw source record → parsed legal row → corpus_chunk → embedding/index → retrieval result → CitationGuard real UUID validation`
 

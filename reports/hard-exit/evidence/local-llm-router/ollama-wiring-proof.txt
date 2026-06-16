@@ -16,8 +16,8 @@ llm-inference-service   <none>                                                  
 ollama-inference        10.244.0.170:11434,10.244.4.38:11434,10.244.5.55:11434   43h
 
 === T-008 VERDICT: PASS (live + manifest persisted) ===
-Brain reasoning now = "Local Inference Fabric (qwen2.5:3b-instruct-q6_K @ ollama-inference...)" — real
+Brain reasoning now = "Local Inference Fabric (qwen2.5:3b-instruct-q6_K @ ollama-inference...)"  -  real
 local model, NOT the stub. No external/cloud LLM. Persisted in infra/k8s/lawapp-brain-deployment.yaml
 (LOCAL_INFERENCE_ENABLED/URL/MODEL + DATABASE_URL + tcpSocket liveness). Selector fix persisted in
 infra/k8s/llm-inference-fabric.yaml. NOTE: live llm-inference-service still 0 endpoints (unused; brain
-uses ollama-inference which has 3 endpoints) — non-blocking, recorded honestly.
+uses ollama-inference which has 3 endpoints)  -  non-blocking, recorded honestly.

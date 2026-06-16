@@ -1,5 +1,5 @@
 """
-Phase 1 — ACAS guidance ingestion.
+Phase 1  -  ACAS guidance ingestion.
 
 ACAS has no machine-readable API or feed (confirmed at build time, 2026-05-29).
 The Code of Practice on Disciplinary and Grievance Procedures is treated as a
@@ -27,7 +27,7 @@ from ingestion.db import transaction, upsert_acas_guidance
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
-    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+    format="%(asctime)s %(levelname)s %(name)s  -  %(message)s",
 )
 logger = logging.getLogger(__name__)
 console = Console()
@@ -44,24 +44,24 @@ ACAS_CODE_FULL_URL = "https://www.acas.org.uk/acas-code-of-practice-on-disciplin
 # skipped rather than stored as placeholder rows (fail-closed, no fake data).
 MIN_GUIDANCE_CHARS = 600
 ACAS_GUIDANCE_PAGES: list[tuple[str, str]] = [
-    ("ACAS — Disciplinary procedure: step by step", "https://www.acas.org.uk/disciplinary-procedure-step-by-step"),
-    ("ACAS — Grievance procedure: step by step", "https://www.acas.org.uk/grievance-procedure-step-by-step"),
-    ("ACAS — Dismissals", "https://www.acas.org.uk/dismissals"),
-    ("ACAS — Notice periods", "https://www.acas.org.uk/notice-periods"),
-    ("ACAS — Early conciliation", "https://www.acas.org.uk/early-conciliation"),
-    ("ACAS — Settlement agreements", "https://www.acas.org.uk/settlement-agreements"),
-    ("ACAS — Managing staff redundancies", "https://www.acas.org.uk/manage-staff-redundancies"),
-    ("ACAS — Unfair dismissal", "https://www.acas.org.uk/dismissals/unfair-dismissal"),
-    ("ACAS — Discrimination and bullying", "https://www.acas.org.uk/discrimination-and-bullying"),
-    ("ACAS — Whistleblowing at work", "https://www.acas.org.uk/whistleblowing-at-work"),
-    ("ACAS — Maternity, paternity and adoption", "https://www.acas.org.uk/maternity-paternity-and-adoption"),
-    ("ACAS — Shared parental leave", "https://www.acas.org.uk/shared-parental-leave-and-pay"),
-    ("ACAS — Parental leave", "https://www.acas.org.uk/parental-leave"),
-    ("ACAS — Pay and wages", "https://www.acas.org.uk/pay-and-wages"),
-    ("ACAS — TUPE transfers", "https://www.acas.org.uk/tupe-transfers"),
-    ("ACAS — Health and safety at work", "https://www.acas.org.uk/health-and-safety-at-work"),
-    ("ACAS — Constructive dismissal", "https://www.acas.org.uk/dismissals/constructive-dismissal"),
-    ("ACAS — Equal pay", "https://www.acas.org.uk/equal-pay"),
+    ("ACAS  -  Disciplinary procedure: step by step", "https://www.acas.org.uk/disciplinary-procedure-step-by-step"),
+    ("ACAS  -  Grievance procedure: step by step", "https://www.acas.org.uk/grievance-procedure-step-by-step"),
+    ("ACAS  -  Dismissals", "https://www.acas.org.uk/dismissals"),
+    ("ACAS  -  Notice periods", "https://www.acas.org.uk/notice-periods"),
+    ("ACAS  -  Early conciliation", "https://www.acas.org.uk/early-conciliation"),
+    ("ACAS  -  Settlement agreements", "https://www.acas.org.uk/settlement-agreements"),
+    ("ACAS  -  Managing staff redundancies", "https://www.acas.org.uk/manage-staff-redundancies"),
+    ("ACAS  -  Unfair dismissal", "https://www.acas.org.uk/dismissals/unfair-dismissal"),
+    ("ACAS  -  Discrimination and bullying", "https://www.acas.org.uk/discrimination-and-bullying"),
+    ("ACAS  -  Whistleblowing at work", "https://www.acas.org.uk/whistleblowing-at-work"),
+    ("ACAS  -  Maternity, paternity and adoption", "https://www.acas.org.uk/maternity-paternity-and-adoption"),
+    ("ACAS  -  Shared parental leave", "https://www.acas.org.uk/shared-parental-leave-and-pay"),
+    ("ACAS  -  Parental leave", "https://www.acas.org.uk/parental-leave"),
+    ("ACAS  -  Pay and wages", "https://www.acas.org.uk/pay-and-wages"),
+    ("ACAS  -  TUPE transfers", "https://www.acas.org.uk/tupe-transfers"),
+    ("ACAS  -  Health and safety at work", "https://www.acas.org.uk/health-and-safety-at-work"),
+    ("ACAS  -  Constructive dismissal", "https://www.acas.org.uk/dismissals/constructive-dismissal"),
+    ("ACAS  -  Equal pay", "https://www.acas.org.uk/equal-pay"),
 ]
 
 
@@ -126,7 +126,7 @@ def _chunk_text(text: str, max_chars: int, overlap: int) -> list[str]:
 
 
 def ingest_acas_code() -> None:
-    console.print("[bold green]Phase 1 — ACAS Code ingestion[/bold green]")
+    console.print("[bold green]Phase 1  -  ACAS Code ingestion[/bold green]")
     console.print(f"Expected edition: {ACAS_CODE_EDITION} (verify at runtime)")
     console.print(f"Full Code URL: {ACAS_CODE_FULL_URL}")
 
@@ -137,7 +137,7 @@ def ingest_acas_code() -> None:
         text = _fetch_acas_page(ACAS_CODE_FULL_URL)
     except httpx.HTTPStatusError as exc:
         console.print(f"[red]Failed to fetch full ACAS Code text ({exc.response.status_code}). "
-                      f"Falling back to landing page — RETRY_LATER for full ingestion.[/red]")
+                      f"Falling back to landing page  -  RETRY_LATER for full ingestion.[/red]")
         try:
             text = _fetch_acas_page(ACAS_CODE_URL)
         except httpx.HTTPStatusError as exc2:
@@ -153,7 +153,7 @@ def ingest_acas_code() -> None:
     # Check for edition change
     if "march 2015" not in text.lower() and "2015" not in text:
         console.print(
-            "[bold yellow]FLAG: ACAS Code text does not mention 'March 2015' — "
+            "[bold yellow]FLAG: ACAS Code text does not mention 'March 2015'  -  "
             "a new edition may have been published. Verify manually before proceeding.[/bold yellow]"
         )
 
@@ -179,8 +179,8 @@ def ingest_acas_code() -> None:
 def ingest_guidance_pages() -> None:
     """Ingest the additional ACAS official guidance topics (disciplinary, grievance,
     dismissal, early conciliation, settlement, redundancy, ...). Thin/failed pages
-    are skipped — no placeholder rows."""
-    console.print("[bold green]Phase 1 — ACAS guidance topics ingestion[/bold green]")
+    are skipped  -  no placeholder rows."""
+    console.print("[bold green]Phase 1  -  ACAS guidance topics ingestion[/bold green]")
     stored_docs = 0
     for doc_title, url in ACAS_GUIDANCE_PAGES:
         try:
@@ -188,7 +188,7 @@ def ingest_guidance_pages() -> None:
         except httpx.HTTPStatusError as exc:
             console.print(f"  [yellow]skip {url} (HTTP {exc.response.status_code})[/yellow]")
             continue
-        except Exception as exc:  # network/other — skip, never fake
+        except Exception as exc:  # network/other  -  skip, never fake
             console.print(f"  [yellow]skip {url} ({exc})[/yellow]")
             continue
         if not text or len(text) < MIN_GUIDANCE_CHARS:

@@ -1,10 +1,10 @@
 """
-Log PII scanner — Phase 5A.
+Log PII scanner  -  Phase 5A.
 
 Scans log text for known PII values that must never appear in logs.
 Used in hardening tests and can be integrated into CI.
 
-NOT a production log aggregator — scans in-memory text for known values.
+NOT a production log aggregator  -  scans in-memory text for known values.
 
 GUARDRAIL: The scanner detects; it does not redact.
 If scan_for_pii() returns non-empty results, the caller should fail the test

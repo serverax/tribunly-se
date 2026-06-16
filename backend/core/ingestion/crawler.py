@@ -1,4 +1,4 @@
-"""Whitelist crawler — Perpetual Law Brain stage 1.
+"""Whitelist crawler  -  Perpetual Law Brain stage 1.
 
 PHYSICALLY refuses any URL whose host is not an official UK legal source. No
 arbitrary internet crawl, no search engines, no news/blog/opinion. Redirects are

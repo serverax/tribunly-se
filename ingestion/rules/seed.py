@@ -1,5 +1,5 @@
 """
-Phase 1 — `rules` table seeder for unfair dismissal (England, Wales, Scotland).
+Phase 1  -  `rules` table seeder for unfair dismissal (England, Wales, Scotland).
 
 Authority: 03a_UNFAIR_DISMISSAL_SEED_SPEC.md
 Source:    SI 2026/310 (Increase of Limits Order 2026), ERA 1996, ETA 1996.
@@ -43,7 +43,7 @@ from ingestion.legislation.client import fetch_section_xml
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
-    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+    format="%(asctime)s %(levelname)s %(name)s  -  %(message)s",
 )
 logger = logging.getLogger(__name__)
 console = Console()
@@ -56,7 +56,7 @@ console = Console()
 # is_prospective=True means enacted but not yet commenced.
 #
 # Jurisdictions: seeded for EW (England & Wales, also applies to Scotland for
-# these GB-wide ERA 1996 provisions — documented as EW per 03_DATABASE_DESIGN.md).
+# these GB-wide ERA 1996 provisions  -  documented as EW per 03_DATABASE_DESIGN.md).
 
 _ERA96_S111_URL      = f"{LEGISLATION_BASE}/ukpga/1996/18/section/111/data.xml"
 _ERA96_S111_PROS_URL = f"{LEGISLATION_BASE}/ukpga/1996/18/section/111/prospective/data.xml"
@@ -92,7 +92,7 @@ RULES: list[dict] = [
         "authority_ref":  "ERA 1996 s.108(1)",
         "authority_url":  _ERA96_S108_URL,
         "effective_from": date(2012, 4, 6),   # Unfair Dismissal (Variation of Qualifying Period) Order 2012
-        "effective_to":   None,               # current — no effective_to; gap risk if ERA 2025 s.25 slips
+        "effective_to":   None,               # current  -  no effective_to; gap risk if ERA 2025 s.25 slips
         "is_prospective": False,
     },
     {
@@ -112,7 +112,7 @@ RULES: list[dict] = [
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.108 as amended by ERA 2025 s.25",
         "authority_url":  _ERA96_S108_PROS_URL,
-        "effective_from": date(2027, 1, 1),   # Soft — confirm commencement SI
+        "effective_from": date(2027, 1, 1),   # Soft  -  confirm commencement SI
         "effective_to":   None,
         "is_prospective": True,
     },
@@ -128,14 +128,14 @@ RULES: list[dict] = [
         "description":    (
             "Complaint must be presented before the end of 3 months 'beginning with' "
             "the EDT (i.e. the last day is the day before the 3-month anniversary). "
-            "ERA 1996 s.111(2). A 'not reasonably practicable' extension may apply — "
+            "ERA 1996 s.111(2). A 'not reasonably practicable' extension may apply  -  "
             "this is a merits judgement, not deterministic; route to honesty path."
         ),
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.111(2)",
         "authority_url":  _ERA96_S111_URL,
-        "effective_from": date(1996, 8, 22),  # ERA 1996 commencement — verify exact date
-        "effective_to":   None,   # current law — no soft expiry; gap risk if commencement slips
+        "effective_from": date(1996, 8, 22),  # ERA 1996 commencement  -  verify exact date
+        "effective_to":   None,   # current law  -  no soft expiry; gap risk if commencement slips
         "is_prospective": False,
     },
     {
@@ -147,17 +147,17 @@ RULES: list[dict] = [
         "unit":           "months",
         "description":    (
             "Time limit extended to 6 months 'beginning with' the EDT under ERA 2025 s.152. "
-            "PROSPECTIVE — COMMENCEMENT NOT CONFIRMED: government stated 'no earlier than "
+            "PROSPECTIVE  -  COMMENCEMENT NOT CONFIRMED: government stated 'no earlier than "
             "October 2026' but no commencement SI has been published as of 2026-05-29. "
             "The effective_from date is provisional. DEADLINE CALC MUST apply 3 months "
             "until a commencement order is published and this row's is_prospective is "
             "set to false. Applying 6 months early tells claimants they have longer than "
-            "they do — that loses claims. Check for commencement SI monthly."
+            "they do  -  that loses claims. Check for commencement SI monthly."
         ),
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.111(2) as amended by ERA 2025 s.152",
         "authority_url":  _ERA96_S111_PROS_URL,
-        "effective_from": date(2026, 10, 1),  # Soft — do NOT rely until commencement SI published
+        "effective_from": date(2026, 10, 1),  # Soft  -  do NOT rely until commencement SI published
         "effective_to":   None,
         "is_prospective": True,
     },
@@ -219,14 +219,14 @@ RULES: list[dict] = [
             "Maximum compensatory award: £123,543 OR 52 weeks' gross actual pay, "
             "whichever is lower. Current regime for EDT from 2026-04-06. "
             "Verified against SI 2026/310 Schedule on 2026-05-29. "
-            "No effective_to set — remains current until ERA 2025 s.25 commences and "
+            "No effective_to set  -  remains current until ERA 2025 s.25 commences and "
             "the prospective uncapped row is activated by removing is_prospective."
         ),
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.124(1ZA)(a) + Employment Rights (Increase of Limits) Order 2026 (SI 2026/310)",
         "authority_url":  _SI2026_310_URL,
         "effective_from": date(2026, 4, 6),
-        "effective_to":   None,   # current — no gap risk if ERA 2025 s.25 commencement slips
+        "effective_to":   None,   # current  -  no gap risk if ERA 2025 s.25 commencement slips
         "is_prospective": False,
     },
     # Prospective: cap removed for EDT on/after 2027-01-01
@@ -242,12 +242,12 @@ RULES: list[dict] = [
             "by ERA 2025 s.25. Compensation = actual just-and-equitable loss, uncapped. "
             "PROSPECTIVE: not yet commenced as of 2026-05-29. "
             "OPEN ITEM: verify whether the 52-week alternative (s.124(1ZA)(b)) is also "
-            "removed or retained — confirm against amended s.124 prospective text."
+            "removed or retained  -  confirm against amended s.124 prospective text."
         ),
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.124 as amended by ERA 2025 s.25",
         "authority_url":  _ERA96_S124_PROS_URL,
-        "effective_from": date(2027, 1, 1),   # Soft — confirm commencement SI
+        "effective_from": date(2027, 1, 1),   # Soft  -  confirm commencement SI
         "effective_to":   None,
         "is_prospective": True,
     },
@@ -269,8 +269,8 @@ RULES: list[dict] = [
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.124(1ZA)(b)",
         "authority_url":  _ERA96_S124_URL,
-        "effective_from": date(2013, 7, 29),  # Enterprise and Regulatory Reform Act 2013 — verify
-        "effective_to":   None,               # May end 2026-12-31 — verify against ERA 2025
+        "effective_from": date(2013, 7, 29),  # Enterprise and Regulatory Reform Act 2013  -  verify
+        "effective_to":   None,               # May end 2026-12-31  -  verify against ERA 2025
         "is_prospective": False,
     },
 
@@ -306,7 +306,7 @@ RULES: list[dict] = [
         "description":    (
             "Weekly pay cap for basic award calculation: £751 (effective 2026-04-06). "
             "Verified against SI 2026/310 Schedule on 2026-05-29. "
-            "Uprated each April — update this row and add a new one each year."
+            "Uprated each April  -  update this row and add a new one each year."
         ),
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.227(1) + Employment Rights (Increase of Limits) Order 2026 (SI 2026/310)",
@@ -337,7 +337,7 @@ RULES: list[dict] = [
         "effective_to":   None,
         "is_prospective": False,
     },
-    # Basic award formula (non-numeric — the computation rule)
+    # Basic award formula (non-numeric  -  the computation rule)
     {
         "rule_key":       "unfair_dismissal.basic_award_formula",
         "claim_type":     "unfair_dismissal",
@@ -349,19 +349,19 @@ RULES: list[dict] = [
             "1.0 × week's pay for each year while aged 22–40; "
             "0.5 × week's pay for each year while under 22. "
             "Week's pay is capped at the current unfair_dismissal.weeks_pay_cap_amount. "
-            "Maximum basic award = 20 × 1.5 × weeks_pay_cap — compute, do not hardcode."
+            "Maximum basic award = 20 × 1.5 × weeks_pay_cap  -  compute, do not hardcode."
         ),
         "unit":           None,
         "description":    (
             "Age-banded formula for basic award (ERA 1996 s.119). "
             "The derived maximum (currently 20 × 1.5 × £751 = £22,530) is NOT stored "
-            "as a literal — it must be computed from this formula and the current "
+            "as a literal  -  it must be computed from this formula and the current "
             "weeks_pay_cap_amount so it automatically stays correct after each April uprating."
         ),
         "authority_type": "legislation",
         "authority_ref":  "ERA 1996 s.119",
         "authority_url":  _ERA96_S119_URL,
-        "effective_from": date(1996, 8, 22),  # ERA 1996 commencement — verify exact date
+        "effective_from": date(1996, 8, 22),  # ERA 1996 commencement  -  verify exact date
         "effective_to":   None,
         "is_prospective": False,
     },
@@ -404,7 +404,7 @@ def seed(dry_run: bool = False) -> None:
     table.add_column("prospective")
 
     for rule in RULES:
-        val = str(rule["value_numeric"]) if rule["value_numeric"] is not None else (rule["value_text"] or "—")
+        val = str(rule["value_numeric"]) if rule["value_numeric"] is not None else (rule["value_text"] or " - ")
         table.add_row(
             rule["rule_key"],
             str(rule["effective_from"]),
@@ -415,7 +415,7 @@ def seed(dry_run: bool = False) -> None:
     console.print(table)
 
     if dry_run:
-        console.print("[yellow]Dry run — no writes.[/yellow]")
+        console.print("[yellow]Dry run  -  no writes.[/yellow]")
         return
 
     console.print(f"Writing {len(RULES)} rule rows…")
@@ -428,14 +428,14 @@ def seed(dry_run: bool = False) -> None:
 
 
 def _print_open_items() -> None:
-    console.print("\n[bold yellow]Open items — verify before relying on prospective rows:[/bold yellow]")
+    console.print("\n[bold yellow]Open items  -  verify before relying on prospective rows:[/bold yellow]")
     items = [
         "ERA 2025 s.25 commencement SI not yet found (qualifying period + cap removal). "
         "Check for new commencement SIs regularly.",
         "ERA 2025 s.152 commencement SI not yet found (time limit extension). "
-        "October 2026 soft date — confirm.",
-        "Whether s.124(1ZA)(b) 52-week cap survives ERA 2025 cap removal — check prospective text.",
-        "ERA 1996 commencement date for s.119 and s.111 — verify exact date against the Act.",
+        "October 2026 soft date  -  confirm.",
+        "Whether s.124(1ZA)(b) 52-week cap survives ERA 2025 cap removal  -  check prospective text.",
+        "ERA 1996 commencement date for s.119 and s.111  -  verify exact date against the Act.",
     ]
     for item in items:
         console.print(f"  [yellow]•[/yellow] {item}")

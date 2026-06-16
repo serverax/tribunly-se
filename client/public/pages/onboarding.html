@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome — lawapp</title>
+  <title>Welcome  -  lawapp</title>
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
   <script src="/js/a11y.js"></script>
@@ -86,7 +86,7 @@
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" readonly style="background:#f1f5f5; color:var(--muted);">
-        <span class="hint">From your sign-up — this is the account you're signed in as.</span>
+        <span class="hint">From your sign-up  -  this is the account you're signed in as.</span>
       </div>
       <div class="wizard-actions">
         <span class="spacer"></span>
@@ -111,7 +111,7 @@
     <!-- Step 2: Employer (optional) -->
     <section class="wizard-step" id="step-employer" aria-labelledby="emp-h">
       <h2 id="emp-h" style="color:var(--primary); margin:0 0 .25rem;">Who is (or was) your employer?</h2>
-      <p style="color:var(--muted); margin:0 0 1.25rem; font-size:.9rem;">Optional — you can add this later.</p>
+      <p style="color:var(--muted); margin:0 0 1.25rem; font-size:.9rem;">Optional  -  you can add this later.</p>
       <div class="form-group">
         <label for="employer_name">Employer name <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
         <input type="text" id="employer_name" autocomplete="organization" placeholder="e.g. Acme Retail Ltd">
@@ -126,7 +126,7 @@
     <!-- Step 3: Case type (optional; only for employee / former employee) -->
     <section class="wizard-step" id="step-casetype" aria-labelledby="ct-h">
       <h2 id="ct-h" style="color:var(--primary); margin:0 0 .25rem;">What's this about?</h2>
-      <p style="color:var(--muted); margin:0 0 1.25rem; font-size:.9rem;">Optional — pick the closest, or skip if you're not sure.</p>
+      <p style="color:var(--muted); margin:0 0 1.25rem; font-size:.9rem;">Optional  -  pick the closest, or skip if you're not sure.</p>
       <div class="form-group">
         <label for="case_type">Type of issue <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
         <select id="case_type"></select>
@@ -171,7 +171,7 @@
   if (!LAWAPP_AUTH.ensureLoggedIn()) return;
   LAWAPP_AUTH.updateNav();
 
-  // Canonical role slugs — MUST match backend _ONBOARDING_ROLES in backend/api/main.py.
+  // Canonical role slugs  -  MUST match backend _ONBOARDING_ROLES in backend/api/main.py.
   var ROLES = [
     { slug: 'employee',        label: 'Employee',              desc: 'Currently employed' },
     { slug: 'former_employee', label: 'Former employee',       desc: 'No longer with this employer' },
@@ -207,7 +207,7 @@
     sections.forEach(function (s) { s.classList.remove('active'); });
     var current = document.getElementById(STEPS[stepIndex]);
     current.classList.add('active');
-    // progress dots — light up steps completed so far
+    // progress dots  -  light up steps completed so far
     var dots = document.querySelectorAll('.wizard-progress .dot');
     dots.forEach(function (d, i) { d.classList.toggle('active', i <= stepIndex); });
     var firstInput = current.querySelector('input:not([readonly]), select, button[data-next], button[data-finish]');
@@ -274,7 +274,7 @@
   async function submitOnboarding() {
     clearError();
     if (!selectedRole) {
-      // Defensive — should be unreachable since case-type follows role.
+      // Defensive  -  should be unreachable since case-type follows role.
       stepIndex = STEPS.indexOf('step-role');
       renderStep();
       showError('Please choose the option that best describes you.');
@@ -334,7 +334,7 @@
     }
     buildRoleOptions();
     try {
-      // If the user already onboarded, don't re-run the wizard — go to dashboard.
+      // If the user already onboarded, don't re-run the wizard  -  go to dashboard.
       var statusResp = await LAWAPP_AUTH.fetchWithAuth('/onboarding/status');
       if (statusResp.ok) {
         var status = await statusResp.json();
@@ -351,7 +351,7 @@
         document.getElementById('email').value = me.email || '';
       }
     } catch (e) {
-      // Non-fatal — the wizard still works without prefill.
+      // Non-fatal  -  the wizard still works without prefill.
       console.warn('Onboarding prefill failed:', e);
     }
     loadingEl.style.display = 'none';

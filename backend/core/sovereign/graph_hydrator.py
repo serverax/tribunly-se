@@ -1,4 +1,4 @@
-"""Temporal Graph RAG — synchronous psycopg2 + NetworkX hydrator (Option 1).
+"""Temporal Graph RAG  -  synchronous psycopg2 + NetworkX hydrator (Option 1).
 
 Builds a chronological DiGraph of a user's case events from graph_nodes/graph_edges
 (app-level isolation by user_id [+ workspace_id]) and computes UK Employment
@@ -105,7 +105,7 @@ def compute_timeline_deadline(conn, trigger_date: date, claim_type: str = "unfai
     tl = next((r for r in rules if r.get("rule_key") == f"{claim_type}.time_limit_months"), None)
     if not tl or tl.get("value_numeric") is None:
         return {"status": "insufficient_grounding",
-                "reason": "time_limit_months rule missing — fail closed (no hardcoded deadline)"}
+                "reason": "time_limit_months rule missing  -  fail closed (no hardcoded deadline)"}
     months = int(tl["value_numeric"])
     deadline = _add_months(trigger_date, months) - timedelta(days=1)  # "less one day"
     today = today or date.today()

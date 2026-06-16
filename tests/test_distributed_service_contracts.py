@@ -12,7 +12,7 @@ In scope (the 5 services restored to the shared factory):
     lawapp-brain, lawapp-llm-gateway
 
 NOT in scope (documented, not asserted here): lawapp-api, lawapp-crawler,
-lawapp-rag-ingestion, lawapp-document-service, lawapp-worker — these are
+lawapp-rag-ingestion, lawapp-document-service, lawapp-worker  -  these are
 pre-existing bare-FastAPI stubs and are excluded from this contract suite.
 """
 from __future__ import annotations
@@ -114,10 +114,10 @@ def test_contract_business_endpoint_not_static_fake(modname, name):
             assert j.get("valid") is False, f"{name}: fake UUID accepted"
 
 
-# ── 8 / 9. NEGATIVE tests — prove the system does not fake success ──
+# ── 8 / 9. NEGATIVE tests  -  prove the system does not fake success ──
 
 def test_neg_missing_dependency_returns_503_not_200(monkeypatch):
-    """9.1 + 9.4 — RAG with an unavailable retrieval dependency returns a
+    """9.1 + 9.4  -  RAG with an unavailable retrieval dependency returns a
     controlled 503 and NOT a hallucinated 200 answer."""
     import backend.core.retrieve as retr
 
@@ -133,14 +133,14 @@ def test_neg_missing_dependency_returns_503_not_200(monkeypatch):
 
 
 def test_neg_invalid_input_returns_4xx_not_success():
-    """9.2 — brain with missing tenancy returns 400, not a success."""
+    """9.2  -  brain with missing tenancy returns 400, not a success."""
     c = _client("services.lawapp_brain.app")
     r = c.post("/v1/assess", json={"user_id": "u"})  # workspace_id/case_id missing
     assert r.status_code in (400, 422), f"expected 4xx, got {r.status_code}"
 
 
 def test_neg_rules_engine_not_hardcoded(monkeypatch):
-    """9.3 — rules-engine cannot return success without actually querying rules:
+    """9.3  -  rules-engine cannot return success without actually querying rules:
     if the rules source raises, it must fail closed (503), not fake-accept."""
     import backend.core.retrieve as retr
 
@@ -155,7 +155,7 @@ def test_neg_rules_engine_not_hardcoded(monkeypatch):
 
 
 def test_neg_citation_guard_not_always_valid(monkeypatch):
-    """9.5 — citation guard rejects an unsupported answer; it is not valid=True
+    """9.5  -  citation guard rejects an unsupported answer; it is not valid=True
     by default. With no real corpus UUID match, valid must be False."""
     import backend.core.agentic.corpus_citation_guard as cg
 
@@ -168,14 +168,14 @@ def test_neg_citation_guard_not_always_valid(monkeypatch):
 
 
 def test_neg_citation_guard_no_citation_is_invalid():
-    """9.5 (extra) — an answer with no citation at all is invalid (fail-closed)."""
+    """9.5 (extra)  -  an answer with no citation at all is invalid (fail-closed)."""
     c = _client("services.lawapp_citation_guard.app")
     r = c.post("/v1/citations/validate", json={"text": "You will definitely win."})
     assert r.status_code == 200 and r.json()["valid"] is False
 
 
 def test_neg_llm_gateway_rejects_pii():
-    """9.2 (PII variant) — llm-gateway rejects raw PII with 422, not success."""
+    """9.2 (PII variant)  -  llm-gateway rejects raw PII with 422, not success."""
     c = _client("services.lawapp_llm_gateway.app")
     r = c.post("/v1/generate", json={"messages": [{"role": "user", "content": "hi"}],
                                      "context": {"email": "a@b.com"}})

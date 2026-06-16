@@ -1,8 +1,8 @@
-"""lawapp-rag-ingestion — governed corpus ingestion (critic → graph → embed).
+"""lawapp-rag-ingestion  -  governed corpus ingestion (critic → graph → embed).
 
 Wraps backend.core.ingestion.perpetual_law_brain.PerpetualLawBrain. Every source
 is whitelist-enforced (403 off-whitelist) and runs through the audited critic /
-graph / embed gates — uncited or critic-rejected rows are NOT stored. No fake
+graph / embed gates  -  uncited or critic-rejected rows are NOT stored. No fake
 ingestion rows. Fail-closed (503) on any pipeline/DB error. X-Trace-ID via the
 shared factory.
 """
@@ -21,7 +21,7 @@ class IngestRequest(BaseModel):
     source_type: str            # e.g. "legislation", "acas_guidance", "case_law"
     parser_type: str = "html"
     jurisdiction: str = "EW"
-    authority_ref: str          # citation/authority reference (required — no uncited rows)
+    authority_ref: str          # citation/authority reference (required  -  no uncited rows)
     node_id: str
     node_type: str
     label: str
@@ -52,7 +52,7 @@ def ingest_legal_source(req: IngestRequest):
     except Exception as e:
         raise HTTPException(status_code=503, detail={"error": "ingestion_failed", "reason": str(e)})
 
-    # critic rejection is a real, non-fake outcome — surface as 422, not stored.
+    # critic rejection is a real, non-fake outcome  -  surface as 422, not stored.
     if result.get("status") == "rejected":
         raise HTTPException(status_code=422, detail={"error": "critic_rejected",
                                                      "reason": result.get("reason"),

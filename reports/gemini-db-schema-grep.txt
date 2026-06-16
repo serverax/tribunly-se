@@ -1,4 +1,4 @@
-db/migrations/001_initial.sql:2:-- Employment Claim Co-Pilot — PostgreSQL 16 + pgvector
+db/migrations/001_initial.sql:2:-- Employment Claim Co-Pilot  -  PostgreSQL 16 + pgvector
 db/migrations/001_initial.sql:6:CREATE EXTENSION IF NOT EXISTS vector;
 db/migrations/001_initial.sql:7:CREATE EXTENSION IF NOT EXISTS pgcrypto;
 db/migrations/001_initial.sql:12:CREATE TABLE IF NOT EXISTS legislation (
@@ -19,13 +19,13 @@ db/migrations/001_initial.sql:77:CREATE TABLE IF NOT EXISTS acas_guidance (
 db/migrations/001_initial.sql:84:    embedding        vector(1536),
 db/migrations/001_initial.sql:91:CREATE INDEX IF NOT EXISTS acas_embedding_idx
 db/migrations/001_initial.sql:92:    ON acas_guidance USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
-db/migrations/001_initial.sql:94:-- 2.4 rules — DETERMINISTIC legal facts (time limits, caps, thresholds)
+db/migrations/001_initial.sql:94:-- 2.4 rules  -  DETERMINISTIC legal facts (time limits, caps, thresholds)
 db/migrations/001_initial.sql:96:CREATE TABLE IF NOT EXISTS rules (
 db/migrations/001_initial.sql:115:CREATE INDEX IF NOT EXISTS rules_claim_type_idx  ON rules (claim_type, jurisdiction);
 db/migrations/001_initial.sql:116:CREATE INDEX IF NOT EXISTS rules_key_idx         ON rules (rule_key);
 db/migrations/001_initial.sql:117:CREATE INDEX IF NOT EXISTS rules_effective_idx   ON rules (effective_from, effective_to);
 db/migrations/001_initial.sql:121:CREATE TABLE IF NOT EXISTS users (
-db/migrations/001_initial.sql:128:-- cases.facts_encrypted holds special-category data (Art.9) — encrypted at rest.
+db/migrations/001_initial.sql:128:-- cases.facts_encrypted holds special-category data (Art.9)  -  encrypted at rest.
 db/migrations/001_initial.sql:129:CREATE TABLE IF NOT EXISTS cases (
 db/migrations/001_initial.sql:131:    user_id          uuid        REFERENCES users(id) ON DELETE CASCADE,
 db/migrations/001_initial.sql:143:CREATE INDEX IF NOT EXISTS cases_user_idx ON cases (user_id);
@@ -98,7 +98,7 @@ db/migrations/010_phase5a_funnel.sql:5:CREATE TABLE IF NOT EXISTS funnel_events 
 db/migrations/010_phase5a_funnel.sql:7:    case_id     uuid        REFERENCES cases(id) ON DELETE SET NULL,
 db/migrations/010_phase5a_funnel.sql:13:CREATE INDEX IF NOT EXISTS fe_case_idx  ON funnel_events (case_id);
 db/migrations/010_phase5a_funnel.sql:14:CREATE INDEX IF NOT EXISTS fe_event_idx ON funnel_events (event_name);
-db/migrations/011_phase5c_verification.sql:1:-- Migration 011: Phase 5C — rules verification status columns
+db/migrations/011_phase5c_verification.sql:1:-- Migration 011: Phase 5C  -  rules verification status columns
 db/migrations/011_phase5c_verification.sql:2:-- Adds verification_status and verification_notes to the rules table.
 db/migrations/011_phase5c_verification.sql:10:ALTER TABLE rules ADD COLUMN IF NOT EXISTS verification_status text DEFAULT 'verification_required';
 db/migrations/011_phase5c_verification.sql:11:ALTER TABLE rules ADD COLUMN IF NOT EXISTS verification_notes  text;
@@ -237,7 +237,7 @@ db/migrations/019_phase1_brain_safety.sql:72:        ALTER TABLE brain_traces AD
 db/migrations/019_phase1_brain_safety.sql:79:        ALTER TABLE brain_traces ADD COLUMN memory_saved BOOLEAN NOT NULL DEFAULT false;
 backend/api/main.py:4:Exposes the assessment pipeline: classify → retrieve (rules + BM25 keyword
 backend/api/main.py:10:- /rules/{claim_type} now returns last_verified_at for transparency
-backend/api/main.py:96:# ── Case ownership dependency — used by all /cases/{case_id}/* sub-endpoints ──
+backend/api/main.py:96:# ── Case ownership dependency  -  used by all /cases/{case_id}/* sub-endpoints ──
 backend/api/main.py:211:            cur.execute("SELECT id FROM users WHERE email = %s", (req.email,))
 backend/api/main.py:217:                "INSERT INTO users (email, password_hash) VALUES (%s, %s) RETURNING id",
 backend/api/main.py:239:            cur.execute("SELECT id, password_hash FROM users WHERE email = %s", (req.email,))
@@ -250,7 +250,7 @@ backend/api/main.py:360:                FROM rules
 backend/api/main.py:376:        "rules": [
 backend/api/main.py:415:    Retrieval: structured rules (always) + BM25 keyword fallback (active while
 backend/api/main.py:424:    BLOCKED_BY_OPENAI_QUOTA: semantic (pgvector) retrieval is inactive.
-backend/api/main.py:473:      1. rules table (deterministic values — deadlines, caps, thresholds)
+backend/api/main.py:473:      1. rules table (deterministic values  -  deadlines, caps, thresholds)
 backend/api/main.py:474:      2. legislation (BM25 active; pgvector when embeddings available)
 backend/api/main.py:480:    GUARDRAIL: deadlines and caps always from rules table, never from LLM.
 backend/api/main.py:495:@app.post("/documents/generate")
@@ -372,13 +372,13 @@ backend/api/main.py:3329:@app.get("/api/rules/{claim_type}")
 backend/api/main.py:3330:def api_get_rules(claim_type: str, jurisdiction: str = "EW") -> dict:
 backend/api/main.py:3331:    """Alias for /rules/{claim_type} under the /api prefix."""
 backend/api/main.py:3332:    return get_rules(claim_type, jurisdiction=jurisdiction)
-backend/api/main.py:3352:    Deadline is always computed from the rules table — never estimated.
+backend/api/main.py:3352:    Deadline is always computed from the rules table  -  never estimated.
 backend/api/main.py:3366:        from backend.core.retrieve import retrieve_rules
 backend/api/main.py:3367:        rules = retrieve_rules(claim_type, jurisdiction, edt)
 backend/api/main.py:3368:        tl_rule = next((r for r in rules if "time_limit_months" in r.get("rule_key", "")), None)
 backend/api/main.py:3387:            "source":          "rules",
 backend/api/main.py:3439:@app.get("/api/documents/{document_id}/download")
-backend/api/main.py:3451:    GUARDRAIL: ownership verified — user can only download their own documents.
+backend/api/main.py:3451:    GUARDRAIL: ownership verified  -  user can only download their own documents.
 backend/api/main.py:3452:    GUARDRAIL: download only permitted for documents linked to a paid case.
 backend/api/main.py:3464:                FROM documents d
 backend/api/main.py:3465:                JOIN cases c ON c.id = d.case_id
@@ -408,8 +408,8 @@ backend/core/agents/registry.py:317:    Generates self-help legal documents (Par
 backend/core/agents/registry.py:344:            from backend.core.documents import generate_particulars_of_claim
 backend/core/agents/registry.py:359:                from backend.core.documents import generate_schedule_of_loss
 backend/core/brain.py:17:  10. Run deterministic rules engine
-backend/core/brain.py:59:    "run_rules_engine",       # 10 — fetch deterministic rules from DB
-backend/core/brain.py:60:    "retrieve_legal_evidence",# 11 — hybrid retrieval (SQL + BM25 + pgvector)
+backend/core/brain.py:59:    "run_rules_engine",       # 10  -  fetch deterministic rules from DB
+backend/core/brain.py:60:    "retrieve_legal_evidence",# 11  -  hybrid retrieval (SQL + BM25 + pgvector)
 backend/core/brain.py:202:    # Check 3: Deadline must come from rules engine (never model estimate)
 backend/core/brain.py:206:        c3_pass = dl_source in ("rules", "rules_engine") or not deadline_info
 backend/core/brain.py:210:        "check": "deadline_from_rules",
@@ -433,14 +433,14 @@ backend/core/brain.py:760:    rules_count:        int,
 backend/core/brain.py:782:                    agents_used, rules_count, sources_count,
 backend/core/brain.py:802:                    rules_count,
 backend/core/bundle.py:19:  - Platform does not file, submit, or represent users in tribunal.
-backend/core/bundle.py:95:        warnings.append("EDT (dismissal date) not recorded — essential for all bundle documents.")
-backend/core/bundle.py:97:        warnings.append("Tribunal deadline not stored — check /cases/{id}/deadline.")
+backend/core/bundle.py:95:        warnings.append("EDT (dismissal date) not recorded  -  essential for all bundle documents.")
+backend/core/bundle.py:97:        warnings.append("Tribunal deadline not stored  -  check /cases/{id}/deadline.")
 backend/core/bundle.py:101:        warnings.append("No confirmed dismissal date from uploaded documents.")
 backend/core/bundle.py:155:        upload_list = "\n   No documents uploaded yet."
 backend/core/bundle.py:161:            f"Basis: {vr.get('basis','from statutory rules')}. "
 backend/core/bundle.py:230:   Uploaded documents associated with this case:{upload_list}
-backend/core/bundle.py:232:   [Reference documents by exhibit number (e.g. "Exhibit A — dismissal letter").]
-backend/core/bundle.py:288:        events.append((deadline, "ET claim limitation date (from rules — ERA 1996 s.111(2))", "rules-derived"))
+backend/core/bundle.py:232:   [Reference documents by exhibit number (e.g. "Exhibit A  -  dismissal letter").]
+backend/core/bundle.py:288:        events.append((deadline, "ET claim limitation date (from rules  -  ERA 1996 s.111(2))", "rules-derived"))
 backend/core/bundle.py:331:uploaded documents or your intake form. Do NOT invent or estimate dates.
 backend/core/bundle.py:332:Add only dates you can verify from documents in your possession.
 backend/core/bundle.py:370:        upload_lines = "  [ ] No documents uploaded yet."
@@ -448,14 +448,14 @@ backend/core/bundle.py:466:            f"Basis: {vr.get('basis','from statutory 
 backend/core/bundle.py:549:   Check every field against your actual documents before submitting ET1.
 backend/core/citation_verifier.py:93:    """Check case_law_documents for the cited neutral citation."""
 backend/core/citation_verifier.py:100:                    "SELECT 1 FROM case_law_documents "
-backend/core/classify.py:7:  Stage A: keyword rules — cheap, instant, no model call.
-backend/core/classify.py:8:  Stage B: ML/workhorse model — for ambiguous cases only.
+backend/core/classify.py:7:  Stage A: keyword rules  -  cheap, instant, no model call.
+backend/core/classify.py:8:  Stage B: ML/workhorse model  -  for ambiguous cases only.
 backend/core/classify.py:10:Stage B rules:
 backend/core/classify.py:177:    Stage A: keyword rules (fast, no model call).
 backend/core/classify.py:185:    # ── Stage A: keyword rules ─────────────────────────────────────────────────
 backend/core/classify.py:215:    # ── Stage B: ML model for ambiguous cases ──────────────────────────────────
 backend/core/conflict_detector.py:8:  - generated documents
-backend/core/context_compressor.py:12:  1. Rule deduplication — deduplicate rules with identical rule_key (keep first)
+backend/core/context_compressor.py:12:  1. Rule deduplication  -  deduplicate rules with identical rule_key (keep first)
 backend/core/context_compressor.py:28:_MAX_RULES_PER_KEY = 1            # deduplicate rules with same rule_key
 backend/core/context_compressor.py:34:    exact_rules: list[dict],
 backend/core/context_compressor.py:42:        exact_rules:  list of rule dicts from the rules table
@@ -486,16 +486,16 @@ backend/core/documents.py:573:My ET claim deadline is: {_fmt_date(deadline_date)
 backend/core/documents.py:579:[List documents you have: payslips, contract, bank statements, etc.]
 backend/core/document_extractor.py:4:Extracts structured facts from uploaded documents.
 backend/core/dp_report.py:91:            "cases_assessment":   "Stored in PostgreSQL plaintext jsonb",
-backend/core/dp_report.py:92:            "cases_facts":        "facts_encrypted column is NULL — encryption not yet applied",
+backend/core/dp_report.py:92:            "cases_facts":        "facts_encrypted column is NULL  -  encryption not yet applied",
 backend/core/dp_report.py:93:            "uploaded_documents": "Local filesystem, no encryption",
 backend/core/dp_report.py:96:                "Phase 5B: implement AES-256-GCM for cases.facts_encrypted, "
 backend/core/dp_report.py:107:            "extracted_facts_table": "documents.extracted_facts may contain PII from confirmed OCR",
-backend/core/dp_report.py:119:            "deletion_endpoint": "None — no DELETE /cases/{id} or data erasure",
+backend/core/dp_report.py:119:            "deletion_endpoint": "None  -  no DELETE /cases/{id} or data erasure",
 backend/core/dp_report.py:135:            "uploaded_documents": {
 backend/core/dp_report.py:177:        # launch_blocker:         must fix before ANY real users (closed beta)
 backend/core/dp_report.py:185:                "No privacy notice / transparency information for users",
 backend/core/dp_report.py:188:                "No encryption at rest for uploaded documents (AES-256-GCM required)",
-backend/core/dp_report.py:189:                "No encryption for cases.facts_encrypted column (NULL — unfilled)",
+backend/core/dp_report.py:189:                "No encryption for cases.facts_encrypted column (NULL  -  unfilled)",
 backend/core/dp_report.py:217:                "No privacy notice for users (launch blocker)",
 backend/core/dp_report.py:218:                "No encryption at rest for uploaded documents (production blocker)",
 backend/core/dp_report.py:219:                "No encryption for cases.facts_encrypted (production blocker)",
@@ -504,10 +504,10 @@ backend/core/evaluator.py:114:            failures.append(f"deadline_not_from_ru
 backend/core/evidence_gap.py:88:        "documents_available": "Documents available (dismissal letter, contract, payslips, emails)",
 backend/core/govern.py:11:3. Determinism: deadline.source == "rules" (assert).
 backend/core/govern.py:13:5. Honesty: key_weaknesses populated for non-trivial cases; weak/no-claim stated plainly.
-backend/core/govern.py:69:    # Check 3: determinism — deadline must come from rules, not generation
+backend/core/govern.py:69:    # Check 3: determinism  -  deadline must come from rules, not generation
 backend/core/govern.py:71:        if assessment.deadline.source != "rules":
 backend/core/govern.py:76:                    f"must be 'rules'. Model generated or recalled a deadline."
-backend/core/govern.py:99:    # Check 5: honesty — key_weaknesses required for non-trivial cases
+backend/core/govern.py:99:    # Check 5: honesty  -  key_weaknesses required for non-trivial cases
 backend/core/legal_graph.py:4:Queries the legal_nodes and legal_edges tables populated by migration 018
 backend/core/legal_graph.py:97:                    FROM legal_nodes
 backend/core/legal_graph.py:128:    """BFS traversal of legal_nodes/legal_edges up to max_depth hops."""
@@ -535,22 +535,22 @@ backend/core/mcp_connectors.py:252:                SELECT 'rules', COUNT(*), MAX
 backend/core/mcp_connectors.py:253:                FROM rules;
 backend/core/memory.py:17:  - evidence_checklist: documents needed/uploaded
 backend/core/memory.py:97:               Never returns records from other users or cases.
-backend/core/models.py:41:        deadline_info: dict,        # pre-computed from rules — model must not alter
+backend/core/models.py:41:        deadline_info: dict,        # pre-computed from rules  -  model must not alter
 backend/core/models.py:49:        The deadline values in deadline_info come from the rules table and are
 backend/core/models.py:89:            source="rules",
 backend/core/models.py:93:        # Extract cap from rules bundle if available
 backend/core/models.py:95:            (r for r in bundle.exact_rules
-backend/core/models.py:103:            basis="from rules — model reasoning not yet configured",
+backend/core/models.py:103:            basis="from rules  -  model reasoning not yet configured",
 backend/core/models.py:152:these are provided in deadline_info and rules and must be used verbatim.
 backend/core/models.py:163:{json.dumps(bundle.exact_rules, indent=2, default=str)}
-backend/core/models.py:168:DEADLINE (pre-computed from rules — use verbatim, source must remain "rules"):
+backend/core/models.py:168:DEADLINE (pre-computed from rules  -  use verbatim, source must remain "rules"):
 backend/core/models.py:183:  "deadline": {{"limitation_date": "YYYY-MM-DD", "source": "rules", "authority": "..."}},
 backend/core/models.py:184:  "recommended_next_step": "free_diagnosis_only|prepare_documents|seek_solicitor",
-backend/core/models.py:234:        # Enforce deadline.source = "rules" — governance gate also checks this,
+backend/core/models.py:234:        # Enforce deadline.source = "rules"  -  governance gate also checks this,
 backend/core/models.py:237:            data["deadline"]["source"] = "rules"
 backend/core/models.py:255:      - retrieved authority bundle (rules + BM25)
-backend/core/models.py:303:            f"RETRIEVED RULES (verbatim — do not alter):\n{json.dumps(bundle.exact_rules, indent=2, default=str)}\n\n"
-backend/core/models.py:305:            f"DEADLINE (pre-computed from rules — source must remain 'rules'):\n"
+backend/core/models.py:303:            f"RETRIEVED RULES (verbatim  -  do not alter):\n{json.dumps(bundle.exact_rules, indent=2, default=str)}\n\n"
+backend/core/models.py:305:            f"DEADLINE (pre-computed from rules  -  source must remain 'rules'):\n"
 backend/core/models.py:352:                    source="rules",
 backend/core/models.py:368:            data["deadline"]["source"] = "rules"  # defensive enforcement
 backend/core/payment.py:24:# Document preview: maximum lines shown to unpaid users.
@@ -598,7 +598,7 @@ backend/core/retrieval/trust_scorer.py:14:# 100: Primary legislation / statutory
 backend/core/retrieval/trust_scorer.py:19:    "rules":             100,
 backend/core/retrieve.py:5:  - exact_rules: deterministic values from the `rules` table (deadlines, caps,
 backend/core/retrieve.py:15:GUARDRAIL (prospective rows): the rules query explicitly filters
-backend/core/retrieve.py:36:# With embeddings absent, this is 0 — the rules bundle alone is enough to
+backend/core/retrieve.py:36:# With embeddings absent, this is 0  -  the rules bundle alone is enough to
 backend/core/retrieve.py:41:def retrieve_rules(
 backend/core/retrieve.py:47:    Fetch all current-in-force rules for the claim type and jurisdiction
 backend/core/retrieve.py:64:                FROM rules
@@ -629,7 +629,7 @@ backend/core/router.py:30:    r"what (is|are) the rules for",
 backend/core/router.py:102:    use_rules_engine: bool
 backend/core/router.py:115:            "use_rules_engine": self.use_rules_engine,
 backend/core/router.py:146:            use_rules_engine=False,
-backend/core/router.py:153:    # ── Path 2: Deadline-only — rules engine ─────────────────────────────────
+backend/core/router.py:153:    # ── Path 2: Deadline-only  -  rules engine ─────────────────────────────────
 backend/core/router.py:156:            path="rules_engine_only",
 backend/core/router.py:161:            use_rules_engine=True,
 backend/core/router.py:177:            use_rules_engine=True,
@@ -648,7 +648,7 @@ backend/core/user_auth.py:432:                "SELECT user_id FROM cases WHERE i
 backend/domains/employment/assess_logic.py:6:citations from retrieved rules + BM25 authorities.
 backend/domains/employment/assess_logic.py:14:- Value ranges come from the rules table, never from model memory.
 backend/domains/employment/assess_logic.py:15:- Qualifying period check is hard-coded from rules, not model judgment.
-backend/domains/employment/assess_logic.py:32:# Canonical rule_keys — must match the single series in the rules table
+backend/domains/employment/assess_logic.py:32:# Canonical rule_keys  -  must match the single series in the rules table
 backend/domains/employment/assess_logic.py:41:def _rule(rules: list[dict], key: str) -> Optional[dict]:
 backend/domains/employment/assess_logic.py:42:    return next((r for r in rules if r["rule_key"] == key), None)
 backend/domains/employment/assess_logic.py:45:def compute_value_range(rules: list[dict], safe_facts: dict) -> dict:
@@ -675,11 +675,11 @@ backend/domains/employment/deadline.py:25:is passed in. The caller is responsibl
 backend/domains/employment/deadline.py:58:            "source": "rules",
 backend/domains/employment/deadline.py:75:            "source": "rules",
 backend/domains/employment/deadline.py:98:        "source": "rules",
-backend/domains/employment/deadline.py:125:    separate rules not handled here — they have qualifying_period=0.
+backend/domains/employment/deadline.py:125:    separate rules not handled here  -  they have qualifying_period=0.
 backend/domains/employment/reminders.py:14:GUARDRAIL: urgency state is computed by code from rules-derived dates only.
 backend/domains/employment/timeline.py:39:    "user_entered", "rules_engine", "confirmed_extraction", "system_generated",
 backend/domains/employment/timeline.py:73:        "No immediate action required. Continue preparing your case documents."
-backend/domains/employment/timeline.py:197:    # ET deadline — always rules_engine source
+backend/domains/employment/timeline.py:197:    # ET deadline  -  always rules_engine source
 backend/domains/employment/timeline.py:203:                         source="rules_engine"))
 backend/domains/employment/timeline.py:217:    # Generated documents (bundle / core)
 backend/domains/employment/timeline.py:271:            "lawapp is not a solicitor. Dates must be verified against your documents. "
@@ -695,8 +695,8 @@ ingestion/db.py:159:        INSERT INTO rules (
 ingestion/db.py:195:            case_id, fact_snapshot_hash, rules_used, retrieval_bundle,
 ingestion/db.py:199:            %(case_id)s, %(fact_snapshot_hash)s, %(rules_used)s::jsonb,
 ingestion/db.py:208:            "rules_used":         json.dumps(payload.get("rules_used", [])),
-ingestion/embeddings/embedder.py:5:Schema: vector(384) — see migration 016_vector_dim_384.sql
-ingestion/rules/seed.py:2:Phase 1 — `rules` table seeder for unfair dismissal (England, Wales, Scotland).
+ingestion/embeddings/embedder.py:5:Schema: vector(384)  -  see migration 016_vector_dim_384.sql
+ingestion/rules/seed.py:2:Phase 1  -  `rules` table seeder for unfair dismissal (England, Wales, Scotland).
 ingestion/rules/seed.py:9:into the `rules` table; the application reads them by effective date.
 ingestion/rules/seed.py:26:    python -m ingestion.rules.seed            # seed all rules
 ingestion/rules/seed.py:27:    python -m ingestion.rules.seed --check    # verify against live API, don't write
@@ -705,14 +705,14 @@ ingestion/rules/seed.py:187:    # Prior year figure (for back-dated cases with E
 ingestion/rules/seed.py:399:    """Seed all rules rows. dry_run=True prints without writing."""
 ingestion/rules/seed.py:445:    parser = argparse.ArgumentParser(description="Seed the rules table for unfair dismissal")
 ingestion/rules/seed.py:447:                        help="Print rules without writing to DB")
-ingestion/rules/seed_unfair_dismissal.py:2:Phase 1 — Unfair Dismissal rules seed (verified 2026-05-31).
+ingestion/rules/seed_unfair_dismissal.py:2:Phase 1  -  Unfair Dismissal rules seed (verified 2026-05-31).
 ingestion/rules/seed_unfair_dismissal.py:25:    docker compose run --rm ingestion python -m ingestion.rules.seed_unfair_dismissal
 ingestion/rules/seed_unfair_dismissal.py:27:Guardrail 3: these values enter the rules table from cited primary sources only.
 ingestion/rules/seed_unfair_dismissal.py:40:# If a key is not in this set, it has no business in the rules table.
 ingestion/rules/seed_unfair_dismissal.py:437:INSERT INTO rules (
 ingestion/rules/seed_unfair_dismissal.py:493:UPDATE rules
 ingestion/rules/seed_unfair_dismissal.py:524:                WHERE table_name='rules' AND column_name='verification_status'
-ingestion/rules/seed_unpaid_wages.py:2:Unpaid wages / unlawful deduction from wages — rules seeder.
+ingestion/rules/seed_unpaid_wages.py:2:Unpaid wages / unlawful deduction from wages  -  rules seeder.
 ingestion/rules/seed_unpaid_wages.py:5:Populates the rules table with cited, effective-dated deterministic facts.
 ingestion/rules/seed_unpaid_wages.py:15:    docker compose run --rm ingestion python -m ingestion.rules.seed_unpaid_wages
 ingestion/rules/seed_unpaid_wages.py:168:UPDATE rules
@@ -723,17 +723,17 @@ ingestion/rules/verify_sources.py:2:Source verification for the rules table.
 ingestion/rules/verify_sources.py:4:This script fetches the authority_url for each non-prospective rules row
 ingestion/rules/verify_sources.py:11:    docker compose run --rm ingestion python -m ingestion.rules.verify_sources
 ingestion/rules/verify_sources.py:105:                FROM rules
-ingestion/rules/verify_sources.py:140:        print("FAILURES detected — review before treating Phase 1 rules as live.")
-infra/k8s/iterlaw/external-db-connection.yaml:2:# IterLaw — external PostgreSQL + pgvector connection
+ingestion/rules/verify_sources.py:140:        print("FAILURES detected  -  review before treating Phase 1 rules as live.")
+infra/k8s/iterlaw/external-db-connection.yaml:2:# IterLaw  -  external PostgreSQL + pgvector connection
 infra/k8s/iterlaw/external-db-connection.yaml:5:# (e.g. Azure Database for PostgreSQL Flexible Server with pgvector extension).
 infra/k8s/iterlaw/external-db-connection.yaml:9:# Option B: Deploy in-cluster Postgres (see postgres-pgvector.yaml if needed).
 infra/k8s/iterlaw/external-db-connection.yaml:11:# This ConfigMap documents the connection intent only.
 infra/k8s/iterlaw/external-db-connection.yaml:25:    pgvector must be enabled: CREATE EXTENSION IF NOT EXISTS vector;
 infra/k8s/iterlaw/ingress-staging.yaml:27:  rules:
 infra/k8s/iterlaw/namespace.yaml:3:# This file documents them for IaC parity. Do not re-apply if already present.
-infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw — Staging Postgres + pgvector in iterlaw-ai
+infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw  -  Staging Postgres + pgvector in iterlaw-ai
 infra/k8s/iterlaw/postgres-staging.yaml:37:          image: pgvector/pgvector:pg16
-infra/k8s/iterlaw/rag-deployment.yaml:2:# IterLaw RAG worker — BM25 + pgvector retrieval service
+infra/k8s/iterlaw/rag-deployment.yaml:2:# IterLaw RAG worker  -  BM25 + pgvector retrieval service
 infra/k8s/iterlaw/README.md:28:7. Run rules verification gate: `python scripts/check_rules_verification.py`
 infra/k8s/iterlaw/secrets.example.yaml:15:  # PostgreSQL connection string (pgvector enabled)
 infra/k8s/iterlaw/secrets.example.yaml:25:  # OpenAI API key for pgvector embeddings (optional; BM25 active without it)

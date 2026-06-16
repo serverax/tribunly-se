@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
-Retention policy runner — Phase 6.
+Retention policy runner  -  Phase 6.
 
 Soft-deletes cases and clears PII from handoff leads older than the
-configured retention period. Does NOT hard-delete rows — audit metadata
+configured retention period. Does NOT hard-delete rows  -  audit metadata
 is preserved for legal and compliance purposes.
 
 Retention periods (configurable via env vars):
-  RETENTION_CASES_DAYS       — default 90 days
-  RETENTION_HANDOFF_DAYS     — default 30 days
+  RETENTION_CASES_DAYS        -  default 90 days
+  RETENTION_HANDOFF_DAYS      -  default 30 days
 
 Usage:
     docker compose run --rm ingestion python scripts/run_retention.py
     docker compose run --rm ingestion python scripts/run_retention.py --dry-run
     docker compose run --rm ingestion python scripts/run_retention.py --days-cases 60
 
-GUARDRAIL: Dry run by default — use --apply to actually delete.
+GUARDRAIL: Dry run by default  -  use --apply to actually delete.
 GUARDRAIL: Only soft-deletes; audit rows preserved.
 GUARDRAIL: Reports counts before and after.
 """
@@ -60,7 +60,7 @@ def run_retention(
                     "leads_eligible":  leads_eligible,
                     "cases_deleted":   0,
                     "leads_cleared":   0,
-                    "note":            "Dry run — pass --apply to execute.",
+                    "note":            "Dry run  -  pass --apply to execute.",
                 }
 
             # Apply: soft-delete cases
@@ -124,7 +124,7 @@ def main() -> int:
 
     dry_run = not args.apply
     print("=" * 60)
-    print(f"LAWAPP RETENTION RUNNER — {'DRY RUN' if dry_run else 'LIVE RUN'}")
+    print(f"LAWAPP RETENTION RUNNER  -  {'DRY RUN' if dry_run else 'LIVE RUN'}")
     print(f"Cases retention: {args.days_cases} days")
     print(f"Handoff leads retention: {args.days_handoff} days")
     print("=" * 60)

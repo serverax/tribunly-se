@@ -6,24 +6,24 @@
 -- WHY A NEW TABLE (not the existing funnel_events):
 --   funnel_events (migration 010) is CASE-SCOPED (case_id uuid REFERENCES cases).
 --   It records IN-PRODUCT events that happen AFTER a case exists. It structurally
---   cannot represent the acquisition funnel — landing_view, tool_preview,
+--   cannot represent the acquisition funnel  -  landing_view, tool_preview,
 --   signup_started, signup_completed all occur for an ANONYMOUS visitor BEFORE any
 --   user or case exists, so there is nothing to hang a case_id on. conversion_events
 --   is therefore keyed on an anonymous session_id (the visitor spine) and carries
 --   first-touch attribution. The two tables are complementary, not duplicates.
 --
 -- PRIVACY / GUARDRAIL (constitution §8, §19):
---   * No raw IP is stored — only ip_hash (salted SHA256), and only when
+--   * No raw IP is stored  -  only ip_hash (salted SHA256), and only when
 --     ANALYTICS_IP_SALT is configured; otherwise NULL.
 --   * referrer / landing_page are stored host+path only (query strings stripped at
 --     the API layer) so tracking parameters carrying PII never land in the table.
 --   * properties jsonb must not contain personal facts, free-text narrative, names,
---     emails, addresses, or uploaded file content — enforced at the API layer.
+--     emails, addresses, or uploaded file content  -  enforced at the API layer.
 --   * user_id is NULL for anonymous pre-signup events; it is backfilled onto a
 --     session's earlier events when that session signs up (signup_completed),
 --     which is what makes first-touch attribution of a converted user work.
 --
--- Idempotent (CREATE ... IF NOT EXISTS) — safe to re-run.
+-- Idempotent (CREATE ... IF NOT EXISTS)  -  safe to re-run.
 
 BEGIN;
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS conversion_events (
     -- Anonymous visitor/session identifier (client-generated, persisted in the
     -- browser). The funnel spine: one session is followed landing_view → payment.
     session_id   text        NOT NULL,
-    -- One of the canonical funnel events — validated at the API layer (no DB CHECK
+    -- One of the canonical funnel events  -  validated at the API layer (no DB CHECK
     -- so new event types can be added without a migration), mirroring how
     -- users.role is validated in 048.
     event_name   text        NOT NULL,

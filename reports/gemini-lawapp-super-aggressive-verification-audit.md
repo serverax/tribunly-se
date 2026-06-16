@@ -10,8 +10,8 @@
 
 ## 1. Final Classification
 
-- **Local demo ready:** PARTIAL — most features work but DB seed data requires manual re-run after fresh Docker start
-- **Staging ready:** NO — real AI, Stripe, Kubernetes, Redis, case law corpus all missing/unproven
+- **Local demo ready:** PARTIAL  -  most features work but DB seed data requires manual re-run after fresh Docker start
+- **Staging ready:** NO  -  real AI, Stripe, Kubernetes, Redis, case law corpus all missing/unproven
 - **Production ready:** NO
 
 **Reason:** Claude's "24 PASS smoke journey" and "439 passed" claims were made against a pre-seeded database. When the audit ran `docker compose up -d --build` against the committed codebase, the rules table (and all ingested data) was **empty**. Assessment-dependent tests fail. Smoke journey fails 4/24 with empty DB. The code architecture is sound, but data population is a production gap that is not automated.
@@ -21,32 +21,32 @@
 ## 2. Executive Truth
 
 **What is real and working:**
-- JWT auth (mock mode in test env, jwt mode in Docker) — proven by HTTP 403 on cross-user access
-- 19-step Brain Algorithm — code exists, steps trace correctly
-- Deadline calculation (deterministic, no AI) — all 3 EC scenarios correct
-- Document generation (Particulars of Claim, Schedule of Loss) — returns real template content, 9620 chars
-- Payment test simulator — gating works, invalid tokens rejected
-- User isolation — HTTP 403 proven in smoke journey
-- Frontend pages — all 10 pages exist with legal notices
+- JWT auth (mock mode in test env, jwt mode in Docker)  -  proven by HTTP 403 on cross-user access
+- 19-step Brain Algorithm  -  code exists, steps trace correctly
+- Deadline calculation (deterministic, no AI)  -  all 3 EC scenarios correct
+- Document generation (Particulars of Claim, Schedule of Loss)  -  returns real template content, 9620 chars
+- Payment test simulator  -  gating works, invalid tokens rejected
+- User isolation  -  HTTP 403 proven in smoke journey
+- Frontend pages  -  all 10 pages exist with legal notices
 - WASM binary exists, JS fallback uses `fetchDeadlineRules()` from backend (no hardcoded values)
-- K8s manifests — syntax valid, secret names audited (10/10 match)
+- K8s manifests  -  syntax valid, secret names audited (10/10 match)
 - CI/CD workflows exist (`lawapp-ci.yml`, `lawapp-deploy-k8s.yml`)
 
 **What is stub/partial/missing:**
-- DB seed data **not automated** — rules table is empty on fresh Docker start (FAIL for reproducible demos)
-- Real AI reasoning — ANTHROPIC_API_KEY=placeholder; all complex assessments return `insufficient_grounding`
-- Case law corpus — 0 rows (FCL licence not obtained)
-- Legislation/ACAS ingestion — 0 rows on fresh Docker (previously seeded manually, not in migrations)
-- Stripe payment — test_simulator only; webhook signature verification is a stub
-- Redis rate limiting — in-memory only; not production-safe
-- `scripts/push-and-deploy.sh` — MISSING (Claude coding task)
-- OCR/extraction — mock stub only (`mock_extract()`)
+- DB seed data **not automated**  -  rules table is empty on fresh Docker start (FAIL for reproducible demos)
+- Real AI reasoning  -  ANTHROPIC_API_KEY=placeholder; all complex assessments return `insufficient_grounding`
+- Case law corpus  -  0 rows (FCL licence not obtained)
+- Legislation/ACAS ingestion  -  0 rows on fresh Docker (previously seeded manually, not in migrations)
+- Stripe payment  -  test_simulator only; webhook signature verification is a stub
+- Redis rate limiting  -  in-memory only; not production-safe
+- `scripts/push-and-deploy.sh`  -  MISSING (Claude coding task)
+- OCR/extraction  -  mock stub only (`mock_extract()`)
 - WASM Rust source exists but rebuild not verified
-- Kubernetes cluster — NOT deployed, not proven; manifests ready but untested against cluster
+- Kubernetes cluster  -  NOT deployed, not proven; manifests ready but untested against cluster
 
 **What is fake/misleading in prior Claude reports:**
-- "439 passed" and "24/24 smoke" were true **only against a previously seeded database** — not against the committed codebase state. A fresh `docker compose up` yields a different result.
-- "legislation: 80 rows embedded" — UNVERIFIED on current Docker; fresh DB shows 0 rows
+- "439 passed" and "24/24 smoke" were true **only against a previously seeded database**  -  not against the committed codebase state. A fresh `docker compose up` yields a different result.
+- "legislation: 80 rows embedded"  -  UNVERIFIED on current Docker; fresh DB shows 0 rows
 - The Claude reports did not disclose the seed/ingestion dependency
 
 ---
@@ -84,31 +84,31 @@
 | Route | HTTP Status | Returns Real Data? |
 |---|---|---|
 | GET /health | 200 | `{"status":"ok","db":"connected","auth_mode":"jwt","ai_provider":{"active":false}}` |
-| GET /rules/unfair_dismissal | 200 | 0 rules (empty DB) — **FAIL if relying on rules** |
-| GET /api/rules/unfair_dismissal | 200 | Same — empty |
-| POST /api/deadline/calculate | 200 | **PASS** — correct arithmetic for all 3 EC scenarios |
+| GET /rules/unfair_dismissal | 200 | 0 rules (empty DB)  -  **FAIL if relying on rules** |
+| GET /api/rules/unfair_dismissal | 200 | Same  -  empty |
+| POST /api/deadline/calculate | 200 | **PASS**  -  correct arithmetic for all 3 EC scenarios |
 | POST /api/brain/trace | 200 | 19 steps, `insufficient_grounding=true` (no AI key, no data) |
-| POST /assess | 200 | `insufficient_grounding` — no rules data |
-| POST /auth/register | 201 | User created — PASS |
-| POST /auth/token | 200 | JWT token issued — PASS |
-| GET /auth/me | 200 | User returned — PASS |
-| POST /cases | 201 | Case saved with JWT — PASS |
-| GET /cases/{id} | 200 own / 403 cross-user | **PASS** — isolation working |
-| POST /documents/generate | 200 | Full document 9620 chars — **PASS** |
-| POST /api/payment/create-session | 200 | test_ token — PASS |
-| POST /api/payment/webhook | 200 | test_simulator pass-through — PASS |
-| GET /api/payment/status | 200 | mode=test_simulator, stripe_configured=False — PASS |
-| POST /handoff/leads | 201 | Lead recorded — PASS |
+| POST /assess | 200 | `insufficient_grounding`  -  no rules data |
+| POST /auth/register | 201 | User created  -  PASS |
+| POST /auth/token | 200 | JWT token issued  -  PASS |
+| GET /auth/me | 200 | User returned  -  PASS |
+| POST /cases | 201 | Case saved with JWT  -  PASS |
+| GET /cases/{id} | 200 own / 403 cross-user | **PASS**  -  isolation working |
+| POST /documents/generate | 200 | Full document 9620 chars  -  **PASS** |
+| POST /api/payment/create-session | 200 | test_ token  -  PASS |
+| POST /api/payment/webhook | 200 | test_simulator pass-through  -  PASS |
+| GET /api/payment/status | 200 | mode=test_simulator, stripe_configured=False  -  PASS |
+| POST /handoff/leads | 201 | Lead recorded  -  PASS |
 | GET /freshness | 200 | Returns source freshness (empty data) |
-| GET /api/documents/{id}/download | 500 | Error on nonexistent ID — acceptable |
+| GET /api/documents/{id}/download | 500 | Error on nonexistent ID  -  acceptable |
 
 ### Contamination findings
 
 | File | Finding | Classification |
 |---|---|---|
-| infra/k8s/iterlaw/*.yaml | IterLaw in comments (13 files) | Legacy directory — harmless; not deployed |
-| backend/core/brain.py | Previously had OrdinoxAI — now fixed | Historical; clean in runtime |
-| db/migrations/018 | Previously had OrdinoxAI — now fixed | Historical; clean in runtime |
+| infra/k8s/iterlaw/*.yaml | IterLaw in comments (13 files) | Legacy directory  -  harmless; not deployed |
+| backend/core/brain.py | Previously had OrdinoxAI  -  now fixed | Historical; clean in runtime |
+| db/migrations/018 | Previously had OrdinoxAI  -  now fixed | Historical; clean in runtime |
 
 **Verdict:** IterLaw naming only in legacy `infra/k8s/iterlaw/` subdirectory that is **never applied to the cluster**. Runtime code is clean.
 
@@ -116,10 +116,10 @@
 
 ```
 docker compose exec backend printenv AI_PROVIDER → (not set)
-health endpoint: {"ai_provider":{"provider":"stub","active":false,"note":"No AI key configured — StubReasoningModel active"}}
+health endpoint: {"ai_provider":{"provider":"stub","active":false,"note":"No AI key configured  -  StubReasoningModel active"}}
 ```
 
-Complex assessment with stub model → `insufficient_grounding` — **correct safe behaviour, not fake legal reasoning**.
+Complex assessment with stub model → `insufficient_grounding`  -  **correct safe behaviour, not fake legal reasoning**.
 
 ---
 
@@ -131,7 +131,7 @@ All 10 pages exist: `/`, `pages/register.html`, `pages/login.html`, `pages/intak
 
 ### Legal notices
 
-13 occurrences of "not a law firm / not legal advice / SELF-HELP" across client pages — **PASS**
+13 occurrences of "not a law firm / not legal advice / SELF-HELP" across client pages  -  **PASS**
 
 ### Hardcoded legal values in JS
 
@@ -140,11 +140,11 @@ grep -RIn "time_limit_months|3 months|6 months|123543|751" client/public --inclu
 → No matches
 ```
 
-`fetchDeadlineRules()` calls `GET /rules/{claimType}` at runtime — **PASS**
+`fetchDeadlineRules()` calls `GET /rules/{claimType}` at runtime  -  **PASS**
 
 ### ACAS fields in intake
 
-`intake.html` contains `#ec_day_a`, `#ec_day_b`, `#acas_not_started` — **PASS** (added this session)
+`intake.html` contains `#ec_day_a`, `#ec_day_b`, `#acas_not_started`  -  **PASS** (added this session)
 
 ### Playwright results (current empty-DB state)
 
@@ -173,9 +173,9 @@ SELECT COUNT(*) FROM brain_traces → 0
 
 **Impact:** Every assessment returns `insufficient_grounding`. Rules API returns empty list. Legal accuracy tests fail. Deadline `authority_url` is empty string.
 
-### Tables: 43 confirmed (Claude claimed 42 — minor)
+### Tables: 43 confirmed (Claude claimed 42  -  minor)
 
-Extensions: `pgcrypto`, `plpgsql`, `vector` — **PASS**
+Extensions: `pgcrypto`, `plpgsql`, `vector`  -  **PASS**
 
 ### Graph nodes/edges: PASS (seeded in migration 018)
 
@@ -190,7 +190,7 @@ legal_edges: 14 rows ✓
 \d rules → id, rule_key, claim_type, jurisdiction, value_numeric, value_text, unit, description, authority_ref, authority_url, effective_from, effective_to
 ```
 
-Table structure is correct — data just not loaded.
+Table structure is correct  -  data just not loaded.
 
 ---
 
@@ -198,14 +198,14 @@ Table structure is correct — data just not loaded.
 
 | Technology | Code exists | DB exists | Route exists | Runtime works (empty DB) | Tests pass | Real or stub | Verdict |
 |---|---|---|---|---|---|---|---|
-| Agentic AI (19-step brain) | YES | brain_traces | /api/brain/trace | YES — 19 steps traced | 43/43 | Real pipeline, stub model | **PARTIAL** |
-| Hybrid Search | YES | retrieval_audit | /api/rag/hybrid-search | YES — returns empty bundle | 18/18 | Real code, no data | **PARTIAL** |
-| Graph RAG | YES | legal_nodes/edges | /api/rag/graph | YES | 24/24 | Real — 15 nodes seeded | **PASS** |
+| Agentic AI (19-step brain) | YES | brain_traces | /api/brain/trace | YES  -  19 steps traced | 43/43 | Real pipeline, stub model | **PARTIAL** |
+| Hybrid Search | YES | retrieval_audit | /api/rag/hybrid-search | YES  -  returns empty bundle | 18/18 | Real code, no data | **PARTIAL** |
+| Graph RAG | YES | legal_nodes/edges | /api/rag/graph | YES | 24/24 | Real  -  15 nodes seeded | **PASS** |
 | Knowledge Graph | YES | legal_nodes/edges | internal | YES | 21/21 | Real | **PASS** |
 | Context Compression | YES | context_compression_log | Brain step 13 | YES | brain tests | Real | **PASS** |
 | Memory Engine | YES | legal_memory | /api/memory/save,get | YES | 9/9 | Real, consent-gated | **PASS** |
 | Evaluation AI | YES | evaluation_results | /api/evaluate | YES | passing | Real rubric | **PASS** |
-| MCP Connectors | YES | mcp_tool_calls | /api/mcp/tools | YES — 5 connectors | 17/17 | Real, deny-by-default | **PASS** |
+| MCP Connectors | YES | mcp_tool_calls | /api/mcp/tools | YES  -  5 connectors | 17/17 | Real, deny-by-default | **PASS** |
 | Multimodal AI | PARTIAL | documents | /api/documents/upload | Upload endpoint exists | 11/11 | mock_extract() stub | **STUB** |
 | AI Router | YES | routing_decisions | Brain step 9 | YES | router tests | Real routing | **PASS** |
 | Semantic Cache | YES | semantic_cache | /api/cache/test | YES | cache tests | Real | **PASS** |
@@ -228,7 +228,7 @@ docker compose exec backend printenv LAWAPP_AUTH_MODE → jwt
 python -m pytest tests/security/test_encryption.py → 8 passed, 2 skipped (ENCRYPTION_KEY absent)
 ```
 
-**Finding:** 2 encryption tests skip because `ENCRYPTION_KEY` is absent in test environment. The skips are labelled correctly. The conftest sets `ENCRYPTION_KEY=dev-jwt-secret-replace-in-production` — this is a placeholder, not real Fernet key. In production with a real key, tests would run.
+**Finding:** 2 encryption tests skip because `ENCRYPTION_KEY` is absent in test environment. The skips are labelled correctly. The conftest sets `ENCRYPTION_KEY=dev-jwt-secret-replace-in-production`  -  this is a placeholder, not real Fernet key. In production with a real key, tests would run.
 
 ### De-identification: PASS
 
@@ -236,7 +236,7 @@ python -m pytest tests/security/test_encryption.py → 8 passed, 2 skipped (ENCR
 python -m pytest tests/security/test_deidentification.py → 11 passed
 ```
 
-Pipeline enforces `deidentify()` before `model.reason()` — code-verified.
+Pipeline enforces `deidentify()` before `model.reason()`  -  code-verified.
 
 ### Rate limiting: PARTIAL
 
@@ -252,7 +252,7 @@ Rate limiting is in-memory only (slowapi). Not safe for multi-instance productio
 grep -RIn "win your case|guarantee|we will file|we represent|our solicitor|rights of audience" backend client → Only in detection/blocking code, not in output generation
 ```
 
-Guaranteed language detection is in brain.py `_SAFETY_GUARANTEE_PHRASES` — blocks output, not generates it.
+Guaranteed language detection is in brain.py `_SAFETY_GUARANTEE_PHRASES`  -  blocks output, not generates it.
 
 ---
 
@@ -271,7 +271,7 @@ http://localhost:8000/api/payment/status → {"mode":"test_simulator","stripe_co
 | Stripe webhook signature verification | STUB (Phase 7) |
 | Live Stripe keys | NOT CONFIGURED |
 
-**Verdict:** PARTIAL — simulator works correctly; Stripe integration is a stub.
+**Verdict:** PARTIAL  -  simulator works correctly; Stripe integration is a stub.
 
 ---
 
@@ -286,7 +286,7 @@ Document boundary notice: PRESENT
 Ownership enforced: PASS
 ```
 
-**Verdict: PASS** — real template content, not static sample. Legal boundary notice confirmed.
+**Verdict: PASS**  -  real template content, not static sample. Legal boundary notice confirmed.
 
 ---
 
@@ -295,16 +295,16 @@ Ownership enforced: PASS
 ```
 ls client/public/wasm/ → lawapp_wasm_bg.wasm (95392 bytes), lawapp_wasm.js, .d.ts files
 stat client/wasm/src/lib.rs → exists
-deadline.js line 166: fetch('/rules/${claimType}') — fetches from backend
+deadline.js line 166: fetch('/rules/${claimType}')  -  fetches from backend
 No hardcoded legal values in client JS
 ```
 
-**WASM binary:** Exists (95KB) — not recently rebuilt (last modified Jun 2)  
+**WASM binary:** Exists (95KB)  -  not recently rebuilt (last modified Jun 2)  
 **JS fallback:** Active and functional  
-**Legal values source:** Backend `/rules/` endpoint — PASS  
+**Legal values source:** Backend `/rules/` endpoint  -  PASS  
 **WASM rebuild automation:** Missing (`wasm-pack build` not in scripts)
 
-**Verdict: PARTIAL** — binary exists; JS fallback functional; WASM rebuild not automated.
+**Verdict: PARTIAL**  -  binary exists; JS fallback functional; WASM rebuild not automated.
 
 ---
 
@@ -317,7 +317,7 @@ grep -n "mock_extract" backend/api/main.py → line 1242: extracted = mock_extra
 `mock_extract()` is in `backend/core/extraction.py` and returns static placeholder facts.  
 No real OCR engine present. Route exists (`/cases/{id}/uploads`) but extraction is a stub.
 
-**Verdict: STUB** — upload route works; OCR/extraction is a mock placeholder.
+**Verdict: STUB**  -  upload route works; OCR/extraction is a mock placeholder.
 
 ---
 
@@ -330,9 +330,9 @@ Secret names: lawapp-postgres-secret, lawapp-secrets, lawapp-ai-secrets, lawapp-
 kubectl apply --dry-run=client -f infra/k8s/ → kubectl not available
 ```
 
-**Not deployed** — cluster status cannot be verified from this machine. Manifests are syntax-valid and secrets are consistent.
+**Not deployed**  -  cluster status cannot be verified from this machine. Manifests are syntax-valid and secrets are consistent.
 
-**IterLaw legacy files:** `infra/k8s/iterlaw/` — NOT applied to lawapp cluster; legacy from previous project name.
+**IterLaw legacy files:** `infra/k8s/iterlaw/`  -  NOT applied to lawapp cluster; legacy from previous project name.
 
 **Verdict: NOT PROVEN** (manifests ready, cluster not deployed/verified)
 
@@ -353,11 +353,11 @@ ls .github/workflows/ →
 ```
 
 **Missing:**
-- `scripts/push-and-deploy.sh` — **NOT FOUND** (Claude coding task)
+- `scripts/push-and-deploy.sh`  -  **NOT FOUND** (Claude coding task)
 
-**deploy-iterlaw-ai.yml** — wrong project name in CI file. Should be updated or deleted.
+**deploy-iterlaw-ai.yml**  -  wrong project name in CI file. Should be updated or deleted.
 
-**Verdict: PARTIAL** — lawapp-specific CI exists; push automation missing; stale workflow file present.
+**Verdict: PARTIAL**  -  lawapp-specific CI exists; push automation missing; stale workflow file present.
 
 ---
 
@@ -389,7 +389,7 @@ python -m pytest tests/security/ tests/user_isolation/ tests/brain/ tests/deadli
 → 215 passed, 3 skipped, 0 failed
 
 python -m pytest tests/legal_accuracy/ tests/ingestion/ -q
-→ 7 failed (all data-dependent — rules/legislation/ACAS rows = 0)
+→ 7 failed (all data-dependent  -  rules/legislation/ACAS rows = 0)
 → 56 passed
 
 Playwright: 10 passed, 3 failed (all data-dependent)
@@ -399,9 +399,9 @@ Smoke journey: 20 PASS / 4 FAIL (data-dependent)
 ### Data-dependent test failures (all caused by empty DB after fresh Docker start)
 
 ```
-TestLegislationTable::test_legislation_has_rows — 0 rows in legislation
-TestAcasGuidanceTable::test_acas_guidance_has_rows — 0 rows in acas_guidance
-TestRulesTable::test_ud_time_limit_rule_exists — 0 rows in rules
+TestLegislationTable::test_legislation_has_rows  -  0 rows in legislation
+TestAcasGuidanceTable::test_acas_guidance_has_rows  -  0 rows in acas_guidance
+TestRulesTable::test_ud_time_limit_rule_exists  -  0 rows in rules
 TestRulesTable::test_ud_qualifying_period_rule_exists
 TestRulesTable::test_ud_compensatory_cap_rule_exists
 TestRulesTable::test_prospective_rules_exist_for_future
@@ -417,7 +417,7 @@ smoke: Assessment status: insufficient_grounding
 
 | ID | Blocker | Severity | Owner | Exact fix required | Verification command |
 |---|---|---|---|---|---|
-| B1 | DB seed not automated — fresh Docker has no rules/legislation/ACAS data | CRITICAL | Claude | Add seed step to docker-compose or migration | `SELECT COUNT(*) FROM rules;` → must show >0 on fresh start |
+| B1 | DB seed not automated  -  fresh Docker has no rules/legislation/ACAS data | CRITICAL | Claude | Add seed step to docker-compose or migration | `SELECT COUNT(*) FROM rules;` → must show >0 on fresh start |
 | B2 | ANTHROPIC_API_KEY=placeholder | HIGH | Owner | Set real API key | `curl /health \| jq .ai_provider.active` → true |
 | B3 | Case law corpus = 0 rows | HIGH | Owner (FCL licence) | Obtain FCL bulk computational access | `SELECT COUNT(*) FROM case_law_chunks;` |
 | B4 | Stripe webhook signature verification stub | HIGH | Claude | Implement using stripe Python SDK | `python -m pytest tests/payment/ -k webhook` |
@@ -488,8 +488,8 @@ smoke: Assessment status: insufficient_grounding
 - Ingestion tests: 7 FAIL  
 - Playwright: 3 FAIL
 
-The architecture is genuinely solid. The code is real, not hallucinated. The legal guardrails are correct. JWT isolation works. The 19-step brain pipeline exists. Documents generate real content. But the **reproducibility gap** — seed data not automated — means a developer cannot run `docker compose up` and get a working lawapp.
+The architecture is genuinely solid. The code is real, not hallucinated. The legal guardrails are correct. JWT isolation works. The 19-step brain pipeline exists. Documents generate real content. But the **reproducibility gap**  -  seed data not automated  -  means a developer cannot run `docker compose up` and get a working lawapp.
 
 **Accept only:** ACCEPT LOCAL DEMO ONLY (with manual seed step required)
 
-**Not accept:** "Internal local demo ready" as stated — this implies a developer can start from scratch and get a demo, which is false.
+**Not accept:** "Internal local demo ready" as stated  -  this implies a developer can start from scratch and get a demo, which is false.

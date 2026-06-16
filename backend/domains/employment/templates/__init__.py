@@ -1,5 +1,5 @@
 """
-Employment domain — document template registry.
+Employment domain  -  document template registry.
 
 This is the by-domain template registry consumed via
 ``backend.domains.shared.templates.load_domain_templates("employment")``
@@ -12,7 +12,7 @@ Each entry maps a template key to:
   - generator    : dotted import path to the REAL generator function
 
 The generators currently live in ``backend.core.documents`` (see the
-"Core decoupling backlog" in the Subagent 6 report — physically relocating the
+"Core decoupling backlog" in the Subagent 6 report  -  physically relocating the
 generator bodies into this package is tracked future work). They are referenced
 here by dotted path rather than imported eagerly, so loading the registry does
 not pull heavy document dependencies (python-docx) at import time, and so a
@@ -51,7 +51,7 @@ TEMPLATES: Dict[str, Dict[str, Any]] = {
 def resolve_generator(template_key: str) -> Callable[..., Any]:
     """Import and return the generator callable for ``template_key``.
 
-    Raises KeyError for an unknown key (fail closed — never fabricate a doc).
+    Raises KeyError for an unknown key (fail closed  -  never fabricate a doc).
     """
     entry = TEMPLATES[template_key]
     module_path, _, func_name = entry["generator"].rpartition(".")

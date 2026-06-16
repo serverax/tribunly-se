@@ -91,7 +91,7 @@ def ingest_recent_bills(pages: int = 3) -> None:
                     "stage":      stage[:200],
                     "url":        source_url,
                 })
-            console.print(f"  [green]✓[/green] {title[:80]} — stage: {stage}")
+            console.print(f"  [green]✓[/green] {title[:80]}  -  stage: {stage}")
             ingested += 1
 
     console.print(f"[bold]Done: {ingested} employment-relevant bills stored[/bold]")

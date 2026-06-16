@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_employment_law_corpus.sh — proves the local British employment-law corpus
+# prove_employment_law_corpus.sh  -  proves the local British employment-law corpus
 # is real, cited, effective-dated, embedded, RAG-retrievable, and that Find Case
 # Law bulk is fail-closed. Exits non-zero on any missing proof.
 set -uo pipefail

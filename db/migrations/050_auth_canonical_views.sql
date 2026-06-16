@@ -1,23 +1,23 @@
--- Migration 050: Auth DB — canonical entity-name views + provider_id index
+-- Migration 050: Auth DB  -  canonical entity-name views + provider_id index
 -- ============================================================================
--- SUBAGENT 8 — Database Engineer (Landing Page + Authentication Experience).
+-- SUBAGENT 8  -  Database Engineer (Landing Page + Authentication Experience).
 --
 -- CONTEXT / HONEST RECONCILIATION
 -- -------------------------------
 -- The lawapp auth stack already exists and is WIRED to live code
 -- (backend/core/auth/service.py, migration 047_auth_stack.sql):
 --
---     users             — real table  (identity + verification + onboarding cols)
---     auth_sessions     — real table  (one row per issued refresh token)
---     oauth_identities  — real table  (provider account → user linkage)
---     auth_tokens       — real table  (single-use magic-link / verify / reset)
---     auth_events       — real table  (append-only auth audit trail)
+--     users              -  real table  (identity + verification + onboarding cols)
+--     auth_sessions      -  real table  (one row per issued refresh token)
+--     oauth_identities   -  real table  (provider account → user linkage)
+--     auth_tokens        -  real table  (single-use magic-link / verify / reset)
+--     auth_events        -  real table  (append-only auth audit trail)
 --
 -- The auth SERVICE issues/rotates/revokes sessions against `auth_sessions` and
 -- links providers against `oauth_identities`. Those are the SINGLE SOURCE OF
 -- TRUTH. Creating second base tables named `user_sessions` / `user_identities`
 -- would fork the auth schema into two competing copies of the session/identity
--- store — a security hazard and a forbidden parallel/dead schema
+-- store  -  a security hazard and a forbidden parallel/dead schema
 -- (BEHAVIOUR_CONSTITUTION §4 "no DB tables that are never used", §10 "avoid
 -- duplicated logic", §19 "broken user isolation can expose private legal data").
 --
@@ -30,27 +30,27 @@
 --
 -- conversion_events is the SIXTH required entity. It is a genuinely-new ANONYMOUS
 -- acquisition-funnel table owned by SUBAGENT 5 (migration 049_conversion_funnel.sql)
--- — keyed on an anonymous visitor session_id that exists BEFORE any user. It is a
+--  -  keyed on an anonymous visitor session_id that exists BEFORE any user. It is a
 -- dependency of this work, not redefined here (redefining it would duplicate a
 -- table another subagent owns). 050 must be applied AFTER 049.
 --
 -- INDEXES required by the task:
 --     email       → users_email_lower_uidx (UNIQUE lower(email))      [047, exists]
 --     provider_id → oauth_identities_provider_subject_key (UNIQUE)    [047, exists]
---                   + oauth_identities_subject_idx (added below — reverse lookup)
+--                   + oauth_identities_subject_idx (added below  -  reverse lookup)
 --     session_id  → auth_sessions_pkey (PRIMARY KEY id)               [047, exists]
 --
--- Additive + idempotent (IF NOT EXISTS / CREATE OR REPLACE) — safe to re-run.
--- Reversible — db/migrations/down/050_auth_canonical_views.down.sql
+-- Additive + idempotent (IF NOT EXISTS / CREATE OR REPLACE)  -  safe to re-run.
+-- Reversible  -  db/migrations/down/050_auth_canonical_views.down.sql
 -- ============================================================================
 
 BEGIN;
 
 -- ── provider_id reverse-lookup index ─────────────────────────────────────────
--- oauth_identities already has UNIQUE(provider, subject) — the (provider, account)
+-- oauth_identities already has UNIQUE(provider, subject)  -  the (provider, account)
 -- key that prevents two users claiming the same provider account (= provider
 -- merge integrity). A lookup by the provider account id (subject / provider_id)
--- ALONE — "which identity owns provider_id X" — is not served by that composite
+-- ALONE  -  "which identity owns provider_id X"  -  is not served by that composite
 -- key, so add a dedicated index. Genuinely useful, not a placeholder. Idempotent.
 CREATE INDEX IF NOT EXISTS oauth_identities_subject_idx ON oauth_identities (subject);
 

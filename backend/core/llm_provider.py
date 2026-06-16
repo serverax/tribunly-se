@@ -8,7 +8,7 @@ through this interface, and the result must still pass the 4 AIA validators
 (see ``backend/core/agentic/aia_validators.py``). Providers are swappable:
 OpenRouter now, Gemini/local later, with no change to Workflow C logic.
 
-No provider receives raw PII or raw uploaded documents — the OpenRouter path
+No provider receives raw PII or raw uploaded documents  -  the OpenRouter path
 routes through ``litellm_adapter`` whose de-identification chokepoint fails closed.
 """
 
@@ -63,13 +63,13 @@ class OpenRouterProvider(LLMProvider):
     cloud = True
 
     def available(self) -> bool:
-        # LOCAL OLLAMA ONLY (hard mandate): OpenRouter is forbidden — never available.
+        # LOCAL OLLAMA ONLY (hard mandate): OpenRouter is forbidden  -  never available.
         return False
 
     def complete_json(self, *, system_prompt, payload, trace_id, case_id) -> dict:
         from backend.core.inference_policy import ExternalLLMForbidden
         raise ExternalLLMForbidden(
-            "OpenRouterProvider is forbidden — lawapp legal routes use local Ollama only."
+            "OpenRouterProvider is forbidden  -  lawapp legal routes use local Ollama only."
         )
         if not self.available():                    # noqa: legacy path below unreachable
             raise ProviderUnavailable("OpenRouter is not enabled/configured")

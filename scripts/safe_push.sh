@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Safe push — runs all quality gates before pushing to origin/master.
+# Safe push  -  runs all quality gates before pushing to origin/master.
 # WSL-safe: uses docker compose, no local venv.
 # Exits non-zero if any gate fails. Never pushes on failure.
 set -euo pipefail
@@ -7,7 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 echo "======================================================================"
-echo "LAWAPP — SAFE PUSH: Running all quality gates"
+echo "LAWAPP  -  SAFE PUSH: Running all quality gates"
 echo "======================================================================"
 
 echo
@@ -28,6 +28,6 @@ docker compose build backend
 
 echo
 echo "======================================================================"
-echo "✓ ALL GATES PASSED — pushing to origin/master"
+echo "✓ ALL GATES PASSED  -  pushing to origin/master"
 echo "======================================================================"
 git push origin master

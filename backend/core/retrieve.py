@@ -1,5 +1,5 @@
 """
-Stage 2 — Hybrid retrieval module.
+Stage 2  -  Hybrid retrieval module.
 
 ALWAYS runs before any reasoning. Returns a RetrievalBundle of:
   - exact_rules: deterministic values from the `rules` table (deadlines, caps,
@@ -54,7 +54,7 @@ _MIN_AUTHORITIES_FOR_GROUNDING = 1
 # ── Jurisdiction model ──────────────────────────────────────────────────────
 # Employment legislation/rules/guidance ingested so far apply Great Britain-wide
 # (England & Wales + Scotland). Northern Ireland is a SEPARATE regime and is NOT
-# ingested — NI must fail closed, never silently reuse GB law.
+# ingested  -  NI must fail closed, never silently reuse GB law.
 # Map an incoming user jurisdiction to the set of jurisdiction values that
 # may lawfully satisfy it.
 _GB_CODES = ("GB", "EW", "S", "UK")
@@ -107,7 +107,7 @@ def retrieve_rules(
     Fetch all current-in-force rules for the claim type and jurisdiction
     applicable at the EDT date.
 
-    Explicitly filters is_prospective=false — this is the correct gate, not
+    Explicitly filters is_prospective=false  -  this is the correct gate, not
     date-overlap alone. Both the £123,543 cap and the prospective 'uncapped'
     row have effective_to=NULL; only is_prospective=false prevents selecting
     the future law.
@@ -151,7 +151,7 @@ def retrieve_keyword(
     ranked by ts_rank over the existing ingested text.
 
     Terms are OR-combined (to_tsquery 'a | b | c') so a multi-term legal query
-    still matches chunks containing ANY of the terms, ranked by ts_rank — a
+    still matches chunks containing ANY of the terms, ranked by ts_rank  -  a
     realistic BM25-style behaviour rather than requiring every term (plainto AND).
     """
     import re as _re
@@ -265,12 +265,12 @@ def retrieve_semantic(
 
     if not has_embeddings:
         logger.info(
-            "Embeddings absent — using BM25 keyword fallback. "
+            "Embeddings absent  -  using BM25 keyword fallback. "
             "Run `python -m ingestion.embeddings.embedder` to activate semantic retrieval."
         )
         return retrieve_keyword(query, jurisdiction, edt, k)
 
-    # Embeddings exist — open a new connection for the cosine search.
+    # Embeddings exist  -  open a new connection for the cosine search.
     from ingestion.embeddings.embedder import embed_texts
 
     query_embedding = embed_texts([query])[0]
@@ -436,7 +436,7 @@ def retrieve(
     # merged with Reciprocal Rank Fusion (RRF, k=60). A source found by BOTH paths
     # accumulates both reciprocals and so outranks a single-path hit; an authority
     # the query explicitly names (e.g. "section 98", "[2021] UKSC 1") is boosted to
-    # the top. Rules are NOT fused here — they stay deterministic and separate.
+    # the top. Rules are NOT fused here  -  they stay deterministic and separate.
     lexical  = _exact_rule_authorities(query, rules, jurisdiction) + retrieve_keyword(query, jurisdiction, edt)
     semantic = retrieve_semantic(query, jurisdiction, edt)
     authorities = reciprocal_rank_fusion(lexical, semantic, query=query)
@@ -454,7 +454,7 @@ def retrieve(
             # authority_ref / jurisdiction / effective dates are surfaced per
             # authority (architecture correction): every grounded result carries
             # its citation, source_url, jurisdiction, and effective window so the
-            # answer layer can prove provenance — and a stale-dated source is
+            # answer layer can prove provenance  -  and a stale-dated source is
             # visible, never silently used.
             "authority_ref":  r.get("cite") or r.get("heading") or "",
             "jurisdiction":   r.get("jurisdiction"),
@@ -463,7 +463,7 @@ def retrieve(
             "text":      r.get("text", ""),
             "url":       r.get("url", ""),
             "source_id": f"src_{idx+1}",
-            # RRF provenance — preserved per Phase 3 (vector_score, lexical_score,
+            # RRF provenance  -  preserved per Phase 3 (vector_score, lexical_score,
             # rrf_score) so the answer layer and /api/search/hybrid can show WHY a
             # source ranked where it did, and so an exact-citation hit is visible.
             "rrf_score":            r.get("rrf_score"),

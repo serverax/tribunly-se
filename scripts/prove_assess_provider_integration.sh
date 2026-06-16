@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_assess_provider_integration.sh — proves the Workflow C provider plug is
+# prove_assess_provider_integration.sh  -  proves the Workflow C provider plug is
 # wired into /assess and gated by the 4 AIA validators, in mock/no-key mode.
 # Exits non-zero on any failure. No key, no network to the provider.
 set -uo pipefail

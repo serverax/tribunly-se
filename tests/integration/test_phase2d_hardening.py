@@ -1,5 +1,5 @@
 """
-Phase 2D — Engine hardening regression suite.
+Phase 2D  -  Engine hardening regression suite.
 
 Validates the structured assessment engine produces grounded, cited,
 deterministically-correct outputs across the key unfair-dismissal scenarios.
@@ -283,7 +283,7 @@ def test_no_pii_in_stub_boundary():
 # ── 10. OpenRouter disabled by default ───────────────────────────────────────
 
 def test_openrouter_disabled_by_default():
-    """OPENROUTER_ENABLED defaults false — select_model must not pick OpenRouter."""
+    """OPENROUTER_ENABLED defaults false  -  select_model must not pick OpenRouter."""
     from backend.core.models import OpenRouterReasoningModel, StubReasoningModel
 
     class _NoKeys:
@@ -299,7 +299,7 @@ def test_openrouter_disabled_by_default():
 
 
 def test_no_key_fallback_returns_stub(monkeypatch):
-    """When no external keys are configured, engine falls back to Stub — never crashes."""
+    """When no external keys are configured, engine falls back to Stub  -  never crashes."""
     monkeypatch.delenv("LAWAPP_LLM_PROVIDER", raising=False)
     class _NoKeys:
         openrouter_enabled    = False
@@ -359,7 +359,7 @@ def test_all_citations_have_source():
 # ── 12. Governance still runs after any model ─────────────────────────────────
 
 def test_governance_blocks_reserved_activity_regardless_of_model():
-    """Governance is mandatory — no model output bypasses it."""
+    """Governance is mandatory  -  no model output bypasses it."""
     from backend.core.govern import govern
     from shared.schemas import StructuredAssessment, Deadline, ValueRange, Citation
     bad = StructuredAssessment(

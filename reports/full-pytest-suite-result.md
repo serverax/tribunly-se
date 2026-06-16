@@ -1,8 +1,8 @@
-# Full Pytest Suite — Result
+# Full Pytest Suite  -  Result
 
 - Timestamp: 2026-06-10T22:40:09Z
 - Command: `docker compose run --rm ingestion python -m pytest tests/ -q`
-- Image: Dockerfile.ingestion (deps baked in — no ad-hoc pip)
+- Image: Dockerfile.ingestion (deps baked in  -  no ad-hoc pip)
 - Exit code: 0
 
 ```

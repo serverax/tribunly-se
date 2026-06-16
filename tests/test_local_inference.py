@@ -1,12 +1,12 @@
 """
-Local Inference Fabric — offline unit proof.
+Local Inference Fabric  -  offline unit proof.
 
 Runs with NO cluster and NO network: proves the provider is wired and FAILS SOFT.
   1. select_model() returns the LocalInferenceReasoningModel when enabled.
   2. The provider's prompt carries the de-identified facts + the legal
      relationship map (graph context prioritised).
   3. When the inference endpoint is unreachable, reason() returns a safe
-     insufficient_grounding assessment (MODEL_UNAVAILABLE) — it does NOT crash
+     insufficient_grounding assessment (MODEL_UNAVAILABLE)  -  it does NOT crash
      the Mother Algorithm.
   4. De-identification is enforced: reason() refuses an empty boundary_log.
 """

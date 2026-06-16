@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# SA-014 — prove lawapp distributed services are real, reachable and WIRED.
+# SA-014  -  prove lawapp distributed services are real, reachable and WIRED.
 # FAIL-CLOSED: no `|| true`, no `echo PASS`, no continue-on-error. Exits non-zero on any failure.
 # Read-only / additive evidence only. Requires kubectl context with lawapp-* namespaces.
 #

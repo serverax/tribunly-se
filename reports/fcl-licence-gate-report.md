@@ -42,4 +42,4 @@ computational-analysis permission is granted and recorded in `legal_sources`.
 4. Re-run ingestion; the gates will then permit licence-safe case-law rows.
 
 ## Status line
-**BLOCKED BY OWNER** — fail-closed, no fake data, pipeline prepared.
+**BLOCKED BY OWNER**  -  fail-closed, no fake data, pipeline prepared.

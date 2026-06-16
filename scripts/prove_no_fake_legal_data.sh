@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_no_fake_legal_data.sh — there is no fake/placeholder/uncited legal data.
+# prove_no_fake_legal_data.sh  -  there is no fake/placeholder/uncited legal data.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp"

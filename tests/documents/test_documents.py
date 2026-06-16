@@ -1,5 +1,5 @@
 """
-Document generation tests — lawapp Particulars of Claim and Schedule of Loss.
+Document generation tests  -  lawapp Particulars of Claim and Schedule of Loss.
 
 Tests that:
   - Particulars of Claim generates with correct structure

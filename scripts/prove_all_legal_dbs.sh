@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_all_legal_dbs.sh — every required legal table/view exists and is populated
+# prove_all_legal_dbs.sh  -  every required legal table/view exists and is populated
 # where data is expected. Non-zero on hard failure.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1

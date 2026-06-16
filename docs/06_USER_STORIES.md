@@ -5,7 +5,7 @@
 
 ---
 
-## Phase 3 — MVP core stories (must be genuinely excellent before anything else)
+## Phase 3  -  MVP core stories (must be genuinely excellent before anything else)
 
 ### US-1 Diagnosis
 *As someone who's just been dismissed, I want to find out whether what happened was unlawful, so that I know if I have a case worth pursuing.*
@@ -54,7 +54,7 @@
 
 ---
 
-## Phase 4 — Depth stories
+## Phase 4  -  Depth stories
 
 ### US-8 Upload instead of retype
 *As a stressed user, I want to photograph/upload my dismissal letter and contract, so that I don't have to retype everything.*
@@ -74,7 +74,7 @@
 
 ---
 
-## Phase 5 — Validation & second claim type
+## Phase 5  -  Validation & second claim type
 
 ### US-11 (internal) Prove willingness to pay
 *As the business, I want to know if free-diagnosis users convert to paid prep, so that I know the model works.*
@@ -91,7 +91,7 @@
 
 ---
 
-## Phase 6 — Revenue & scale
+## Phase 6  -  Revenue & scale
 
 ### US-14 Solicitor partner receives leads
 *As a partner firm, I want qualified, pre-prepared leads, so that I gain clients efficiently.*

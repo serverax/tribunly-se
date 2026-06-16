@@ -1,5 +1,5 @@
 """
-Agent memory store — PII-masked, consent-gated.
+Agent memory store  -  PII-masked, consent-gated.
 
 Scaffold for adaptive feedback loop. Does NOT fine-tune models.
 Writes go to agent_memory table with masked_value derived from memory_value.

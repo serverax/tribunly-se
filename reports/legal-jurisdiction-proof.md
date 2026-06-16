@@ -1,4 +1,4 @@
-# Legal Jurisdiction Model — Proof Report
+# Legal Jurisdiction Model  -  Proof Report
 
 - **Timestamp:** 2026-06-05  **Branch:** main  **Commit:** a0968b0
 - **Command:** `bash scripts/prove_jurisdiction_model.sh`
@@ -36,5 +36,5 @@ The UK is **not** treated as one flat jurisdiction.
 ## Backend wiring status
 - Data layer + retrieval-contract proof: **DONE AND PROVEN** (`scripts/prove_retrieval_pipeline.sh`).
 - Application-code enforcement of jurisdiction filter in the live `/assess` path:
-  **IMPLEMENTED BUT PARTIAL** — the DB enforces it (FK + NI empty); wiring the explicit
+  **IMPLEMENTED BUT PARTIAL**  -  the DB enforces it (FK + NI empty); wiring the explicit
   jurisdiction_code filter into every backend retrieval call is the next code step.

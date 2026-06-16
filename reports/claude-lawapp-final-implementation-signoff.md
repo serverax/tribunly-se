@@ -1,6 +1,6 @@
-# lawapp — Final Implementation Sign-Off Report
+# lawapp  -  Final Implementation Sign-Off Report
 
-**Project:** lawapp — UK Employment Law AI Assistant  
+**Project:** lawapp  -  UK Employment Law AI Assistant  
 **Date:** 2026-06-04  
 **Git base commit:** 095be01  
 
@@ -17,7 +17,7 @@ The complete local product journey is proven working. Real AI reasoning requires
 | Issue | Root cause |
 |---|---|
 | Tests connecting to wrong DB (Sakina AI Railway DB) | `DATABASE_URL` env var pointed to foreign project |
-| Port 5432 conflict — native Windows PG18 intercepting Docker | Docker maps 5432; native PG18 also on 5432 |
+| Port 5432 conflict  -  native Windows PG18 intercepting Docker | Docker maps 5432; native PG18 also on 5432 |
 | Brain had 16 steps (required 19) | Missing: select_rag_source, compress_context, apply_safety_policy, save_case_memory |
 | No ACAS Day A/B in intake wizard | Wizard had 4 fields, missing EC dates |
 | No user isolation in Docker (LAWAPP_AUTH_MODE=none) | Auth mode not passed to Docker container |
@@ -38,12 +38,12 @@ The complete local product journey is proven working. Real AI reasoning requires
 ## 2. What Was Changed
 
 ### Backend routes added
-- `POST /api/deadline/calculate` — deterministic from rules table
-- `POST /api/payment/webhook` — Stripe receiver (test_simulator + stub for live)
-- `GET /api/documents/{id}/download` — ownership-enforced document download
-- `GET /api/cases/{id}/documents` — list documents per case
-- `GET /api/sources/freshness` — alias for /freshness
-- `GET /api/rules/{claim_type}` — alias with /api prefix
+- `POST /api/deadline/calculate`  -  deterministic from rules table
+- `POST /api/payment/webhook`  -  Stripe receiver (test_simulator + stub for live)
+- `GET /api/documents/{id}/download`  -  ownership-enforced document download
+- `GET /api/cases/{id}/documents`  -  list documents per case
+- `GET /api/sources/freshness`  -  alias for /freshness
+- `GET /api/rules/{claim_type}`  -  alias with /api prefix
 - Health endpoint now reports: auth_mode, payment_mode, ai_provider.{provider, active, note}
 
 ### Models
@@ -51,33 +51,33 @@ The complete local product journey is proven working. Real AI reasoning requires
 - `get_ai_provider_status()` added for health transparency
 
 ### Tests added (total: 439 pass)
-- `tests/ingestion/test_ingestion.py` — 18 tests
-- `tests/security/test_encryption.py` — 10 tests
-- `tests/security/test_deidentification.py` — 11 tests
-- `tests/security/test_payment_access.py` — 14 tests
-- `tests/security/test_auth_routes.py` — 20 tests
+- `tests/ingestion/test_ingestion.py`  -  18 tests
+- `tests/security/test_encryption.py`  -  10 tests
+- `tests/security/test_deidentification.py`  -  11 tests
+- `tests/security/test_payment_access.py`  -  14 tests
+- `tests/security/test_auth_routes.py`  -  20 tests
 
 ### Scripts
-- `scripts/smoke_local_journey.sh` — 24-check E2E smoke script (24/24 PASS)
+- `scripts/smoke_local_journey.sh`  -  24-check E2E smoke script (24/24 PASS)
 
 ### Config
-- `.env.example` — updated with all required keys
-- `.env.local.example` — created for local WSL dev
-- `.env.docker.example` — created for Docker Compose
-- `docker-compose.yml` — added JWT_ISSUER, JWT_AUDIENCE, LAWAPP_AUTH_MODE, PAYMENT_MODE
-- `.env` — LAWAPP_AUTH_MODE=jwt, PAYMENT_MODE=test_simulator, POSTGRES_PORT=5435
+- `.env.example`  -  updated with all required keys
+- `.env.local.example`  -  created for local WSL dev
+- `.env.docker.example`  -  created for Docker Compose
+- `docker-compose.yml`  -  added JWT_ISSUER, JWT_AUDIENCE, LAWAPP_AUTH_MODE, PAYMENT_MODE
+- `.env`  -  LAWAPP_AUTH_MODE=jwt, PAYMENT_MODE=test_simulator, POSTGRES_PORT=5435
 
 ### K8s manifests
-- `scripts/deploy-talos.sh` — fixed all secret names to match YAML references
+- `scripts/deploy-talos.sh`  -  fixed all secret names to match YAML references
 - All manifests audited: 10/10 manifest secret refs match script creates
-- `infra/k8s/lawapp-monitoring.yaml` — fixed secretKeyRef name
+- `infra/k8s/lawapp-monitoring.yaml`  -  fixed secretKeyRef name
 
 ### Brain algorithm
-- `backend/core/brain.py` — expanded 16→19 steps
-- `backend/core/context_compressor.py` — NEW
-- `backend/core/legal_graph.py` — NEW
-- `backend/core/mcp_connectors.py` — NEW (5 connectors)
-- `db/migrations/019_phase1_brain_safety.sql` — NEW
+- `backend/core/brain.py`  -  expanded 16→19 steps
+- `backend/core/context_compressor.py`  -  NEW
+- `backend/core/legal_graph.py`  -  NEW
+- `backend/core/mcp_connectors.py`  -  NEW (5 connectors)
+- `db/migrations/019_phase1_brain_safety.sql`  -  NEW
 
 ---
 
@@ -144,14 +144,14 @@ Frontend → Backend mapping:
 
 | Component | Status |
 |---|---|
-| Real AI reasoning (Anthropic Claude) | BLOCKED — ANTHROPIC_API_KEY=placeholder |
-| AI provider transparency | ✓ — /health reports ai_provider.active=false |
-| Stub model safe failure | ✓ — returns insufficient_grounding, not fake answer |
-| Hybrid retrieval (SQL+BM25+pgvector) | ✓ — retrieve.py |
-| Graph RAG | ✓ — legal_graph.py, 15 nodes, 14 edges |
-| Context compression | ✓ — context_compressor.py |
-| Semantic cache | ✓ — semantic_cache.py, PII excluded |
-| MCP connectors | ✓ — 5 connectors, deny-by-default |
+| Real AI reasoning (Anthropic Claude) | BLOCKED  -  ANTHROPIC_API_KEY=placeholder |
+| AI provider transparency | ✓  -  /health reports ai_provider.active=false |
+| Stub model safe failure | ✓  -  returns insufficient_grounding, not fake answer |
+| Hybrid retrieval (SQL+BM25+pgvector) | ✓  -  retrieve.py |
+| Graph RAG | ✓  -  legal_graph.py, 15 nodes, 14 edges |
+| Context compression | ✓  -  context_compressor.py |
+| Semantic cache | ✓  -  semantic_cache.py, PII excluded |
+| MCP connectors | ✓  -  5 connectors, deny-by-default |
 
 ---
 
@@ -162,7 +162,7 @@ Frontend → Backend mapping:
 - Rules fetched from backend: `fetchDeadlineRules()` calls GET /rules/{claim_type}
 - No legal values hardcoded in WASM or JS
 - WASM Rust source: `client/wasm/src/lib.rs`
-- Status: **PARTIAL** — JS fallback is the active path; WASM binary exists but not recompiled post last code change
+- Status: **PARTIAL**  -  JS fallback is the active path; WASM binary exists but not recompiled post last code change
 
 ---
 
@@ -172,7 +172,7 @@ Frontend → Backend mapping:
 - `/api/payment/create-session` → returns `test_xxx` token
 - `/api/payment/webhook` → test_simulator pass-through; Stripe verification Phase 7 stub
 - Document gating: test_ prefix required; non-test tokens rejected
-- Real Stripe: **BLOCKED** — STRIPE_SECRET_KEY=placeholder
+- Real Stripe: **BLOCKED**  -  STRIPE_SECRET_KEY=placeholder
 
 ---
 
@@ -183,7 +183,7 @@ Frontend → Backend mapping:
 - Letter Before Action: ✓ (4418 chars)
 - ET1 Support Notes: ✓ (4937 chars)
 - All documents: template-based, no freeform LLM text
-- All documents include: "SELF-HELP DRAFT — lawapp is not a solicitor or law firm"
+- All documents include: "SELF-HELP DRAFT  -  lawapp is not a solicitor or law firm"
 - Ownership enforced: ✓
 
 ---
@@ -193,7 +193,7 @@ Frontend → Backend mapping:
 - All manifests created and audited
 - Secret name audit: 10/10 manifest refs match script creates
 - Namespaces: lawapp-api, lawapp-ai, lawapp-rag, lawapp-security, lawapp-monitoring
-- Status: **OWNER ACTION REQUIRED** — run `bash scripts/deploy-talos.sh` from WSL
+- Status: **OWNER ACTION REQUIRED**  -  run `bash scripts/deploy-talos.sh` from WSL
 
 ---
 
@@ -201,8 +201,8 @@ Frontend → Backend mapping:
 
 - `.github/workflows/lawapp-ci.yml` exists
 - `.github/workflows/lawapp-deploy-k8s.yml` exists
-- `scripts/deploy-talos.sh` — comprehensive deploy script
-- Status: **PARTIAL** — CI pipeline exists; push-and-deploy.sh not yet created
+- `scripts/deploy-talos.sh`  -  comprehensive deploy script
+- Status: **PARTIAL**  -  CI pipeline exists; push-and-deploy.sh not yet created
 
 ---
 

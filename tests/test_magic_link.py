@@ -1,11 +1,11 @@
 """
-Magic-link (passwordless) auth flow — HTTP + service-layer proof.
+Magic-link (passwordless) auth flow  -  HTTP + service-layer proof.
 
 Endpoint under test: POST /api/auth/magic-link  (backend/api/auth_routes.py)
 Service under test:   backend/core/auth/service.py
                         request_magic_link / consume_magic_link
 
-Proven here (real local Docker DB — conftest sets POSTGRES_* to localhost:5435):
+Proven here (real local Docker DB  -  conftest sets POSTGRES_* to localhost:5435):
   HAPPY PATH
     - issue is generic (no account enumeration): always 200 with a generic message
     - a real issued token (captured at the delivery boundary) redeems a session
@@ -16,7 +16,7 @@ Proven here (real local Docker DB — conftest sets POSTGRES_* to localhost:5435
 
 GUARDRAIL: the issue response NEVER returns the raw token (anti-enumeration).
 The happy-path test obtains the raw token only by intercepting the email-delivery
-boundary (_send_link_email) — exactly the channel a real user receives it on.
+boundary (_send_link_email)  -  exactly the channel a real user receives it on.
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ class TestMagicLinkIssue:
         r = client.post("/api/auth/magic-link", json={"email": _email()})
         assert r.status_code == 200, r.text
         body = r.json()
-        # Generic message — must not confirm whether the account exists.
+        # Generic message  -  must not confirm whether the account exists.
         assert "sign-in link" in body["message"].lower()
         # Never leak a token in the issue response.
         assert "token" not in body
@@ -63,7 +63,7 @@ class TestMagicLinkIssue:
         assert "sign-in link" in r.json()["message"].lower()
 
     def test_issue_malformed_email_still_generic(self, client):
-        # No '@' — service short-circuits but the HTTP contract stays generic 200.
+        # No '@'  -  service short-circuits but the HTTP contract stays generic 200.
         r = client.post("/api/auth/magic-link", json={"email": "not-an-email"})
         assert r.status_code == 200, r.text
         assert "token" not in r.json()

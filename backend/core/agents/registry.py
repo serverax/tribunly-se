@@ -1,5 +1,5 @@
 """
-Agent registry — the Brain uses this to look up and instantiate agents.
+Agent registry  -  the Brain uses this to look up and instantiate agents.
 
 Every agent is registered here with its claim-type routing configuration.
 The Brain calls get_agents_for_claim() to get the right set for a query.
@@ -75,7 +75,7 @@ class DeadlineAgent(LegalAgent):
     description = (
         "Specialist in tribunal deadlines. Computes limitation dates, "
         "ACAS EC pause/extension, ET1 filing deadlines. "
-        "GUARDRAIL: all deadlines are rule-derived — never estimated."
+        "GUARDRAIL: all deadlines are rule-derived  -  never estimated."
     )
     allowed_tools = ["retrieve_rules", "deadline_calculate", "calendar"]
     prohibited_actions = LegalAgent.prohibited_actions + ["estimate_deadline"]
@@ -320,7 +320,7 @@ class DocumentDraftingAgent(LegalAgent):
     Generates self-help legal documents (Particulars of Claim, Schedule of Loss).
 
     GUARDRAIL: Every document includes the legal boundary notice.
-    GUARDRAIL: Only generates from structured assessment — never raw LLM prose.
+    GUARDRAIL: Only generates from structured assessment  -  never raw LLM prose.
     GUARDRAIL: Documents are drafts for user review, not filed by lawapp.
     """
 

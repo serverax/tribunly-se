@@ -6,8 +6,8 @@ Run inside the ingestion container:
   docker compose run --rm ingestion pytest tests/integration/test_retrieve_rules.py -v
 
 These tests prove:
-1. is_prospective=false gate works — prospective rows are NEVER returned
-2. Effective-dating works — correct row returned based on EDT date
+1. is_prospective=false gate works  -  prospective rows are NEVER returned
+2. Effective-dating works  -  correct row returned based on EDT date
 3. Current-in-force values are correct (verified against SI 2026/310 in Phase 1)
 4. The compensatory cap at two EDT dates (proving the £118,223 / £123,543 split)
 """
@@ -48,7 +48,7 @@ def test_time_limit_is_3_months_not_6():
     assert "unfair_dismissal.time_limit_months" in rule_map
     tl = rule_map["unfair_dismissal.time_limit_months"]
     assert int(tl["value_numeric"]) == 3, \
-        f"Got {tl['value_numeric']} — prospective 6-month row must not be returned"
+        f"Got {tl['value_numeric']}  -  prospective 6-month row must not be returned"
     assert tl["is_prospective"] is False
 
 

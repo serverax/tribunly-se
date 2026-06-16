@@ -1,5 +1,5 @@
 -- Migration 006: Phase 5 user feedback and AI quality tracking
--- Placeholder — finalised before Phase 5 build starts.
+-- Placeholder  -  finalised before Phase 5 build starts.
 
 CREATE TABLE IF NOT EXISTS user_feedback (
     id          uuid        PRIMARY KEY DEFAULT gen_random_uuid(),

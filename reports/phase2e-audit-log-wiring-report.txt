@@ -7,7 +7,7 @@ Commit:  (see git log)
 SUMMARY
 -------
 Migration 003 applied. assessment_audit_logs table live. Pipeline wires one
-audit row per governed assessment — pass or fail. Audit rows contain only
+audit row per governed assessment  -  pass or fail. Audit rows contain only
 safe metadata; personal data is provably absent. 159/3 test suite result.
 
 MIGRATION 003
@@ -28,7 +28,7 @@ Fails silently (logs error) rather than crashing user-facing response.
 
 Audit payload (what IS stored):
   - fact_snapshot_hash: SHA256 of de-identified facts (fingerprint only)
-  - rules_used: [{rule_key, authority_ref}] — no monetary values, no descriptions
+  - rules_used: [{rule_key, authority_ref}]  -  no monetary values, no descriptions
   - retrieval_bundle: {rules_count, authorities_count, authority_types}
   - model_provider: class name (StubReasoningModel, ClaudeReasoningModel, etc.)
   - model_name: explicit model ID (claude-haiku-4-5-20251001)

@@ -1,5 +1,5 @@
 """
-Brain Algorithm unit tests — Phase 1 (19-step Brain).
+Brain Algorithm unit tests  -  Phase 1 (19-step Brain).
 
 Tests the 19-step Brain Algorithm in isolation using StubReasoningModel.
 No real LLM calls. No external network required.

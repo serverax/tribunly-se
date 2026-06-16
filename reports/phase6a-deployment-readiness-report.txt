@@ -1,6 +1,6 @@
-PHASE 6A — CONTROLLED PRODUCTION DEPLOYMENT PREPARATION
+PHASE 6A  -  CONTROLLED PRODUCTION DEPLOYMENT PREPARATION
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -35,9 +35,9 @@ GUARDRAIL: Only var names logged, never values.
 
 Module: backend/engine/user_auth.py
 LAWAPP_AUTH_MODE env var:
-  none (default): no auth — all case endpoints open (backward compat)
+  none (default): no auth  -  all case endpoints open (backward compat)
   mock:           X-User-ID header (any valid UUID); case ownership enforced
-  jwt:            not yet implemented (Phase 7 — returns 501)
+  jwt:            not yet implemented (Phase 7  -  returns 501)
 
 When mock auth is active:
   POST /cases: associates case with user_id (upserts into users table)
@@ -56,12 +56,12 @@ Module: backend/engine/payment.py (extended)
 PAYMENT_MODE env var:
   mock (default):   any non-empty token = paid (test/dev)
   disabled:         all paid operations return payment_required=True
-  stripe_test:      Phase 7 stub — fails safely with NotImplementedError
-  stripe_live:      requires STRIPE_SECRET_KEY; Phase 7 stub — fails safely
+  stripe_test:      Phase 7 stub  -  fails safely with NotImplementedError
+  stripe_live:      requires STRIPE_SECRET_KEY; Phase 7 stub  -  fails safely
 
 GUARDRAIL: stripe_live mode FAILS SAFELY if STRIPE_SECRET_KEY is not set.
 GUARDRAIL: PAYMENT_MODE=disabled completely blocks paid output (maintenance mode).
-GUARDRAIL: No hidden payment — price always shown before any charge.
+GUARDRAIL: No hidden payment  -  price always shown before any charge.
 
 ═══════════════════════════════════════════════════════════════════════════════
 4. CI/CD HARDENING
@@ -82,23 +82,23 @@ Python 3.12 throughout. All required packages installed.
 ═══════════════════════════════════════════════════════════════════════════════
 
 All scripts use Docker to avoid WSL/Windows venv issues:
-  scripts/run_full_regression.sh      — docker compose run --rm ingestion pytest
-  scripts/run_legal_accuracy.py       — existing, confirmed working
-  scripts/check_rules_verification.py — existing, confirmed working
-  scripts/run_production_readiness.py — calls /admin/production-readiness endpoint
-  scripts/docker_proof.sh             — brings up Docker + curls all endpoints
-  scripts/safe_push.sh                — runs all gates then git push
+  scripts/run_full_regression.sh       -  docker compose run --rm ingestion pytest
+  scripts/run_legal_accuracy.py        -  existing, confirmed working
+  scripts/check_rules_verification.py  -  existing, confirmed working
+  scripts/run_production_readiness.py  -  calls /admin/production-readiness endpoint
+  scripts/docker_proof.sh              -  brings up Docker + curls all endpoints
+  scripts/safe_push.sh                 -  runs all gates then git push
 
 GUARDRAIL: safe_push.sh requires all gates to pass before pushing.
 
 ═══════════════════════════════════════════════════════════════════════════════
-REMAINING BLOCKERS — STILL NOT_PRODUCTION_READY
+REMAINING BLOCKERS  -  STILL NOT_PRODUCTION_READY
 ═══════════════════════════════════════════════════════════════════════════════
 
 /admin/production-readiness correctly returns NOT_PRODUCTION_READY.
 
 Remaining blockers:
-  1. HSM/KMS key management — encryption key in env var
+  1. HSM/KMS key management  -  encryption key in env var
   2. DPIA not legally reviewed or signed off
   3. Privacy notice not legally reviewed or published
   4. End-user OAuth/JWT not implemented (mock auth only)
@@ -123,12 +123,12 @@ FILES CREATED
 FILES MODIFIED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  backend/engine/payment.py               — PAYMENT_MODE abstraction (4 modes)
-  backend/engine/production_readiness.py  — deployment/auth/payment status
-  backend/api/main.py                     — lifespan startup validation;
+  backend/engine/payment.py                -  PAYMENT_MODE abstraction (4 modes)
+  backend/engine/production_readiness.py   -  deployment/auth/payment status
+  backend/api/main.py                      -  lifespan startup validation;
                                             user auth on POST/GET /cases;
                                             version 1.3.0-phase6a
-  .github/workflows/ci.yml               — legal accuracy + rules verification gates
+  .github/workflows/ci.yml                -  legal accuracy + rules verification gates
 
 ═══════════════════════════════════════════════════════════════════════════════
 END PHASE 6A

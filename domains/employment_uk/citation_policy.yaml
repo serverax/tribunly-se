@@ -1,8 +1,8 @@
-# employment_uk — citation acceptance policy (enforced at RAG/validation time).
+# employment_uk  -  citation acceptance policy (enforced at RAG/validation time).
 domain: employment_uk
 
 trust_order:
-  - primary_legislation        # legislation.gov.uk — highest
+  - primary_legislation        # legislation.gov.uk  -  highest
   - official_guidance_acas
   - official_guidance_govuk
   - tribunal_procedure

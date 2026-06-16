@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lawapp local CI — runs the full test suite in docker compose.
+# lawapp local CI  -  runs the full test suite in docker compose.
 # Usage: bash scripts/ci-local.sh
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"

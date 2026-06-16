@@ -1,17 +1,17 @@
 """
-/api/free-tool/* — the free-tool login wall (acquisition funnel front door).
+/api/free-tool/*  -  the free-tool login wall (acquisition funnel front door).
 
-  POST /api/free-tool/teaser       PUBLIC  — answer teaser questions, get a
+  POST /api/free-tool/teaser       PUBLIC   -  answer teaser questions, get a
                                              preview + a resume token. State is
                                              saved (encrypted) so nothing is lost.
-  POST /api/free-tool/full-result  GATED   — the full governed result. Anonymous
+  POST /api/free-tool/full-result  GATED    -  the full governed result. Anonymous
                                              callers get 401 {login_required}.
-  POST /api/free-tool/resume       GATED   — after login, claim the saved state
+  POST /api/free-tool/resume       GATED    -  after login, claim the saved state
                                              and restore answers EXACTLY.
 
 The gate logic lives in backend/core/login_gate.py (single source of truth). The
 teaser preview and full result are REAL, grounded outputs (classify + rules
-table) — no fabricated legal content, no fake success.
+table)  -  no fabricated legal content, no fake success.
 """
 
 from __future__ import annotations
@@ -81,7 +81,7 @@ def teaser(request: Request, body: TeaserRequest) -> dict:
     (encrypted) under a resume token so the user can finish after logging in.
 
     The preview deliberately withholds the full governed result, the citations,
-    documents, timeline, and redaction — those are gated."""
+    documents, timeline, and redaction  -  those are gated."""
     c = _classify(body.answers)
 
     # Persist the teaser answers (encrypted). Re-uses the caller's resume_token on
@@ -99,7 +99,7 @@ def teaser(request: Request, body: TeaserRequest) -> dict:
             if c.in_scope else
             "We may not be able to help with this specific issue yet."
         ),
-        # What the full (gated) result unlocks — a genuine value preview, not the
+        # What the full (gated) result unlocks  -  a genuine value preview, not the
         # answer itself.
         "unlocks": [
             "Your full situation assessment with cited authorities",
@@ -149,20 +149,20 @@ def full_result(
 
     if not c.in_scope:
         result["status"] = "not_supported"
-        result["message"] = "Out of scope for this system — no guess."
+        result["message"] = "Out of scope for this system  -  no guess."
         result["citations"] = []
     else:
         from backend.core.retrieve import jurisdiction_supported, retrieve_rules
         if not jurisdiction_supported(body.jurisdiction):
             result["status"] = "not_supported"
-            result["message"] = f"{body.jurisdiction} employment law is not verified — fail closed."
+            result["message"] = f"{body.jurisdiction} employment law is not verified  -  fail closed."
             result["citations"] = []
         else:
             rules = retrieve_rules(c.matter_type, body.jurisdiction, date.today())
             if not rules:
                 result["status"] = "insufficient_grounding"
                 result["citations"] = []
-                result["reason"] = "required rule missing — fail closed"
+                result["reason"] = "required rule missing  -  fail closed"
             else:
                 result["status"] = "ok"
                 result["source"] = "rules_table"

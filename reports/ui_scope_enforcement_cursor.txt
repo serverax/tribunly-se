@@ -1,4 +1,4 @@
-TRACK A1 — UI scope enforcement
+TRACK A1  -  UI scope enforcement
 Branch: release/lawapp-clean-snapshot
 Date: 2026-06-15T18:39:28.5518213+01:00
 
@@ -9,7 +9,7 @@ Hidden partial modules (13): enforced via client/public/js/beta-scope.js
 
 Beta copy:
 - index.html: Controlled beta · 11 employment topics
-- auth.js banner: controlled beta — 11 employment topics
+- auth.js banner: controlled beta  -  11 employment topics
 
 Test: python -m pytest tests/test_ui_beta_scope.py -q
 .......                                                                  [100%] ============================== warnings summary =============================== tests/test_ui_beta_scope.py: 21 warnings   C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead     if asyncio.iscoroutinefunction(func):  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475   C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'     config.cache.set("cache/nodeids", sorted(self.cached_nodeids))  -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html 7 passed, 22 warnings in 4.63s

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_deadline_tracker.sh — deadlines come from rules; ACAS EC reflected; edge cases.
+# prove_deadline_tracker.sh  -  deadlines come from rules; ACAS EC reflected; edge cases.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 BASE="${LAWAPP_BASE_URL:-http://localhost:8000}"

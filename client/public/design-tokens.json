@@ -7,12 +7,12 @@
 
   "color": {
     "brand": {
-      "900": { "value": "#1a3a5c", "usage": "Primary — nav, headings, deadline card, next-step bg" },
+      "900": { "value": "#1a3a5c", "usage": "Primary  -  nav, headings, deadline card, next-step bg" },
       "700": { "value": "#1e4d7a", "usage": "Hover states, focused borders" },
-      "100": { "value": "#e8f0f8", "usage": "Brand tint — info surfaces" }
+      "100": { "value": "#e8f0f8", "usage": "Brand tint  -  info surfaces" }
     },
     "accent": {
-      "DEFAULT": { "value": "#e84f25", "usage": "CTA buttons only — primary action on each page" }
+      "DEFAULT": { "value": "#e84f25", "usage": "CTA buttons only  -  primary action on each page" }
     },
     "danger": {
       "700": { "value": "#c0392b", "usage": "Error text, border, warn label" },
@@ -44,7 +44,7 @@
 
   "typography": {
     "fontFamily": {
-      "base": { "value": "'Segoe UI', system-ui, sans-serif", "usage": "All text — system stack, no webfont load" }
+      "base": { "value": "'Segoe UI', system-ui, sans-serif", "usage": "All text  -  system stack, no webfont load" }
     },
     "lineHeight": {
       "tight": { "value": "1.25", "usage": "Headings" },
@@ -58,7 +58,7 @@
       "lg":   { "value": "1.125rem", "px": "18px", "usage": "Dashboard case titles" },
       "xl":   { "value": "1.25rem",  "px": "20px", "usage": "Nav brand, assessment header h2" },
       "2xl":  { "value": "1.5rem",   "px": "24px", "usage": "Page section headings" },
-      "hero": { "value": "clamp(1.45rem, 4vw, 2.2rem)", "usage": "Hero h1 — scales from mobile to desktop" },
+      "hero": { "value": "clamp(1.45rem, 4vw, 2.2rem)", "usage": "Hero h1  -  scales from mobile to desktop" },
       "deadline": { "value": "2.5rem", "px": "40px", "usage": "Deadline card days-remaining number only" }
     },
     "fontWeight": {
@@ -82,7 +82,7 @@
   },
 
   "borderRadius": {
-    "sm":   { "value": "4px",  "usage": "Subtle — inner elements" },
+    "sm":   { "value": "4px",  "usage": "Subtle  -  inner elements" },
     "base": { "value": "6px",  "usage": "Cards, inputs, buttons (--radius)" },
     "pill": { "value": "20px", "usage": "Badges only" },
     "full": { "value": "50%",  "usage": "Spinner, step-number circles" }
@@ -93,8 +93,8 @@
   },
 
   "breakpoint": {
-    "md": { "value": "768px",  "usage": "Tablet — stack deadline card, reduce wizard labels" },
-    "sm": { "value": "480px",  "usage": "Mobile — hide nav links, full-width buttons" }
+    "md": { "value": "768px",  "usage": "Tablet  -  stack deadline card, reduce wizard labels" },
+    "sm": { "value": "480px",  "usage": "Mobile  -  hide nav links, full-width buttons" }
   },
 
   "zIndex": {

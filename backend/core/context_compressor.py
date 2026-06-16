@@ -1,5 +1,5 @@
 """
-Context Compressor — lawapp Brain Step 13.
+Context Compressor  -  lawapp Brain Step 13.
 
 Compresses the retrieved legal context bundle before passing it to the model.
 This reduces token count while preserving legal substance.
@@ -9,9 +9,9 @@ GUARDRAIL: No rule_key reference may be dropped.
 GUARDRAIL: Compression ratio is recorded for every call (audit trail).
 
 The compressor applies three passes:
-  1. Rule deduplication — deduplicate rules with identical rule_key (keep first)
-  2. Authority truncation — trim verbose text fields; preserve cite, url, type
-  3. Context summary — build a compact string representation for the model prompt
+  1. Rule deduplication  -  deduplicate rules with identical rule_key (keep first)
+  2. Authority truncation  -  trim verbose text fields; preserve cite, url, type
+  3. Context summary  -  build a compact string representation for the model prompt
 
 Token estimation: rough approximation (char_count / 4) matching common LLM
 tokeniser behaviour for English text.
@@ -47,7 +47,7 @@ def compress_bundle(
         {
           "rules":            deduplicated rule list (all rule_keys preserved),
           "authorities":      truncated authority list (all cites/urls preserved),
-          "citations":        list[str] — every cite reference (guaranteed complete),
+          "citations":        list[str]  -  every cite reference (guaranteed complete),
           "context_text":     compact string for model prompt injection,
           "stats": {
             "rules_in":        int,
@@ -72,7 +72,7 @@ def compress_bundle(
         if key not in seen_keys:
             seen_keys.add(key)
             deduped_rules.append(rule)
-        # Duplicate rule_key — skip but do NOT drop the key from seen_keys
+        # Duplicate rule_key  -  skip but do NOT drop the key from seen_keys
 
     # ── Pass 2: Authority truncation (preserve cite + url) ───────────────────
     truncated_auths: list[dict] = []
@@ -117,7 +117,7 @@ def compress_bundle(
             text_str = a.get("text") or a.get("excerpt") or a.get("summary") or ""
             entry = f"  [{a['type']}] {cite_str}"
             if text_str:
-                entry += f" — {text_str[:200]}"
+                entry += f"  -  {text_str[:200]}"
             lines.append(entry)
 
     context_text = "\n".join(lines)

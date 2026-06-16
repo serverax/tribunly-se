@@ -1,4 +1,4 @@
-"""Reverse data flow — deterministic narrative → employment variables (Test Case A).
+"""Reverse data flow  -  deterministic narrative → employment variables (Test Case A).
 
 DELIBERATELY deterministic (regex/keyword), NOT LLM-generated: extracted legal
 profile variables must not be hallucinated. The LLM may optionally enrich, but the

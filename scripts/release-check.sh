@@ -9,7 +9,7 @@ PASS=0; FAIL=0
 ok()   { echo "  PASS: $1"; ((PASS++)); }
 fail() { echo "  FAIL: $1"; ((FAIL++)); }
 
-echo "=== lawapp release check — $(git rev-parse --short HEAD) ==="
+echo "=== lawapp release check  -  $(git rev-parse --short HEAD) ==="
 
 # Legal accuracy gate
 echo "--- Legal accuracy ---"

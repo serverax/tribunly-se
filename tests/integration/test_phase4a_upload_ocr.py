@@ -1,5 +1,5 @@
 """
-Phase 4A — Document upload, OCR/extraction, and user confirmation tests.
+Phase 4A  -  Document upload, OCR/extraction, and user confirmation tests.
 
 Tests:
   Upload:
@@ -192,7 +192,7 @@ def test_upload_linked_to_case():
 def test_upload_response_does_not_contain_file_bytes():
     case_id = _make_case()
     resp = _upload(case_id)
-    # PDF content is _MOCK_PDF — none of its bytes should appear in JSON response
+    # PDF content is _MOCK_PDF  -  none of its bytes should appear in JSON response
     data = resp.json()
     response_str = str(data)
     # Check no base64 or raw bytes appear

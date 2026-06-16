@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_all_chunking_embeddings.sh — all fetched legal text is chunked, hashed, embedded.
+# prove_all_chunking_embeddings.sh  -  all fetched legal text is chunked, hashed, embedded.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp"

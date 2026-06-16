@@ -1,5 +1,5 @@
 """
-Domain-pack loader — makes domains/<domain>/ the source of truth for the corpus.
+Domain-pack loader  -  makes domains/<domain>/ the source of truth for the corpus.
 
 The legislation source list, required rules, licence policy and citation policy
 live in the domain pack (YAML/JSON), NOT only in Python. This loader reads them
@@ -151,7 +151,7 @@ def load_domain_pack(domain: str = "employment_uk") -> DomainPack:
     )
 
 
-if __name__ == "__main__":  # pragma: no cover — manual smoke check
+if __name__ == "__main__":  # pragma: no cover  -  manual smoke check
     import sys
     dom = sys.argv[1] if len(sys.argv) > 1 else "employment_uk"
     chk = check_pack(dom)

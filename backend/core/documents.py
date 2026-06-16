@@ -1,5 +1,5 @@
 """
-Document generation engine — Phase 3C.
+Document generation engine  -  Phase 3C.
 
 Template-anchored drafting only. No freeform LLM generation.
 All legal content is sourced from the structured assessment object
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 LEGAL_BOUNDARY_NOTICE = """\
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-IMPORTANT — READ BEFORE USE
+IMPORTANT  -  READ BEFORE USE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 This document is a SELF-HELP DRAFT prepared using lawapp.
 It is NOT legal advice. lawapp is not a solicitor or law firm.
@@ -77,7 +77,7 @@ def safety_check(text: str) -> dict:
             violations.append(m.group(0))
     passed = len(violations) == 0
     if not passed:
-        logger.error("Document safety check FAILED — violations: %s", violations)
+        logger.error("Document safety check FAILED  -  violations: %s", violations)
     return {"passed": passed, "violations": violations}
 
 
@@ -90,7 +90,7 @@ _MONTH_NAMES = [
 
 
 def _fmt_date(s: Optional[str]) -> str:
-    """Format YYYY-MM-DD as '1 April 2026'. Portable — no locale-dependent strftime."""
+    """Format YYYY-MM-DD as '1 April 2026'. Portable  -  no locale-dependent strftime."""
     if not s:
         return "[DATE NOT PROVIDED]"
     try:
@@ -286,7 +286,7 @@ IN THE EMPLOYMENT TRIBUNAL
 {LEGAL_BOUNDARY_NOTICE}
 ─────────────────────────────────────────────────────────────────────────────
 
-PARTICULARS OF CLAIM — UNFAIR DISMISSAL
+PARTICULARS OF CLAIM  -  UNFAIR DISMISSAL
 Claim type:  Unfair Dismissal (Employment Rights Act 1996, Part X)
 
 Claimant:    [YOUR FULL LEGAL NAME]
@@ -412,7 +412,7 @@ def generate_schedule_of_loss(assessment: dict, facts: dict) -> str:
 {LEGAL_BOUNDARY_NOTICE}
 ─────────────────────────────────────────────────────────────────────────────
 
-SCHEDULE OF LOSS — UNFAIR DISMISSAL CLAIM
+SCHEDULE OF LOSS  -  UNFAIR DISMISSAL CLAIM
 Claim type:  Unfair Dismissal (ERA 1996 Part X)
 
 Claimant:    [YOUR FULL LEGAL NAME]
@@ -432,7 +432,7 @@ A. EMPLOYMENT DETAILS
 
    [Verify your weekly pay against payslips. Regular guaranteed overtime
    and certain benefits may be included. Holiday pay and commission
-   arrangements may affect the calculation — see ERA 1996 s.221–224.]
+   arrangements may affect the calculation  -  see ERA 1996 s.221–224.]
 
 ─────────────────────────────────────────────────────────────────────────────
 B. BASIC AWARD (ERA 1996 s.119)
@@ -447,7 +447,7 @@ B. BASIC AWARD (ERA 1996 s.119)
 
    Weekly pay is capped at the statutory limit in force at the EDT.
    [Verify the current cap at legislation.gov.uk or gov.uk/calculate-your-
-   holiday-pay/overview — the limit changes annually each April.]
+   holiday-pay/overview  -  the limit changes annually each April.]
 
    Estimated basic award (from rules):     see Section D below.
 
@@ -563,7 +563,7 @@ def generate_letter_before_action(assessment: dict, facts: dict) -> str:
     value_range    = assessment.get("value_range") or {}
     citations      = assessment.get("citations") or []
 
-    amount_str = f"£{float(unpaid_amount):,.2f}" if unpaid_amount else "[AMOUNT — complete before sending]"
+    amount_str = f"£{float(unpaid_amount):,.2f}" if unpaid_amount else "[AMOUNT  -  complete before sending]"
     cite_block = ""
     if citations:
         cite_block = "\n   " + "; ".join(c.get("cite","") for c in citations[:3])
@@ -572,8 +572,8 @@ def generate_letter_before_action(assessment: dict, facts: dict) -> str:
 {LEGAL_BOUNDARY_NOTICE}
 
 ─────────────────────────────────────────────────────────────────────────────
-LETTER BEFORE ACTION — UNPAID WAGES / UNLAWFUL DEDUCTION
-SELF-HELP DRAFT — NOT LEGAL ADVICE
+LETTER BEFORE ACTION  -  UNPAID WAGES / UNLAWFUL DEDUCTION
+SELF-HELP DRAFT  -  NOT LEGAL ADVICE
 ─────────────────────────────────────────────────────────────────────────────
 
 WITHOUT PREJUDICE SAVE AS TO COSTS
@@ -583,7 +583,7 @@ WITHOUT PREJUDICE SAVE AS TO COSTS
 [YOUR POSTCODE]
 [YOUR EMAIL / PHONE]
 
-[DATE — add today's date before sending]
+[DATE  -  add today's date before sending]
 
 The Manager / HR Department
 [EMPLOYER FULL LEGAL NAME]
@@ -592,7 +592,7 @@ The Manager / HR Department
 
 Dear Sir/Madam,
 
-RE: UNLAWFUL DEDUCTION FROM WAGES — EMPLOYMENT RIGHTS ACT 1996 PART II
+RE: UNLAWFUL DEDUCTION FROM WAGES  -  EMPLOYMENT RIGHTS ACT 1996 PART II
 
 I write to draw your attention to wages that I believe have been unlawfully
 withheld in breach of the Employment Rights Act 1996 Part II.
@@ -601,11 +601,11 @@ withheld in breach of the Employment Rights Act 1996 Part II.
 DETAILS OF CLAIM
 ─────────────────────────────────────────────────────────────────────────────
 Amount outstanding:     {amount_str}
-Date wages were due:    {_fmt_date(wages_due_date) if wages_due_date else "[DATE — complete]"}
-Pay frequency:          {pay_frequency or "[weekly / monthly — complete]"}
+Date wages were due:    {_fmt_date(wages_due_date) if wages_due_date else "[DATE  -  complete]"}
+Pay frequency:          {pay_frequency or "[weekly / monthly  -  complete]"}
 
 [Add further detail: description of wages owed, any partial payment received,
-and the basis on which you assert entitlement — e.g. contract terms, payslip.]
+and the basis on which you assert entitlement  -  e.g. contract terms, payslip.]
 
 ─────────────────────────────────────────────────────────────────────────────
 STATUTORY BASIS
@@ -671,7 +671,7 @@ def generate_et1_support_notes_wages(assessment: dict, facts: dict) -> str:
     viable         = assessment.get("has_viable_claim", "uncertain")
     strength       = assessment.get("strength", "uncertain")
 
-    amount_str = f"£{float(unpaid_amount):,.2f}" if unpaid_amount else "[AMOUNT — complete]"
+    amount_str = f"£{float(unpaid_amount):,.2f}" if unpaid_amount else "[AMOUNT  -  complete]"
     cite_block = ""
     if citations:
         cite_block = "\n   " + "\n   ".join(
@@ -685,7 +685,7 @@ def generate_et1_support_notes_wages(assessment: dict, facts: dict) -> str:
     series_note = ""
     if is_series:
         series_note = (
-            "\n   [Note: Series of deductions — time runs from last deduction. "
+            "\n   [Note: Series of deductions  -  time runs from last deduction. "
             "Verify each deduction is sufficiently linked. Seek legal advice for "
             "long series (Bear Scotland Ltd v Fulton [2015]).]"
         )
@@ -694,8 +694,8 @@ def generate_et1_support_notes_wages(assessment: dict, facts: dict) -> str:
 {LEGAL_BOUNDARY_NOTICE}
 
 ─────────────────────────────────────────────────────────────────────────────
-ET1 SUPPORT NOTES — UNPAID WAGES / UNLAWFUL DEDUCTION
-SELF-HELP DRAFT — NOT LEGAL ADVICE
+ET1 SUPPORT NOTES  -  UNPAID WAGES / UNLAWFUL DEDUCTION
+SELF-HELP DRAFT  -  NOT LEGAL ADVICE
 ─────────────────────────────────────────────────────────────────────────────
 
 IMPORTANT: lawapp does NOT file, submit, or send your ET1.
@@ -728,7 +728,7 @@ ET1 SECTION 5: CLAIMANT
 ET1 SECTION 8: DETAILS OF CLAIM
 ─────────────────────────────────────────────────────────────────────────────
    Summary:
-   {reasoning if reasoning else "[Run assessment to generate summary — POST /assess]"}
+   {reasoning if reasoning else "[Run assessment to generate summary  -  POST /assess]"}
 
    Claim viability: {viable}  |  Strength: {strength}
 
@@ -748,7 +748,7 @@ ET1 SECTION 10: REMEDY
    No additional compensation multiplier (Delaney v Staples [1992] 1 AC 687).]
 
 ─────────────────────────────────────────────────────────────────────────────
-DEADLINE — CRITICAL
+DEADLINE  -  CRITICAL
 ─────────────────────────────────────────────────────────────────────────────
    ET claim deadline: {_fmt_date(deadline_date) if deadline_date else "[CHECK deadline endpoint]"}
    Authority: {deadline_auth}

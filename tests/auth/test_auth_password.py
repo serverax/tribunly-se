@@ -1,5 +1,5 @@
 """
-/api/auth/* — email+password, sessions, verification, reset, logout audit.
+/api/auth/*  -  email+password, sessions, verification, reset, logout audit.
 
 Real HTTP via TestClient against the live DB. No mocks of the auth path.
 """

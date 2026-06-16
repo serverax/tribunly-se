@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ingest_uk_legal_dataset_chunked.sh — chunked, resumable, idempotent ingestion of
+# ingest_uk_legal_dataset_chunked.sh  -  chunked, resumable, idempotent ingestion of
 # the UK employment legal dataset. Each source is a separate batch; every batch
 # records a checkpoint in corpus_ingestion_runs (rows_ingested, rows_rejected,
 # status, failures). Safe to re-run: ingestors upsert, so duplicates are not created.
@@ -55,7 +55,7 @@ run_batch() {
   else
     status="failed"
     failure="$(tail -1 "$logf" | tr "'" ' ' | cut -c1-300)"
-    echo "    [FAILED] $name — see $logf"
+    echo "    [FAILED] $name  -  see $logf"
     echo "    $failure"
   fi
   rm -f "$logf"

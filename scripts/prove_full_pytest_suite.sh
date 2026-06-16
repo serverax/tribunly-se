@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_full_pytest_suite.sh — official, repeatable full-suite test command.
+# prove_full_pytest_suite.sh  -  official, repeatable full-suite test command.
 # Runs the complete repo pytest suite inside the ingestion image, whose Dockerfile
 # (Dockerfile.ingestion) installs ALL required deps (pytest, fastapi, slowapi, boto3,
 # itsdangerous, cryptography, ...). NO ad-hoc pip install. Fails on any failure/error.
@@ -25,11 +25,11 @@ echo
 echo "SUMMARY: $SUMMARY"
 
 {
-  echo "# Full Pytest Suite — Result"
+  echo "# Full Pytest Suite  -  Result"
   echo
   echo "- Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo 2026-06-05)"
   echo "- Command: \`docker compose run --rm ingestion python -m pytest tests/ -q\`"
-  echo "- Image: Dockerfile.ingestion (deps baked in — no ad-hoc pip)"
+  echo "- Image: Dockerfile.ingestion (deps baked in  -  no ad-hoc pip)"
   echo "- Exit code: $rc"
   echo
   echo '```'

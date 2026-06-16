@@ -35,11 +35,11 @@ backend/api/main.py:3280:# ── Real-model smoke test (skipped if ANTHROPIC_AP
 backend/api/main.py:3288:    SKIPS if ANTHROPIC_API_KEY is placeholder/missing.
 backend/api/main.py:3292:    api_key = os.getenv("ANTHROPIC_API_KEY", "placeholder")
 backend/api/main.py:3293:    if api_key in ("placeholder", "", "changeme"):
-backend/api/main.py:3296:            "reason":  "ANTHROPIC_API_KEY is placeholder — real model not available",
+backend/api/main.py:3296:            "reason":  "ANTHROPIC_API_KEY is placeholder  -  real model not available",
 backend/api/main.py:3429:    test_simulator/mock: accepts POST without signature (demo only)
 backend/api/main.py:3439:    if mode in ("mock", "test_simulator"):
 backend/api/main.py:3455:                # TODO: update case payment status in DB via case_id in event metadata
-backend/core/bundle.py:76:      - value must not start with '[Extracted' (placeholder — skip)
+backend/core/bundle.py:76:      - value must not start with '[Extracted' (placeholder  -  skip)
 backend/core/bundle.py:86:                continue  # skip placeholder values
 backend/core/classify.py:125:        if not api_key or api_key in ("placeholder", "sk-ant-placeholder"):
 backend/core/config_validation.py:41:VALID_PAYMENT_MODES = frozenset({"mock", "disabled", "stripe_test", "stripe_live"})
@@ -52,19 +52,19 @@ backend/core/config_validation.py:106:        if kms_mode == "kms_stub" and not 
 backend/core/config_validation.py:108:                "KMS_KEY_ID (required for KEY_MANAGEMENT_MODE=kms_stub in production)"
 backend/core/documents.py:248:[Complete all placeholders above with your details before filing.]
 backend/core/documents.py:371:[Complete all placeholders above with your details before filing.]
-backend/core/dp_report.py:136:                "handling": "Mock extraction only — placeholders returned, no real OCR",
+backend/core/dp_report.py:136:                "handling": "Mock extraction only  -  placeholders returned, no real OCR",
 backend/core/dp_report.py:192:                "User authentication not implemented (user_id=NULL on all case records)",
 backend/core/dp_report.py:221:                "User authentication not implemented (production blocker)",
 backend/core/extraction.py:4:PHASE 4A: This is a mock that returns deterministic placeholder values with
 backend/core/extraction.py:8:PHASE 5+: Replace mock with real OCR (Tesseract/AWS Textract/Azure Form Recognizer).
 backend/core/extraction.py:13:  - Extracted values are placeholders clearly marked for user review.
 backend/core/extraction.py:99:def mock_extract(doc_type: str) -> dict:
-backend/core/extraction.py:105:        "value":      str,    # placeholder — user must verify and correct
+backend/core/extraction.py:105:        "value":      str,    # placeholder  -  user must verify and correct
 backend/core/extraction.py:112:    PHASE 4A: values are placeholders. Real extraction is Phase 5.
 backend/core/extraction.py:152:            continue   # don't apply placeholder values
-backend/core/kms.py:8:  KmsStubProvider  — represents a real KMS key reference; Phase 7B stub (no real API call)
-backend/core/kms.py:231:    """Phase 7B stub — no real KMS API call. Phase 7C/7D: use AwsKmsProvider."""
-backend/core/kms.py:236:        logger.warning("KmsStubProvider: using env key (stub — value not logged).")
+backend/core/kms.py:8:  KmsStubProvider   -  represents a real KMS key reference; Phase 7B stub (no real API call)
+backend/core/kms.py:231:    """Phase 7B stub  -  no real KMS API call. Phase 7C/7D: use AwsKmsProvider."""
+backend/core/kms.py:236:        logger.warning("KmsStubProvider: using env key (stub  -  value not logged).")
 backend/core/kms.py:257:            "note": "Phase 7B stub: KMS_KEY_ID configured; no real API call. Use aws_kms mode.",
 backend/core/kms.py:449:    elif mode == "kms_stub":
 backend/core/legal_graph.py:92:                placeholders = ",".join(["%s"] * len(node_ids))
@@ -77,22 +77,22 @@ backend/core/models.py:271:        if not api_key or api_key == "placeholder":
 backend/core/models.py:383:    ant_key  = os.getenv("ANTHROPIC_API_KEY", "placeholder")
 backend/core/models.py:389:    if provider == "anthropic" or (not provider and ant_key and ant_key not in ("placeholder", "")):
 backend/core/models.py:390:        configured = ant_key not in ("placeholder", "", "changeme")
-backend/core/models.py:395:            "note": "real reasoning active" if configured else "ANTHROPIC_API_KEY=placeholder — StubReasoningModel active",
+backend/core/models.py:395:            "note": "real reasoning active" if configured else "ANTHROPIC_API_KEY=placeholder  -  StubReasoningModel active",
 backend/core/models.py:397:    return {"provider": "stub", "active": False,
 backend/core/models.py:421:        key = getattr(settings, "openrouter_api_key", "placeholder")
 backend/core/models.py:423:        if key and key != "placeholder" and mid:
 backend/core/models.py:431:    ant_key = getattr(settings, "anthropic_api_key", "placeholder")
 backend/core/models.py:433:    if ant_key and ant_key not in ("placeholder", "", "changeme") and ant_mid:
-backend/core/models.py:438:            logger.warning("Anthropic init failed: %s — using stub", exc)
+backend/core/models.py:438:            logger.warning("Anthropic init failed: %s  -  using stub", exc)
 backend/core/models.py:442:            "ANTHROPIC_API_KEY is placeholder or AI_PROVIDER not set. "
-backend/core/payment.py:5:  mock             (legacy): any non-empty token accepted — test/dev only
+backend/core/payment.py:5:  mock             (legacy): any non-empty token accepted  -  test/dev only
 backend/core/payment.py:27:_VALID_MODES = ("mock", "test_simulator", "disabled", "stripe_test", "stripe_live")
 backend/core/payment.py:33:    return mode if mode in _VALID_MODES else "mock"
-backend/core/payment.py:40:    mock/test_simulator: local demo only — token-based gate
+backend/core/payment.py:40:    mock/test_simulator: local demo only  -  token-based gate
 backend/core/payment.py:49:    if mode == "mock":
 backend/core/payment.py:75:    if not stripe_key or stripe_key in ("placeholder", "sk_test_PLACEHOLDER", "sk_live_PLACEHOLDER"):
 backend/core/payment.py:111:    if mode in ("mock", "test_simulator"):
-backend/core/payment.py:112:        logger.info("Webhook: test_simulator/mock mode — signature not verified")
+backend/core/payment.py:112:        logger.info("Webhook: test_simulator/mock mode  -  signature not verified")
 backend/core/payment.py:116:    if not webhook_secret or webhook_secret in ("placeholder", "whsec_PLACEHOLDER"):
 backend/core/payment.py:125:        if stripe_key and stripe_key not in ("placeholder",):
 backend/core/pipeline.py:69:    The pipeline is structured to demonstrate Phase 2 with the stub model
@@ -100,17 +100,17 @@ backend/core/pipeline.py:161:    # This provides citations and structure even wh
 backend/core/pipeline.py:198:    # If stub returned insufficient_grounding=True but we have a full deterministic
 backend/core/production_readiness.py:82:            "Encryption at rest not implemented",
 backend/core/production_readiness.py:84:            "User authentication not implemented",
-backend/core/production_readiness.py:108:        "HSM/KMS key management not implemented — env var key not suitable for production",
-backend/core/production_readiness.py:111:        "User authentication (OAuth/JWT) not implemented — admin key only covers admin routes",
-backend/core/production_readiness.py:112:        "Live payment not configured (PAYMENT_ENABLED=false — mock mode only)",
-backend/core/production_readiness.py:129:        "note":             "PAYMENT_ENABLED=false — mock mode. Stripe integration required.",
+backend/core/production_readiness.py:108:        "HSM/KMS key management not implemented  -  env var key not suitable for production",
+backend/core/production_readiness.py:111:        "User authentication (OAuth/JWT) not implemented  -  admin key only covers admin routes",
+backend/core/production_readiness.py:112:        "Live payment not configured (PAYMENT_ENABLED=false  -  mock mode only)",
+backend/core/production_readiness.py:129:        "note":             "PAYMENT_ENABLED=false  -  mock mode. Stripe integration required.",
 backend/core/production_readiness.py:199:                os.getenv("ANTHROPIC_API_KEY") not in ("placeholder", "sk-ant-placeholder")
 backend/core/production_readiness.py:208:                os.getenv("ANTHROPIC_API_KEY") not in ("placeholder", "sk-ant-placeholder")
 backend/core/production_readiness.py:212:                "Without it, deterministic pre-assessment runs and stub returns insufficient_grounding. "
 backend/core/production_readiness.py:272:            "mode":        os.getenv("PAYMENT_MODE", "mock"),
 backend/core/production_readiness.py:273:            "live_ready":  (os.getenv("PAYMENT_MODE", "mock") == "stripe_live"
 backend/core/production_readiness.py:276:            "note":        "mock mode for tests; stripe_live requires STRIPE_SECRET_KEY + Phase 7.",
-backend/core/production_readiness.py:356:            "KEY_MANAGEMENT_MODE=env is not production-grade — use kms_stub or real KMS (Phase 7)."
+backend/core/production_readiness.py:356:            "KEY_MANAGEMENT_MODE=env is not production-grade  -  use kms_stub or real KMS (Phase 7)."
 backend/core/retrieve.py:10:    keyword-search substitute. Do not replace this stub with text search.
 backend/core/retrieve.py:37:# proceed to the stub reasoning path. Raise to 2+ once embeddings exist.
 backend/core/score.py:93:    For Phase 2 stub model: confidence is heuristic-only (no model-reported value).
@@ -136,17 +136,17 @@ backend/domains/employment/deadline.py:14:  one day. Month-end clamped (e.g. 31 
 client/public/index.html:15:  For regulated legal advice, consult a qualified solicitor.
 client/public/index.html:64:        <li>Workers who cannot afford solicitor fees</li>
 client/public/index.html:73:        <li>Not a solicitor. Not a law firm. Does not provide regulated legal advice.</li>
-client/public/index.html:76:        <li>Does not guarantee outcomes. No "win your case" language — ever.</li>
+client/public/index.html:76:        <li>Does not guarantee outcomes. No "win your case" language  -  ever.</li>
 client/public/index.html:91:    <div class="trust-item"><strong>No guarantee language</strong>We tell you the truth, including weaknesses.</div>
 client/public/js/document_preview.js:27:    'lawapp is not a solicitor and does not provide regulated legal advice.',
 client/public/pages/assessment.html:13:  This is information and assessment only. For regulated legal advice, consult a qualified solicitor.
 client/public/pages/assessment.html:231:    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. All legal points are cited to statutory or tribunal authority. Outputs are not guaranteed and should not be relied upon as a substitute for legal advice.';
-client/public/pages/assessment.html:567:      'free_diagnosis_only': {label: 'Diagnosis only — seek solicitor', desc: 'Based on the information available, we recommend speaking with a qualified employment solicitor before proceeding.'},
+client/public/pages/assessment.html:567:      'free_diagnosis_only': {label: 'Diagnosis only  -  seek solicitor', desc: 'Based on the information available, we recommend speaking with a qualified employment solicitor before proceeding.'},
 client/public/pages/assessment.html:569:      'seek_solicitor':      {label: 'Seek a solicitor', desc: 'This case has complexity that warrants regulated legal advice from a qualified solicitor before you take further steps.'},
 client/public/pages/assessment.html:769:    const needsHandoff = d.recommended_next_step === 'seek_solicitor'
 client/public/pages/assessment.html:782:    h3.textContent = 'Get help from a qualified solicitor';
 client/public/pages/assessment.html:787:    pIntro.textContent = 'Based on your assessment, your case may benefit from regulated legal advice. Submit your details below and lawapp will connect you with a qualified employment solicitor. This referral is free to you.';
-client/public/pages/assessment.html:793:    pDisclaimer.textContent = 'lawapp is not a solicitor. This is a referral lead — we do not provide legal advice, file claims, or represent you. No solicitor-client relationship is created by submitting.';
+client/public/pages/assessment.html:793:    pDisclaimer.textContent = 'lawapp is not a solicitor. This is a referral lead  -  we do not provide legal advice, file claims, or represent you. No solicitor-client relationship is created by submitting.';
 client/public/pages/assessment.html:844:    cText.textContent = 'I consent to lawapp sharing my contact details with a qualified employment solicitor for the purpose of a free initial consultation. I understand lawapp is not a solicitor and this is an introduction only.';
 client/public/pages/assessment.html:859:    submitBtn.textContent = 'Request free solicitor introduction';
 client/public/pages/assessment.html:883:    successMsg.append(strong, document.createTextNode(' Your details have been recorded. lawapp will match you with a qualified employment solicitor. This is free to you.'));
@@ -155,7 +155,7 @@ client/public/pages/assessment.html:1040:        ? 'seek_solicitor'
 client/public/pages/case_detail.html:15:  Consult a qualified solicitor for regulated legal advice.
 client/public/pages/case_detail.html:158:    nP.textContent = 'Generate or download your draft documents, or request a solicitor introduction.';
 client/public/pages/case_detail.html:196:    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. This saved case is information only. No outcome is guaranteed. lawapp does not file claims, submit forms, or represent you.';
-client/public/pages/case_detail.html:299:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time — this is a high hurdle. Seek solicitor advice urgently.'
+client/public/pages/case_detail.html:299:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time  -  this is a high hurdle. Seek solicitor advice urgently.'
 client/public/pages/case_detail.html:366:    const needsHandoff = a.recommended_next_step === 'seek_solicitor'
 client/public/pages/case_detail.html:378:    h3.textContent = 'Get help from a qualified solicitor';
 client/public/pages/case_detail.html:385:    p1.append(document.createTextNode('Based on your assessment, regulated legal advice is recommended. Submit your details for a free solicitor introduction. '), s1);
@@ -163,11 +163,11 @@ client/public/pages/case_detail.html:391:    p2.textContent = 'lawapp is not a s
 client/public/pages/case_detail.html:431:    s3.textContent = 'I consent to lawapp sharing my contact details with a qualified employment solicitor for a free consultation. lawapp is not a solicitor.';
 client/public/pages/case_detail.html:451:    success.append(strong, document.createTextNode(' lawapp will match you with a qualified employment solicitor. This is free.'));
 client/public/pages/case_detail.html:461:      solicitor_recommended: '#7c3aed',
-client/public/pages/intake.html:148:            Based on rules from ERA 1996 s.111(2). This is indicative only — verify with ACAS or a solicitor.
+client/public/pages/intake.html:148:            Based on rules from ERA 1996 s.111(2). This is indicative only  -  verify with ACAS or a solicitor.
 client/public/pages/saved_case.html:15:  Consult a qualified solicitor for regulated legal advice.
 client/public/pages/saved_case.html:150:    nP.textContent = 'Generate or download your draft documents, or request a solicitor introduction.';
 client/public/pages/saved_case.html:177:    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. This saved case is information only. No outcome is guaranteed. lawapp does not file claims, submit forms, or represent you.';
-client/public/pages/saved_case.html:254:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time — this is a high hurdle. Seek solicitor advice urgently.'
+client/public/pages/saved_case.html:254:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time  -  this is a high hurdle. Seek solicitor advice urgently.'
 client/public/pages/saved_case.html:279:    const needsHandoff = a.recommended_next_step === 'seek_solicitor'
 client/public/pages/saved_case.html:291:    h3.textContent = 'Get help from a qualified solicitor';
 client/public/pages/saved_case.html:298:    p1.append(document.createTextNode('Based on your assessment, regulated legal advice is recommended. Submit your details for a free solicitor introduction. '), s1);
@@ -176,7 +176,7 @@ client/public/pages/saved_case.html:344:    s3.textContent = 'I consent to lawap
 client/public/pages/saved_case.html:364:    success.append(strong, document.createTextNode(' lawapp will match you with a qualified employment solicitor. This is free.'));
 client/public/pages/saved_case.html:374:      solicitor_recommended: '#7c3aed',
 backend/api/main.py:746:    "seek_solicitor", "insufficient_grounding", "low_confidence",
-backend/api/main.py:764:    Capture a handoff lead — contact info from a user requesting solicitor referral.
+backend/api/main.py:764:    Capture a handoff lead  -  contact info from a user requesting solicitor referral.
 backend/api/main.py:766:    Trigger conditions: seek_solicitor, insufficient_grounding, low_confidence.
 backend/api/main.py:771:    Phase 6: integrate with solicitor referral network.
 backend/api/main.py:773:    GUARDRAIL: platform is not a solicitor; handoff is a referral lead only.
@@ -205,7 +205,7 @@ backend/core/bundle.py:43:If you are unsure, seek advice from a qualified solici
 backend/core/bundle.py:489:You must complete and submit the ET1 yourself, or instruct a solicitor.
 backend/core/bundle.py:490:No outcome is guaranteed.
 backend/core/bundle.py:551:   lawapp is not a solicitor and does not provide regulated legal advice.
-backend/core/context_compressor.py:50:          "citations":        list[str] — every cite reference (guaranteed complete),
+backend/core/context_compressor.py:50:          "citations":        list[str]  -  every cite reference (guaranteed complete),
 backend/core/documents.py:11:GUARDRAIL: No output may imply solicitor/law firm status or guarantee outcomes.
 backend/core/documents.py:32:It is NOT legal advice. lawapp is not a solicitor or law firm.
 backend/core/documents.py:38:litigation on your behalf. No outcome is guaranteed.
@@ -222,8 +222,8 @@ backend/core/documents.py:381:   [Verify your weekly pay against payslips. Regul
 backend/core/documents.py:447:   you provided. They are not a prediction or guarantee of any award.
 backend/core/documents.py:651:or instruct a solicitor.
 backend/core/documents.py:712:   lawapp is not a solicitor and does not provide regulated legal advice.
-backend/core/dp_report.py:67:                "Log scanning for PII values is partial — not production guarantee."
-backend/core/evaluator.py:14:  7. Overconfident advice — no guarantees, no reserved activities
+backend/core/dp_report.py:67:                "Log scanning for PII values is partial  -  not production guarantee."
+backend/core/evaluator.py:14:  7. Overconfident advice  -  no guarantees, no reserved activities
 backend/core/evaluator.py:34:    "guaranteed to win",
 backend/core/evaluator.py:45:    "we will file",
 backend/core/evaluator.py:133:    # ── Check 4: No overconfident / guarantee language ────────────────────────
@@ -238,11 +238,11 @@ backend/core/govern.py:30:    "we are your solicitor", "we are lawyers",
 backend/core/govern.py:31:    "guaranteed to win", "you will win", "certain to succeed",
 backend/core/govern.py:35:# Outcome-guarantee phrases
 backend/core/govern.py:37:    "guaranteed", "certain to", "definitely win", "you will receive",
-backend/core/govern.py:80:    # Check 4: legal boundary — no reserved-activity or outcome-guarantee language
+backend/core/govern.py:80:    # Check 4: legal boundary  -  no reserved-activity or outcome-guarantee language
 backend/core/govern.py:96:                failure_reason=f"boundary_violation: outcome-guarantee phrase detected: '{phrase}'",
 backend/core/govern.py:127:        "recommended_next_step": "seek_solicitor",
 backend/core/govern.py:159:        "recommended_next_step": "seek_solicitor",
-backend/core/models.py:73:    The governance gate will route this to seek_solicitor — correct behaviour.
+backend/core/models.py:73:    The governance gate will route this to seek_solicitor  -  correct behaviour.
 backend/core/models.py:118:            recommended_next_step="seek_solicitor",
 backend/core/models.py:184:  "recommended_next_step": "free_diagnosis_only|prepare_documents|seek_solicitor",
 backend/core/models.py:283:        "Never fabricate authority. Never guarantee outcomes. Surface weaknesses honestly."
@@ -267,7 +267,7 @@ backend/domains/employment/timeline.py:55:        "You have requested a solicito
 backend/domains/employment/timeline.py:62:        "Seek urgent solicitor advice."
 backend/domains/employment/timeline.py:66:        "Review your facts and consider seeking advice from a qualified solicitor."
 backend/domains/employment/timeline.py:232:                         "lawapp will match with a qualified employment solicitor. "
-backend/domains/employment/timeline.py:233:                         "This is a referral only — no solicitor-client relationship created yet."))
+backend/domains/employment/timeline.py:233:                         "This is a referral only  -  no solicitor-client relationship created yet."))
 backend/domains/employment/timeline.py:271:            "lawapp is not a solicitor. Dates must be verified against your documents. "
 backend/domains/employment/timeline.py:287:    Priority: solicitor_recommended > handoff_started > urgent_deadline
 backend/domains/employment/timeline.py:290:    GUARDRAIL: Never claims solicitor has accepted the case.

@@ -1,10 +1,10 @@
-# Find Case Law — Computational Analysis Application Prep
+# Find Case Law  -  Computational Analysis Application Prep
 
 **Submit at:** https://caselaw.nationalarchives.gov.uk/re-use-find-case-law-records/licence-application-process
 **Contact:** caselawlicence@nationalarchives.gov.uk
 **Timeline:** A few weeks; monthly Discovery Board review (occasionally quarterly Senior Data Governance Panel).
 **Fee:** None.
-**Format:** 29-question online form, 6 sections. Cannot be saved mid-session — download the Word doc of questions first, draft your answers here, then complete the form in one sitting.
+**Format:** 29-question online form, 6 sections. Cannot be saved mid-session  -  download the Word doc of questions first, draft your answers here, then complete the form in one sitting.
 
 > **Note:** This application covers bulk/programmatic ingestion of EAT decisions via the atom feed. Per-document fetches of individual decisions are already permitted under the Open Justice Licence without application.
 
@@ -12,9 +12,9 @@
 
 ## Important: legal classification
 
-The answer to "does the system provide automated legal advice?" is **No**. This is not a framing choice — it is legally accurate:
+The answer to "does the system provide automated legal advice?" is **No**. This is not a framing choice  -  it is legally accurate:
 
-- The system provides automated legal **information and assessment** — unreserved activities under the Legal Services Act 2007, explicitly distinct from regulated legal advice.
+- The system provides automated legal **information and assessment**  -  unreserved activities under the Legal Services Act 2007, explicitly distinct from regulated legal advice.
 - It never conducts litigation, claims rights of audience, or implies it is a solicitor or law firm.
 - Every output is grounded in cited retrieved sources; the governance gate routes to solicitors when confidence or grounding is insufficient.
 - Answering "yes" to legal advice would contradict the product's legal model and introduce risk.
@@ -23,9 +23,9 @@ The generative AI answer must be consistent: "uses generative AI, strictly groun
 
 ---
 
-## Section 1 — Responsible Person
+## Section 1  -  Responsible Person
 
-*(Fill in your own details — not drafted here.)*
+*(Fill in your own details  -  not drafted here.)*
 
 - Full name: [YOUR NAME]
 - Email: [YOUR EMAIL]
@@ -33,7 +33,7 @@ The generative AI answer must be consistent: "uses generative AI, strictly groun
 
 ---
 
-## Section 2 — Organisation Details
+## Section 2  -  Organisation Details
 
 *(Fill in your own details.)*
 
@@ -47,11 +47,11 @@ The generative AI answer must be consistent: "uses generative AI, strictly groun
 
 ---
 
-## Section 3 — Purpose of Re-use (~150 words)
+## Section 3  -  Purpose of Re-use (~150 words)
 
 **Suggested draft (edit to fit your voice):**
 
-> We are building a UK employment law self-help tool that helps workers assess whether they have an unfair dismissal claim, understand their rights and deadlines, and prepare tribunal documents. The system retrieves and cites primary legal sources (legislation, EAT and ET decisions, ACAS guidance) to produce grounded, source-cited assessments — rather than relying on generative model memory.
+> We are building a UK employment law self-help tool that helps workers assess whether they have an unfair dismissal claim, understand their rights and deadlines, and prepare tribunal documents. The system retrieves and cites primary legal sources (legislation, EAT and ET decisions, ACAS guidance) to produce grounded, source-cited assessments  -  rather than relying on generative model memory.
 >
 > EAT decisions are central to this: they establish how s.98 ERA 1996 "band of reasonable responses" is applied, how the ACAS Code is weighted, and how compensation is assessed. Without current EAT case law, the retrieval layer cannot properly ground its reasoning in judicial authority.
 >
@@ -59,19 +59,19 @@ The generative AI answer must be consistent: "uses generative AI, strictly groun
 
 ---
 
-## Section 4 — Public Statement (~150 words)
+## Section 4  -  Public Statement (~150 words)
 
 **Suggested draft:**
 
 > This project aims to make employment law accessible to ordinary workers who cannot afford legal representation. Most employment tribunal claimants represent themselves; many do so without understanding their rights, the relevant time limits, or the likely value of their claim.
 >
-> Our tool provides honest, grounded assessments — including telling users plainly when their case is weak — based on cited statutory authority and tribunal decisions. EAT decisions are the primary source for understanding how Employment Tribunals apply the law in practice, and computational access to them allows us to surface relevant authority for each user's fact pattern rather than relying on static summaries.
+> Our tool provides honest, grounded assessments  -  including telling users plainly when their case is weak  -  based on cited statutory authority and tribunal decisions. EAT decisions are the primary source for understanding how Employment Tribunals apply the law in practice, and computational access to them allows us to surface relevant authority for each user's fact pattern rather than relying on static summaries.
 >
 > The communities we serve are dismissed workers (particularly those on lower incomes) and the broader public interest in accessible justice. Our methodology prioritises citation transparency, grounding every legal statement in a retrievable source, and honest acknowledgement of uncertainty.
 
 ---
 
-## Section 5 — Working Practices (Yes/No questions)
+## Section 5  -  Working Practices (Yes/No questions)
 
 Answer as accurately as possible. Suggested answers for likely questions:
 
@@ -86,17 +86,17 @@ Answer as accurately as possible. Suggested answers for likely questions:
 | Will data be published? | No | Retrieval is internal; user output cites sources, not raw corpus |
 | Is methodology transparent? | Yes | System cites every source; "not legal advice" disclosed on every surface |
 | Will findings be published? | No | Individual assessments are private to the user |
-| Does the system provide automated legal advice? | **No** | Provides automated legal information and assessment — unreserved activities under the Legal Services Act 2007, explicitly not regulated legal advice. Governance flags uncertainty and routes to solicitors. Never files, represents, or litigates. |
+| Does the system provide automated legal advice? | **No** | Provides automated legal information and assessment  -  unreserved activities under the Legal Services Act 2007, explicitly not regulated legal advice. Governance flags uncertainty and routes to solicitors. Never files, represents, or litigates. |
 | Does it use generative AI? | Yes | Uses generative AI strictly grounded in retrieved cited authority. Provides legal information and assessment, not regulated legal advice. Every output traces to a cited source; model cannot override citations or operate from memory. |
 | Collection limitations disclosed? | Yes | Coverage gaps disclosed: EAT digital records approximately 2021 onwards; some decisions verbal/untranscribed |
 
 ---
 
-## Section 6 — Nine MoJ Principles
+## Section 6  -  Nine MoJ Principles
 
 **1. Dignity:** Case law will not be used to target, profile, or make decisions about individuals. It is used in aggregate for legal research retrieval only.
 
-**2. Independence:** The system does not influence ongoing legal proceedings. It provides information to claimants before or instead of proceedings — not during. No automated filing or representation.
+**2. Independence:** The system does not influence ongoing legal proceedings. It provides information to claimants before or instead of proceedings  -  not during. No automated filing or representation.
 
 **3. Scrutiny:** Every assessment cites its legal authority. Users can follow the source links to verify the underlying decisions. The governance layer explicitly rejects uncited claims.
 

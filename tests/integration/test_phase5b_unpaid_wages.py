@@ -1,5 +1,5 @@
 """
-Phase 5B — Unpaid wages / unlawful deduction integration tests.
+Phase 5B  -  Unpaid wages / unlawful deduction integration tests.
 
 Tests:
   Classification:
@@ -101,7 +101,7 @@ _PROHIBITED = [
     "we will file", "we will submit", "we will represent",
     "guaranteed to win", "guaranteed outcome", "guaranteed success",
     "you will win", "as your solicitor",
-]   # "guaranteed" alone is NOT prohibited — the legal notice says "No outcome is guaranteed"
+]   # "guaranteed" alone is NOT prohibited  -  the legal notice says "No outcome is guaranteed"
 
 
 def _make_paid_wages_case() -> str:
@@ -129,7 +129,7 @@ def _generate_paid_wages_document(doc_type: str):
 # ── 1-3. Classification ────────────────────────────────────────────────────────
 
 def test_unpaid_wages_classification():
-    result = classify("My employer hasn't paid my wages — final salary missing", {})
+    result = classify("My employer hasn't paid my wages  -  final salary missing", {})
     assert result.matter_type == "unpaid_wages", \
         f"Expected unpaid_wages, got {result.matter_type}"
     assert result.in_scope is True

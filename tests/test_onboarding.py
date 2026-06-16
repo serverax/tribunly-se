@@ -1,12 +1,12 @@
 """
-Onboarding wizard (SUBAGENT: Onboarding Engineer) — backend contract tests.
+Onboarding wizard (SUBAGENT: Onboarding Engineer)  -  backend contract tests.
 
 Proves the POST /onboarding/complete + GET /onboarding/status endpoints:
   * role is REQUIRED and validated (missing → 422, invalid/empty → 400)
   * auth is required (no identity → 401)
   * a first case is auto-created with status='new', created_from='onboarding'
   * case_title is auto-generated (from case type, else name, else fallback)
-  * the operation is IDEMPOTENT — a second call returns the SAME case (no dup)
+  * the operation is IDEMPOTENT  -  a second call returns the SAME case (no dup)
   * the onboarding case appears in GET /cases (dashboard list) with its title
   * GET /onboarding/status flips onboarded False → True
 
@@ -49,7 +49,7 @@ def user_id():
     conn = _conn()
     try:
         with conn.cursor() as cur:
-            # cases.user_id FK is ON DELETE CASCADE — removing the user clears cases.
+            # cases.user_id FK is ON DELETE CASCADE  -  removing the user clears cases.
             cur.execute("DELETE FROM users WHERE id = %s::uuid", (uid,))
         conn.commit()
     finally:
@@ -170,7 +170,7 @@ def test_idempotent_second_call_returns_same_case(user_id):
     assert second.json()["created"] is False
     assert second.json()["case_id"] == first_id
 
-    # Exactly ONE onboarding case exists — no duplicate.
+    # Exactly ONE onboarding case exists  -  no duplicate.
     rows = _onboarding_cases(user_id)
     assert len(rows) == 1
 

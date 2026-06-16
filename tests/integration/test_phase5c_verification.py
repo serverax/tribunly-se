@@ -1,5 +1,5 @@
 """
-Phase 5C — Rules verification and production-readiness tests.
+Phase 5C  -  Rules verification and production-readiness tests.
 
 Tests:
   Rules verification:

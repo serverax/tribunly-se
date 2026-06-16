@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deadline calculator — lawapp</title>
+  <title>Deadline calculator  -  lawapp</title>
   <meta name="description" content="Work out your employment tribunal time limit. Deterministic and grounded in the Employment Rights Act 1996.">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
@@ -62,12 +62,12 @@
     <section id="resultPanel" class="result-panel" hidden aria-live="polite">
       <div id="deadlineCard" class="deadline-card">
         <div>
-          <div class="days" id="dl-days">—</div>
+          <div class="days" id="dl-days"> - </div>
           <div class="label" id="dl-days-label">days left</div>
         </div>
         <div>
           <div class="label">Your base tribunal deadline</div>
-          <div class="date" id="dl-date">—</div>
+          <div class="date" id="dl-date"> - </div>
         </div>
       </div>
 
@@ -96,7 +96,7 @@
         </div>
         <a id="save-login" class="btn btn-accent" href="/pages/login.html">Log in to save</a>
       </div>
-      <div id="saved-note" class="form-ok" hidden>Logged in — open your <a href="/pages/dashboard.html">dashboard</a> to save this to a case.</div>
+      <div id="saved-note" class="form-ok" hidden>Logged in  -  open your <a href="/pages/dashboard.html">dashboard</a> to save this to a case.</div>
     </section>
   </div>
 </main>
@@ -117,7 +117,7 @@
   var errText = document.getElementById("form-error-text");
 
   function fmtDate(iso) {
-    if (!iso) return "—";
+    if (!iso) return " - ";
     var parts = String(iso).split("T")[0].split("-");
     if (parts.length !== 3) return iso;
     var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -151,8 +151,8 @@
 
     var cal = document.getElementById("calendar");
     cal.textContent = "";
-    cal.appendChild(calRow(data.event_date, "Event date", " — when time starts running", "is-start"));
-    cal.appendChild(calRow(data.deadline, "Base tribunal deadline", " — claim must be submitted by this date", "is-deadline"));
+    cal.appendChild(calRow(data.event_date, "Event date", "  -  when time starts running", "is-start"));
+    cal.appendChild(calRow(data.deadline, "Base tribunal deadline", "  -  claim must be submitted by this date", "is-deadline"));
 
     var detail = document.getElementById("dl-detail");
     detail.textContent = "";
@@ -165,7 +165,7 @@
     var note = document.getElementById("dl-note");
     note.textContent = "";
     var h = document.createElement("h3"); h.textContent = "Important";
-    var p = document.createElement("p"); p.textContent = data.note || "This is the base limitation date. The ACAS Early Conciliation stop-clock can extend it — check before you rely on this date.";
+    var p = document.createElement("p"); p.textContent = data.note || "This is the base limitation date. The ACAS Early Conciliation stop-clock can extend it  -  check before you rely on this date.";
     note.appendChild(h); note.appendChild(p);
 
     if (LAWAPP_API.isLoggedIn()) {
@@ -213,6 +213,6 @@
 </script>
 
 
-  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict — verify dates with ACAS or a qualified adviser before relying on them.</p>
+  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict  -  verify dates with ACAS or a qualified adviser before relying on them.</p>
 </body>
 </html>

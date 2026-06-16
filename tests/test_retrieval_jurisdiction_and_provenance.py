@@ -18,7 +18,7 @@ def _db_up():
         return False
 
 
-pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN — DB not accessible")
+pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN  -  DB not accessible")
 
 
 def test_gb_unfair_dismissal_retrieves_gb_rules():
@@ -38,7 +38,7 @@ def test_ni_fails_closed():
 def test_ni_does_not_retrieve_gb_rules():
     from backend.core.retrieve import retrieve_rules
     rules = retrieve_rules("unfair_dismissal", "NI", date.today())
-    assert rules == [], "NI retrieved rules — must not inherit GB law"
+    assert rules == [], "NI retrieved rules  -  must not inherit GB law"
 
 
 def test_retrieved_bundle_has_provenance():

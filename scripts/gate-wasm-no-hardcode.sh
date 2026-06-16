@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gate: WASM — no hardcoded legal values, binary present, rebuild path exists
+# Gate: WASM  -  no hardcoded legal values, binary present, rebuild path exists
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 PASS=0; FAIL=0
@@ -28,7 +28,7 @@ fi
 RUST_SRC="client/wasm/src/lib.rs"; WASM_BIN="client/public/wasm/lawapp_wasm_bg.wasm"
 if [ -f "$RUST_SRC" ] && [ -f "$WASM_BIN" ] && [ "$RUST_SRC" -nt "$WASM_BIN" ]; then
   check "WASM binary not stale vs Rust source" FAIL
-  echo "  Rust source newer than WASM binary — run: bash scripts/rebuild-wasm.sh"
+  echo "  Rust source newer than WASM binary  -  run: bash scripts/rebuild-wasm.sh"
 else
   check "WASM binary not stale vs Rust source" PASS
 fi

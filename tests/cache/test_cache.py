@@ -29,7 +29,7 @@ class TestCacheSafety:
         assert _is_safe_to_cache("What should I accept in a settlement agreement?") is False
 
     def test_discrimination_not_safe(self):
-        assert _is_safe_to_cache("My discrimination case — what should I do?") is False
+        assert _is_safe_to_cache("My discrimination case  -  what should I do?") is False
 
     def test_facts_with_edt_not_safe(self):
         assert _is_safe_to_cache("What is unfair dismissal?", {"edt": "2025-10-01"}) is False
@@ -55,12 +55,12 @@ class TestCacheLookup:
 
     def test_case_lookup_second_request_is_cache_hit(self):
         query = "What is the qualifying period for unfair dismissal?"
-        # First request — may miss or hit
+        # First request  -  may miss or hit
         r1 = cache_lookup(query, "EW")
         if not r1["cache_hit"]:
             # Store it
             cache_store(query, {"answer": "2 years"}, "EW")
-        # Second request — must hit
+        # Second request  -  must hit
         r2 = cache_lookup(query, "EW")
         assert r2["safe_to_cache"] is True
 

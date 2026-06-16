@@ -1,6 +1,6 @@
-# lawapp — End-to-End Product Completion Report
+# lawapp  -  End-to-End Product Completion Report
 
-**Project:** lawapp — UK Employment Law AI Assistant  
+**Project:** lawapp  -  UK Employment Law AI Assistant  
 **Date:** 2026-06-04  
 **Git commit:** 095be01 (+ uncommitted Phase 1–3 changes)
 
@@ -9,9 +9,9 @@
 ## A. Final Decision
 
 **READY FOR LOCAL INTERNAL DEMO: YES**  
-**READY FOR TALOS INTERNAL DEMO: NO** — owner must run `bash scripts/deploy-talos.sh` from WSL and smoke tests must pass  
-**READY FOR PUBLIC STAGING: NO** — Talos + real AI key + public ingress + payment decision all required  
-**READY FOR PRODUCTION: NO** — See blocker table Section J  
+**READY FOR TALOS INTERNAL DEMO: NO**  -  owner must run `bash scripts/deploy-talos.sh` from WSL and smoke tests must pass  
+**READY FOR PUBLIC STAGING: NO**  -  Talos + real AI key + public ingress + payment decision all required  
+**READY FOR PRODUCTION: NO**  -  See blocker table Section J  
 
 ---
 
@@ -33,13 +33,13 @@
 | US-12 | Legal accuracy regression | **COMPLETE** | 38 legal accuracy tests; 13 deadline tests; citation verification tests |
 | US-13 | Second claim type readiness | **PARTIAL** | Rules + templates for unpaid wages exist; intake wizard is UD-focused |
 | US-14 | Solicitor partner leads | **PARTIAL** | `handoff_leads` table; capture form; no CRM integration yet |
-| US-15 | White-label readiness | **FUTURE** | Not started — placeholder only |
+| US-15 | White-label readiness | **FUTURE** | Not started  -  placeholder only |
 
 ---
 
 ## C. Product Journey Proof
 
-### Full E2E Journey — Playwright (17/17 PASS)
+### Full E2E Journey  -  Playwright (17/17 PASS)
 
 ```
 node_modules/.bin/playwright test --reporter=list
@@ -80,7 +80,7 @@ curl http://localhost:8000/rules/unfair_dismissal
 → 9 rules: time_limit_months=3 [ERA 1996 s.111], qualifying_period=2 [ERA 1996 s.108],
            compensatory_cap_amount=123543 [ERA 1996 s.124], weeks_pay_cap=751 [ERA 1996 s.227]
 
-# Assessment (QP-fail case — deterministic full response)
+# Assessment (QP-fail case  -  deterministic full response)
 curl -X POST http://localhost:8000/assess -d '{"query":"dismissed after 10 months","facts":{...}}'
 → status: ok, has_viable_claim: no, 6 citations, deadline: 2026-05-31, weaknesses: [QP not met...]
 
@@ -170,24 +170,24 @@ Extensions: pgvector ✓, pgcrypto ✓
 ### HIGH (blocks real assessments)
 | # | Blocker | Fix |
 |---|---|---|
-| H1 | `ANTHROPIC_API_KEY=placeholder` — stub model returns insufficient_grounding for complex cases | Owner: set real API key in `.env` and K8s secret |
-| H2 | Kubernetes not applied — all manifests exist but not deployed | Owner: run `bash scripts/deploy-talos.sh` from WSL |
+| H1 | `ANTHROPIC_API_KEY=placeholder`  -  stub model returns insufficient_grounding for complex cases | Owner: set real API key in `.env` and K8s secret |
+| H2 | Kubernetes not applied  -  all manifests exist but not deployed | Owner: run `bash scripts/deploy-talos.sh` from WSL |
 | H3 | Case law chunks empty (FCL licence pending) | Apply at caselaw.nationalarchives.gov.uk/computational_access |
 | H4 | JWT_ISSUER/JWT_AUDIENCE env vars not in .env.example | Add to template for staging |
 
 ### MEDIUM (blocks public staging)
 | # | Blocker | Fix |
 |---|---|---|
-| M1 | Stripe integration Phase 7 stub — real payments require Stripe keys | Set STRIPE_SECRET_KEY and implement `/api/payment/create-session` Stripe checkout |
+| M1 | Stripe integration Phase 7 stub  -  real payments require Stripe keys | Set STRIPE_SECRET_KEY and implement `/api/payment/create-session` Stripe checkout |
 | M2 | Ingress/DNS not configured in K8s | Configure domain + cert-manager |
-| M3 | Rate limiting uses in-memory — won't survive pod restart | Configure Redis for production rate limiting |
+| M3 | Rate limiting uses in-memory  -  won't survive pod restart | Configure Redis for production rate limiting |
 
 ### LOW
 | # | Blocker | Fix |
 |---|---|---|
 | L1 | OCR/document extraction not implemented | Phase 4 delivery |
-| L2 | ACAS EC dates missing from intake wizard (NOW FIXED — Day A/B added) | — |
-| L3 | User isolation bypassed in `LAWAPP_AUTH_MODE=none` (NOW FIXED — set to jwt) | — |
+| L2 | ACAS EC dates missing from intake wizard (NOW FIXED  -  Day A/B added) |  -  |
+| L3 | User isolation bypassed in `LAWAPP_AUTH_MODE=none` (NOW FIXED  -  set to jwt) |  -  |
 | L4 | Funnel metrics not fully wired | Wire `funnel_events` to intake/diagnosis/conversion |
 | L5 | Playwright tests need Chromium browser installed on CI | Add `npx playwright install chromium` to CI pipeline |
 
@@ -212,13 +212,13 @@ Extensions: pgvector ✓, pgcrypto ✓
 
 ## I. Next Implementation Tasks (Coding Required)
 
-1. **Set real ANTHROPIC_API_KEY** — wire real AI model to get full assessments for complex cases
-2. **Stripe checkout session** (`stripe` Python SDK) — implement `/api/payment/create-session` with real Stripe test mode
-3. **Stripe webhook handler** — create `/api/payment/webhook` to update payment status on cases
-4. **OCR/extraction pipeline** (Phase 4) — implement PDF/image extraction with user confirmation flow
-5. **Funnel event wiring** — add `funnel_events` inserts at: intake_started, intake_submitted, diagnosis_viewed, case_saved, document_generated, handoff_triggered
-6. **Redis rate limiting** — configure `RATELIMIT_STORAGE_URI=redis://...` in docker-compose + K8s
-7. **Apply K8s manifests** — owner must apply from WSL with real secrets (see `scripts/deploy-talos.sh`)
+1. **Set real ANTHROPIC_API_KEY**  -  wire real AI model to get full assessments for complex cases
+2. **Stripe checkout session** (`stripe` Python SDK)  -  implement `/api/payment/create-session` with real Stripe test mode
+3. **Stripe webhook handler**  -  create `/api/payment/webhook` to update payment status on cases
+4. **OCR/extraction pipeline** (Phase 4)  -  implement PDF/image extraction with user confirmation flow
+5. **Funnel event wiring**  -  add `funnel_events` inserts at: intake_started, intake_submitted, diagnosis_viewed, case_saved, document_generated, handoff_triggered
+6. **Redis rate limiting**  -  configure `RATELIMIT_STORAGE_URI=redis://...` in docker-compose + K8s
+7. **Apply K8s manifests**  -  owner must apply from WSL with real secrets (see `scripts/deploy-talos.sh`)
 
 ---
 

@@ -1,4 +1,4 @@
-# CURSOR GO-LIVE READINESS REPORT — lawapp
+# CURSOR GO-LIVE READINESS REPORT  -  lawapp
 
 **Date:** 2026-06-14  
 **Assessor:** Cursor recovery session (autonomous repair + re-proof)  
@@ -28,8 +28,8 @@
 | QA-004 (partial) | Integration tests 401 under JWT compose override | `tests/conftest.py` forces `LAWAPP_AUTH_MODE=mock`; `tests/integration/auth_helpers.py`; auth headers on case/document routes | `reports/pytest_targeted_auth_fix.txt` 56 pass; `reports/pytest_legal_accuracy_fix.txt` legal accuracy CI gate pass; payment gating tests pass |
 | QA-004 (legal accuracy) | `run_legal_accuracy.py` Unicode/subprocess failures on Windows | `json.dumps(..., ensure_ascii=True)`; fixed `deadline_info` variable order | `reports/legal_accuracy_cursor.txt` → `PASS: LEGAL ACCURACY GATE PASSED` |
 | Syntax regressions | Duplicate `headers=` kwargs in phase6a/phase6b after batch auth fix | Merged header dicts in `_make_case` and `test_case_owner_protection_regression` | Collection succeeds; phase6b 28 tests collected |
-| Workflow | — (already passing; re-verified) | — | `reports/proof_full_workflows_cursor.txt` → all steps PASS including auth, payment, cross-tenant deny |
-| Docker test tree | Dockerfile missing root `tests/` | `COPY tests ./tests` in Dockerfile | **Code fixed; image rebuild required** — see remaining blockers |
+| Workflow |  -  (already passing; re-verified) |  -  | `reports/proof_full_workflows_cursor.txt` → all steps PASS including auth, payment, cross-tenant deny |
+| Docker test tree | Dockerfile missing root `tests/` | `COPY tests ./tests` in Dockerfile | **Code fixed; image rebuild required**  -  see remaining blockers |
 
 ---
 
@@ -46,9 +46,9 @@
 
 | ID | Blocker | Evidence | Owner action |
 |----|---------|----------|--------------|
-| QA-003 | Docker backend pytest still collects **85** tests (not full tree) | `reports/docker_pytest_collect_cursor.txt` — needs image rebuild after Dockerfile change | `docker compose build backend && docker compose run --rm backend python -m pytest --collect-only -q` → expect 1600+ |
+| QA-003 | Docker backend pytest still collects **85** tests (not full tree) | `reports/docker_pytest_collect_cursor.txt`  -  needs image rebuild after Dockerfile change | `docker compose build backend && docker compose run --rm backend python -m pytest --collect-only -q` → expect 1600+ |
 | QA-004 | Full pytest **not green**: 1572 passed, **22 failed**, **20 errors**, 152 skipped | `reports/pytest_full_cursor.txt` (968s run) | Triage: `test_auth_db.py` (20 DB connection errors), `test_auth_flows.py` refresh/logout, `test_phase5a_hardening.py`, `test_phase6_production.py`, streaming inference |
-| QA-005 | k6 load thresholds not met | `reports/k6_100k_readiness.txt` (prior) — p95 ~1.05s, elevated `http_req_failed` | Re-run after perf tuning; warm caches |
+| QA-005 | k6 load thresholds not met | `reports/k6_100k_readiness.txt` (prior)  -  p95 ~1.05s, elevated `http_req_failed` | Re-run after perf tuning; warm caches |
 | QA-015 | Production secrets / Stripe live unproven | Dev keys in `docker-compose.override.yml` only for local | **Owner:** vault rotation before prod |
 
 ### P2 (non-blocking for controlled beta)
@@ -75,17 +75,17 @@
 
 **Failure clusters (honest):**
 
-1. **`test_auth_db.py` (20 errors)** — `psycopg2` connection failures from host pytest (likely wrong port/password vs Docker DB on 5435).
-2. **`test_auth_flows.py` (8 failures)** — refresh rotation / logout / email verify / password reset flows.
-3. **`test_phase5a_hardening.py` (5 failures)** — funnel events + phase4 regressions (likely missing auth on case create).
-4. **`test_phase6_production.py` (3 failures)** — encrypted upload / soft-delete.
-5. **Misc (6)** — `test_auth_none`, JWT bearer parse, domain modularity baseline, integrity fake-law flag, streaming inference (needs live Qwen).
+1. **`test_auth_db.py` (20 errors)**  -  `psycopg2` connection failures from host pytest (likely wrong port/password vs Docker DB on 5435).
+2. **`test_auth_flows.py` (8 failures)**  -  refresh rotation / logout / email verify / password reset flows.
+3. **`test_phase5a_hardening.py` (5 failures)**  -  funnel events + phase4 regressions (likely missing auth on case create).
+4. **`test_phase6_production.py` (3 failures)**  -  encrypted upload / soft-delete.
+5. **Misc (6)**  -  `test_auth_none`, JWT bearer parse, domain modularity baseline, integrity fake-law flag, streaming inference (needs live Qwen).
 
 ---
 
 ## Workflow evidence
 
-`scripts/proof/prove_lawapp_full_workflows.sh` — **PASS** (2026-06-14)
+`scripts/proof/prove_lawapp_full_workflows.sh`  -  **PASS** (2026-06-14)
 
 Confirmed end-to-end:
 
@@ -163,7 +163,7 @@ python -c "import urllib.request,json; ..."
 
 | Path | Change |
 |------|--------|
-| `ingestion/sync_corpus_chunks.py` | **NEW** — sync corpus_chunks from legislation/ACAS tables |
+| `ingestion/sync_corpus_chunks.py` | **NEW**  -  sync corpus_chunks from legislation/ACAS tables |
 | `docker-compose.yml` | Fixed db-bootstrap ingestion command |
 | `Dockerfile` | `COPY tests ./tests` |
 | `tests/conftest.py` | Force `LAWAPP_AUTH_MODE=mock` |
@@ -199,14 +199,14 @@ docker compose run --rm backend python -m pytest --collect-only -q
 
 ## Recommended next actions (before GitHub push)
 
-1. **Rebuild images:** `docker compose build backend db-bootstrap ingestion` — unlock full in-container pytest + automated bootstrap.
+1. **Rebuild images:** `docker compose build backend db-bootstrap ingestion`  -  unlock full in-container pytest + automated bootstrap.
 2. **Fix pytest DB env for host runs:** point `POSTGRES_PORT=5435` / password consistently so `test_auth_db.py` connects (20 errors → 0).
 3. **Repair phase5a funnel tests:** add `mock_auth_headers()` to case-creation helpers (same pattern as phase3–4).
-4. **Triage `test_auth_flows.py`:** refresh rotation / session table — likely test DB fixture or migration 047/050 drift.
+4. **Triage `test_auth_flows.py`:** refresh rotation / session table  -  likely test DB fixture or migration 047/050 drift.
 5. **Re-run k6** after assess-path tuning: `k6 run scripts/load/k6_100k_readiness.js` → save to `reports/k6_100k_readiness_cursor.txt`.
-6. **Owner: K8s deploy proof** to `lawapp-api`, `lawapp-rag`, `lawapp-ai` namespaces — document pod/ingress health only (no secret rotation without approval).
+6. **Owner: K8s deploy proof** to `lawapp-api`, `lawapp-rag`, `lawapp-ai` namespaces  -  document pod/ingress health only (no secret rotation without approval).
 7. **Product comms:** document beta scope = **11 production modules**; partial modules fail-closed in API/UI.
-8. **User approval** before `git push` — substantial uncommitted diff; no commit made in this session per instructions.
+8. **User approval** before `git push`  -  substantial uncommitted diff; no commit made in this session per instructions.
 
 ---
 

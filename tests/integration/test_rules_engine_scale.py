@@ -3,7 +3,7 @@
 Asserts the properties that make the service survive 100k concurrent requests:
 
   * DB off the hot path: N rule evaluations for the same key cause exactly ONE
-    database read (read-through TTL cache) — no per-request connection / no lock
+    database read (read-through TTL cache)  -  no per-request connection / no lock
     contention.
   * Single-flight: a cold key hit by many CONCURRENT requests triggers exactly one
     DB load, not one per request (prevents a connection storm on cache cold-start).
@@ -126,7 +126,7 @@ def test_rule_eval_latency_under_50ms(counting_db):
 def test_http_deadline_server_processing_under_50ms(counting_db):
     """The 50ms budget is the rules-engine's own processing time, which the handler
     reports as `compute_ms` (measured around the cached rule lookup + memoized
-    arithmetic). We assert that server-side metric — NOT TestClient wall-clock, which
+    arithmetic). We assert that server-side metric  -  NOT TestClient wall-clock, which
     on a sync ASGI bridge includes per-request event-loop/portal setup that a real
     uvicorn worker under load does not pay."""
     c = TestClient(rules)
@@ -155,7 +155,7 @@ def test_deadline_memoized():
     assert a == b
     info = cache_stats()["deadline_memo"]
     assert info["hits"] >= 1 and info["misses"] == 1
-    # returns a copy — mutating the result must not poison the cache
+    # returns a copy  -  mutating the result must not poison the cache
     a["limitation_date"] = "TAMPERED"
     assert memoized_limitation_date(edt, 3, None, None)["limitation_date"] == "2024-04-29"
 

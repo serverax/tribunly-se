@@ -1,6 +1,6 @@
 # Legal Accuracy Procedures
 
-**Owner:** must be a named human — this cannot be tribal memory or an agent task.
+**Owner:** must be a named human  -  this cannot be tribal memory or an agent task.
 **Frequency:** monthly check at minimum; immediately on any new employment-law news.
 
 These procedures exist because the safety of the deadline product depends on a human
@@ -14,7 +14,7 @@ been published; only a person monitoring the statute book can.
 When a commencement SI is published for ERA 2025 provisions, the following rows
 must be updated in the `rules` table before the product reflects the new law.
 Getting this wrong in either direction is dangerous:
-- **Flip too early:** users are told they have longer than they do — claims are lost.
+- **Flip too early:** users are told they have longer than they do  -  claims are lost.
 - **Never flip:** users are permanently given the old (shorter or capped) position.
 
 ### Rules rows that need promotion when commencement SIs arrive
@@ -23,7 +23,7 @@ Getting this wrong in either direction is dangerous:
 |---|---|---|---|
 | `unfair_dismissal.time_limit_months` | 6 months | ERA 2025 s.152 commencement SI | 1. Set `effective_to = <commencement date - 1 day>` on the 3-month row. 2. Set `is_prospective = false` and `effective_from = <commencement date>` on the 6-month row. |
 | `unfair_dismissal.qualifying_period` | 6 months | ERA 2025 s.25 commencement SI | Same pattern: close the 2-year row, promote the 6-month row. |
-| `unfair_dismissal.compensatory_cap_amount` | uncapped | ERA 2025 s.25 commencement SI | Close the £123,543 row (`effective_to = <date - 1>`), promote the `uncapped` row. Also verify whether s.124(1ZA)(b) 52-week cap survives — if removed, close that row too. |
+| `unfair_dismissal.compensatory_cap_amount` | uncapped | ERA 2025 s.25 commencement SI | Close the £123,543 row (`effective_to = <date - 1>`), promote the `uncapped` row. Also verify whether s.124(1ZA)(b) 52-week cap survives  -  if removed, close that row too. |
 
 ### How to check for commencement SIs
 
@@ -52,7 +52,7 @@ WHERE rule_key = '<rule_key>'
   AND is_prospective = true
   AND value_numeric = <new value>;  -- sanity check: confirm the right row
 
--- Step 3: verify — should return exactly one active row per rule_key
+-- Step 3: verify  -  should return exactly one active row per rule_key
 SELECT rule_key, value_numeric, value_text, effective_from, effective_to, is_prospective
 FROM rules
 WHERE rule_key = '<rule_key>'
@@ -78,11 +78,11 @@ When the new Order is published:
 3. Set `effective_to = <5 Apr>` on the outgoing row.
 4. Update `ingestion/rules/seed.py` with the new rows so future re-seeds are correct.
 5. **Never hardcode the derived maximum basic award** (20 × 1.5 × week's pay cap).
-   It is computed from the formula row — it will self-update when the cap row is current.
+   It is computed from the formula row  -  it will self-update when the cap row is current.
 
 ---
 
-## 3. ACAS Code of Practice — edition check
+## 3. ACAS Code of Practice  -  edition check
 
 The ACAS Code of Practice on Disciplinary and Grievance Procedures (March 2015,
 as at 2026-05-29) is occasionally revised.
@@ -94,10 +94,10 @@ as at 2026-05-29) is occasionally revised.
 
 ---
 
-## 4. EC max duration — authority still to confirm
+## 4. EC max duration  -  authority still to confirm
 
 `unfair_dismissal.ec_max_duration_weeks` is seeded at 12 weeks from 2025-12-01 with
-`authority_ref = "VERIFY — ..."`. Before this value is used in any user-facing deadline
+`authority_ref = "VERIFY  -  ..."`. Before this value is used in any user-facing deadline
 output, confirm the exact statutory authority. The value was flagged in external review;
 primary source verification is outstanding.
 

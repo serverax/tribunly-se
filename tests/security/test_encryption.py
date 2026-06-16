@@ -1,5 +1,5 @@
 """
-Encryption tests — lawapp case facts encryption at rest.
+Encryption tests  -  lawapp case facts encryption at rest.
 
 Tests:
   - facts_encrypted column stores ciphertext (not plaintext)
@@ -104,7 +104,7 @@ class TestCasesEncryptionAtRest:
         assert row is not None, "cases.encryption_version column missing"
 
     def test_case_facts_not_stored_as_plaintext_column(self):
-        """The 'facts' column should not store raw user facts — use facts_encrypted."""
+        """The 'facts' column should not store raw user facts  -  use facts_encrypted."""
         import psycopg2
         conn = psycopg2.connect(
             host=os.environ.get("POSTGRES_HOST","localhost"), port=int(os.environ.get("POSTGRES_PORT","5435")), dbname=os.environ.get("POSTGRES_DB","lawapp"),

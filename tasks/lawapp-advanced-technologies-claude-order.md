@@ -1,4 +1,4 @@
-# lawapp — Claude Code Order: Add Advanced Technologies into the Brain-Controlled Workflow
+# lawapp  -  Claude Code Order: Add Advanced Technologies into the Brain-Controlled Workflow
 
 **Project:** lawapp  
 **Root:** `F:\lawapp` / `/mnt/f/lawapp`  
@@ -1183,7 +1183,7 @@ The report must include:
 Final verdict can only be:
 
 ```text
-READY — FULL ADVANCED WORKFLOW END-TO-END PROVEN
+READY  -  FULL ADVANCED WORKFLOW END-TO-END PROVEN
 ```
 
 if every gate passes.
@@ -1191,7 +1191,7 @@ if every gate passes.
 If any gate fails, verdict must be:
 
 ```text
-NOT READY — ADVANCED TECHNOLOGY WORKFLOW NOT FULLY PROVEN
+NOT READY  -  ADVANCED TECHNOLOGY WORKFLOW NOT FULLY PROVEN
 ```
 
 But this is not an accepted final state. Fix the blocker and rerun.

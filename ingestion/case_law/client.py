@@ -2,7 +2,7 @@
 HTTP client for Find Case Law (National Archives).
 
 Rate limit: 1,000 requests per rolling 5-minute window per IP.
-We target FCL_REQUESTS_PER_SECOND (default 1 req/s) — well under the limit.
+We target FCL_REQUESTS_PER_SECOND (default 1 req/s)  -  well under the limit.
 
 Bulk atom-feed pagination is GATED behind FCL_BULK_LICENCE_GRANTED.
 Per-document fetches (fetch_document_xml) are always allowed within the
@@ -51,7 +51,7 @@ def _get(url: str, params: Optional[dict] = None) -> httpx.Response:
     with httpx.Client(timeout=60) as client:
         resp = client.get(url, params=params)
         if resp.status_code == 429:
-            logger.warning("FCL rate limit hit (429) — tenacity will retry with back-off")
+            logger.warning("FCL rate limit hit (429)  -  tenacity will retry with back-off")
             resp.raise_for_status()
         if resp.status_code == 404:
             return resp
@@ -149,7 +149,7 @@ def iter_atom_feed(
 
         entries = root.findall(f"{{{ATOM_NS}}}entry")
         if not entries:
-            logger.info("No more entries at page %d — feed exhausted", page)
+            logger.info("No more entries at page %d  -  feed exhausted", page)
             break
 
         for entry in entries:
@@ -193,8 +193,8 @@ def _parse_atom_entry(entry: ET.Element) -> dict:
             pdf_url = href
 
     return {
-        "document_uri": document_uri,   # d-{uuid} — store in DB
-        "xml_slug":     xml_slug,        # eat/year/num — use for fetching
+        "document_uri": document_uri,   # d-{uuid}  -  store in DB
+        "xml_slug":     xml_slug,        # eat/year/num  -  use for fetching
         "published":    published,
         "updated":      updated,
         "content_hash": content_hash,

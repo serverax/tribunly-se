@@ -3,7 +3,7 @@
 Each extracted service is a thin FastAPI app that wraps the EXISTING, tested
 backend/core logic (no logic duplication, no fake responses). This factory
 provides the mandatory /health and /ready endpoints, a trace_id middleware, and
-structured-JSON logging — identical across every service.
+structured-JSON logging  -  identical across every service.
 """
 from __future__ import annotations
 
@@ -63,7 +63,7 @@ def call_service(
 
     Tests: pass `client_factory=lambda base: TestClient(other_service.app)` (Starlette
     TestClient bridges the ASGI app to a synchronous transport). The call then runs the
-    FULL downstream app — middleware included — in-process, a real cross-service request
+    FULL downstream app  -  middleware included  -  in-process, a real cross-service request
     with no network, while this function still injects the propagated trace header.
 
     Returns a response object exposing `.status_code`, `.headers` (the echoed

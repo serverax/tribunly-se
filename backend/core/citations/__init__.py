@@ -2,7 +2,7 @@
 
 This package extracts legal citations from free text (user messages, uploaded
 briefs, case-law chunks), normalises them to a canonical form, and links them
-to stored source records — WITHOUT ever fabricating a citation or a source id.
+to stored source records  -  WITHOUT ever fabricating a citation or a source id.
 
 Design boundary (constitution §9):
   - Unknown / unmatched citation => marked unresolved. NEVER invented.

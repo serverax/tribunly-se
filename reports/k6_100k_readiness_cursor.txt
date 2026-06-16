@@ -451,8 +451,8 @@ time="2026-06-15T19:10:24Z" level=error msg="thresholds on metrics 'checks{check
 Command: docker run --rm -i --network lawapp_default -v F:/lawapp/scripts/load:/scripts grafana/k6 run /scripts/k6_100k_readiness.js -e BASE_URL=http://lawapp-backend-1:8000
 PASS: scope-cut module returns not_covered (100%)
 PASS: anonymous save/doc gates (401/403)
-FAIL: assess path — 94.48% http_req_failed{type:assess} (SlowAPI 30/min on POST /assess vs 50 VU load)
+FAIL: assess path  -  94.48% http_req_failed{type:assess} (SlowAPI 30/min on POST /assess vs 50 VU load)
 FAIL: assessment responds 200 check 5.51% (rate limit 429)
 Root cause: rate limiting + assess latency under concurrent load, not auth-gate false positives.
 Recommendation (Track C): separate load-test rate-limit profile or pre-authenticated assess scenario.
-Overall: FAIL (thresholds crossed) — documented waiver for expected 401/402 separation partially addressed via tagged thresholds.
+Overall: FAIL (thresholds crossed)  -  documented waiver for expected 401/402 separation partially addressed via tagged thresholds.

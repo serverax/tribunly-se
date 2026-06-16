@@ -1,5 +1,5 @@
 ---
-description: Hunt for fakes — stubs, placeholder logic, static success, mock auth/payment, fabricated citations, uncited legal rows.
+description: Hunt for fakes  -  stubs, placeholder logic, static success, mock auth/payment, fabricated citations, uncited legal rows.
 ---
 
 # /fake-proof-audit

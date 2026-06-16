@@ -1,5 +1,5 @@
 """
-LiteLLM adapter — the ONLY module permitted to call the model gateway (AC-006).
+LiteLLM adapter  -  the ONLY module permitted to call the model gateway (AC-006).
 
 Year-1 infra (founder decision): cloud models are served via OpenRouter free
 endpoints through LiteLLM. Because data leaves the building, this adapter is the
@@ -39,7 +39,7 @@ _LOCAL_ROUTE = "lawapp-edge-slm"
 def is_openrouter_configured() -> bool:
     """True if a real OpenRouter key is present in the environment. Optional:
     when False, the agentic LLM layer stays local/stub/fail-closed (no crash).
-    Returns only a boolean — never the key value."""
+    Returns only a boolean  -  never the key value."""
     key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     return bool(key) and key.lower() not in {"dummy", "dummy_test_key", "changeme", "placeholder"}
 
@@ -48,7 +48,7 @@ def require_openrouter_configured() -> None:
     """Fail closed at startup if the live OpenRouter key is absent or a
     placeholder (founder mandate: no placeholders; app must not start blind).
     Call from the app lifespan once OPENROUTER_API_KEY is provisioned to the
-    backend environment (never commit the key — env/secret only)."""
+    backend environment (never commit the key  -  env/secret only)."""
     # LOCAL OLLAMA ONLY (hard mandate): the agentic layer must NOT require an
     # OpenRouter/cloud key. No-op now; cloud routes fail closed at call time via
     # ExternalLLMForbidden. Never require an external key to start.
@@ -108,7 +108,7 @@ def call_model(
         # LOCAL OLLAMA ONLY (hard mandate): any non-local (cloud) route is forbidden.
         from backend.core.inference_policy import ExternalLLMForbidden
         raise ExternalLLMForbidden(
-            f"Cloud route {model_route!r} is forbidden — lawapp legal routes use the "
+            f"Cloud route {model_route!r} is forbidden  -  lawapp legal routes use the "
             f"internal Ollama backend only (no LiteLLM/OpenRouter cloud calls)."
         )
 

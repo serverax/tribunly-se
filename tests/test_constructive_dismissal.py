@@ -53,7 +53,7 @@ def _strong_facts():
 def test_schema_complete_and_json_only():
     r = assess_constructive_dismissal(_strong_facts())
     assert _REQUIRED_KEYS.issubset(r.keys())
-    # strict structured types — no free prose blob
+    # strict structured types  -  no free prose blob
     assert isinstance(r["repudiatory_acts"], list)
     assert isinstance(r["affirmation_risk"], dict)
     assert set(r["affirmation_risk"].keys()) == {"delay_days", "risk_level", "mitigation"}

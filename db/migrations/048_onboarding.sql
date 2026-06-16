@@ -6,19 +6,19 @@
 --
 -- 1. User profile fields captured during onboarding (name, role, employer).
 --    `role` is a free-text canonical slug (employee | former_employee |
---    solicitor | hr | union_rep | insurer | other) — validated at the API
+--    solicitor | hr | union_rep | insurer | other)  -  validated at the API
 --    layer, not by a DB CHECK, so new role types can be added without a
 --    migration. `onboarded_at` is the idempotency marker: a NON-NULL value
 --    means the user has completed onboarding and the API will NOT create a
 --    second onboarding case.
 --
--- 2. cases.case_title — human-readable label for a case (the existing
+-- 2. cases.case_title  -  human-readable label for a case (the existing
 --    claim_type column stays the machine key that drives rules/deadline logic).
---    cases.created_from — provenance of the row ('onboarding' | 'assessment' |
+--    cases.created_from  -  provenance of the row ('onboarding' | 'assessment' |
 --    'manual'); lets us distinguish the auto-created onboarding shell case from
 --    a real saved diagnosis.
 --
--- Idempotent (ADD COLUMN IF NOT EXISTS) — safe to re-run.
+-- Idempotent (ADD COLUMN IF NOT EXISTS)  -  safe to re-run.
 
 BEGIN;
 

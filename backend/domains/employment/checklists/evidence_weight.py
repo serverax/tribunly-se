@@ -1,5 +1,5 @@
 """
-Evidence weight — deterministic narrative heuristics.
+Evidence weight  -  deterministic narrative heuristics.
 Refactored from Iterlaw evidence-weight.engine.ts
 """
 import re
@@ -17,15 +17,15 @@ def assess_evidence_weight(text: str) -> EvidenceWeightAssessment:
     doc: Literal["strong", "moderate", "weak"] = "moderate"
     if bool(re.search(r"\b(no evidence|no emails|no contract|nothing in writing)\b", t, re.IGNORECASE)):
         doc = "weak"
-        notes.append("Limited documentary references — disclosure strategy will matter.")
+        notes.append("Limited documentary references  -  disclosure strategy will matter.")
     elif bool(re.search(r"\b(email|contract|minutes|letter|pdf|screenshot)\b", t, re.IGNORECASE)):
         doc = "strong"
-        notes.append("Some documentary references — preserve metadata and chains of custody.")
+        notes.append("Some documentary references  -  preserve metadata and chains of custody.")
 
     witness: Literal["low", "medium", "high"] = "medium"
     if bool(re.search(r"\b(he said|she said|disputed|contradict)\b", t, re.IGNORECASE)):
         witness = "high"
-        notes.append("Credibility-heavy dispute — witness statements and chronology critical.")
+        notes.append("Credibility-heavy dispute  -  witness statements and chronology critical.")
 
     return {
         "documentary_support": doc,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Production readiness check — Phase 6A.
+Production readiness check  -  Phase 6A.
 
 Calls the /admin/production-readiness endpoint and prints the result.
 Requires ADMIN_API_KEY env var to be set (same as the running server).
@@ -43,12 +43,12 @@ def main() -> int:
         return 1
 
     if resp.status_code != 200:
-        print(f"ERROR: {resp.status_code} — {resp.text[:200]}")
+        print(f"ERROR: {resp.status_code}  -  {resp.text[:200]}")
         return 1
 
     data = resp.json()
     print("=" * 70)
-    print("LAWAPP — PRODUCTION READINESS REPORT")
+    print("LAWAPP  -  PRODUCTION READINESS REPORT")
     print("=" * 70)
     print(json.dumps(data, indent=2))
     print()

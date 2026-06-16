@@ -1,5 +1,5 @@
 """
-Auth routes security tests — lawapp JWT protection.
+Auth routes security tests  -  lawapp JWT protection.
 
 Tests:
   - protected endpoints return 401/403 without valid token
@@ -100,7 +100,7 @@ class TestProtectedEndpoints:
         # We test that auth_mode=jwt enforces it
         import os
         if os.environ.get("LAWAPP_AUTH_MODE", "mock") == "none":
-            pytest.skip("LAWAPP_AUTH_MODE=none — isolation not enforced in dev mode")
+            pytest.skip("LAWAPP_AUTH_MODE=none  -  isolation not enforced in dev mode")
         # In mock mode, no token = user_id=None = returns all cases (null user cases)
         # In jwt mode, no token = 200 with empty list (anonymous user)
         assert r.status_code in (200, 401, 403)
@@ -117,14 +117,14 @@ class TestProtectedEndpoints:
 
     def test_invalid_token_rejected(self, client):
         r = client.get("/cases", headers={"Authorization": "Bearer definitely.not.a.valid.jwt"})
-        # Should return 401 (invalid token) — not 200
+        # Should return 401 (invalid token)  -  not 200
         import os
         auth_mode = os.environ.get("LAWAPP_AUTH_MODE", "mock")
         if auth_mode == "jwt":
             assert r.status_code == 401
-        # In mock mode, bearer token is ignored — just skip
+        # In mock mode, bearer token is ignored  -  just skip
         else:
-            pytest.skip(f"LAWAPP_AUTH_MODE={auth_mode} — jwt validation not active")
+            pytest.skip(f"LAWAPP_AUTH_MODE={auth_mode}  -  jwt validation not active")
 
 
 class TestDuplicateRegistrationRejected:
@@ -161,7 +161,7 @@ class TestHealthEndpointTransparency:
 
     def test_health_ai_provider_is_local_ollama_only(self, client):
         """LOCAL OLLAMA ONLY: /health ai_provider reports the internal Ollama backend
-        (active), independent of any external key. No external provider is reported —
+        (active), independent of any external key. No external provider is reported  - 
         a present ANTHROPIC_API_KEY must NOT change this."""
         import os
         os.environ["ANTHROPIC_API_KEY"] = "sk-ant-real-looking-should-be-ignored"  # pragma: allowlist secret (fake fixture)

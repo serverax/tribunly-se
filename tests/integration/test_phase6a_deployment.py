@@ -1,5 +1,5 @@
 """
-Phase 6A — Deployment readiness, auth, and payment mode tests.
+Phase 6A  -  Deployment readiness, auth, and payment mode tests.
 
 Tests:
   Config validation:

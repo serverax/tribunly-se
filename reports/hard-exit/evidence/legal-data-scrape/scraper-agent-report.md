@@ -1,4 +1,4 @@
-# SA-001 Scraper Agent Report — RAW UK Employment-Law Source Acquisition
+# SA-001 Scraper Agent Report  -  RAW UK Employment-Law Source Acquisition
 
 Agent: uk-employment-law-scraper-agent (acquisition layer only)
 Date (UTC): 2026-06-07
@@ -27,7 +27,7 @@ legal data was created.
 | govuk-redundancy | govuk_guidance | 200 | 94770 | 5db263df | 2026-06-07T14:44:34Z |
 | govuk-holiday-entitlement | govuk_guidance | 200 | 97623 | d8bebf18 | 2026-06-07T14:44:36Z |
 
-## Content authenticity checks (not parsing — sanity only)
+## Content authenticity checks (not parsing  -  sanity only)
 
 - All 3 legislation files are genuine CLML: root `<Legislation xmlns="http://www.legislation.gov.uk/namespaces/legislation" ...>` with DocumentURI, NumberOfProvisions, RestrictStartDate. NOT error pages.
   - era-1996: NumberOfProvisions=528, version (RestrictStartDate)=2026-04-06, extent E+W+S+N.I.
@@ -50,7 +50,7 @@ legal data was created.
 - NO embeddings or vector index entries created.
 - NO database rows of any kind created.
 - NO parsing of statute/guidance into structured legal data.
-- NO invented citations, no fabricated content, no fabricated hashes — every hash was computed
+- NO invented citations, no fabricated content, no fabricated hashes  -  every hash was computed
   with `sha256sum` directly from the bytes on disk.
 - NO Find Case Law bulk/computational scrape (no licence on record; out of scope).
 

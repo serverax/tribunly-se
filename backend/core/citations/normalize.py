@@ -1,6 +1,6 @@
 """Normalise a raw citation string to a canonical, comparable form.
 
-Canonicalisation is purely textual and lossless of meaning — it standardises
+Canonicalisation is purely textual and lossless of meaning  -  it standardises
 spacing, court/series casing, and section prefixes so that two spellings of the
 same authority compare equal in the linker. It NEVER changes which authority is
 referred to (e.g. it will not "correct" s.98 to s.99).

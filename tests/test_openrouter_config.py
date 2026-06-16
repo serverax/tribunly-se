@@ -25,7 +25,7 @@ def test_key_loaded_from_env(monkeypatch):
 
 def test_missing_key_does_not_crash(monkeypatch):
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
-    # must not raise — graceful, returns False
+    # must not raise  -  graceful, returns False
     assert A.is_openrouter_configured() is False
 
 

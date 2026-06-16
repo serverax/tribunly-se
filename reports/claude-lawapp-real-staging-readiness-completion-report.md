@@ -9,7 +9,7 @@
 ## 1. Final Classification
 
 **LOCAL DEMO READY: YES**  
-**STAGING READY: NO** — Real AI key, Kubernetes deployment, and production secrets not yet applied  
+**STAGING READY: NO**  -  Real AI key, Kubernetes deployment, and production secrets not yet applied  
 **PRODUCTION READY: NO**
 
 ---
@@ -96,13 +96,13 @@ bash scripts/push-and-deploy.sh --dry-run
 
 | Table | Row Count | Status |
 |---|---|---|
-| rules | 19 | DONE — auto-seeded via migration 020 |
-| legislation | 80 | DONE — run: `docker compose run --rm ingestion python -m ingestion.legislation.ingest` |
-| acas_guidance | 12 | DONE — run: `docker compose run --rm ingestion python -m ingestion.acas.ingest` |
-| case_law_chunks | 0 | BLOCKED_EXTERNAL_LICENCE — FCL bulk licence required |
-| legal_nodes | 15 | DONE — seeded in migration 018 |
-| legal_edges | 14 | DONE — seeded in migration 018 |
-| payment_events | 0 | DONE — table exists, webhook idempotency ready |
+| rules | 19 | DONE  -  auto-seeded via migration 020 |
+| legislation | 80 | DONE  -  run: `docker compose run --rm ingestion python -m ingestion.legislation.ingest` |
+| acas_guidance | 12 | DONE  -  run: `docker compose run --rm ingestion python -m ingestion.acas.ingest` |
+| case_law_chunks | 0 | BLOCKED_EXTERNAL_LICENCE  -  FCL bulk licence required |
+| legal_nodes | 15 | DONE  -  seeded in migration 018 |
+| legal_edges | 14 | DONE  -  seeded in migration 018 |
+| payment_events | 0 | DONE  -  table exists, webhook idempotency ready |
 | cases | varies | DONE |
 | users | varies | DONE |
 | documents | varies | DONE |
@@ -148,7 +148,7 @@ curl http://localhost:8000/freshness
 | POST /api/brain/trace | DONE | optional JWT | n/a | 19 steps |
 | POST /api/rag/hybrid-search | DONE | none | n/a | rules_found=8, citations from ERA 1996 |
 | POST /handoff/leads | DONE | optional JWT | n/a | |
-| POST /cases/{id}/uploads/{id}/extract | DONE (501) | JWT | enforced | Not Implemented — Phase 4 |
+| POST /cases/{id}/uploads/{id}/extract | DONE (501) | JWT | enforced | Not Implemented  -  Phase 4 |
 
 ---
 
@@ -176,10 +176,10 @@ curl http://localhost:8000/freshness
 | Cross-user 403 | DONE | smoke step 10, security regression |
 | PII stripping | DONE | deidentify() before model.reason() |
 | Reserved activity blocked | DONE | brain.py safety policy gate |
-| Rate limiting — Redis | DONE | RATELIMIT_STORAGE_URI=redis://redis:6379, Redis running |
+| Rate limiting  -  Redis | DONE | RATELIMIT_STORAGE_URI=redis://redis:6379, Redis running |
 | Stripe webhook sig verify | DONE | verify_webhook_signature() with stripe SDK |
 | Stripe webhook fail-closed | DONE | 503 if STRIPE_WEBHOOK_SECRET not configured |
-| OCR — raw doc not sent to AI | DONE | raw_document in _PII_FIELDS |
+| OCR  -  raw doc not sent to AI | DONE | raw_document in _PII_FIELDS |
 | Payment idempotency | DONE | payment_events UNIQUE on stripe_event_id |
 | No secrets committed | DONE | security regression scan passes |
 
@@ -209,12 +209,12 @@ curl http://localhost:8000/freshness
 
 | Aspect | Status |
 |---|---|
-| test_simulator mode | DONE — test_ prefix required |
+| test_simulator mode | DONE  -  test_ prefix required |
 | No token → preview | DONE |
 | Webhook endpoint | DONE |
-| Webhook sig verification | DONE — stripe.Webhook.construct_event() |
-| Webhook fails without secret | DONE — 503 if STRIPE_WEBHOOK_SECRET absent |
-| Payment events DB write | DONE — migration 021, idempotent |
+| Webhook sig verification | DONE  -  stripe.Webhook.construct_event() |
+| Webhook fails without secret | DONE  -  503 if STRIPE_WEBHOOK_SECRET absent |
+| Payment events DB write | DONE  -  migration 021, idempotent |
 | Real Stripe keys | BLOCKED_OWNER_ACTION |
 
 ---
@@ -225,9 +225,9 @@ curl http://localhost:8000/freshness
 |---|---|
 | Upload route | DONE |
 | Ownership enforced | DONE |
-| Raw upload not sent to AI | DONE — raw_document in _PII_FIELDS |
+| Raw upload not sent to AI | DONE  -  raw_document in _PII_FIELDS |
 | OCR extraction | STUB → 501 Not Implemented |
-| UI notice | DONE — "Phase 4 not enabled" banner |
+| UI notice | DONE  -  "Phase 4 not enabled" banner |
 | Real OCR engine | NOT IMPLEMENTED (Phase 4) |
 
 ---
@@ -236,13 +236,13 @@ curl http://localhost:8000/freshness
 
 | Aspect | Status |
 |---|---|
-| Binary | DONE — 95KB .wasm file |
-| Rust source | DONE — client/wasm/src/lib.rs |
-| JS fallback | DONE — computeDeadlineJS() |
-| Rules from backend | DONE — fetchDeadlineRules() → /rules/ |
-| No hardcoded values | DONE — grep confirms 0 matches |
-| Rebuild script | DONE — scripts/rebuild-wasm.sh (needs wasm-pack installed) |
-| CI WASM check | DONE — lawapp-ci.yml wasm-check job |
+| Binary | DONE  -  95KB .wasm file |
+| Rust source | DONE  -  client/wasm/src/lib.rs |
+| JS fallback | DONE  -  computeDeadlineJS() |
+| Rules from backend | DONE  -  fetchDeadlineRules() → /rules/ |
+| No hardcoded values | DONE  -  grep confirms 0 matches |
+| Rebuild script | DONE  -  scripts/rebuild-wasm.sh (needs wasm-pack installed) |
+| CI WASM check | DONE  -  lawapp-ci.yml wasm-check job |
 
 ---
 
@@ -250,11 +250,11 @@ curl http://localhost:8000/freshness
 
 | Aspect | Status |
 |---|---|
-| lawapp-ci.yml | DONE — tests, Redis, migrations, security scan, WASM check |
+| lawapp-ci.yml | DONE  -  tests, Redis, migrations, security scan, WASM check |
 | lawapp-deploy-k8s.yml | DONE |
-| push-and-deploy.sh | DONE — --dry-run confirmed working |
-| security-regression.sh | DONE — 9/9 pass |
-| stale deploy-iterlaw-ai.yml | DONE — renamed to .disabled |
+| push-and-deploy.sh | DONE  -  --dry-run confirmed working |
+| security-regression.sh | DONE  -  9/9 pass |
+| stale deploy-iterlaw-ai.yml | DONE  -  renamed to .disabled |
 
 ---
 
@@ -278,18 +278,18 @@ kubectl not available in this environment. Owner must run `bash scripts/deploy-t
 
 | # | Blocker |
 |---|---|
-| 1 | Set real `ANTHROPIC_API_KEY` — complex assessments return insufficient_grounding |
-| 2 | Set real Stripe keys — STRIPE_SECRET_KEY, STRIPE_PUBLIC_KEY, STRIPE_WEBHOOK_SECRET |
+| 1 | Set real `ANTHROPIC_API_KEY`  -  complex assessments return insufficient_grounding |
+| 2 | Set real Stripe keys  -  STRIPE_SECRET_KEY, STRIPE_PUBLIC_KEY, STRIPE_WEBHOOK_SECRET |
 | 3 | Run `bash scripts/deploy-talos.sh` from WSL with kubeconfig |
 | 4 | Apply for FCL bulk computational licence for case law corpus |
-| 5 | Set real `ENCRYPTION_KEY` in production — 2 encryption tests currently skip |
-| 6 | Install wasm-pack for WASM rebuild (optional — JS fallback is functional) |
+| 5 | Set real `ENCRYPTION_KEY` in production  -  2 encryption tests currently skip |
+| 6 | Install wasm-pack for WASM rebuild (optional  -  JS fallback is functional) |
 
 ### Claude coding blockers remaining
 
 | # | Item | Effort |
 |---|---|---|
-| 1 | Real OCR engine (Phase 4) | 1-2 sprints — need pytesseract or cloud OCR |
+| 1 | Real OCR engine (Phase 4) | 1-2 sprints  -  need pytesseract or cloud OCR |
 | 2 | Stripe live webhook: wire checkout.session.completed to document access unlock | 2-4 hours |
 | 3 | Redis persistence config for rate limiter (maxmemory-policy set; TTL needs config) | 1 hour |
 

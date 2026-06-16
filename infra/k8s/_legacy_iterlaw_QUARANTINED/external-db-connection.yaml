@@ -1,10 +1,10 @@
 ---
-# IterLaw — external PostgreSQL + pgvector connection
+# IterLaw  -  external PostgreSQL + pgvector connection
 #
 # Option A (recommended for MVP): Use an external managed Postgres service
 # (e.g. Azure Database for PostgreSQL Flexible Server with pgvector extension).
 # The connection string is stored as a secret (see secrets.example.yaml).
-# No in-cluster Postgres pod needed — reduces ops burden.
+# No in-cluster Postgres pod needed  -  reduces ops burden.
 #
 # Option B: Deploy in-cluster Postgres (see postgres-pgvector.yaml if needed).
 #

@@ -1,9 +1,9 @@
 """
-Critic Agent — Evolving Intelligence Stack, Component A.
+Critic Agent  -  Evolving Intelligence Stack, Component A.
 
 Sits between Agent ART (reasoning/strategy) and Agent SEA (drafting). It cross-
 references ART's cited legal authorities against the LOCAL DB corpus (legislation /
-case_law / acas_guidance / rules) using the real citation verifier — NOT model memory.
+case_law / acas_guidance / rules) using the real citation verifier  -  NOT model memory.
 
 If ART makes a legal assertion with no citation, or cites an authority that does NOT
 resolve to a real DB row (hallucination / weak link), the Critic returns a Critique
@@ -82,7 +82,7 @@ def critique(reasoning: dict, attempt: int = 0) -> Critique:
                             reason="uncited legal assertion")
 
         if not authorities:
-            # No assertion and no authorities — nothing to verify; let grounding gate handle it.
+            # No assertion and no authorities  -  nothing to verify; let grounding gate handle it.
             return Critique(True, ACCEPT, reason="no authorities to verify (deferred to grounding gate)")
 
         # 2) Every cited authority MUST resolve to a real DB row.
@@ -109,7 +109,7 @@ def critique(reasoning: dict, attempt: int = 0) -> Critique:
         # FAIL-CLOSED: cannot verify against the DB => halt the chain.
         logger.error("Critic failed-closed (cannot verify against DB): %s", exc)
         return Critique(False, HALT, issues=[{"type": "verification_error", "detail": str(exc)}],
-                        reason="critic could not verify against the local DB — fail-closed halt")
+                        reason="critic could not verify against the local DB  -  fail-closed halt")
 
 
 def run_critic_loop(reason_fn: Callable[[Optional[dict]], dict]) -> dict:
@@ -118,7 +118,7 @@ def run_critic_loop(reason_fn: Callable[[Optional[dict]], dict]) -> dict:
     reason_fn(critique_or_none) -> ART reasoning payload. On a REGENERATE verdict the
     critique is fed back so ART can re-generate. Returns:
       {"status": "accepted"|"halted", "reasoning": {...}, "critique": {...}, "attempts": n}
-    A HALT means the chain must NOT proceed to SEA/drafting — escalate to human_review.
+    A HALT means the chain must NOT proceed to SEA/drafting  -  escalate to human_review.
     """
     last_critique: Optional[Critique] = None
     reasoning: dict = {}
@@ -211,7 +211,7 @@ class CriticAgent:
             reasoning="The proposed argument lacks a verified link to the cited legislation.",
             critique=verdict.reason or issue.get("detail", "unverified legal link"),
             suggested_correction=(
-                "Re-evaluate the cited authorities — each must resolve to a real row in "
+                "Re-evaluate the cited authorities  -  each must resolve to a real row in "
                 "the local legal DB (legislation/case_law/acas/rules)."
             ),
         )

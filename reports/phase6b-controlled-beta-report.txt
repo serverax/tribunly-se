@@ -1,6 +1,6 @@
-PHASE 6B — CONTROLLED-BETA READINESS
+PHASE 6B  -  CONTROLLED-BETA READINESS
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -19,8 +19,8 @@ Phase 6B closes controlled-beta blockers:
 ═══════════════════════════════════════════════════════════════════════════════
 
 user_auth.py updated with:
-  is_auth_production_ready() — always False (JWT stub not crypto-verified)
-  is_auth_controlled_beta_ready() — True for mock/jwt; False for none
+  is_auth_production_ready()  -  always False (JWT stub not crypto-verified)
+  is_auth_controlled_beta_ready()  -  True for mock/jwt; False for none
 
 Production mode blockers:
   - LAWAPP_AUTH_MODE=none → production blocker
@@ -42,24 +42,24 @@ GUARDRAIL: JWT stub explicitly labeled as NOT crypto-verified.
 
 New module: backend/engine/kms.py
 KEY_MANAGEMENT_MODE env var:
-  env (default): ENCRYPTION_KEY env var — NOT production-grade
+  env (default): ENCRYPTION_KEY env var  -  NOT production-grade
   kms_stub:      KMS interface exists; NOT connected to real HSM; acceptable for
                  production-readiness flag but Phase 7 implementation required
-  disabled:      No encryption — dev only; production blocker
+  disabled:      No encryption  -  dev only; production blocker
 
 kms.get_kms_status(): returns mode, production_grade, hsm_connected=False, note
 kms.is_production_grade_key_management(): True only for kms_stub
 
 GUARDRAIL: env mode IS a production blocker.
-GUARDRAIL: kms_stub hsm_connected=False — never claims real KMS.
+GUARDRAIL: kms_stub hsm_connected=False  -  never claims real KMS.
 
 ═══════════════════════════════════════════════════════════════════════════════
 3. DPIA/PRIVACY SIGN-OFF WORKFLOW
 ═══════════════════════════════════════════════════════════════════════════════
 
 New files:
-  docs/compliance-signoff.json — machine-readable sign-off state
-  backend/engine/compliance.py — reads signoff, computes CB/prod thresholds
+  docs/compliance-signoff.json  -  machine-readable sign-off state
+  backend/engine/compliance.py  -  reads signoff, computes CB/prod thresholds
 
 Controlled-beta threshold:
   - DPIA: reviewed_by_dpo OR approved
@@ -93,7 +93,7 @@ Current state (docs/compliance-signoff.json):
 Controlled-beta blockers (current):
   1. DPIA not reviewed by DPO or approved
   2. Privacy notice not legally reviewed
-  3. LAWAPP_AUTH_MODE=mock — mock auth not suitable for production (acceptable for controlled beta only)
+  3. LAWAPP_AUTH_MODE=mock  -  mock auth not suitable for production (acceptable for controlled beta only)
   4. JWT stub not cryptographically verified
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -116,7 +116,7 @@ config_validation.py updated:
   - Exits 0 always (reporting only; NOT_PRODUCTION_READY is expected)
   - Runs after rules-verification-gate
 
-scripts/check_production_readiness_ci.py — new CI-compatible readiness check
+scripts/check_production_readiness_ci.py  -  new CI-compatible readiness check
 
 ═══════════════════════════════════════════════════════════════════════════════
 CONTROLLED-BETA READINESS STATUS
@@ -125,8 +125,8 @@ CONTROLLED-BETA READINESS STATUS
 controlled_beta_ready: FALSE
 
 Current blockers:
-  1. DPIA not reviewed by DPO — docs/compliance-signoff.json reviewed_by_dpo=false
-  2. Privacy notice not legally reviewed — legally_reviewed=false
+  1. DPIA not reviewed by DPO  -  docs/compliance-signoff.json reviewed_by_dpo=false
+  2. Privacy notice not legally reviewed  -  legally_reviewed=false
   3. Auth mode: LAWAPP_AUTH_MODE is currently 'mock' in default config
   4. JWT stub not cryptographically verified (Phase 7)
 
@@ -147,11 +147,11 @@ FILES CREATED
 FILES MODIFIED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  backend/engine/user_auth.py        — JWT stub; production readiness checks
-  backend/engine/config_validation.py — APP_BASE_URL; JWT config; KMS checks
-  backend/engine/production_readiness.py — controlled_beta_ready; KMS; compliance
-  backend/api/main.py                — /admin/compliance-status; version 1.4.0-phase6b
-  .github/workflows/ci.yml          — production-readiness-check job
+  backend/engine/user_auth.py         -  JWT stub; production readiness checks
+  backend/engine/config_validation.py  -  APP_BASE_URL; JWT config; KMS checks
+  backend/engine/production_readiness.py  -  controlled_beta_ready; KMS; compliance
+  backend/api/main.py                 -  /admin/compliance-status; version 1.4.0-phase6b
+  .github/workflows/ci.yml           -  production-readiness-check job
 
 ═══════════════════════════════════════════════════════════════════════════════
 END PHASE 6B

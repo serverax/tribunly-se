@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_mvp_user_journey.sh — HOSTILE end-to-end proof of the lawapp MVP journey:
+# prove_mvp_user_journey.sh  -  HOSTILE end-to-end proof of the lawapp MVP journey:
 # land -> guided intake -> /assess (cited diagnosis) -> deadline shown -> test payment
 # -> document generation -> document content -> handoff trigger -> audit rows written.
 set -uo pipefail

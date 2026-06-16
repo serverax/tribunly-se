@@ -22,7 +22,7 @@ def test_clear_ud_sacked():
     assert r.matter_type == "unfair_dismissal"
 
 def test_clear_ud_constructive():
-    r = classify("My employer made my life so difficult I had to resign — constructive dismissal")
+    r = classify("My employer made my life so difficult I had to resign  -  constructive dismissal")
     assert r.in_scope is True
     assert r.matter_type == "unfair_dismissal"
 
@@ -32,7 +32,7 @@ def test_ud_with_facts_dict():
     assert r.matter_type == "unfair_dismissal"
 
 def test_deadline_intent():
-    r = classify("I was dismissed — what's my deadline to claim?")
+    r = classify("I was dismissed  -  what's my deadline to claim?")
     assert r.in_scope is True
     assert r.matter_type == "unfair_dismissal"
     assert r.intent == "deadline_check"
@@ -47,7 +47,7 @@ def test_document_intent():
 # ── Out-of-scope ──────────────────────────────────────────────────────────────
 
 def test_oos_tenancy():
-    r = classify("My landlord wants to evict me — can they do this?")
+    r = classify("My landlord wants to evict me  -  can they do this?")
     assert r.in_scope is False
 
 def test_oos_divorce():
@@ -55,7 +55,7 @@ def test_oos_divorce():
     assert r.in_scope is False
 
 def test_oos_criminal():
-    r = classify("I got arrested for speeding — what are my rights?")
+    r = classify("I got arrested for speeding  -  what are my rights?")
     assert r.in_scope is False
 
 def test_oos_immigration():
@@ -73,10 +73,10 @@ def test_oos_returns_not_supported_type():
     assert r.matter_type != "unfair_dismissal"
 
 
-# ── Mixed signals (OOS + UD) — UD should win ─────────────────────────────────
+# ── Mixed signals (OOS + UD)  -  UD should win ─────────────────────────────────
 
 def test_mixed_ud_wins_over_oos():
-    # Both tenancy and dismissal mentioned — UD keywords present, should be in-scope
+    # Both tenancy and dismissal mentioned  -  UD keywords present, should be in-scope
     r = classify("I was dismissed from my job and now I can't pay my rent")
     assert r.in_scope is True
     assert r.matter_type == "unfair_dismissal"
@@ -85,7 +85,7 @@ def test_mixed_ud_wins_over_oos():
 # ── Ambiguous ─────────────────────────────────────────────────────────────────
 
 def test_ambiguous_returns_not_in_scope():
-    # Generic query with no domain signals — should not guess in_scope=True.
+    # Generic query with no domain signals  -  should not guess in_scope=True.
     # Phase 8B: Stage B ML model may return "out_of_scope" when configured;
     # without a model key, returns "ambiguous". Both are correct rejections.
     r = classify("I need some legal advice please")

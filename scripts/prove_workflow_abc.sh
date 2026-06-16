@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_workflow_abc.sh — repeatable local proof of Workflow A/B/C.
+# prove_workflow_abc.sh  -  repeatable local proof of Workflow A/B/C.
 # Runs pytest + authed HTTP E2E + DB verification + outbox lifecycle + frontend
 # static wiring. Exits non-zero on ANY missing proof. No manual interpretation.
 set -uo pipefail

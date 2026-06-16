@@ -1,7 +1,7 @@
 """
 Reasoning model interface and stub.
 
-GUARDRAIL (model selection): the workhorse model has NOT been chosen yet —
+GUARDRAIL (model selection): the workhorse model has NOT been chosen yet  - 
 that is a deliberate bake-off decision (01_BUILD_PLAN.md §0). Do not default
 to any specific model here. The interface is defined so the rest of the pipeline
 can be built and tested without a live model call.
@@ -9,7 +9,7 @@ can be built and tested without a live model call.
 StubReasoningModel: returns a valid, honest assessment that exercises the full
 pipeline (including governance gate) without any model call. Used for unit tests
 and pipeline wiring verification. It returns insufficient_grounding=True because
-it has no real reasoning to offer — this is the correct and honest result.
+it has no real reasoning to offer  -  this is the correct and honest result.
 
 ClaudeReasoningModel: wired but requires explicit model_id at construction.
 Will not instantiate without it. Implement once the bake-off is complete.
@@ -38,7 +38,7 @@ class ReasoningModel(ABC):
         self,
         safe_facts: dict,           # de-identified facts (PII already stripped)
         bundle: RetrievalBundle,
-        deadline_info: dict,        # pre-computed from rules — model must not alter
+        deadline_info: dict,        # pre-computed from rules  -  model must not alter
         boundary_log: dict,         # de-identification audit record
     ) -> StructuredAssessment:
         """
@@ -47,7 +47,7 @@ class ReasoningModel(ABC):
         GUARDRAIL: safe_facts must have been through deidentify() before this
         call. The caller is responsible. boundary_log proves it happened.
         The deadline values in deadline_info come from the rules table and are
-        injected into the assessment — the model explains them, never re-derives.
+        injected into the assessment  -  the model explains them, never re-derives.
         """
         ...
 
@@ -70,7 +70,7 @@ class StubReasoningModel(ReasoningModel):
     - Confirm the de-identification boundary is enforced before this is called.
 
     Returns insufficient_grounding=True because it has no actual reasoning.
-    The governance gate will route this to seek_solicitor — correct behaviour.
+    The governance gate will route this to seek_solicitor  -  correct behaviour.
     """
 
     def reason(
@@ -80,7 +80,7 @@ class StubReasoningModel(ReasoningModel):
         deadline_info: dict,
         boundary_log: dict,
     ) -> StructuredAssessment:
-        logger.info("StubReasoningModel.reason called — no external API call made")
+        logger.info("StubReasoningModel.reason called  -  no external API call made")
 
         # Derive deadline from the pre-computed deadline_info (never from model)
         deadline = Deadline(
@@ -100,7 +100,7 @@ class StubReasoningModel(ReasoningModel):
             low=0,
             high=float(cap_rule["value_numeric"]) if cap_rule and cap_rule.get("value_numeric") else 0,
             currency="GBP",
-            basis="from rules — model reasoning not yet configured",
+            basis="from rules  -  model reasoning not yet configured",
         )
 
         return StructuredAssessment(
@@ -109,11 +109,11 @@ class StubReasoningModel(ReasoningModel):
             has_viable_claim="uncertain",
             strength="uncertain",
             reasoning_summary=(
-                "Stub model — reasoning engine not yet configured. "
+                "Stub model  -  reasoning engine not yet configured. "
                 "Rules data retrieved successfully. Cite your legal adviser."
             ),
             value_range=value_range,
-            key_weaknesses=["Reasoning model not yet configured — assessment is incomplete."],
+            key_weaknesses=["Reasoning model not yet configured  -  assessment is incomplete."],
             deadline=deadline,
             recommended_next_step="seek_solicitor",
             citations=[],
@@ -130,7 +130,7 @@ class ClaudeReasoningModel(ReasoningModel):
     """
     Real reasoning implementation using the Anthropic API.
 
-    REQUIRES: explicit model_id — do not hardcode a default.
+    REQUIRES: explicit model_id  -  do not hardcode a default.
     Model selection is a deliberate bake-off decision (Phase 2, post-embeddings).
     Construct only after the workhorse model has been chosen and tested.
 
@@ -144,14 +144,14 @@ class ClaudeReasoningModel(ReasoningModel):
         # but fails closed on construction so it can never serve a legal request.
         from backend.core.inference_policy import ExternalLLMForbidden
         raise ExternalLLMForbidden(
-            "ClaudeReasoningModel (Anthropic cloud) is forbidden — lawapp uses the "
+            "ClaudeReasoningModel (Anthropic cloud) is forbidden  -  lawapp uses the "
             "internal Ollama backend only."
         )
 
     _SYSTEM_PROMPT = """You are a legal assessment engine for UK unfair dismissal claims.
 You receive ONLY retrieved legal authority and de-identified user facts.
 You must produce a structured JSON assessment matching the exact schema provided.
-You must not generate, recall, or re-derive any deadline, cap, or threshold —
+You must not generate, recall, or re-derive any deadline, cap, or threshold  - 
 these are provided in deadline_info and rules and must be used verbatim.
 You must cite every legal claim to a specific retrieved authority.
 When a LEGAL RELATIONSHIP MAP is provided, prioritise its nodes and relationships
@@ -165,18 +165,18 @@ Never fabricate authority. Never overstate strength. Surface weaknesses honestly
     ) -> str:
         relationship_map = safe_facts.get("_legal_relationship_map", "")
         relationship_block = (
-            f"\nLEGAL RELATIONSHIP MAP (verified graph — PRIORITISE over isolated "
+            f"\nLEGAL RELATIONSHIP MAP (verified graph  -  PRIORITISE over isolated "
             f"snippets below):\n{relationship_map}\n" if relationship_map else ""
         )
         return f"""Assess the following unfair dismissal matter.
 {relationship_block}
-RETRIEVED RULES (use verbatim — do not alter these values):
+RETRIEVED RULES (use verbatim  -  do not alter these values):
 {json.dumps(bundle.exact_rules, indent=2, default=str)}
 
 RETRIEVED AUTHORITIES:
 {json.dumps(bundle.authorities, indent=2)}
 
-DEADLINE (pre-computed from rules — use verbatim, source must remain "rules"):
+DEADLINE (pre-computed from rules  -  use verbatim, source must remain "rules"):
 {json.dumps(deadline_info, indent=2, default=str)}
 
 DE-IDENTIFIED FACTS:
@@ -213,7 +213,7 @@ Return ONLY the JSON object. No prose before or after."""
         # Assert de-identification happened
         if not boundary_log:
             raise RuntimeError(
-                "boundary_log is empty — deidentify() must be called before reason(). "
+                "boundary_log is empty  -  deidentify() must be called before reason(). "
                 "Raw personal facts must never reach this method."
             )
 
@@ -246,12 +246,12 @@ Return ONLY the JSON object. No prose before or after."""
                 raw = raw[_a:_b + 1]
             data = json.loads(raw)
         except Exception as exc:
-            logger.warning("Claude output not valid JSON — failing closed: %s", exc)
+            logger.warning("Claude output not valid JSON  -  failing closed: %s", exc)
             return StructuredAssessment(
                 claim_type="unfair_dismissal",
                 jurisdiction=safe_facts.get("jurisdiction", "EW"),
                 has_viable_claim="uncertain", strength="uncertain",
-                reasoning_summary="Model output could not be safely parsed — insufficient grounding.",
+                reasoning_summary="Model output could not be safely parsed  -  insufficient grounding.",
                 value_range=ValueRange(low=0, high=0, currency="GBP", basis="unparseable model output"),
                 key_weaknesses=["Model output unparseable (failed closed). Seek legal advice."],
                 deadline=Deadline(limitation_date=None, source="rules", authority="ERA 1996 s.111(2)"),
@@ -259,7 +259,7 @@ Return ONLY the JSON object. No prose before or after."""
                 grounding_score=0.0, confidence_score=0.0, insufficient_grounding=True,
             )
 
-        # Enforce deadline.source = "rules" — governance gate also checks this,
+        # Enforce deadline.source = "rules"  -  governance gate also checks this,
         # but we fix it here defensively so the model cannot override it.
         if "deadline" in data:
             data["deadline"]["source"] = "rules"
@@ -287,7 +287,7 @@ class OpenRouterReasoningModel(ReasoningModel):
     before any output reaches the user.
 
     Timeout: if OpenRouter is unavailable, returns insufficient_grounding with
-    flag MODEL_UNAVAILABLE — never crashes the engine.
+    flag MODEL_UNAVAILABLE  -  never crashes the engine.
     """
 
     BASE_URL = "https://openrouter.ai/api/v1"
@@ -298,7 +298,7 @@ class OpenRouterReasoningModel(ReasoningModel):
         # forbidden for lawapp legal routes. Retained for imports; fails closed.
         from backend.core.inference_policy import ExternalLLMForbidden
         raise ExternalLLMForbidden(
-            "OpenRouterReasoningModel (hosted gateway) is forbidden — lawapp uses the "
+            "OpenRouterReasoningModel (hosted gateway) is forbidden  -  lawapp uses the "
             "internal Ollama backend only."
         )
 
@@ -322,15 +322,15 @@ class OpenRouterReasoningModel(ReasoningModel):
 
         if not boundary_log:
             raise RuntimeError(
-                "boundary_log is empty — deidentify() must be called before "
+                "boundary_log is empty  -  deidentify() must be called before "
                 "OpenRouterReasoningModel.reason(). Raw personal facts must never reach this method."
             )
 
         prompt = (
             f"Assess the following unfair dismissal matter.\n\n"
-            f"RETRIEVED RULES (verbatim — do not alter):\n{json.dumps(bundle.exact_rules, indent=2, default=str)}\n\n"
+            f"RETRIEVED RULES (verbatim  -  do not alter):\n{json.dumps(bundle.exact_rules, indent=2, default=str)}\n\n"
             f"RETRIEVED AUTHORITIES:\n{json.dumps(bundle.authorities, indent=2)}\n\n"
-            f"DEADLINE (pre-computed from rules — source must remain 'rules'):\n"
+            f"DEADLINE (pre-computed from rules  -  source must remain 'rules'):\n"
             f"{json.dumps(deadline_info, indent=2, default=str)}\n\n"
             f"DE-IDENTIFIED FACTS:\n{json.dumps(safe_facts, indent=2, default=str)}\n\n"
             "Return ONLY valid JSON matching the structured assessment schema. No prose."
@@ -366,13 +366,13 @@ class OpenRouterReasoningModel(ReasoningModel):
             )
             resp.raise_for_status()
         except Exception as exc:
-            logger.warning("OpenRouter unavailable: %s — returning MODEL_UNAVAILABLE", exc)
+            logger.warning("OpenRouter unavailable: %s  -  returning MODEL_UNAVAILABLE", exc)
             return StructuredAssessment(
                 claim_type="unfair_dismissal",
                 jurisdiction=safe_facts.get("jurisdiction", "EW"),
                 has_viable_claim="uncertain",
                 strength="uncertain",
-                reasoning_summary="Model unavailable — insufficient grounding.",
+                reasoning_summary="Model unavailable  -  insufficient grounding.",
                 value_range=ValueRange(low=0, high=0, currency="GBP", basis="model unavailable"),
                 key_weaknesses=["Model unavailable (MODEL_UNAVAILABLE). Seek legal advice."],
                 deadline=Deadline(
@@ -403,7 +403,7 @@ class OpenRouterReasoningModel(ReasoningModel):
 
 class LocalInferenceReasoningModel(ReasoningModel):
     """
-    Local Inference Fabric provider — reasons against the in-cluster llama.cpp
+    Local Inference Fabric provider  -  reasons against the in-cluster llama.cpp
     DaemonSet (Qwen2.5-3B-Instruct, GGUF Q6_K) via its OpenAI-compatible API.
 
     No cloud APIs, no per-token cost: the model runs on lawapp's own metal. The
@@ -428,7 +428,7 @@ class LocalInferenceReasoningModel(ReasoningModel):
         "You receive ONLY de-identified facts and retrieved legal authority. "
         "When a LEGAL RELATIONSHIP MAP is provided, prioritise its nodes and "
         "relationships over isolated snippets. "
-        "You return ONLY the structured JSON assessment — no prose. "
+        "You return ONLY the structured JSON assessment  -  no prose. "
         "You must cite every legal claim to a retrieved source. "
         "You must NOT invent, recall, or alter any deadline, cap, or threshold; use "
         "the provided rules verbatim. If grounding is insufficient, set "
@@ -453,23 +453,23 @@ class LocalInferenceReasoningModel(ReasoningModel):
 
         if not boundary_log:
             raise RuntimeError(
-                "boundary_log is empty — deidentify() must be called before "
+                "boundary_log is empty  -  deidentify() must be called before "
                 "LocalInferenceReasoningModel.reason(). Raw personal facts must "
                 "never reach this method."
             )
 
         relationship_map = safe_facts.get("_legal_relationship_map", "")
         relationship_block = (
-            f"LEGAL RELATIONSHIP MAP (verified graph — PRIORITISE over isolated "
+            f"LEGAL RELATIONSHIP MAP (verified graph  -  PRIORITISE over isolated "
             f"snippets):\n{relationship_map}\n\n" if relationship_map else ""
         )
         prompt = (
             f"Assess the following unfair dismissal matter.\n\n"
             f"{relationship_block}"
-            f"RETRIEVED RULES (verbatim — do not alter):\n"
+            f"RETRIEVED RULES (verbatim  -  do not alter):\n"
             f"{json.dumps(bundle.exact_rules, indent=2, default=str)}\n\n"
             f"RETRIEVED AUTHORITIES:\n{json.dumps(bundle.authorities, indent=2)}\n\n"
-            f"DEADLINE (pre-computed from rules — source must remain 'rules'):\n"
+            f"DEADLINE (pre-computed from rules  -  source must remain 'rules'):\n"
             f"{json.dumps(deadline_info, indent=2, default=str)}\n\n"
             f"DE-IDENTIFIED FACTS:\n{json.dumps(safe_facts, indent=2, default=str)}\n\n"
             "Return ONLY valid JSON matching the structured assessment schema. No prose."
@@ -501,14 +501,14 @@ class LocalInferenceReasoningModel(ReasoningModel):
             resp.raise_for_status()
         except Exception as exc:
             logger.warning(
-                "Local inference unavailable (%s) — returning MODEL_UNAVAILABLE", exc
+                "Local inference unavailable (%s)  -  returning MODEL_UNAVAILABLE", exc
             )
             return StructuredAssessment(
                 claim_type="unfair_dismissal",
                 jurisdiction=safe_facts.get("jurisdiction", "EW"),
                 has_viable_claim="uncertain",
                 strength="uncertain",
-                reasoning_summary="Local inference unavailable — insufficient grounding.",
+                reasoning_summary="Local inference unavailable  -  insufficient grounding.",
                 value_range=ValueRange(low=0, high=0, currency="GBP", basis="model unavailable"),
                 key_weaknesses=["Local inference node unavailable (MODEL_UNAVAILABLE). Seek legal advice."],
                 deadline=Deadline(limitation_date=None, source="rules",
@@ -571,7 +571,7 @@ def get_ai_provider_status() -> dict:
     """
     from backend.core.inference_policy import (
         get_allowed_inference_backend, get_ollama_base_url, get_ollama_model)
-    # LOCAL OLLAMA ONLY — status reports the internal Ollama backend. External
+    # LOCAL OLLAMA ONLY  -  status reports the internal Ollama backend. External
     # providers are forbidden and are never "active" for legal inference.
     return {
         "provider": get_allowed_inference_backend(),   # "ollama"
@@ -579,10 +579,10 @@ def get_ai_provider_status() -> dict:
         "backend": "ollama_local",
         "base_url": get_ollama_base_url(),
         "model": get_ollama_model(),
-        "note": "Local Ollama only — no external LLM. Last resort after RULES + GRAPHRAG.",
+        "note": "Local Ollama only  -  no external LLM. Last resort after RULES + GRAPHRAG.",
     }
     return {"provider": "stub", "active": False,       # noqa: unreachable legacy
-            "note": "No AI key configured — StubReasoningModel active"}
+            "note": "No AI key configured  -  StubReasoningModel active"}
 
 
 def select_model(settings) -> "ReasoningModel":
@@ -593,7 +593,7 @@ def select_model(settings) -> "ReasoningModel":
     AI_PROVIDER=anthropic (or key set) → attempts Anthropic/Claude
     Fallback → StubReasoningModel (safe: governance gate handles insufficient_grounding)
 
-    Never fails — always returns a usable model.
+    Never fails  -  always returns a usable model.
     The pipeline continues; governance gate handles insufficient_grounding.
     """
     import os
@@ -607,11 +607,11 @@ def select_model(settings) -> "ReasoningModel":
         logger.info("Model provider: DISABLED (AI_PROVIDER=disabled)")
         return StubReasoningModel()
 
-    # Local Inference Fabric (Ollama) — PRIMARY provider when enabled. No cloud
+    # Local Inference Fabric (Ollama)  -  PRIMARY provider when enabled. No cloud
     # APIs: reasons on lawapp's own metal. Unreachable => fail soft to stub.
     #
     # The canonical env contract is owned by inference_policy (LAWAPP_LLM_PROVIDER /
-    # LAWAPP_OLLAMA_BASE_URL / LAWAPP_OLLAMA_MODEL — the names the deployment sets).
+    # LAWAPP_OLLAMA_BASE_URL / LAWAPP_OLLAMA_MODEL  -  the names the deployment sets).
     # Earlier this block read AI_PROVIDER/OLLAMA_BASE_URL/settings only, so the
     # deployed LAWAPP_* wiring was ignored and /assess silently fell to the Stub
     # (insufficient_grounding). Resolve provider/URL/model through the policy
@@ -633,7 +633,7 @@ def select_model(settings) -> "ReasoningModel":
         try:
             return LocalInferenceReasoningModel(base_url=base_url, model_id=mid)
         except Exception as exc:
-            logger.warning("Local inference init failed: %s — falling back", exc)
+            logger.warning("Local inference init failed: %s  -  falling back", exc)
 
     # LOCAL OLLAMA ONLY (hard mandate). NO OpenRouter, NO Anthropic, NO cloud
     # fallback. External provider classes (OpenRouterReasoningModel /

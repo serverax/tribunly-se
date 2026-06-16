@@ -23,11 +23,11 @@ $ING python -m ingestion.govuk.ingest || { echo "govuk ingest FAILED"; fail=1; }
 echo "############ 4. Embedding backfill (fastembed bge-small-en-v1.5, 384-dim, local) ############"
 $ING python -m ingestion.embeddings.embedder || { echo "embedding backfill FAILED"; fail=1; }
 
-echo "############ 5. Find Case Law BULK — external licence gate ############"
+echo "############ 5. Find Case Law BULK  -  external licence gate ############"
 if [ "${FCL_COMPUTATIONAL_ANALYSIS_APPROVED:-false}" = "true" ]; then
   $ING python -m ingestion.case_law.ingest || { echo "case_law ingest FAILED"; fail=1; }
 else
-  echo "BLOCKED_EXTERNAL_LICENCE — BULK FIND CASE LAW INGESTION"
+  echo "BLOCKED_EXTERNAL_LICENCE  -  BULK FIND CASE LAW INGESTION"
   echo "  (set FCL_COMPUTATIONAL_ANALYSIS_APPROVED=true to enable; legislation/ACAS/GOV.UK corpus is sufficient without it)"
 fi
 

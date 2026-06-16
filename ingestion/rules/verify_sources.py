@@ -29,7 +29,7 @@ log = logging.getLogger(__name__)
 
 # Figures to expect at each source URL, keyed by rule_key.
 # Updated from live API fetches 2026-05-31 and cross-verified.
-# These are NOT hardcoded fixtures — they are the values from the fetches
+# These are NOT hardcoded fixtures  -  they are the values from the fetches
 # that produced the seed. The verification confirms the live source
 # still agrees with what we stored.
 EXPECTED_AT_SOURCE = {
@@ -57,7 +57,7 @@ def _fetch(url: str) -> str:
     resp = httpx.get(url, timeout=30, follow_redirects=True,
                      headers={"User-Agent": "lawapp/1.0 (legal-correctness-verify)"})
     if resp.status_code == 429:
-        log.warning("Rate limited fetching %s — will retry", url)
+        log.warning("Rate limited fetching %s  -  will retry", url)
         resp.raise_for_status()
     if resp.status_code == 404:
         return ""
@@ -118,7 +118,7 @@ def run_verification() -> None:
     all_pass = True
     for rule_key, value_numeric, effective_from, authority_url, is_prospective in rows:
         if is_prospective:
-            result = "SKIP (prospective — not yet in force)"
+            result = "SKIP (prospective  -  not yet in force)"
         elif rule_key not in EXPECTED_AT_SOURCE:
             result = "SKIP (no pattern defined)"
         else:
@@ -137,7 +137,7 @@ def run_verification() -> None:
     if all_pass and not RETRY_LATER:
         print("All verifiable rows confirmed against cited sources.")
     elif not all_pass:
-        print("FAILURES detected — review before treating Phase 1 rules as live.")
+        print("FAILURES detected  -  review before treating Phase 1 rules as live.")
     print()
 
 

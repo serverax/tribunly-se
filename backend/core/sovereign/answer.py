@@ -47,7 +47,7 @@ def build_answer(query: str, chunks: list[dict]) -> tuple[str, list[str]]:
     """Build a cited answer from retrieved chunks. With no grounding, returns the
     safe 'cannot advise' answer (no legal claim, no citation needed)."""
     if not chunks:
-        return ("I cannot advise on this — no verified legal source was found in "
+        return ("I cannot advise on this  -  no verified legal source was found in "
                 "the local database for your question.", [])
     lines = ["Based strictly on the verified local legal database:"]
     cited: list[str] = []

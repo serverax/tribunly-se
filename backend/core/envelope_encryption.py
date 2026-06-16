@@ -1,5 +1,5 @@
 """
-Envelope encryption integration layer — Phase 7E.
+Envelope encryption integration layer  -  Phase 7E.
 
 Provides encrypt/decrypt functions that wire the KeyProvider interface
 into the existing Fernet encryption path.
@@ -7,7 +7,7 @@ into the existing Fernet encryption path.
 Encryption with envelope (aws_kms mode):
   1. provider.generate_data_key() → (plaintext_key_transient, EncryptedKeyBundle)
   2. Fernet(plaintext_key_transient).encrypt(data) → ciphertext
-  3. Store (ciphertext, bundle.to_json()) — bundle is safe; plaintext_key discarded
+  3. Store (ciphertext, bundle.to_json())  -  bundle is safe; plaintext_key discarded
 
 Decryption with envelope:
   1. Load (ciphertext, bundle_json) from storage
@@ -47,13 +47,13 @@ logger = logging.getLogger(__name__)
 
 def envelope_encrypt_str(
     plaintext: str,
-    provider,   # KeyProvider — avoiding circular import with type annotation
+    provider,   # KeyProvider  -  avoiding circular import with type annotation
 ) -> Tuple[Optional[str], "Optional[EncryptedKeyBundle]"]:
     """
     Encrypt a UTF-8 string using envelope encryption.
 
     Returns (ciphertext_str, bundle) on success; (None, None) on failure.
-    GUARDRAIL: plaintext_key is transient — del'd after Fernet construction.
+    GUARDRAIL: plaintext_key is transient  -  del'd after Fernet construction.
     """
     from backend.core.kms import EncryptedKeyBundle
     from cryptography.fernet import Fernet
@@ -83,13 +83,13 @@ def envelope_decrypt_str(
 
     bundle_json: JSON-serialized EncryptedKeyBundle from storage, or None.
     Returns plaintext or None (fails closed on any error).
-    GUARDRAIL: plaintext_key transient — del'd after use.
+    GUARDRAIL: plaintext_key transient  -  del'd after use.
     """
     from backend.core.kms import EncryptedKeyBundle
 
     bundle = _parse_bundle(bundle_json)
     if bundle is None and bundle_json is not None:
-        # Malformed bundle JSON — fail closed
+        # Malformed bundle JSON  -  fail closed
         logger.warning("envelope_decrypt_str: malformed bundle_json. Failing closed.")
         return None
 

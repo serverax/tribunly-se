@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Local Inference Fabric — concurrency benchmark.
+Local Inference Fabric  -  concurrency benchmark.
 
 Fires N concurrent JSON-extraction requests at the llama.cpp DaemonSet (via the
 ClusterIP Service) and reports P50/P95/P99 latency. Per the performance gate:
@@ -14,7 +14,7 @@ USAGE (run from inside the cluster, e.g. a debug pod in namespace lawapp-api):
 
 HONEST NOTE: this measures the REAL endpoint. It cannot be run from a laptop with
 no cluster; it must target a reachable llama.cpp server. A 3B Q6_K model doing
-generative JSON extraction on CPU will typically NOT meet a 400ms P95 — that
+generative JSON extraction on CPU will typically NOT meet a 400ms P95  -  that
 threshold is realistic for classification/embedding, not multi-hundred-token
 generation. The script reports the truth; it does not fake a pass.
 """
@@ -62,7 +62,7 @@ def main() -> int:
     ap.add_argument("--p95-threshold-ms", type=float, default=400.0)
     args = ap.parse_args()
 
-    print(f"Benchmarking {args.url} — {args.requests} requests, "
+    print(f"Benchmarking {args.url}  -  {args.requests} requests, "
           f"concurrency {args.concurrency}")
 
     latencies: list[float] = []
@@ -80,7 +80,7 @@ def main() -> int:
                 print(f"  request failed: {exc}", file=sys.stderr)
 
     if not latencies:
-        print("ALL REQUESTS FAILED — inference endpoint unreachable.", file=sys.stderr)
+        print("ALL REQUESTS FAILED  -  inference endpoint unreachable.", file=sys.stderr)
         return 2
 
     latencies.sort()
@@ -94,7 +94,7 @@ def main() -> int:
     print(f"  P99: {p99:7.1f} ms")
 
     if p95 > args.p95_threshold_ms:
-        print(f"\nFAIL: P95 {p95:.0f}ms > {args.p95_threshold_ms:.0f}ms — "
+        print(f"\nFAIL: P95 {p95:.0f}ms > {args.p95_threshold_ms:.0f}ms  -  "
               f"increase CPU cores per node (DaemonSet resources.limits.cpu).")
         return 1
     print(f"\nPASS: P95 within {args.p95_threshold_ms:.0f}ms.")

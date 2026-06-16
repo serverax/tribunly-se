@@ -1,4 +1,4 @@
--- Migration 008: Phase 4A — document upload metadata columns
+-- Migration 008: Phase 4A  -  document upload metadata columns
 -- Augments the existing `documents` table with upload/extraction metadata.
 -- NOTE: storage_ref in Phase 4A points to local filesystem path.
 -- Encryption at rest is Phase 5. This migration is safe to apply multiple times.

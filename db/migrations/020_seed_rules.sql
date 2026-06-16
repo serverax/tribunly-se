@@ -1,11 +1,11 @@
--- Migration 020 — Seed rules data
+-- Migration 020  -  Seed rules data
 -- Seeds all effective-dated rules from primary UK legislation sources.
 -- This migration is idempotent: ON CONFLICT DO NOTHING.
 -- Running it multiple times is safe.
 --
 -- Sources verified 2026-05-31 from legislation.gov.uk
 -- Authority: ERA 1996, ERRA 2013, ERA 2025, relevant SIs
--- All values from primary legislation only — not from AI memory.
+-- All values from primary legislation only  -  not from AI memory.
 
 -- Unfair dismissal rules
 INSERT INTO rules (rule_key, claim_type, jurisdiction, value_numeric, value_text, unit, description, authority_type, authority_ref, authority_url, effective_from, effective_to, is_prospective, last_verified_at)
@@ -23,9 +23,9 @@ VALUES
 -- ── Time limit: prospective 6 months (ERA 2025) ───────────────────────────
 ('unfair_dismissal.time_limit_months', 'unfair_dismissal', 'EW',
  6, NULL, 'months',
- 'PROSPECTIVE — NOT IN FORCE. ERA 2025 s.152 + Schedule 12 para 4(25) extends the time limit to 6 months. Commencement SI pending; effective_from is PROVISIONAL.',
+ 'PROSPECTIVE  -  NOT IN FORCE. ERA 2025 s.152 + Schedule 12 para 4(25) extends the time limit to 6 months. Commencement SI pending; effective_from is PROVISIONAL.',
  'legislation',
- 'Employment Rights Act 2025 s.152 and Schedule 12 para 4(25) (amending ERA 1996 s.111(2)); commencement SI pending — effective_from is PROVISIONAL from government statements',
+ 'Employment Rights Act 2025 s.152 and Schedule 12 para 4(25) (amending ERA 1996 s.111(2)); commencement SI pending  -  effective_from is PROVISIONAL from government statements',
  'https://www.legislation.gov.uk/ukpga/2025/36/section/152',
  '2026-10-01', NULL, true, now()),
 
@@ -50,9 +50,9 @@ VALUES
 -- ── Qualifying period: prospective 6 months (ERA 2025) ───────────────────
 ('unfair_dismissal.qualifying_period', 'unfair_dismissal', 'EW',
  6, NULL, 'months',
- 'PROSPECTIVE — NOT IN FORCE. ERA 2025 s.25(2) substitutes six months for two years. Commencement SI pending; effective_from is PROVISIONAL.',
+ 'PROSPECTIVE  -  NOT IN FORCE. ERA 2025 s.25(2) substitutes six months for two years. Commencement SI pending; effective_from is PROVISIONAL.',
  'legislation',
- 'Employment Rights Act 2025 s.25(2) (amending ERA 1996 s.108(1) and (2)); commencement SI pending — effective_from is PROVISIONAL',
+ 'Employment Rights Act 2025 s.25(2) (amending ERA 1996 s.108(1) and (2)); commencement SI pending  -  effective_from is PROVISIONAL',
  'https://www.legislation.gov.uk/ukpga/2025/36/section/25',
  '2027-01-01', NULL, true, now()),
 
@@ -95,9 +95,9 @@ VALUES
 -- ── Compensatory cap: prospective omission (ERA 2025) ────────────────────
 ('unfair_dismissal.compensatory_cap_amount', 'unfair_dismissal', 'EW',
  NULL, 's124_omitted_by_era2025_s25', 'GBP',
- 'PROSPECTIVE — NOT IN FORCE. ERA 2025 s.25(3): omit section 124. Commencement SI pending; effective_from is PROVISIONAL.',
+ 'PROSPECTIVE  -  NOT IN FORCE. ERA 2025 s.25(3): omit section 124. Commencement SI pending; effective_from is PROVISIONAL.',
  'legislation',
- 'Employment Rights Act 2025 s.25(3) (omitting ERA 1996 s.124); commencement SI pending — effective_from is PROVISIONAL',
+ 'Employment Rights Act 2025 s.25(3) (omitting ERA 1996 s.124); commencement SI pending  -  effective_from is PROVISIONAL',
  'https://www.legislation.gov.uk/ukpga/2025/36/section/25',
  '2027-01-01', NULL, true, now()),
 
@@ -150,7 +150,7 @@ VALUES
 
 -- ── Unpaid wages: qualifying period ──────────────────────────────────────
 ('unlawful_deduction_wages.qualifying_period_years', 'unpaid_wages', 'EW',
- 0, 'none — day-one right', 'years',
+ 0, 'none  -  day-one right', 'years',
  'No qualifying period. Day-one right for workers (ERA 1996 s.13).',
  'legislation',
  'ERA 1996 s.13, s.230(3)',
@@ -180,7 +180,7 @@ VALUES
  NULL, 'repayment_gross_amount_unlawfully_deducted', NULL,
  'Remedy: ET orders repayment of gross amount unlawfully deducted (ERA 1996 s.24).',
  'case_law',
- 'ERA 1996 s.24; Delaney v Staples [1992] 1 AC 687 (HL) — gross wages',
+ 'ERA 1996 s.24; Delaney v Staples [1992] 1 AC 687 (HL)  -  gross wages',
  'https://www.legislation.gov.uk/ukpga/1996/18/section/24',
  '1996-08-22', NULL, false, now())
 

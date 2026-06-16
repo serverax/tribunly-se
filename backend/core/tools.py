@@ -1,9 +1,9 @@
 """
-Free public legal tools — deterministic, DB-first, fail-closed.
+Free public legal tools  -  deterministic, DB-first, fail-closed.
 
 These power the no-login PREVIEW funnel (constitution §6/§9): a visitor may run
 a quick screen and see an estimate, but every statutory value is loaded from the
-effective-dated `rules` table via backend.core.retrieve.retrieve_rules — NEVER
+effective-dated `rules` table via backend.core.retrieve.retrieve_rules  -  NEVER
 hardcoded in this file. If a required statutory rule is absent the function fails
 closed (raises ToolDataUnavailable) rather than fabricating a legal value.
 
@@ -29,7 +29,7 @@ from backend.core.retrieve import retrieve_rules
 # Standard non-advice framing appended to every screen/estimate. The preview is
 # informational; the full assessment requires login + the governed brain path.
 _PREVIEW_DISCLAIMER = (
-    "Preview only — this is general information, not legal advice. "
+    "Preview only  -  this is general information, not legal advice. "
     "Sign in for a full, saved assessment with citations."
 )
 
@@ -57,7 +57,7 @@ _JURISDICTION_LABEL = {
 }
 
 # Recognised employment-issue signals for the claim screen. Presence of any signal
-# means there is a potential claim worth assessing — NOT that a claim is made out.
+# means there is a potential claim worth assessing  -  NOT that a claim is made out.
 _CLAIM_SIGNALS = {
     "unfair_dismissal":       ("dismiss", "sacked", "fired", "let go", "terminat", "redundan", "constructive"),
     "discrimination":         ("discriminat", "harass", "victimis", "victimiz", "disability", "pregnan",
@@ -68,7 +68,7 @@ _CLAIM_SIGNALS = {
 
 
 class ToolDataUnavailable(RuntimeError):
-    """Raised when a required statutory rule is missing from the DB — fail closed
+    """Raised when a required statutory rule is missing from the DB  -  fail closed
     rather than fabricate a legal value (constitution §9). The API layer maps this
     to an honest 503, never a fabricated answer."""
 
@@ -104,7 +104,7 @@ def check_claim(facts: Union[str, dict]) -> dict:
     Returns {has_claim, confidence, explanation}. This is a SIGNAL detector, not a
     merits decision: has_claim=True means "there is a recognised employment issue
     here worth a full assessment", and confidence reflects how much usable detail
-    the visitor supplied — never a probability of winning.
+    the visitor supplied  -  never a probability of winning.
     """
     if isinstance(facts, dict):
         text = " ".join(str(v) for v in facts.values() if v)
@@ -149,7 +149,7 @@ def check_claim(facts: Union[str, dict]) -> dict:
     else:
         explanation = (
             "We couldn't identify a clear employment-law issue from what you wrote. "
-            "Add more detail about what happened, when, and your employment status — "
+            "Add more detail about what happened, when, and your employment status  -  "
             f"or sign in for a guided assessment. {_PREVIEW_DISCLAIMER}"
         )
 
@@ -189,7 +189,7 @@ def calculate_deadline(
     if months is None:
         raise ToolDataUnavailable(
             f"No effective statutory time limit ({tl_key}) for {jurisdiction} at "
-            f"{edt.isoformat()} — cannot compute a deadline without the rule."
+            f"{edt.isoformat()}  -  cannot compute a deadline without the rule."
         )
 
     # Local import: deadline arithmetic lives in the employment domain.
@@ -209,7 +209,7 @@ def calculate_deadline(
         "basis":          info.get("notes"),
         "ec_applied":     False,
         "note": (
-            "Base limitation date only — the ACAS Early Conciliation stop-clock can "
+            "Base limitation date only  -  the ACAS Early Conciliation stop-clock can "
             f"extend this. {_PREVIEW_DISCLAIMER}"
         ),
         "preview":        True,
@@ -228,8 +228,8 @@ def estimate_compensation(
     Uses the statutory week's-pay cap from the effective-dated rules table (DB-first,
     fail-closed). Formula (simplified preview): complete years of service × capped
     week's pay × 1.0 multiplier. The real basic award applies age-banded multipliers
-    (0.5 / 1.0 / 1.5 per ERA 1996 s.119) — that needs the visitor's age, which a
-    preview doesn't collect — so this returns a single-multiplier estimate and says so.
+    (0.5 / 1.0 / 1.5 per ERA 1996 s.119)  -  that needs the visitor's age, which a
+    preview doesn't collect  -  so this returns a single-multiplier estimate and says so.
 
     Returns {estimated_amount, breakdown}.
     """
@@ -244,14 +244,14 @@ def estimate_compensation(
     weeks_pay_cap = _rule_value(rules, wpc_key)
     if weeks_pay_cap is None:
         raise ToolDataUnavailable(
-            f"No effective statutory week's-pay cap ({wpc_key}) for {jurisdiction} — "
+            f"No effective statutory week's-pay cap ({wpc_key}) for {jurisdiction}  -  "
             "cannot estimate a basic award without the statutory cap."
         )
 
     # Statute counts COMPLETE years of service, capped at 20 (ERA 1996 s.119(3)).
     complete_years = min(months_employed // 12, 20)
     capped_weekly_pay = min(weekly_pay, weeks_pay_cap)
-    multiplier = 1.0  # preview simplification — see docstring
+    multiplier = 1.0  # preview simplification  -  see docstring
     estimated_amount = round(complete_years * capped_weekly_pay * multiplier, 2)
 
     authority = (wpc_row or {}).get("authority_ref") or "ERA 1996 s.227(1)"
@@ -268,7 +268,7 @@ def estimate_compensation(
         "authority":             authority,
         "formula":               "complete_years × min(weekly_pay, week's-pay cap) × age multiplier (preview: 1.0)",
         "note": (
-            "Statutory BASIC AWARD only — excludes the compensatory award and applies "
+            "Statutory BASIC AWARD only  -  excludes the compensatory award and applies "
             "a flat 1.0 age multiplier (real multipliers are 0.5/1.0/1.5 by age, "
             f"ERA 1996 s.119). {_PREVIEW_DISCLAIMER}"
         ),
@@ -301,14 +301,14 @@ def prepare_acas(case_summary: Union[str, dict]) -> dict:
 
     next_steps = [
         "Notify ACAS of Early Conciliation BEFORE issuing a tribunal claim "
-        "(mandatory under Employment Tribunals Act 1996 s.18A) — submit the EC "
+        "(mandatory under Employment Tribunals Act 1996 s.18A)  -  submit the EC "
         "notification form online or by phone.",
         "An ACAS conciliator contacts both sides; conciliation runs for up to 6 "
         "weeks (extendable by 2 weeks if both sides agree).",
         "If no settlement is reached, ACAS issues an EC certificate with a unique "
-        "reference number — you cannot file an ET1 without it.",
+        "reference number  -  you cannot file an ET1 without it.",
         "File your ET1 claim before your tribunal time limit expires. The EC period "
-        "pauses the clock (stop-clock), but the deadline is strict — check it.",
+        "pauses the clock (stop-clock), but the deadline is strict  -  check it.",
     ]
 
     required_docs = [
@@ -320,7 +320,7 @@ def prepare_acas(case_summary: Union[str, dict]) -> dict:
         "A short dated chronology of key events",
     ]
 
-    # Light, deterministic tailoring — never fabricates law, only flags an extra
+    # Light, deterministic tailoring  -  never fabricates law, only flags an extra
     # document/step when the summary clearly signals a sub-type.
     if any(s in blob for s in ("discriminat", "harass", "disability", "pregnan", "race", "religion")):
         required_docs.append(

@@ -1,4 +1,4 @@
-"""LOCAL OLLAMA ONLY policy — proves lawapp legal routes can never use an external
+"""LOCAL OLLAMA ONLY policy  -  proves lawapp legal routes can never use an external
 / cloud LLM, fail closed when Ollama is unavailable, and keep deterministic routes
 independent of inference.
 

@@ -1,8 +1,8 @@
-"""lawapp-rules-engine — deterministic legal rules from the DB (no LLM).
+"""lawapp-rules-engine  -  deterministic legal rules from the DB (no LLM).
 
 Wraps backend.core.retrieve.retrieve_rules and the employment deadline/value
 math. Returns a REAL rule count from the `rules` table; fails closed (503) if the
-DB is unavailable — never a fabricated count. X-Trace-ID via the shared factory.
+DB is unavailable  -  never a fabricated count. X-Trace-ID via the shared factory.
 """
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def _opt_date(value: str | None) -> date | None:
 def _time_limit_months(rules: list[dict]) -> tuple[int, str, str]:
     """Pull the statutory time-limit (months) + authority from the rules rows.
 
-    The deadline is ALWAYS computed from the rules table — never guessed. If no
+    The deadline is ALWAYS computed from the rules table  -  never guessed. If no
     time_limit_months rule exists for this claim/jurisdiction/date, fall back to
     the ERA 1996 s.111(2) statutory default of 3 months (documented, not invented).
     """
@@ -59,7 +59,7 @@ def _time_limit_months(rules: list[dict]) -> tuple[int, str, str]:
 @app.post("/v1/rules/evaluate")
 def evaluate(req: RulesRequest):
     """Rule evaluation on the hot path. Rules are served from a read-through TTL
-    cache — a cache hit does ZERO database work, so steady-state latency is the
+    cache  -  a cache hit does ZERO database work, so steady-state latency is the
     cache lookup (microseconds), not a Postgres round trip. Single-flight on miss
     means a cold key hit by N concurrent requests triggers exactly one DB read."""
     t0 = time.perf_counter()

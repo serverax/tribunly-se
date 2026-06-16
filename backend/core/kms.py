@@ -1,21 +1,21 @@
 """
-Key Management Service abstraction — Phase 7D.
+Key Management Service abstraction  -  Phase 7D.
 
 Provides a KeyProvider interface with concrete implementations and full
 envelope encryption support:
 
-  EnvKeyProvider   — reads ENCRYPTION_KEY from env var (dev/test, not production-grade)
-  KmsStubProvider  — represents a real KMS key reference; Phase 7B stub (no real API call)
-  AwsKmsProvider   — real AWS KMS via boto3; full envelope encryption (Phase 7D)
-  DisabledProvider — no encryption; development only
+  EnvKeyProvider    -  reads ENCRYPTION_KEY from env var (dev/test, not production-grade)
+  KmsStubProvider   -  represents a real KMS key reference; Phase 7B stub (no real API call)
+  AwsKmsProvider    -  real AWS KMS via boto3; full envelope encryption (Phase 7D)
+  DisabledProvider  -  no encryption; development only
 
 Envelope Encryption (Phase 7D):
   1. generate_data_key() calls KMS.GenerateDataKey → (plaintext_key, EncryptedKeyBundle)
-     - plaintext_key: use transiently for encryption ONLY — NEVER log, store, or return
+     - plaintext_key: use transiently for encryption ONLY  -  NEVER log, store, or return
      - EncryptedKeyBundle: safe to persist (contains CiphertextBlob encrypted by KMS)
   2. decrypt_data_key(bundle) calls KMS.Decrypt(CiphertextBlob) → plaintext_key
      - Used for decryption path
-     - Returned plaintext_key: use transiently — NEVER log or store
+     - Returned plaintext_key: use transiently  -  NEVER log or store
 
   EncryptedKeyBundle fields (all safe to persist):
     ciphertext_blob:     base64-encoded CiphertextBlob from KMS (NOT the plaintext key)
@@ -118,13 +118,13 @@ class KeyProvider(ABC):
         Generate a new data key for envelope encryption.
 
         Returns:
-          (plaintext_key, bundle) — both non-None on success.
-          (None, None) — on failure.
+          (plaintext_key, bundle)  -  both non-None on success.
+          (None, None)  -  on failure.
 
         CALLER CONTRACT:
           - Use plaintext_key TRANSIENTLY for encryption ONLY.
           - NEVER log, store, or return plaintext_key.
-          - Persist bundle (safe — contains CiphertextBlob, not plaintext).
+          - Persist bundle (safe  -  contains CiphertextBlob, not plaintext).
 
         Default: not supported by this provider.
         """
@@ -169,7 +169,7 @@ class EnvKeyProvider(KeyProvider):
     """
     Reads ENCRYPTION_KEY from env var. NOT production-grade.
     Phase 7D: implements generate_data_key / decrypt_data_key in dev mode.
-    No real KMS — CiphertextBlob is empty (envelope encryption is simulated).
+    No real KMS  -  CiphertextBlob is empty (envelope encryption is simulated).
     """
 
     def get_encryption_key(self) -> Optional[bytes]:
@@ -190,7 +190,7 @@ class EnvKeyProvider(KeyProvider):
         if not key:
             return None, None
         bundle = EncryptedKeyBundle(
-            ciphertext_blob="",   # empty — no KMS encryption of data key in dev mode
+            ciphertext_blob="",   # empty  -  no KMS encryption of data key in dev mode
             provider=self.provider_name(),
             provider_key_id="env",
         )
@@ -205,7 +205,7 @@ class EnvKeyProvider(KeyProvider):
         return self.get_encryption_key()
 
     def supports_envelope_encryption(self) -> bool:
-        return True   # dev mode — simulated (no real KMS blob)
+        return True   # dev mode  -  simulated (no real KMS blob)
 
     def is_available(self) -> bool:
         return bool(os.getenv("ENCRYPTION_KEY"))
@@ -219,7 +219,7 @@ class EnvKeyProvider(KeyProvider):
     def status(self, run_health_check: bool = False) -> dict:
         base = super().status(run_health_check)
         base["note"] = (
-            "env var key — not production-grade. "
+            "env var key  -  not production-grade. "
             "Envelope encryption simulated (no real KMS CiphertextBlob)."
         )
         return base
@@ -228,12 +228,12 @@ class EnvKeyProvider(KeyProvider):
 # ── KmsStubProvider (Phase 7B, preserved) ────────────────────────────────────
 
 class KmsStubProvider(KeyProvider):
-    """Phase 7B stub — no real KMS API call. Phase 7C/7D: use AwsKmsProvider."""
+    """Phase 7B stub  -  no real KMS API call. Phase 7C/7D: use AwsKmsProvider."""
 
     def get_encryption_key(self) -> Optional[bytes]:
         if not os.getenv("KMS_KEY_ID"):
             return None
-        logger.warning("KmsStubProvider: using env key (stub — value not logged).")
+        logger.warning("KmsStubProvider: using env key (stub  -  value not logged).")
         return EnvKeyProvider().get_encryption_key()
 
     def is_available(self) -> bool:
@@ -259,16 +259,16 @@ class KmsStubProvider(KeyProvider):
         return base
 
 
-# ── AwsKmsProvider (Phase 7C/7D — full implementation) ───────────────────────
+# ── AwsKmsProvider (Phase 7C/7D  -  full implementation) ───────────────────────
 
 class AwsKmsProvider(KeyProvider):
     """
-    AWS KMS provider — full envelope encryption support (Phase 7D).
+    AWS KMS provider  -  full envelope encryption support (Phase 7D).
 
     Required:
-      AWS_KMS_KEY_ARN — KMS key ARN
+      AWS_KMS_KEY_ARN  -  KMS key ARN
     Optional:
-      KMS_REGION / AWS_DEFAULT_REGION — AWS region (default: us-east-1)
+      KMS_REGION / AWS_DEFAULT_REGION  -  AWS region (default: us-east-1)
     AWS credentials via standard chain (NEVER stored in repo).
 
     Phase 7D operations:
@@ -302,7 +302,7 @@ class AwsKmsProvider(KeyProvider):
         Generate a new envelope-encrypted data key.
         Returns (plaintext_key, bundle). Both None on failure.
 
-        GUARDRAIL: plaintext_key is transient — NEVER log, store, or return.
+        GUARDRAIL: plaintext_key is transient  -  NEVER log, store, or return.
         GUARDRAIL: CiphertextBlob in bundle is safe to persist.
         """
         key_arn = os.getenv("AWS_KMS_KEY_ARN", "")
@@ -337,7 +337,7 @@ class AwsKmsProvider(KeyProvider):
         Decrypt a CiphertextBlob to recover the plaintext data key.
         Returns plaintext_key (transient) or None on failure.
 
-        GUARDRAIL: returned key is transient — NEVER log or store.
+        GUARDRAIL: returned key is transient  -  NEVER log or store.
         GUARDRAIL: CiphertextBlob not logged.
         """
         if not bundle.has_kms_ciphertext():

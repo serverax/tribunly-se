@@ -3,7 +3,7 @@ Deterministic PII redaction for outbound model payloads (AC-013 / Phase 4).
 
 Unlike ``deidentify`` (a structured-facts scrubber that drops unknown fields),
 this redactor PRESERVES content while replacing PII tokens with placeholders,
-so AEE can still process the evidence text — but no raw NI number, email, phone,
+so AEE can still process the evidence text  -  but no raw NI number, email, phone,
 postcode, sort code or IBAN ever leaves the building.
 """
 
@@ -13,7 +13,7 @@ import json
 import re
 from typing import Any, Optional
 
-# (placeholder, pattern) — order matters (email before phone, etc.)
+# (placeholder, pattern)  -  order matters (email before phone, etc.)
 _REDACTORS: list[tuple[str, re.Pattern]] = [
     ("[EMAIL_REDACTED]",    re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")),
     ("[NINO_REDACTED]",     re.compile(r"\b[A-CEGHJ-PR-TW-Z]{2}\d{6}[A-D]\b", re.I)),

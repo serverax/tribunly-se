@@ -1,4 +1,4 @@
-# Phase 1 — run targets
+# Phase 1  -  run targets
 # Prerequisites: Docker Desktop running, .env copied from .env.example and filled in.
 
 .PHONY: setup db-up db-down ingest-legislation ingest-acas seed-rules ingest-sample-eat embed freshness all-ingest
@@ -26,7 +26,7 @@ ingest-acas:
 seed-rules:
 	python -m ingestion.rules.seed
 
-## EAT sample ingestion (Phase 1 — no bulk licence needed)
+## EAT sample ingestion (Phase 1  -  no bulk licence needed)
 ingest-sample-eat:
 	python -m ingestion.case_law.ingest --sample
 

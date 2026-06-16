@@ -1,4 +1,4 @@
-TRACK B — B4 OTEL / brain_traces correlation proof
+TRACK B  -  B4 OTEL / brain_traces correlation proof
 Date: 2026-06-15
 
 ## Command
@@ -26,4 +26,4 @@ verify_citations: 9 verified, 0 failed
 POST /assess with use_model=false returns trace_id in HTTP response but does NOT persist brain_traces (pipeline path). Full persistence requires /api/brain/trace or generative lane.
 
 ## Verdict
-PASS — HTTP trace_id matches brain_traces row via SQL
+PASS  -  HTTP trace_id matches brain_traces row via SQL

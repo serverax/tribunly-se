@@ -8,8 +8,8 @@ import pytest
 
 def pytest_collection_modifyitems(items):
     """Skip integration tests that require AWS/boto3 when not configured."""
-    skip_aws = pytest.mark.skip(reason="AWS/boto3 not configured — set AWS_ACCESS_KEY_ID")
-    skip_kms = pytest.mark.skip(reason="KMS not configured — set KEY_MANAGEMENT_MODE=aws_kms")
+    skip_aws = pytest.mark.skip(reason="AWS/boto3 not configured  -  set AWS_ACCESS_KEY_ID")
+    skip_kms = pytest.mark.skip(reason="KMS not configured  -  set KEY_MANAGEMENT_MODE=aws_kms")
 
     for item in items:
         # KMS tests require boto3

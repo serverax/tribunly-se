@@ -1,6 +1,6 @@
-PHASE 6D — COMPLIANCE EVIDENCE STRUCTURE AND DPO/LEGAL REVIEW GATE
+PHASE 6D  -  COMPLIANCE EVIDENCE STRUCTURE AND DPO/LEGAL REVIEW GATE
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 1. GIT
@@ -17,7 +17,7 @@ Push result: [set after push]
   docs/compliance-signoff.json
     Added: review_scope, evidence_reference fields to both dpia and privacy_notice.
     _guidance section explains how to sign off correctly.
-    All review flags remain false — no fake review.
+    All review flags remain false  -  no fake review.
 
   docs/dpia-review-checklist.md  (NEW)
     20-item checklist for DPO to verify before setting reviewed_by_dpo=true.
@@ -45,7 +45,7 @@ Push result: [set after push]
 
   tests/integration/test_phase6b_beta_readiness.py
     Updated test_signed_compliance_changes_readiness to include reviewer_name
-    and review_date — previously used boolean-only signoff which is now blocked
+    and review_date  -  previously used boolean-only signoff which is now blocked
     by Phase 6D evidence gate (correct behaviour).
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -54,7 +54,7 @@ Push result: [set after push]
 
   Reviewed=true WITHOUT evidence → BLOCKED:
     test_reviewed_true_without_evidence_still_blocked PASSED
-    "A boolean flag alone is not sufficient — add reviewer_name and review_date"
+    "A boolean flag alone is not sufficient  -  add reviewer_name and review_date"
 
   reviewer_name missing → BLOCKED:
     test_missing_reviewer_name_blocks PASSED
@@ -62,7 +62,7 @@ Push result: [set after push]
   review_date missing → BLOCKED:
     test_missing_review_date_blocks PASSED
 
-  MECHANISM TEST — reviewed=true WITH full evidence → UNBLOCKED:
+  MECHANISM TEST  -  reviewed=true WITH full evidence → UNBLOCKED:
     test_reviewed_true_with_evidence_unblocks PASSED
     test_full_evidence_both_sections_unblocks_beta PASSED
     These tests prove the mechanism works WITHOUT faking review in actual signoff.
@@ -111,11 +111,11 @@ Push result: [set after push]
   controlled_beta_ready: FALSE (verified by test_controlled_beta_ready_remains_false_current_state)
 
   Current blockers:
-    1. DPIA not reviewed by DPO — requires actual DPO review + docs/dpia-review-checklist.md
-    2. Privacy notice not legally reviewed — requires legal review + docs/privacy-review-checklist.md
-    3. JWKS/RS256 not implemented — Phase 7
-    4. No real HSM/KMS — Phase 7
-    5. No live deployment environment — Phase 7
+    1. DPIA not reviewed by DPO  -  requires actual DPO review + docs/dpia-review-checklist.md
+    2. Privacy notice not legally reviewed  -  requires legal review + docs/privacy-review-checklist.md
+    3. JWKS/RS256 not implemented  -  Phase 7
+    4. No real HSM/KMS  -  Phase 7
+    5. No live deployment environment  -  Phase 7
 
   production_ready: FALSE
 
@@ -141,7 +141,7 @@ Push result: [set after push]
   Secret-risk scan: ZERO matches (no real secrets in staged diff)
 
   No secrets printed: compliance-signoff.json contains only null values and
-    descriptive notes — no credentials, keys, or personal data.
+    descriptive notes  -  no credentials, keys, or personal data.
 
   No broad git add: explicit per-file staging used.
 

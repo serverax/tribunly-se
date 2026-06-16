@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Saved case — lawapp</title>
+  <title>Saved case  -  lawapp</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 
 <div class="legal-notice" role="alert">
   <strong>Not a law firm. Not legal advice.</strong>
-  This is information and assessment only — not regulated legal advice.
+  This is information and assessment only  -  not regulated legal advice.
   lawapp does not file claims, represent you, or conduct litigation.
   Consult a qualified solicitor for regulated legal advice.
 </div>
@@ -251,7 +251,7 @@
     p.style.fontSize = '.875rem';
     p.style.opacity = '.9';
     p.textContent = expired 
-      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time — this is a high hurdle. Seek solicitor advice urgently.'
+      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time  -  this is a high hurdle. Seek solicitor advice urgently.'
       : 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
     
     card.append(row, p);
@@ -542,7 +542,7 @@
     if (generated) {
       components.forEach(c => {
         const li = document.createElement('li');
-        li.textContent = `${compNames[c.component] || c.component} — generated ${formatDate(c.created_at)}`;
+        li.textContent = `${compNames[c.component] || c.component}  -  generated ${formatDate(c.created_at)}`;
         ul.appendChild(li);
       });
     } else {
@@ -570,7 +570,7 @@
 
     const statusLabel = {
       'pending':   'Awaiting extraction',
-      'extracted': 'Extracted — review required',
+      'extracted': 'Extracted  -  review required',
       'reviewed':  'Reviewed',
     };
 
@@ -581,9 +581,9 @@
     const notice = document.createElement('div');
     notice.style.cssText = 'background:#fff8e1;border:1px solid #f9a825;border-radius:6px;padding:.75rem 1rem;margin:.5rem 0 .75rem;font-size:.82rem;';
     const noticeStrong = document.createElement('strong');
-    noticeStrong.textContent = 'Document upload and extraction — Phase 4A.';
+    noticeStrong.textContent = 'Document upload and extraction  -  Phase 4A.';
     const noticeEm = document.createElement('em');
-    noticeEm.textContent = 'Note: uploaded files use temporary local storage — production requires object storage configuration.';
+    noticeEm.textContent = 'Note: uploaded files use temporary local storage  -  production requires object storage configuration.';
     notice.append(
       noticeStrong,
       document.createTextNode(' PDF and DOCX files can be uploaded. Text extraction runs locally (no third-party AI). Extracted facts require your review before use. '),
@@ -605,7 +605,7 @@
       const title = document.createElement('div');
       const strong = document.createElement('strong');
       strong.textContent = u.doc_type.replace(/_/g,' ');
-      title.append(strong, document.createTextNode(` — ${u.original_filename || 'upload'}`));
+      title.append(strong, document.createTextNode(`  -  ${u.original_filename || 'upload'}`));
       
       const badge = document.createElement('span');
       badge.className = `badge ${u.extraction_status === 'reviewed' ? 'yes' : u.extraction_status === 'extracted' ? 'uncertain' : 'no'}`;
@@ -637,7 +637,7 @@
     div.style.marginTop = '.75rem';
     const p1 = document.createElement('p');
     p1.style.fontSize = '.8rem'; p1.style.fontWeight = '600'; p1.style.marginBottom = '.5rem';
-    p1.textContent = 'Extracted fields — review required:';
+    p1.textContent = 'Extracted fields  -  review required:';
     
     const table = document.createElement('table');
     table.style.width = '100%'; table.style.borderCollapse = 'collapse'; table.style.fontSize = '.85rem';
@@ -686,7 +686,7 @@
     return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#039;');
   }
   function formatDate(s) {
-    if (!s) return '—';
+    if (!s) return ' - ';
     try { const dt = new Date(s.length === 10 ? s + 'T00:00:00' : s); return dt.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}); }
     catch { return String(s); }
   }

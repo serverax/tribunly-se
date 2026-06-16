@@ -1,5 +1,5 @@
 ---
-# IterLaw lawapp — backend FastAPI service
+# IterLaw lawapp  -  backend FastAPI service
 # REVIEW BEFORE APPLY. Do not apply until:
 #   1. Node is Ready
 #   2. Image is built and pushed (ghcr.io/serverax/lawapp/backend:${GIT_SHA} or equivalent)

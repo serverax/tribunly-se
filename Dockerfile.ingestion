@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
-# System deps — libpq for psycopg2-binary runtime,
+# System deps  -  libpq for psycopg2-binary runtime,
 # libxml2/libxslt for lxml binary wheel
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

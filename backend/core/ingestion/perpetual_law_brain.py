@@ -1,10 +1,10 @@
-"""Perpetual Law Brain — ingestion orchestrator.
+"""Perpetual Law Brain  -  ingestion orchestrator.
 
 Workflow: validate domain (whitelist) -> critic gate -> graph link -> chunk+embed
 -> audit. Idempotent (chunk_hash + content-hash change detection). Every run is
 logged to corpus_ingestion_runs; every rejection/failure to corpus_ingestion_errors.
 
-NON-NEGOTIABLE: a document that fails the critic "does not exist" to the system —
+NON-NEGOTIABLE: a document that fails the critic "does not exist" to the system  - 
 it is never graph-linked, chunked, or embedded. No AI-generated legal authority.
 """
 from __future__ import annotations
@@ -83,7 +83,7 @@ class PerpetualLawBrain:
         try:
             run_id = self._start_run(conn)
 
-            # Gate 1 — critic (structure + provenance). Reject => does not exist.
+            # Gate 1  -  critic (structure + provenance). Reject => does not exist.
             verdict = self.critic.validate(doc)
             if not verdict.passed:
                 self._log_error(conn, run_id, doc.source_url, "critic_rejected", verdict.reason)
@@ -93,12 +93,12 @@ class PerpetualLawBrain:
                 return {"status": "rejected", "reason": verdict.reason,
                         "checks": verdict.checks, "run_id": run_id}
 
-            # Gate 2 — graph link (provenance-bound edges only).
+            # Gate 2  -  graph link (provenance-bound edges only).
             link = self.linker.integrate(
                 node_id=node_id, node_type=node_type, label=label,
                 jurisdiction=doc.jurisdiction_code, source_url=doc.source_url, links=links)
 
-            # Gate 3 — embed ONLY now that critic + graph approved.
+            # Gate 3  -  embed ONLY now that critic + graph approved.
             emb = self.embedder.store(
                 source_url=doc.source_url, authority_ref=doc.authority_ref,
                 jurisdiction_code=doc.jurisdiction_code, body_text=doc.content,
@@ -122,7 +122,7 @@ class PerpetualLawBrain:
     def ingest_url(self, url: str, *, node_id: str, node_type: str, label: str,
                    source_type: str, parser_type: str, jurisdiction_code: str,
                    authority_ref: str, links: Optional[list[dict]] = None) -> dict:
-        """Fetch (whitelist-enforced) then ingest. Network — not used in unit tests."""
+        """Fetch (whitelist-enforced) then ingest. Network  -  not used in unit tests."""
         assert_whitelisted(url)
         fetched = self.crawler.fetch(url)
         doc = IngestionDoc(

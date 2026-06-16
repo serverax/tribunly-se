@@ -1,10 +1,10 @@
-name: lawapp — Deploy to staging
+name: lawapp  -  Deploy to staging
 
 on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: "Immutable image tag to deploy (commit SHA or sha256 digest — never 'latest')"
+        description: "Immutable image tag to deploy (commit SHA or sha256 digest  -  never 'latest')"
         required: true
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
           echo "${{ secrets.KUBECONFIG_HETZNER }}" > ~/.kube/config
           chmod 600 ~/.kube/config
 
-      - name: Confirm context — must be lawapp cluster
+      - name: Confirm context  -  must be lawapp cluster
         run: |
           kubectl config current-context
           kubectl get ns iterlaw-ai

@@ -28,7 +28,7 @@ from backend.core.models import StubReasoningModel
 
 STUB = StubReasoningModel()
 
-# Facts without PII — the de-identification test is in test_deidentify.py
+# Facts without PII  -  the de-identification test is in test_deidentify.py
 _STANDARD_FACTS = {
     "edt": "2026-04-01",
     "service_start_date": "2023-04-01",
@@ -65,7 +65,7 @@ def test_ud_query_without_edt_returns_error():
 
 def test_ud_with_stub_gets_rules_retrieved():
     result = assess("I was unfairly dismissed", _STANDARD_FACTS, model=STUB)
-    # Stub model returns insufficient_grounding — governance routes accordingly
+    # Stub model returns insufficient_grounding  -  governance routes accordingly
     assert result["status"] in ("insufficient_grounding", "ok")
     # Rules were retrieved regardless
     assert result.get("rules_retrieved", 0) > 0 or (
@@ -121,7 +121,7 @@ def test_boundary_log_populated_before_model():
 
 def test_prospective_time_limit_not_in_pipeline_assessment():
     """
-    Full pipeline with EDT 2026-05-01 — time limit must be 3 months from rules,
+    Full pipeline with EDT 2026-05-01  -  time limit must be 3 months from rules,
     not 6 (which is prospective). Deadline must be Aug 9 (or similar), not ~Nov.
     """
     facts = dict(_STANDARD_FACTS)

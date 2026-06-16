@@ -1,13 +1,13 @@
-# lawapp — Talos/Kubernetes Services Deployment Proof
+# lawapp  -  Talos/Kubernetes Services Deployment Proof
 
-**Project:** lawapp — UK Employment Law AI Assistant  
+**Project:** lawapp  -  UK Employment Law AI Assistant  
 **Date:** 2026-06-04  
 **Target cluster:** Talos/Hetzner  
-**Last updated:** Brain deployment fix — secret name mismatch resolved
+**Last updated:** Brain deployment fix  -  secret name mismatch resolved
 
 ---
 
-## INCIDENT: lawapp-brain CrashLoop — Secret Not Found
+## INCIDENT: lawapp-brain CrashLoop  -  Secret Not Found
 
 ### Root Cause
 
@@ -24,7 +24,7 @@ envFrom:
 ```
 
 **Error:** `secret "lawapp-ai-secrets" not found`  
-**Image pull:** succeeded — this was not an image issue.
+**Image pull:** succeeded  -  this was not an image issue.
 
 ### Fix Applied
 
@@ -51,7 +51,7 @@ During audit, additional mismatches were discovered beyond the original brain de
 | `lawapp-monitoring-cronjobs.yaml` | `lawapp-monitoring` | `lawapp-secrets` | YES | Script now creates `lawapp-secrets` in `lawapp-monitoring` |
 | `lawapp-monitoring.yaml` | `lawapp-monitoring` | `lawapp-rag-secrets` → **changed to `lawapp-secrets`** | YES | Manifest updated + script creates `lawapp-secrets` with POSTGRES_PASSWORD in `lawapp-monitoring` |
 
-**Legacy file:** `lawapp-brain-deployment.yaml` — superseded by `lawapp-ai-brain.yaml`. Do NOT apply both.
+**Legacy file:** `lawapp-brain-deployment.yaml`  -  superseded by `lawapp-ai-brain.yaml`. Do NOT apply both.
 
 **Local audit result:** 10/10 manifest secret references verified against script. 0 mismatches.
 
@@ -371,7 +371,7 @@ kubectl logs -n lawapp-ai deploy/lawapp-brain --tail=100
 ```bash
 kubectl logs -n lawapp-ai deploy/lawapp-brain | grep -E "Model provider|Anthropic|StubReasoning"
 # With real key: "ClaudeReasoningModel"
-# With placeholder: "StubReasoningModel" — mark as BLOCKED for production
+# With placeholder: "StubReasoningModel"  -  mark as BLOCKED for production
 ```
 
 ---
@@ -403,7 +403,7 @@ kubectl exec -n lawapp-api statefulset/lawapp-postgres -- psql -U lawapp -d lawa
 # Expected: 12 (minimum)
 
 kubectl exec -n lawapp-api statefulset/lawapp-postgres -- psql -U lawapp -d lawapp -c "SELECT count(*) FROM case_law_chunks;"
-# Expected: 0 until FCL licence granted — BLOCKED
+# Expected: 0 until FCL licence granted  -  BLOCKED
 
 kubectl exec -n lawapp-api statefulset/lawapp-postgres -- psql -U lawapp -d lawapp -c "SELECT count(*) FROM legislation WHERE embedding IS NOT NULL;"
 # Expected: 80 after embedding job completes
@@ -443,7 +443,7 @@ kubectl get cronjob -n lawapp-monitoring
 
 The backend serves the static HTML/JS/CSS client from `client/public/` via FastAPI StaticFiles.
 
-No separate frontend deployment needed — backend serves `/` as the landing page.
+No separate frontend deployment needed  -  backend serves `/` as the landing page.
 
 If a separate CDN/static host is needed in future, create a dedicated frontend manifest. For now:
 ```bash
@@ -516,6 +516,6 @@ bash scripts/deploy-talos.sh
 ## FINAL STATUS
 
 **READY FOR LOCAL INTERNAL DEMO:** YES (Docker Compose + port 5435)  
-**READY FOR TALOS INTERNAL DEMO:** OWNER ACTION REQUIRED — apply manifests from WSL  
-**READY FOR PUBLIC STAGING:** NO — needs real AI key + jwt auth mode + ingress  
-**READY FOR PRODUCTION:** NO — needs all staging blockers + FCL licence + Stripe + full ingestion
+**READY FOR TALOS INTERNAL DEMO:** OWNER ACTION REQUIRED  -  apply manifests from WSL  
+**READY FOR PUBLIC STAGING:** NO  -  needs real AI key + jwt auth mode + ingress  
+**READY FOR PRODUCTION:** NO  -  needs all staging blockers + FCL licence + Stripe + full ingestion

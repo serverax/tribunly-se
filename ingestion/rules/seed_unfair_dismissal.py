@@ -1,7 +1,7 @@
 """
-Phase 1 — Unfair Dismissal rules seed (verified 2026-05-31).
+Phase 1  -  Unfair Dismissal rules seed (verified 2026-05-31).
 
-CANONICAL RULE KEYS — the single authoritative series.
+CANONICAL RULE KEYS  -  the single authoritative series.
 Every key here must match what the Phase 2 retrieval code looks up.
 Do not introduce new keys without updating the retrieval code and the
 no-duplicate guard test (test_no_duplicate_rule_key_series).
@@ -108,7 +108,7 @@ ROWS = [
         "value_text":     None,
         "unit":           "months",
         "description":    (
-            "PROSPECTIVE — NOT IN FORCE. ERA 2025 s.152 + Schedule 12 para 4(25) "
+            "PROSPECTIVE  -  NOT IN FORCE. ERA 2025 s.152 + Schedule 12 para 4(25) "
             "extends the time limit to 6 months. Confirmed from ERA 2025 enacted text "
             "2026-05-31. No commencement SI published as of that date. "
             "effective_from 2026-10-01 PROVISIONAL ('no earlier than Oct 2026'). "
@@ -117,7 +117,7 @@ ROWS = [
         "authority_type": "legislation",
         "authority_ref":  (
             "Employment Rights Act 2025 s.152 and Schedule 12 para 4(25) "
-            "(amending ERA 1996 s.111(2)); commencement SI pending — "
+            "(amending ERA 1996 s.111(2)); commencement SI pending  -  "
             "effective_from is PROVISIONAL from government statements"
         ),
         "authority_url":  "https://www.legislation.gov.uk/ukpga/2025/36/section/152",
@@ -197,7 +197,7 @@ ROWS = [
         "value_text":     None,
         "unit":           "months",
         "description":    (
-            "PROSPECTIVE — NOT IN FORCE. ERA 2025 s.25(2) substitutes 'six months' "
+            "PROSPECTIVE  -  NOT IN FORCE. ERA 2025 s.25(2) substitutes 'six months' "
             "for 'two years' in ERA 1996 s.108(1) and (2). Verified from ERA 2025 "
             "enacted text 2026-05-31. No commencement SI as of that date. "
             "effective_from 2027-01-01 PROVISIONAL. DO NOT use until is_prospective=false."
@@ -205,7 +205,7 @@ ROWS = [
         "authority_type": "legislation",
         "authority_ref":  (
             "Employment Rights Act 2025 s.25(2) (amending ERA 1996 s.108(1) and (2)); "
-            "commencement SI pending — effective_from is PROVISIONAL"
+            "commencement SI pending  -  effective_from is PROVISIONAL"
         ),
         "authority_url":  "https://www.legislation.gov.uk/ukpga/2025/36/section/25",
         "effective_from": date(2027, 1, 1),
@@ -213,7 +213,7 @@ ROWS = [
         "is_prospective": True,
     },
 
-    # ── 4a. Week's pay cap — 2024/25 (£700, to 5 April 2025) ───────────────
+    # ── 4a. Week's pay cap  -  2024/25 (£700, to 5 April 2025) ───────────────
     {
         "rule_key":       "unfair_dismissal.weeks_pay_cap_amount",
         "claim_type":     "unfair_dismissal",
@@ -234,7 +234,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 4b. Week's pay cap — prior year (£719, to 5 April 2026) ────────────
+    # ── 4b. Week's pay cap  -  prior year (£719, to 5 April 2026) ────────────
     {
         "rule_key":       "unfair_dismissal.weeks_pay_cap_amount",
         "claim_type":     "unfair_dismissal",
@@ -255,7 +255,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 4c. Week's pay cap — current (£751, from 6 April 2026) ──────────────
+    # ── 4c. Week's pay cap  -  current (£751, from 6 April 2026) ──────────────
     # SI 2026/310 schedule: s.227(1) £719 -> £751. Confirmed 2026-05-31.
     {
         "rule_key":       "unfair_dismissal.weeks_pay_cap_amount",
@@ -278,7 +278,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 5a. Compensatory cap — 2024/25 (£115,115, to 5 April 2025) ──────────
+    # ── 5a. Compensatory cap  -  2024/25 (£115,115, to 5 April 2025) ──────────
     {
         "rule_key":       "unfair_dismissal.compensatory_cap_amount",
         "claim_type":     "unfair_dismissal",
@@ -300,7 +300,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 5b. Compensatory cap — prior year (£118,223, to 5 April 2026) ───────
+    # ── 5b. Compensatory cap  -  prior year (£118,223, to 5 April 2026) ───────
     {
         "rule_key":       "unfair_dismissal.compensatory_cap_amount",
         "claim_type":     "unfair_dismissal",
@@ -322,7 +322,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 5c. Compensatory cap — current (£123,543, from 6 April 2026) ────────
+    # ── 5c. Compensatory cap  -  current (£123,543, from 6 April 2026) ────────
     # SI 2026/310 schedule: s.124(1ZA)(a) £118,223 -> £123,543. Confirmed 2026-05-31.
     {
         "rule_key":       "unfair_dismissal.compensatory_cap_amount",
@@ -346,7 +346,7 @@ ROWS = [
         "is_prospective": False,
     },
 
-    # ── 5d. Compensatory cap — prospective removal (ERA 2025 s.25) ──────────
+    # ── 5d. Compensatory cap  -  prospective removal (ERA 2025 s.25) ──────────
     # ERA 2025 s.25(3): "Omit section 124." Verified from enacted text 2026-05-31.
     # NOT YET IN FORCE. effective_from = 2027-01-01 PROVISIONAL.
     {
@@ -357,7 +357,7 @@ ROWS = [
         "value_text":     "s124_omitted_by_era2025_s25",
         "unit":           "GBP",
         "description":    (
-            "PROSPECTIVE — NOT IN FORCE. ERA 2025 s.25(3): 'Omit section 124'. "
+            "PROSPECTIVE  -  NOT IN FORCE. ERA 2025 s.25(3): 'Omit section 124'. "
             "Verified from ERA 2025 enacted text 2026-05-31. The entire ERA 1996 s.124 "
             "is deleted; no statutory cap once commenced. Act says Omit, not uncapped. "
             "Limb B (52 x actual gross weekly pay) survival must be verified when SI "
@@ -367,7 +367,7 @@ ROWS = [
         "authority_type": "legislation",
         "authority_ref":  (
             "Employment Rights Act 2025 s.25(3) (omitting ERA 1996 s.124); "
-            "commencement SI pending — effective_from is PROVISIONAL"
+            "commencement SI pending  -  effective_from is PROVISIONAL"
         ),
         "authority_url":  "https://www.legislation.gov.uk/ukpga/2025/36/section/25",
         "effective_from": date(2027, 1, 1),
@@ -428,7 +428,7 @@ ROWS = [
 
     # ── 8. Minimum basic award for specific auto-unfair categories ──────────
     # s.120 ERA 1996. Applies only to specified automatically-unfair dismissals.
-    # NOT a general unfair dismissal rule — Phase 5 scope.
+    # NOT a general unfair dismissal rule  -  Phase 5 scope.
     # Included for completeness; retrieval code must scope to s.120 categories.
     {
         "rule_key":       "unfair_dismissal.basic_award_min_automatic",

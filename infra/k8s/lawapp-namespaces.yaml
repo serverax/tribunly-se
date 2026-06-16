@@ -1,5 +1,5 @@
 ---
-# lawapp Kubernetes namespaces — Talos/Hetzner cluster
+# lawapp Kubernetes namespaces  -  Talos/Hetzner cluster
 # Apply first: kubectl apply -f infra/k8s/lawapp-namespaces.yaml
 apiVersion: v1
 kind: Namespace

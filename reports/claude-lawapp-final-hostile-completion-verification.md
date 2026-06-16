@@ -8,8 +8,8 @@
 
 ## 1. Final Classification
 
-- **Local demo complete:** YES — proven from clean `docker compose down -v && docker compose up -d --build`
-- **Staging ready:** NO — real AI key, real Stripe, real ingestion, Redis-backed rate limiting configured but still needs cluster deployment
+- **Local demo complete:** YES  -  proven from clean `docker compose down -v && docker compose up -d --build`
+- **Staging ready:** NO  -  real AI key, real Stripe, real ingestion, Redis-backed rate limiting configured but still needs cluster deployment
 - **Production ready:** NO
 
 ---
@@ -18,26 +18,26 @@
 
 | Component | Status | Command | Output Summary | Remaining Gap |
 |---|---|---|---|---|
-| Rules on fresh Docker start | DONE | `SELECT COUNT(*) FROM rules` | **19 rows** (migration 020) | — |
+| Rules on fresh Docker start | DONE | `SELECT COUNT(*) FROM rules` | **19 rows** (migration 020) |  -  |
 | Legislation rows | EXTERNAL BLOCKED | `SELECT COUNT(*) FROM legislation` | 0 (ingestion required) | Run `docker compose run --rm ingestion python -m ingestion.legislation.ingest` |
 | ACAS guidance rows | EXTERNAL BLOCKED | `SELECT COUNT(*) FROM acas_guidance` | 0 | Run ingestion scripts |
 | Case law chunks | BLOCKED_EXTERNAL_LICENCE | `SELECT COUNT(*) FROM case_law_chunks` | 0 | FCL licence required |
-| legal_nodes | DONE | SELECT COUNT(*) | 15 rows | — |
-| legal_edges | DONE | SELECT COUNT(*) | 14 rows | — |
-| pgvector | DONE | `\dx` | vector ✓ | — |
-| pgcrypto | DONE | `\dx` | pgcrypto ✓ | — |
-| 43 tables | DONE | `\dt` | 43 tables | — |
-| Auth JWT active | DONE | `printenv LAWAPP_AUTH_MODE` | jwt | — |
+| legal_nodes | DONE | SELECT COUNT(*) | 15 rows |  -  |
+| legal_edges | DONE | SELECT COUNT(*) | 14 rows |  -  |
+| pgvector | DONE | `\dx` | vector ✓ |  -  |
+| pgcrypto | DONE | `\dx` | pgcrypto ✓ |  -  |
+| 43 tables | DONE | `\dt` | 43 tables |  -  |
+| Auth JWT active | DONE | `printenv LAWAPP_AUTH_MODE` | jwt |  -  |
 | Redis active | DONE | `redis-cli ping` → PONG; backend has RATELIMIT_STORAGE_URI | Running | Redis python package installed |
-| Smoke journey 24/24 | DONE | `bash scripts/smoke_local_journey.sh` | 24 PASS / 0 FAIL | — |
+| Smoke journey 24/24 | DONE | `bash scripts/smoke_local_journey.sh` | 24 PASS / 0 FAIL |  -  |
 | pytest 435/0 | DONE | `python -m pytest` | 435 passed, 7 skipped | 7 skips = legislation/ACAS empty (expected) |
-| Playwright 17/17 | DONE | `node_modules/.bin/playwright test` | 17 passed | — |
-| OCR extraction | DONE (501) | `/cases/.../extract` → 501 | Not Implemented — correct Phase 4 placeholder | Real OCR Phase 4 |
+| Playwright 17/17 | DONE | `node_modules/.bin/playwright test` | 17 passed |  -  |
+| OCR extraction | DONE (501) | `/cases/.../extract` → 501 | Not Implemented  -  correct Phase 4 placeholder | Real OCR Phase 4 |
 | Stripe webhook sig verify | DONE | Code implemented | test_simulator pass-through; stripe_test/live uses Stripe SDK | Stripe keys needed |
-| push-and-deploy.sh | DONE | `--dry-run` passes | Tests + commit + push + optional deploy | — |
+| push-and-deploy.sh | DONE | `--dry-run` passes | Tests + commit + push + optional deploy |  -  |
 | rebuild-wasm.sh | DONE | Script exists, wasm-pack missing | Fail with clear install message | Owner: install wasm-pack |
-| stale CI workflow | DONE | deploy-iterlaw-ai.yml.disabled | No stale workflows in active CI | — |
-| Kubernetes | NOT PROVEN | `kubectl` — no cluster kubeconfig | Manifests ready, cluster not verified | Owner: deploy from WSL |
+| stale CI workflow | DONE | deploy-iterlaw-ai.yml.disabled | No stale workflows in active CI |  -  |
+| Kubernetes | NOT PROVEN | `kubectl`  -  no cluster kubeconfig | Manifests ready, cluster not verified | Owner: deploy from WSL |
 
 ---
 
@@ -49,7 +49,7 @@
 | /auth/register | POST | 201 | user_id returned | none | n/a |
 | /auth/token | POST | 200 | access_token JWT | none | n/a |
 | /auth/me | GET | 200 | user data | JWT | self |
-| /assess | POST | 200 | assessment (insufficient_grounding — no AI key) | none | n/a |
+| /assess | POST | 200 | assessment (insufficient_grounding  -  no AI key) | none | n/a |
 | /cases | POST | 201 | case_id | JWT | creates own |
 | /cases | GET | 200 | own cases only | JWT | isolated |
 | /cases/{id} | GET | 200 own / 403 cross-user | case data | JWT | enforced |
@@ -84,8 +84,8 @@
 | Success | /pages/success.html | none | n/a | ✓ | DONE |
 | Cancel | /pages/cancel.html | none | n/a | ✓ | DONE |
 
-**No hardcoded legal values in JS/HTML** — verified by grep (no matches)  
-**No reserved activity language** — verified by grep (no matches)
+**No hardcoded legal values in JS/HTML**  -  verified by grep (no matches)  
+**No reserved activity language**  -  verified by grep (no matches)
 
 ---
 
@@ -118,12 +118,12 @@
 |---|---|---|
 | JWT auth active | DONE | `printenv LAWAPP_AUTH_MODE → jwt` |
 | Cross-user 403 | DONE | Smoke step 10, pytest user_isolation |
-| PII stripping before model | DONE | deidentify() before model.reason() — code-verified |
+| PII stripping before model | DONE | deidentify() before model.reason()  -  code-verified |
 | Reserved activity blocked | DONE | brain.py safety policy gate |
 | Rate limiting | DONE | slowapi + Redis backend active (`RATELIMIT_STORAGE_URI=redis://redis:6379`) |
 | Redis running | DONE | `redis-cli ping → PONG` |
 | Encryption schema | DONE | `facts_encrypted bytea` column in cases |
-| Encryption tests | DONE (2 skip) | Skips when ENCRYPTION_KEY absent — correct for test env |
+| Encryption tests | DONE (2 skip) | Skips when ENCRYPTION_KEY absent  -  correct for test env |
 
 ---
 
@@ -132,7 +132,7 @@
 | Technology | Code | DB | Route | Runtime | Classification |
 |---|---|---|---|---|---|
 | Agentic AI (19-step brain) | ✓ | brain_traces | /api/brain/trace | PROVEN: 19 steps, rag_sources, safety | **DONE** |
-| Hybrid Search | ✓ | retrieval_audit | /api/rag/hybrid-search | PROVEN (0 semantic results without ingestion) | **PARTIAL** — structurally complete; needs legislation data |
+| Hybrid Search | ✓ | retrieval_audit | /api/rag/hybrid-search | PROVEN (0 semantic results without ingestion) | **PARTIAL**  -  structurally complete; needs legislation data |
 | Graph RAG | ✓ | legal_nodes/edges | /api/rag/graph | PROVEN: 15 nodes traversed | **DONE** |
 | Knowledge Graph | ✓ | legal_nodes/edges | get_concept_context() | PROVEN | **DONE** |
 | Context Compression | ✓ | context_compression_log | Brain Step 13 | PROVEN | **DONE** |
@@ -194,8 +194,8 @@
 |---|---|---|
 | lawapp-ci.yml | DONE | `.github/workflows/lawapp-ci.yml` |
 | lawapp-deploy-k8s.yml | DONE | `.github/workflows/lawapp-deploy-k8s.yml` |
-| push-and-deploy.sh | DONE | `bash scripts/push-and-deploy.sh --dry-run` — tests run, prints dry-run result |
-| stale deploy-iterlaw-ai.yml | DONE | Renamed to `.disabled` — not active |
+| push-and-deploy.sh | DONE | `bash scripts/push-and-deploy.sh --dry-run`  -  tests run, prints dry-run result |
+| stale deploy-iterlaw-ai.yml | DONE | Renamed to `.disabled`  -  not active |
 | IterLaw/RightsNow in active workflows | DONE | grep finds 0 matches |
 
 ---
@@ -230,7 +230,7 @@
 
 | # | Item | Files | Command to Prove |
 |---|---|---|---|
-| 1 | stripe Python SDK not in Dockerfile | Dockerfile | `grep redis Dockerfile` — redis is there; add stripe too |
+| 1 | stripe Python SDK not in Dockerfile | Dockerfile | `grep redis Dockerfile`  -  redis is there; add stripe too |
 | 2 | Real OCR engine (Phase 4) | backend/core/extraction.py | Implement with pytesseract or AWS Textract |
 | 3 | WASM rebuild automation in CI | .github/workflows/lawapp-ci.yml | Add wasm-pack build step |
 | 4 | Stripe webhook payment → DB update | backend/api/main.py webhook handler | Wire checkout.session.completed to case payment status |
@@ -248,7 +248,7 @@ docker compose down -v && docker compose up -d --build
 → rules: 19 rows (automatic, no manual seeding)
 
 python -m pytest -q
-→ 435 passed, 7 skipped (empty ingestion tables — correct), 0 failed
+→ 435 passed, 7 skipped (empty ingestion tables  -  correct), 0 failed
 
 bash scripts/smoke_local_journey.sh
 → 24 PASS / 0 FAIL

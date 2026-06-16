@@ -1,12 +1,12 @@
-TRACK A7 — full pytest suite (post-fix)
+TRACK A7  -  full pytest suite (post-fix)
 Branch: release/lawapp-clean-snapshot
 Command: python -m pytest -q --tb=no
 
 Run 1 (2026-06-15): 1704 passed, 153 skipped, 1 failed
-  FAILED: backend/tests/test_upload_ocr_integration.py::test_ocr_failure_returns_error — FIXED (assert None not raise)
+  FAILED: backend/tests/test_upload_ocr_integration.py::test_ocr_failure_returns_error  -  FIXED (assert None not raise)
 
 Run 2 (2026-06-15): 1704 passed, 153 skipped, 1 failed
-  FAILED: tests/test_outbox_worker.py::test_dead_letter_after_max_retries — flaky under load; FIXED (retry loop 6→12)
+  FAILED: tests/test_outbox_worker.py::test_dead_letter_after_max_retries  -  flaky under load; FIXED (retry loop 6→12)
 
 Post-fix spot checks:
   python -m pytest backend/tests/test_upload_ocr_integration.py::test_ocr_failure_returns_error -q → PASS

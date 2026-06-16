@@ -1,4 +1,4 @@
-"""lawapp-crawler — fetch official legal sources, whitelist-enforced.
+"""lawapp-crawler  -  fetch official legal sources, whitelist-enforced.
 
 Wraps backend.core.ingestion.crawler (DOMAIN_WHITELIST / assert_whitelisted /
 WhitelistCrawler). Refuses any non-whitelisted domain BEFORE touching the network
@@ -25,7 +25,7 @@ def crawl(req: CrawlRequest):
     from backend.core.ingestion.crawler import (
         BlockedDomainError, WhitelistCrawler, is_whitelisted, assert_whitelisted)
 
-    # Fail closed on non-whitelisted domains (and redirects) — real backend logic.
+    # Fail closed on non-whitelisted domains (and redirects)  -  real backend logic.
     try:
         assert_whitelisted(req.source_url)
     except BlockedDomainError as e:

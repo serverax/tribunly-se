@@ -1,10 +1,10 @@
-# Increase of Limits Orders — Statutory Caps Report
+# Increase of Limits Orders  -  Statutory Caps Report
 
 **Date:** 2026-06-05  **Domain:** employment_uk  **Status:** DONE AND PROVEN
 
 UK statutory employment limits are revised annually by **The Employment Rights
 (Increase of Limits) Order {year}** (a UKSI). lawapp ingests these as official,
-historical, cited and effective-dated data — **no cap value is hardcoded in
+historical, cited and effective-dated data  -  **no cap value is hardcoded in
 application logic**; all live in the cited `rules` table and resolve to the
 official Order.
 
@@ -41,11 +41,11 @@ Ingested by `ingestion/rules/seed_limits_orders.py`. Each rule row carries
 
 Effective windows are contiguous and non-overlapping; the 2026 Order is open-ended
 (current). A separate **prospective** row records ERA 2025 s.25 (removal of the
-compensatory cap) — marked prospective, not treated as current until commenced.
+compensatory cap)  -  marked prospective, not treated as current until commenced.
 
 ## Backdated-case support
 Because each cap is effective-dated to its Order, a Schedule of Loss for a dismissal
-in any year 2021–2026 selects the correct statutory limit by date — supporting
+in any year 2021–2026 selects the correct statutory limit by date  -  supporting
 backdated claims without hardcoding.
 
 ## Proof
@@ -54,8 +54,8 @@ rule not tied to a `legislation.gov.uk/uksi/...` authority_url, caps not
 effective-dated, or historical depth < 3 years.
 
 ## Gaps / next
-- Extend history before 2021 (2019/2020 Orders) for older backdated claims — NOT STARTED.
+- Extend history before 2021 (2019/2020 Orders) for older backdated claims  -  NOT STARTED.
 - Automated annual refresh: detect the next Increase of Limits Order at each April
-  and append a new effective-dated row — currently the order list is updated on ingest.
+  and append a new effective-dated row  -  currently the order list is updated on ingest.
 - Auto-extract figures from the Order XML (currently figures are published statutory
   values tied to the official Order URL; source text is stored for verification).

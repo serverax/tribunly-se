@@ -5,7 +5,7 @@ Legal accuracy regression gate.
 Runs deterministic legal-accuracy checks directly against the backend
 pipeline, without relying on pytest or test files in the runtime image.
 
-Default (CI / beta gate): StubReasoningModel — fast, deterministic, does NOT
+Default (CI / beta gate): StubReasoningModel  -  fast, deterministic, does NOT
 prove live Ollama or CitationGuard on generative output.
 
 With --live: LocalInferenceReasoningModel against LAWAPP_OLLAMA_BASE_URL.
@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def _fail(msg: str) -> int:
-    print(f"FAIL: LEGAL ACCURACY GATE FAILED — {msg}")
+    print(f"FAIL: LEGAL ACCURACY GATE FAILED  -  {msg}")
     return 1
 
 
@@ -54,7 +54,7 @@ def _write_ollama_unreachable_artifact() -> None:
         "OLLAMA_NOT_REACHABLE\n"
         f"LAWAPP_OLLAMA_BASE_URL={os.environ.get('LAWAPP_OLLAMA_BASE_URL', '')}\n"
         "Live legal-accuracy profile cannot run without local Ollama.\n"
-        "Stub suite (default) remains valid for CI speed — not generative proof.\n",
+        "Stub suite (default) remains valid for CI speed  -  not generative proof.\n",
         encoding="utf-8",
     )
     print(f"Wrote {path}")
@@ -64,7 +64,7 @@ def _run_checks(model, *, live: bool) -> int:
     from backend.core.pipeline import assess
 
     print("=" * 70)
-    print("LAWAPP — LEGAL ACCURACY REGRESSION SUITE")
+    print("LAWAPP  -  LEGAL ACCURACY REGRESSION SUITE")
     print("=" * 70)
     mode = "live Ollama" if live else "StubReasoningModel (deterministic)"
     print(f"Model profile: {mode}")
@@ -145,10 +145,12 @@ def main() -> int:
     if args.live:
         if not _ollama_reachable():
             _write_ollama_unreachable_artifact()
-            return _fail("OLLAMA_NOT_REACHABLE — live profile requires local Ollama")
+            return _fail("OLLAMA_NOT_REACHABLE  -  live profile requires local Ollama")
         from backend.core.models import LocalInferenceReasoningModel
 
-        model = LocalInferenceReasoningModel()
+        base_url = os.environ.get("LAWAPP_OLLAMA_BASE_URL", "http://127.0.0.1:11434")
+        model_id = os.environ.get("LAWAPP_OLLAMA_MODEL", "qwen2.5:3b")
+        model = LocalInferenceReasoningModel(base_url=base_url, model_id=model_id)
         rc = _run_checks(model, live=True)
         if rc == 0:
             out = Path(__file__).resolve().parent.parent / "reports" / "legal_accuracy_live.txt"
@@ -158,7 +160,7 @@ def main() -> int:
     from backend.core.models import StubReasoningModel
 
     print("Running deterministic fact-pattern checks (StubReasoningModel)...")
-    print("NOTE: stub PASS does not prove live Ollama/CitationGuard — use --live for that.")
+    print("NOTE: stub PASS does not prove live Ollama/CitationGuard  -  use --live for that.")
     print()
     return _run_checks(StubReasoningModel(), live=False)
 

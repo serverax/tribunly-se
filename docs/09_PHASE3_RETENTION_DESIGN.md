@@ -1,7 +1,7 @@
 # 09 - Phase 3: User Retention Loop Design
 
 **Type:** Planning document. Not Phase 2C scope.
-**Status:** Design only — no code. Phase 2C continues unblocked.
+**Status:** Design only  -  no code. Phase 2C continues unblocked.
 **Pairs with:** `01_BUILD_PLAN.md` Phase 3, `04_RAG_REASONING_SPEC.md`, `06_USER_STORIES.md` US-3/US-4/US-5.
 
 ---
@@ -11,7 +11,7 @@
 Retention must be built around **legal urgency**, not generic engagement.
 The hook is the deadline and the gap between what the user has and what a
 tribunal needs. Every retention touchpoint must be grounded in the user's
-actual case facts and the governed assessment — never generic legal tips or chat.
+actual case facts and the governed assessment  -  never generic legal tips or chat.
 
 ---
 
@@ -34,7 +34,7 @@ Free diagnosis
 ## 1. Deadline countdown
 
 Every saved case must surface:
-- Limitation date (from `rules` table via deadline engine — deterministic)
+- Limitation date (from `rules` table via deadline engine  -  deterministic)
 - Days remaining
 - ACAS Early Conciliation status (started/certificate received/not started)
 - Risk level (urgency tier: >90 days = normal; 30-90 days = elevated; <30 days = critical)
@@ -137,10 +137,10 @@ Every user dashboard always shows:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ DEADLINE: 30 June 2026 — 29 days remaining ⚠ CRITICAL   │
+│ DEADLINE: 30 June 2026  -  29 days remaining ⚠ CRITICAL   │
 ├─────────────────────────────────────────────────────────┤
 │ CASE STRENGTH: Medium   VIABLE: Uncertain               │
-│ ACAS: Not started — start immediately                   │
+│ ACAS: Not started  -  start immediately                   │
 ├─────────────────────────────────────────────────────────┤
 │ NEXT STEPS (3 outstanding)                              │
 │ ☐ Upload dismissal letter                              │
@@ -148,7 +148,7 @@ Every user dashboard always shows:
 │ ☐ Start ACAS Early Conciliation                        │
 ├─────────────────────────────────────────────────────────┤
 │ DOCUMENT PROGRESS: 0%                                   │
-│ Particulars of Claim — not started                      │
+│ Particulars of Claim  -  not started                      │
 ├─────────────────────────────────────────────────────────┤
 │ KEY WEAKNESSES                                          │
 │ • Employer did not follow ACAS Code                    │
@@ -157,7 +157,7 @@ Every user dashboard always shows:
 └─────────────────────────────────────────────────────────┘
 ```
 
-All outputs come from the governed structured assessment — no text is generated
+All outputs come from the governed structured assessment  -  no text is generated
 outside the pipeline + governance gate.
 
 ---
@@ -177,7 +177,7 @@ outside the pipeline + governance gate.
 
 **`cases` table additions:**
 - `ec_status`: not_started | in_progress | certificate_received
-- `ec_day_a`, `ec_day_b`: dates (already in key_dates JSONB — promote to columns)
+- `ec_day_a`, `ec_day_b`: dates (already in key_dates JSONB  -  promote to columns)
 - `assessment_history`: JSONB array of prior assessments (or separate table)
 - `document_completion_pct`: JSONB `{particulars: 0.62, schedule: 0.0}`
 
@@ -194,7 +194,7 @@ CREATE TABLE reminder_events (
 );
 ```
 
-Message templates are static strings with placeholders — never generatively produced.
+Message templates are static strings with placeholders  -  never generatively produced.
 
 ---
 

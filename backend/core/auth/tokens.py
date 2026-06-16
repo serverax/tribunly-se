@@ -3,12 +3,12 @@ Token minting/verification for the lawapp auth stack.
 
 Two token families:
 
-  1. ACCESS TOKEN — short-lived signed JWT (HS256). Carries the user id (sub),
+  1. ACCESS TOKEN  -  short-lived signed JWT (HS256). Carries the user id (sub),
      the session id (sid), and the authentication methods reference (amr). It is
      intentionally compatible with backend/core/user_auth.get_current_user so that
      existing protected routes (cases, documents, …) accept tokens minted here.
 
-  2. REFRESH TOKEN / single-use TOKENS — opaque high-entropy random strings
+  2. REFRESH TOKEN / single-use TOKENS  -  opaque high-entropy random strings
      (secrets.token_urlsafe). The RAW value is returned to the client exactly once;
      only its SHA-256 hash is stored in the DB (auth_sessions / auth_tokens).
 
@@ -50,7 +50,7 @@ def refresh_ttl_seconds() -> int:
 def _signing_secret() -> str:
     secret = os.getenv("JWT_SECRET") or os.getenv("SECRET_KEY")
     if not secret:
-        # Fail closed — never mint a token under a hardcoded/guessable key.
+        # Fail closed  -  never mint a token under a hardcoded/guessable key.
         raise HTTPException(
             status_code=503,
             detail="Auth is not configured on this server (JWT_SECRET missing).",
@@ -99,7 +99,7 @@ def decode_access_token(token: str) -> dict:
 
     Validates signature, exp, typ==access, and iss/aud when configured.
     Raises HTTPException(401) on any failure. Used by routes that need the sid
-    (e.g. /logout) — ownership routes use user_auth.get_current_user instead.
+    (e.g. /logout)  -  ownership routes use user_auth.get_current_user instead.
     """
     issuer = os.getenv("JWT_ISSUER", "")
     audience = os.getenv("JWT_AUDIENCE", "")

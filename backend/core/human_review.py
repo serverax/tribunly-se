@@ -1,5 +1,5 @@
 """
-Human Review Queue — routes high-risk legal cases to human review.
+Human Review Queue  -  routes high-risk legal cases to human review.
 
 Position in Brain: triggered after urgency/risk classification (step 6).
 High-risk cases are queued; user receives a safe caveated response immediately.

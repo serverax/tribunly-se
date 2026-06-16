@@ -1,4 +1,4 @@
-"""Inference module — LLM reasoning with governance gates.
+"""Inference module  -  LLM reasoning with governance gates.
 
 Stub implementation for testability. Provides:
 - Local Ollama LLM routing (no external provider calls)
@@ -81,11 +81,11 @@ def call_ollama_reasoning(
     Returns:
         Model response text (empty string if model unavailable)
 
-    GUARDRAIL: Returns empty string if Ollama is down — fails closed, never
+    GUARDRAIL: Returns empty string if Ollama is down  -  fails closed, never
                returns fabricated text.
     """
     if not is_ollama_available():
-        logger.warning("call_ollama_reasoning: Ollama unavailable — returning empty (fail-closed)")
+        logger.warning("call_ollama_reasoning: Ollama unavailable  -  returning empty (fail-closed)")
         return ""
 
     try:

@@ -1,5 +1,5 @@
 """
-Encryption at rest — Phase 6.
+Encryption at rest  -  Phase 6.
 
 Provides Fernet symmetric encryption for PII fields and uploaded files.
 Key sourced exclusively from the ENCRYPTION_KEY environment variable.
@@ -14,7 +14,7 @@ GUARDRAILS:
   - Key value is NEVER logged, printed, or included in any response
   - Plaintext PII is NEVER logged after this module processes it
   - is_configured() must be checked before calling encrypt/decrypt
-  - Encryption failures raise exceptions — never silently store plaintext
+  - Encryption failures raise exceptions  -  never silently store plaintext
     when encryption is configured
 """
 
@@ -27,7 +27,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# Encryption version tag — stored alongside encrypted data for future migration
+# Encryption version tag  -  stored alongside encrypted data for future migration
 FERNET_V1 = "fernet_v1"
 
 
@@ -43,7 +43,7 @@ def _get_fernet():
     Raises ValueError if key is missing or malformed.
     NEVER logs the key value.
     """
-    from cryptography.fernet import Fernet, InvalidToken  # noqa: F401 — ensure package present
+    from cryptography.fernet import Fernet, InvalidToken  # noqa: F401  -  ensure package present
     key_str = os.getenv("ENCRYPTION_KEY", "")
     if not key_str:
         raise ValueError("ENCRYPTION_KEY environment variable is not set.")

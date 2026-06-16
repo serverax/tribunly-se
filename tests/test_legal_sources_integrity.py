@@ -16,7 +16,7 @@ def _db_up():
         return False
 
 
-pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN — DB not accessible")
+pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN  -  DB not accessible")
 
 
 def test_sources_present_with_provenance():

@@ -1,5 +1,5 @@
 """
-Document Upload Architecture tests — lawapp multimodal readiness.
+Document Upload Architecture tests  -  lawapp multimodal readiness.
 
 Tests that:
   - documents table has correct schema (user-scoped, case-scoped)
@@ -9,7 +9,7 @@ Tests that:
   - upload access is user-and-case scoped
 
 These tests verify the ARCHITECTURE is safe, not the full OCR pipeline
-(OCR/extraction is a Phase 4 feature — marked PARTIAL).
+(OCR/extraction is a Phase 4 feature  -  marked PARTIAL).
 """
 
 import pytest
@@ -39,7 +39,7 @@ class TestDocumentTableSchema:
         assert "case_id" in cols
 
     def test_documents_scoped_to_case(self, db_conn):
-        """documents table must have case_id — no orphan uploads."""
+        """documents table must have case_id  -  no orphan uploads."""
         cur = db_conn.cursor()
         cur.execute("""
             SELECT column_name FROM information_schema.columns
@@ -67,7 +67,7 @@ class TestDocumentTableSchema:
         assert row[1] == "jsonb", f"Expected jsonb, got {row[1]}"
 
     def test_cases_scoped_to_user(self, db_conn):
-        """Cases must be user-scoped — no orphan cases."""
+        """Cases must be user-scoped  -  no orphan cases."""
         cur = db_conn.cursor()
         cur.execute("""
             SELECT column_name FROM information_schema.columns

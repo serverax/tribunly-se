@@ -51,7 +51,7 @@ def test_contract_factory_and_health(modname, name):
 
 def test_crawler_rejects_offlist_domain():
     """No fake crawl result: a non-whitelisted domain is refused (403) before any
-    network call — real backend assert_whitelisted."""
+    network call  -  real backend assert_whitelisted."""
     r = _client("services.lawapp_crawler.app").post(
         "/v1/crawl/approved-source", json={"source_url": OFFLIST, "fetch": True})
     assert r.status_code == 403
@@ -66,7 +66,7 @@ def test_crawler_whitelist_validate_only():
 
 def test_crawler_fetch_uses_real_crawler(monkeypatch):
     """Positive path calls the REAL WhitelistCrawler.fetch (monkeypatched to avoid
-    network) — proves wiring, not a static response."""
+    network)  -  proves wiring, not a static response."""
     import backend.core.ingestion.crawler as cr
 
     def _fake_fetch(self, url):
@@ -165,7 +165,7 @@ def test_ingestion_dependency_failure_is_503_not_200(monkeypatch):
 
 
 def test_ingestion_critic_rejection_is_422_not_stored(monkeypatch):
-    """A critic-rejected document is NOT stored as success — surfaced as 422."""
+    """A critic-rejected document is NOT stored as success  -  surfaced as 422."""
     import backend.core.ingestion.perpetual_law_brain as plb
 
     class _Reject:
@@ -182,7 +182,7 @@ def test_ingestion_critic_rejection_is_422_not_stored(monkeypatch):
 
 def test_ingestion_success_path(monkeypatch):
     """Positive path calls the REAL PerpetualLawBrain (monkeypatched) and returns
-    its ingested result — proves wiring, not static success."""
+    its ingested result  -  proves wiring, not static success."""
     import backend.core.ingestion.perpetual_law_brain as plb
 
     class _Ok:

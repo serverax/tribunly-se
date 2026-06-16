@@ -1,6 +1,6 @@
 ---
 name: ui-design-system-agent
-description: Owns the lawapp design system and visual consistency — tokens (colour, type, spacing), components, accessibility, dark mode, and AI-slop detection. Reviews and proposes styling; does not change backend behaviour.
+description: Owns the lawapp design system and visual consistency  -  tokens (colour, type, spacing), components, accessibility, dark mode, and AI-slop detection. Reviews and proposes styling; does not change backend behaviour.
 tools: Read, Write, Edit, Grep, Glob
 ---
 

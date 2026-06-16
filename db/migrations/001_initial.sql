@@ -1,5 +1,5 @@
 -- Migration 001: initial schema
--- Employment Claim Co-Pilot — PostgreSQL 16 + pgvector
+-- Employment Claim Co-Pilot  -  PostgreSQL 16 + pgvector
 -- Run automatically by docker-compose on first start (via entrypoint.d mount).
 -- To apply manually: psql $DATABASE_URL -f db/migrations/001_initial.sql
 
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS acas_guidance (
 CREATE INDEX IF NOT EXISTS acas_embedding_idx
     ON acas_guidance USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
 
--- 2.4 rules — DETERMINISTIC legal facts (time limits, caps, thresholds)
+-- 2.4 rules  -  DETERMINISTIC legal facts (time limits, caps, thresholds)
 -- GUARDRAIL: never inferred by a model; always queried by code with effective-date filtering.
 CREATE TABLE IF NOT EXISTS rules (
     id               uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS users (
     subscription_status text        NOT NULL DEFAULT 'none' -- none | active | cancelled
 );
 
--- cases.facts_encrypted holds special-category data (Art.9) — encrypted at rest.
+-- cases.facts_encrypted holds special-category data (Art.9)  -  encrypted at rest.
 CREATE TABLE IF NOT EXISTS cases (
     id               uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id          uuid        REFERENCES users(id) ON DELETE CASCADE,

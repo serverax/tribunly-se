@@ -1,6 +1,6 @@
-PHASE 7A — JWKS/RS256 JWT VERIFICATION
+PHASE 7A  -  JWKS/RS256 JWT VERIFICATION
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 1. FILES CHANGED
@@ -23,7 +23,7 @@ Status: COMPLETE — pending acceptance
     - jwt_production_grade: true only when RS256+JWKS+issuer+audience all configured
     - overall_status: IMPLEMENTED_PRODUCTION_GRADE / IMPLEMENTED_DEV_QUALITY / PARTIAL
 
-  tests/integration/test_phase7a_jwks.py  (NEW — 24 tests)
+  tests/integration/test_phase7a_jwks.py  (NEW  -  24 tests)
 
   tests/integration/test_phase6c_jwt.py
     - Updated test_production_readiness_jwt_configured: HS256-only is now correctly
@@ -49,7 +49,7 @@ Status: COMPLETE — pending acceptance
   What changed for HS256:
     HS256 path (Phase 6C) is preserved unchanged.
     is_auth_production_ready() now correctly marks HS256-only as NOT production-ready.
-    Phase 6C test updated to reflect this (Phase 7A is not a regression — it's correct).
+    Phase 6C test updated to reflect this (Phase 7A is not a regression  -  it's correct).
 
   Guaranteed:
     - Token values NEVER logged
@@ -67,10 +67,10 @@ Status: COMPLETE — pending acceptance
   Legal accuracy:    38/38 passed ✓ PASSED
   Rules verification: ✓ PASSED
 
-  Note: 2 warnings — both cosmetic:
+  Note: 2 warnings  -  both cosmetic:
     - StarletteDeprecationWarning: httpx vs httpx2 (existing, not Phase 7A)
     - InsecureKeyLengthWarning: test_wrong_algorithm_rejected intentionally uses
-      a short HS256 key to trigger the algorithm rejection path — not a real issue
+      a short HS256 key to trigger the algorithm rejection path  -  not a real issue
 
 ═══════════════════════════════════════════════════════════════════════════════
 4. READINESS STATUS
@@ -80,7 +80,7 @@ Status: COMPLETE — pending acceptance
   production_ready: FALSE
 
   Phase 7A closes:
-    ✓ "JWKS/RS256 not implemented" — CLOSED (RS256/JWKS via JWT_JWKS_URL)
+    ✓ "JWKS/RS256 not implemented"  -  CLOSED (RS256/JWKS via JWT_JWKS_URL)
 
   Authentication status when RS256+JWKS fully configured:
     is_auth_production_ready() → {"ready": True, "blockers": []}
@@ -107,7 +107,7 @@ Status: COMPLETE — pending acceptance
   Staged files: 4 (user_auth.py, production_readiness.py, test_phase7a_jwks.py,
                    test_phase6c_jwt.py)
   Real secrets in diff: ZERO
-  No Dockerfiles changed (no new packages — PyJWT, cryptography, httpx already present)
+  No Dockerfiles changed (no new packages  -  PyJWT, cryptography, httpx already present)
   No env files changed
   No broad git add
 

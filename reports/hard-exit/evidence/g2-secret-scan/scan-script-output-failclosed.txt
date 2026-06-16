@@ -11,4 +11,4 @@ OWNER ACTION REQUIRED (not automatable here):
   2. Rewrite history (git filter-repo / BFG) to purge the blobs, then force-push.
   Changing the remote URL is NOT sufficient. (Force-push = owner-approved destructive step.)
 
-RESULT: FAIL — leaked secret patterns detected (working tree and/or git history).
+RESULT: FAIL  -  leaked secret patterns detected (working tree and/or git history).

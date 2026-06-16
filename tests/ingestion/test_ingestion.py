@@ -1,5 +1,5 @@
 """
-Ingestion pipeline tests — lawapp legal source ingestion.
+Ingestion pipeline tests  -  lawapp legal source ingestion.
 
 Tests:
   - legislation table structure and content
@@ -51,7 +51,7 @@ class TestLegislationTable:
         cur.execute("SELECT count(*) FROM legislation")
         count = cur.fetchone()[0]
         if count == 0:
-            pytest.skip("legislation table empty — run: docker compose run --rm ingestion python -m ingestion.legislation.ingest")
+            pytest.skip("legislation table empty  -  run: docker compose run --rm ingestion python -m ingestion.legislation.ingest")
         assert count > 0
 
     def test_legislation_rows_have_source_url(self, db):
@@ -102,11 +102,11 @@ class TestCaseLawTable:
         assert "id" in cols
 
     def test_case_law_chunks_status_documented(self, db):
-        """case_law_chunks may be empty pending FCL bulk licence — verify state."""
+        """case_law_chunks may be empty pending FCL bulk licence  -  verify state."""
         cur = db.cursor()
         cur.execute("SELECT count(*) FROM case_law_chunks")
         count = cur.fetchone()[0]
-        # Not asserting > 0 — FCL licence pending is accepted state
+        # Not asserting > 0  -  FCL licence pending is accepted state
         assert count >= 0, "case_law_chunks table inaccessible"
 
 
@@ -124,7 +124,7 @@ class TestAcasGuidanceTable:
         cur.execute("SELECT count(*) FROM acas_guidance")
         count = cur.fetchone()[0]
         if count == 0:
-            pytest.skip("acas_guidance table empty — run: docker compose run --rm ingestion python -m ingestion.acas.ingest")
+            pytest.skip("acas_guidance table empty  -  run: docker compose run --rm ingestion python -m ingestion.acas.ingest")
         assert count > 0
 
     def test_acas_guidance_has_embeddings(self, db):

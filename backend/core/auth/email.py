@@ -4,9 +4,9 @@ Transactional email transport for the lawapp auth stack.
 Used to deliver magic-link, email-verification, and password-reset messages.
 Backend is selected by AUTH_EMAIL_BACKEND:
 
-    smtp     — real SMTP (SMTP_HOST/PORT/USERNAME/PASSWORD/FROM, STARTTLS).
-    console  — log to the application logger (DEV ONLY; rejected in jwt/production).
-    memory   — append to an in-process outbox (TESTS ONLY).
+    smtp      -  real SMTP (SMTP_HOST/PORT/USERNAME/PASSWORD/FROM, STARTTLS).
+    console   -  log to the application logger (DEV ONLY; rejected in jwt/production).
+    memory    -  append to an in-process outbox (TESTS ONLY).
 
 Default: 'memory' under pytest, else 'console' in dev, else fail closed.
 

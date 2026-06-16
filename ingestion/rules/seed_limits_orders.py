@@ -1,5 +1,5 @@
 """
-UKSI — Employment Rights (Increase of Limits) Orders ingestion.
+UKSI  -  Employment Rights (Increase of Limits) Orders ingestion.
 
 Statutory employment limits (week's pay cap, maximum compensatory award, minimum
 basic award for certain automatically-unfair dismissals) are revised annually by a
@@ -7,11 +7,11 @@ Statutory Instrument: "The Employment Rights (Increase of Limits) Order {year}".
 
 This module:
   1. Fetches each official Order from legislation.gov.uk and stores its text in the
-     `legislation` table (leg_type='uksi') with a real content_hash + source_url —
+     `legislation` table (leg_type='uksi') with a real content_hash + source_url  - 
      so the statutory source is captured, hashed and citation-resolvable.
   2. Upserts effective-dated `rules` rows for the caps, each tied to its specific
      Order (authority_ref + authority_url + effective_from/effective_to). The cap
-     VALUES live in the cited `rules` table — NOT hardcoded in application logic.
+     VALUES live in the cited `rules` table  -  NOT hardcoded in application logic.
 
 The SI numbers/URLs below were confirmed live via legislation.gov.uk title
 resolution. The figures are the published statutory limits; each rule row carries
@@ -94,7 +94,7 @@ def ingest_limits_orders() -> dict:
             # 1) store the official Order text as a legislation (uksi) provenance row
             try:
                 body = _fetch_order_text(year, si_no)
-            except Exception as exc:  # never fabricate — skip source text on failure
+            except Exception as exc:  # never fabricate  -  skip source text on failure
                 console.print(f"  [yellow]could not fetch {citation} source text ({exc})[/yellow]")
                 body = ""
             if body:

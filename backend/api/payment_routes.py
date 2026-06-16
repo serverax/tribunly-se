@@ -1,5 +1,5 @@
 """
-Payment integration routes — Phase 7: Stripe checkout sessions, webhooks, and payment status.
+Payment integration routes  -  Phase 7: Stripe checkout sessions, webhooks, and payment status.
 
 ARCHITECTURE:
 - POST /api/payments/create-session: Backend creates Stripe checkout session.

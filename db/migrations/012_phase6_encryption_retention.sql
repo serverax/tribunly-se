@@ -1,4 +1,4 @@
--- Migration 012: Phase 6 — encryption at rest + retention/deletion support
+-- Migration 012: Phase 6  -  encryption at rest + retention/deletion support
 -- Adds soft-delete timestamps and encrypted PII columns.
 -- Encryption uses Fernet (AES-128-CBC + HMAC-SHA256) from cryptography package.
 -- Full production requires HSM-backed key management (Phase 7).

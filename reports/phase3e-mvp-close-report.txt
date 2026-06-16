@@ -1,6 +1,6 @@
-PHASE 3E — MVP CLOSE: DEADLINE TRACKER, SAVED-CASE RETURN, LEGAL-BOUNDARY SWEEP
+PHASE 3E  -  MVP CLOSE: DEADLINE TRACKER, SAVED-CASE RETURN, LEGAL-BOUNDARY SWEEP
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -10,7 +10,7 @@ Phase 3E closes the Phase 3 MVP by adding:
   1. Deterministic deadline urgency tracker (no LLM involvement)
   2. Saved-case return flow (/pages/saved_case.html + /cases/{id}/deadline)
   3. Reminder creation and listing (reminder_events table)
-  4. Legal-boundary sweep — tested across all user-facing pages
+  4. Legal-boundary sweep  -  tested across all user-facing pages
   5. End-to-end MVP journey proof test
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -72,11 +72,11 @@ Required (at least one of):
   ✓ "not legal advice"
 
 Prohibited (must not appear):
-  ✓ "we will file" — not present on any page
-  ✓ "we will represent" — not present on any page
-  ✓ "guaranteed outcome" — not present on any page
-  ✓ "as your solicitor" — not present on any page
-  ✓ "acting as your solicitor" — not present on any page
+  ✓ "we will file"  -  not present on any page
+  ✓ "we will represent"  -  not present on any page
+  ✓ "guaranteed outcome"  -  not present on any page
+  ✓ "as your solicitor"  -  not present on any page
+  ✓ "acting as your solicitor"  -  not present on any page
 
 Pages checked:
   ✓ GET /              (index.html)
@@ -88,10 +88,10 @@ Pages checked:
 FILES CREATED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  backend/engine/reminders.py              — urgency computation
-  client/public/pages/saved_case.html      — saved-case return flow page
-  tests/integration/test_phase3e_mvp_close.py — tests (33 tests)
-  reports/phase3e-mvp-close-report.txt     — this report
+  backend/engine/reminders.py               -  urgency computation
+  client/public/pages/saved_case.html       -  saved-case return flow page
+  tests/integration/test_phase3e_mvp_close.py  -  tests (33 tests)
+  reports/phase3e-mvp-close-report.txt      -  this report
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES MODIFIED

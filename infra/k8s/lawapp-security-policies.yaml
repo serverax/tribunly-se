@@ -1,5 +1,5 @@
 ---
-# lawapp Security Policies — namespace: lawapp-security
+# lawapp Security Policies  -  namespace: lawapp-security
 # NetworkPolicies enforcing user data isolation and lawapp namespace boundaries.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

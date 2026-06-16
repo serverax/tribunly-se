@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_handoff_workflow.sh — beyond-self-help handoff: trigger + capture, free to user.
+# prove_handoff_workflow.sh  -  beyond-self-help handoff: trigger + capture, free to user.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 BASE="${LAWAPP_BASE_URL:-http://localhost:8000}"

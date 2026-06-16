@@ -1,4 +1,4 @@
-name: lawapp CI — Test, Build, Push
+name: lawapp CI  -  Test, Build, Push
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
       POSTGRES_USER: lawapp
       POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'lawapp' }}
       PYTHONPATH: .
-      # LOCAL OLLAMA ONLY — no external LLM secrets injected into CI runtime.
+      # LOCAL OLLAMA ONLY  -  no external LLM secrets injected into CI runtime.
       LAWAPP_LLM_PROVIDER: ollama_local
       ADMIN_API_KEY: ci-admin-key-test
       DEPLOYMENT_MODE: development
@@ -329,15 +329,15 @@ jobs:
         run: |
           echo "Running production-readiness report (no DB required)..."
           python scripts/check_production_readiness_ci.py
-          echo "Note: NOT_PRODUCTION_READY is expected — this is a reporting step only."
+          echo "Note: NOT_PRODUCTION_READY is expected  -  this is a reporting step only."
 
       - name: Run controlled-beta readiness check (Phase 6E, informational)
         run: |
           echo "Running controlled-beta readiness check..."
           python scripts/check_beta_readiness.py
-          echo "Note: exits 0 always — reports remaining blockers for controlled beta."
+          echo "Note: exits 0 always  -  reports remaining blockers for controlled beta."
 
-  # Evolving Intelligence Stack (System Update 001) — detached optimizer job.
+  # Evolving Intelligence Stack (System Update 001)  -  detached optimizer job.
   # The Evolution-Gate test (rule-based proof) is the merge requirement; the DSPy
   # compilation step stays owner-key-gated (NotImplemented without an LLM key).
   dsp-optimize-prompts:
@@ -379,7 +379,7 @@ jobs:
       - name: Seed rules (for citation verification)
         run: |
           python -c "from ingestion.rules.seed_unfair_dismissal import seed; seed()"
-      - name: Evolution Gate (REQUIRED for merge — rule-based proof)
+      - name: Evolution Gate (REQUIRED for merge  -  rule-based proof)
         run: pytest tests/test_evolution_gate.py tests/test_integrity_framework.py -q
       - name: DSPy optimizer dry-run (detached, non-blocking)
         continue-on-error: true

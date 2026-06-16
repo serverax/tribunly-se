@@ -44,7 +44,7 @@ spec:
                   - sh
                   - -c
                   - |
-                    # No wget/curl in the ollama image — retry the pull itself
+                    # No wget/curl in the ollama image  -  retry the pull itself
                     # until the server is up. `ollama pull` is idempotent.
                     MODEL="${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}"
                     for i in $(seq 1 60); do

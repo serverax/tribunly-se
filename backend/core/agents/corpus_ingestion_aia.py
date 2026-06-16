@@ -1,5 +1,5 @@
 """
-Corpus Ingestion AIA — builds and maintains the local legal DB (NOT a user-facing
+Corpus Ingestion AIA  -  builds and maintains the local legal DB (NOT a user-facing
 reasoning agent). Workflow C reasons only from this DB; the ingestion AIA is the
 only component allowed to fetch/parse/store legal sources.
 

@@ -1,6 +1,6 @@
-# lawapp — Coding, Wiring, DB, New Technology Implementation Proof
+# lawapp  -  Coding, Wiring, DB, New Technology Implementation Proof
 
-**Project:** lawapp — UK Employment Law AI Assistant  
+**Project:** lawapp  -  UK Employment Law AI Assistant  
 **Date:** 2026-06-04  
 **Classification:** INTERNAL LOCAL DEMO READY  
 
@@ -11,21 +11,21 @@
 This session implemented and proven the following:
 
 ### New routes added to `backend/api/main.py`
-- `GET /api/sources/freshness` — alias for `/freshness`
-- `GET /api/rules/{claim_type}` — alias for `/rules/{claim_type}`
-- `POST /api/deadline/calculate` — deterministic deadline calculation from DB rules
-- `POST /api/payment/webhook` — Stripe webhook receiver (test_simulator + stripe_test/live)
-- `GET /api/documents/{document_id}/download` — document download with ownership check
-- `GET /api/cases/{case_id}/documents` — list documents per case
+- `GET /api/sources/freshness`  -  alias for `/freshness`
+- `GET /api/rules/{claim_type}`  -  alias for `/rules/{claim_type}`
+- `POST /api/deadline/calculate`  -  deterministic deadline calculation from DB rules
+- `POST /api/payment/webhook`  -  Stripe webhook receiver (test_simulator + stripe_test/live)
+- `GET /api/documents/{document_id}/download`  -  document download with ownership check
+- `GET /api/cases/{case_id}/documents`  -  list documents per case
 
 ### New test suites
-- `tests/ingestion/test_ingestion.py` — 18 tests covering all legal source tables and embeddings
-- `tests/security/test_encryption.py` — 10 tests (2 skip when ENCRYPTION_KEY absent)
-- `tests/security/test_deidentification.py` — 11 tests covering PII stripping + pipeline enforcement
-- `tests/security/test_payment_access.py` — 14 tests covering payment gating security
+- `tests/ingestion/test_ingestion.py`  -  18 tests covering all legal source tables and embeddings
+- `tests/security/test_encryption.py`  -  10 tests (2 skip when ENCRYPTION_KEY absent)
+- `tests/security/test_deidentification.py`  -  11 tests covering PII stripping + pipeline enforcement
+- `tests/security/test_payment_access.py`  -  14 tests covering payment gating security
 
 ### New scripts
-- `scripts/smoke_local_journey.sh` — 16-step curl-based E2E smoke journey
+- `scripts/smoke_local_journey.sh`  -  16-step curl-based E2E smoke journey
 
 ---
 
@@ -137,19 +137,19 @@ All 10 pages confirmed present and wired:
 
 | Component | Status | Details |
 |---|---|---|
-| Classifier | PASS | classify.py — keyword Stage A + model Stage B |
+| Classifier | PASS | classify.py  -  keyword Stage A + model Stage B |
 | Hybrid retrieval | PASS | SQL rules + BM25 + pgvector (retrieve.py) |
-| Context compression | PASS | context_compressor.py — deduplication + citation preservation |
-| Graph RAG | PASS | legal_graph.py — legal_nodes/edges traversal |
+| Context compression | PASS | context_compressor.py  -  deduplication + citation preservation |
+| Graph RAG | PASS | legal_graph.py  -  legal_nodes/edges traversal |
 | Knowledge graph | PASS | 15 nodes, 14 edges seeded (ERA 1996 + ACAS) |
-| Semantic cache | PASS | semantic_cache.py — personal data excluded |
-| Brain (19-step) | PASS | brain.py — all 19 steps traced and audited |
-| Evaluation AI | PASS | evaluator.py — 8-check rubric |
-| Governance gate | PASS | govern.py — blocks bad output |
-| Safety policy | PASS | Brain Step 16 — 4 critical checks |
-| Model routing | PASS | AI Router — routes by risk/complexity |
+| Semantic cache | PASS | semantic_cache.py  -  personal data excluded |
+| Brain (19-step) | PASS | brain.py  -  all 19 steps traced and audited |
+| Evaluation AI | PASS | evaluator.py  -  8-check rubric |
+| Governance gate | PASS | govern.py  -  blocks bad output |
+| Safety policy | PASS | Brain Step 16  -  4 critical checks |
+| Model routing | PASS | AI Router  -  routes by risk/complexity |
 | MCP connectors | PASS | 5 connectors, deny-by-default |
-| Memory engine | PASS | memory.py — consent-gated, user/case isolated |
+| Memory engine | PASS | memory.py  -  consent-gated, user/case isolated |
 
 ---
 
@@ -172,7 +172,7 @@ Response:
   + 5 more
 ```
 
-**No legal values hardcoded in JS/Python — all from DB rules table.**
+**No legal values hardcoded in JS/Python  -  all from DB rules table.**
 
 ---
 
@@ -221,7 +221,7 @@ python -m pytest tests/security/test_deidentification.py -q
 → 11 passed
 
 python -m pytest tests/security/test_encryption.py -q
-→ 8 passed, 2 skipped (ENCRYPTION_KEY absent in test env — correct)
+→ 8 passed, 2 skipped (ENCRYPTION_KEY absent in test env  -  correct)
 
 De-identification:
   PII fields stripped: name, employer, email, phone, nino, dob, raw_document, ...
@@ -299,13 +299,13 @@ bash scripts/smoke_local_journey.sh
 
 | # | Blocker | Severity | Owner |
 |---|---|---|---|
-| B1 | ANTHROPIC_API_KEY=placeholder — stub AI; complex assessments → insufficient_grounding | HIGH | Owner: set real key |
-| B2 | Stripe real keys not configured — PAYMENT_MODE=test_simulator | HIGH | Owner: set Stripe keys |
+| B1 | ANTHROPIC_API_KEY=placeholder  -  stub AI; complex assessments → insufficient_grounding | HIGH | Owner: set real key |
+| B2 | Stripe real keys not configured  -  PAYMENT_MODE=test_simulator | HIGH | Owner: set Stripe keys |
 | B3 | Case law embeddings empty (FCL licence pending) | MEDIUM | Owner: apply at nationalarchives |
 | B4 | OCR/document extraction not implemented | MEDIUM | Claude: Phase 4 |
 | B5 | WASM Rust binary exists; JS fallback active; WASM not recompiled with latest rules | LOW | Claude: next sprint |
 | B6 | Kubernetes not yet applied (manifests ready) | HIGH | Owner: run deploy-talos.sh from WSL |
-| B7 | Rate limiting uses in-memory — not production-safe | MEDIUM | Claude: configure Redis |
+| B7 | Rate limiting uses in-memory  -  not production-safe | MEDIUM | Claude: configure Redis |
 | B8 | Stripe webhook Phase 7 stub only | MEDIUM | Claude: Phase 7 |
 
 ---
@@ -315,8 +315,8 @@ bash scripts/smoke_local_journey.sh
 | Item | Status | Notes |
 |---|---|---|
 | Real AI reasoning (Anthropic/Claude) | BLOCKED | Need real ANTHROPIC_API_KEY |
-| Stripe webhook signature verification | STUB | Phase 7 — endpoint exists, sig check not implemented |
-| OCR/PDF extraction | STUB | Phase 4 — architecture ready, engine not wired |
+| Stripe webhook signature verification | STUB | Phase 7  -  endpoint exists, sig check not implemented |
+| OCR/PDF extraction | STUB | Phase 4  -  architecture ready, engine not wired |
 | WASM Rust rebuild | PARTIAL | Binary exists; source in client/wasm/src/ |
 | AWS KMS envelope encryption | STUB | Local FERNET_V1 is real; KMS is phase 7 |
 | Rate limiting Redis backend | STUB | in-memory only |

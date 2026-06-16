@@ -11,7 +11,7 @@
 
 **Classification: LOCAL DEMO READY**
 
-All local gates pass. Staging gates are blocked by absent owner-supplied secrets (Kubernetes kubeconfig, real Anthropic API key, real Stripe keys). These are external blockers — the code is complete, fail-closed, and has local proof paths.
+All local gates pass. Staging gates are blocked by absent owner-supplied secrets (Kubernetes kubeconfig, real Anthropic API key, real Stripe keys). These are external blockers  -  the code is complete, fail-closed, and has local proof paths.
 
 ---
 
@@ -66,7 +66,7 @@ curl -s http://localhost:8000/api/brain/trace -d '{"message":"..."}'
   rag_sources: ['hybrid', 'legal_graph']
   safety_passed: True
   citations_verified: 5
-  assessment: insufficient_grounding (correct — StubReasoningModel, ANTHROPIC_API_KEY=placeholder)
+  assessment: insufficient_grounding (correct  -  StubReasoningModel, ANTHROPIC_API_KEY=placeholder)
 
 docker compose exec -T db psql ... "SELECT COUNT(*) FROM brain_traces;"
   → 51 rows written (real DB audit trail)
@@ -136,7 +136,7 @@ context_compressor.py: deduplication + citation preservation verified by tests.
 python -m pytest -q -k "memory or consent" → 9 passed
 docker compose exec -T db psql ... "SELECT COUNT(*) FROM legal_memory;" → 0 (empty on fresh DB, populated by consent-gated saves)
 
-Memory requires user_id + case_id + memory_consent=True — verified by tests.
+Memory requires user_id + case_id + memory_consent=True  -  verified by tests.
 Cross-user access impossible: memory_type/key scoped by user_id+case_id.
 ```
 
@@ -174,14 +174,14 @@ docker compose exec -T db psql ... "SELECT COUNT(*) FROM mcp_tool_calls;" → >0
 
 ## 11. Section 11: Multimodal AI / OCR
 
-**Status: HONESTLY DISABLED — 501 Not Implemented**
+**Status: HONESTLY DISABLED  -  501 Not Implemented**
 
 ```bash
 curl -s -X POST "http://localhost:8000/cases/{id}/uploads/{id}/extract" -H "Authorization: Bearer {token}"
   → HTTP 501 (OCR not found in DB, but correct behaviour for unimplemented Phase 4)
 
 grep -R "Phase 4" client/public/pages/saved_case.html
-  → "Document extraction — Phase 4 (not yet enabled)" — notice visible to users
+  → "Document extraction  -  Phase 4 (not yet enabled)"  -  notice visible to users
 ```
 
 **Acceptance:** Route is present but returns 501. Frontend shows "Phase 4 not enabled" banner. No user journey advertises OCR as working. Raw uploads stored securely (raw_document in PII strip list). **Accepted as honestly disabled.**
@@ -194,7 +194,7 @@ grep -R "Phase 4" client/public/pages/saved_case.html
 
 ```bash
 curl -s http://localhost:8000/health
-  → ai_provider.active: false (correct — placeholder key, no fake active claim)
+  → ai_provider.active: false (correct  -  placeholder key, no fake active claim)
   → auth_mode: jwt, payment_mode: test_simulator (transparent)
 
 python -m pytest -q -k "router or deidentify or pii" → passing
@@ -219,14 +219,14 @@ Cache key excludes raw facts, names, employer details.
 
 ## 14. Section 14: WASM + JS Fallback
 
-**Status: PARTIAL — JS fallback active, WASM binary exists, rebuild requires wasm-pack**
+**Status: PARTIAL  -  JS fallback active, WASM binary exists, rebuild requires wasm-pack**
 
 ```bash
 bash scripts/rebuild-wasm.sh
-  → ERROR: wasm-pack is not installed (script fails clearly with install instructions — not fake)
+  → ERROR: wasm-pack is not installed (script fails clearly with install instructions  -  not fake)
 
 ls -lh client/public/wasm/lawapp_wasm_bg.wasm → 95KB binary (exists)
-grep -R "3 months\|123543\|751" client/public --include="*.js" → (no matches — no hardcoded legal values)
+grep -R "3 months\|123543\|751" client/public --include="*.js" → (no matches  -  no hardcoded legal values)
 fetchDeadlineRules() in deadline.js calls GET /rules/{claimType} at runtime
 
 python -m pytest -q -k "deadline or wasm" → 13 passed
@@ -250,7 +250,7 @@ python -m pytest -q -k "rate or limit" → 7 passed
 
 ## 16. Section 16: Stripe Payments
 
-**Status: PARTIAL — test_simulator accepted, real Stripe keys absent**
+**Status: PARTIAL  -  test_simulator accepted, real Stripe keys absent**
 
 ```bash
 docker compose exec -T backend python -c "import stripe; print(stripe._version.VERSION)" → 15.2.0
@@ -265,7 +265,7 @@ docker compose exec -T db psql ... "SELECT COUNT(*) FROM payment_events;" → ta
 
 ## 17. Section 17: Legal Data Ingestion
 
-**Status: PARTIAL — legislation and ACAS work, case law is licence-blocked**
+**Status: PARTIAL  -  legislation and ACAS work, case law is licence-blocked**
 
 ```bash
 docker compose run --rm ingestion python -m ingestion.legislation.ingest → 86 chunks stored, 0 errors
@@ -275,7 +275,7 @@ docker compose run --rm ingestion python -m ingestion.embeddings.embedder → 10
 SELECT * FROM source_freshness:
   legislation   | 86  | 2026-06-04 (verified today)
   acas_guidance | 14  | 2026-06-04 (verified today)
-  case_law      |  0  | (BLOCKED_EXTERNAL_LICENCE — FCL required)
+  case_law      |  0  | (BLOCKED_EXTERNAL_LICENCE  -  FCL required)
   rules         | 19  | 2026-06-04 (verified today, auto-seeded)
 ```
 
@@ -291,20 +291,20 @@ SELECT * FROM source_freshness:
 | rules | 001+020 | YES (migration 020) | migration only | retrieve_rules() | GET /rules/{claim_type} | ✓ | ACCEPTED |
 | legislation | 001 | no (ingestion) | ingestion script | retrieve() | GET /freshness | ✓ | ACCEPTED (needs ingestion) |
 | acas_guidance | 001 | no (ingestion) | ingestion script | retrieve() | GET /freshness | ✓ | ACCEPTED (needs ingestion) |
-| case_law_chunks | 002 | no | FCL ingestion | retrieve() | — | ✓ (skip) | BLOCKED_EXTERNAL_LICENCE |
+| case_law_chunks | 002 | no | FCL ingestion | retrieve() |  -  | ✓ (skip) | BLOCKED_EXTERNAL_LICENCE |
 | legal_nodes | 018 | YES (migration 018) | migration only | get_claim_subgraph() | GET /api/rag/graph | ✓ | ACCEPTED |
 | legal_edges | 018 | YES | migration only | get_claim_subgraph() | GET /api/rag/graph | ✓ | ACCEPTED |
-| brain_traces | 018 | no | run_brain() | — | GET /api/brain/trace | ✓ | ACCEPTED |
-| retrieval_audit | 018 | no | retrieve() | — | GET /api/rag/hybrid-search | PARTIAL | PARTIAL — table exists, needs verify retrieval audit writes |
-| safety_boundary_checks | 019 | no | _run_safety_checks() | — | Brain step 16 | ✓ | ACCEPTED |
-| context_compression_log | 019 | no | compress_bundle() | — | Brain step 13 | ✓ | ACCEPTED |
-| evaluation_results | 018 | no | evaluate_assessment() | — | POST /api/evaluate | ✓ | ACCEPTED |
-| mcp_tool_calls | 018 | no | call_tool() | — | POST /api/mcp/tools | ✓ | ACCEPTED |
+| brain_traces | 018 | no | run_brain() |  -  | GET /api/brain/trace | ✓ | ACCEPTED |
+| retrieval_audit | 018 | no | retrieve() |  -  | GET /api/rag/hybrid-search | PARTIAL | PARTIAL  -  table exists, needs verify retrieval audit writes |
+| safety_boundary_checks | 019 | no | _run_safety_checks() |  -  | Brain step 16 | ✓ | ACCEPTED |
+| context_compression_log | 019 | no | compress_bundle() |  -  | Brain step 13 | ✓ | ACCEPTED |
+| evaluation_results | 018 | no | evaluate_assessment() |  -  | POST /api/evaluate | ✓ | ACCEPTED |
+| mcp_tool_calls | 018 | no | call_tool() |  -  | POST /api/mcp/tools | ✓ | ACCEPTED |
 | semantic_cache | 018 | no | cache_store() | cache_lookup() | GET /api/cache/test | ✓ | ACCEPTED |
 | legal_memory | 018 | no | save_memory() | get_memory() | POST /api/memory/save | ✓ | ACCEPTED |
-| payment_events | 021 | no | _process_stripe_webhook_event() | — | POST /api/payment/webhook | ✓ | ACCEPTED |
-| handoff_leads | 007 | no | POST /handoff/leads | — | POST /handoff/leads | ✓ | ACCEPTED |
-| routing_decisions | 018 | no | route() | — | Brain step 9 | ✓ | ACCEPTED |
+| payment_events | 021 | no | _process_stripe_webhook_event() |  -  | POST /api/payment/webhook | ✓ | ACCEPTED |
+| handoff_leads | 007 | no | POST /handoff/leads |  -  | POST /handoff/leads | ✓ | ACCEPTED |
+| routing_decisions | 018 | no | route() |  -  | Brain step 9 | ✓ | ACCEPTED |
 
 ---
 
@@ -339,7 +339,7 @@ bash scripts/smoke_local_journey.sh → 24 PASS / 0 FAIL
 node_modules/.bin/playwright test → 17 passed
 bash scripts/push-and-deploy.sh --dry-run → PASS
 bash scripts/security-regression.sh → 9 PASS / 0 FAIL
-bash scripts/rebuild-wasm.sh → FAIL (wasm-pack not installed — expected, fails with clear install instructions)
+bash scripts/rebuild-wasm.sh → FAIL (wasm-pack not installed  -  expected, fails with clear install instructions)
 ```
 
 ---
@@ -388,7 +388,7 @@ Active lawapp manifests: infra/k8s/lawapp-*.yaml (17 files, no IterLaw naming)
 
 ```bash
 kubectl config current-context → aks-iterlaw-we-prod
-  (NOTE: This is AKS for a different project — NOT the lawapp Talos/Hetzner cluster)
+  (NOTE: This is AKS for a different project  -  NOT the lawapp Talos/Hetzner cluster)
 
 kubectl get ns | grep lawapp → NO CLUSTER ACCESS
   Manifests are ready. Deployment requires owner kubeconfig for Talos/Hetzner.
@@ -396,7 +396,7 @@ kubectl get ns | grep lawapp → NO CLUSTER ACCESS
   Secret name audit: 10/10 manifest refs match script creates
 ```
 
-**Classification: NOT PROVEN — kubeconfig not configured for Talos cluster on this machine.**
+**Classification: NOT PROVEN  -  kubeconfig not configured for Talos cluster on this machine.**
 
 ---
 
@@ -418,16 +418,16 @@ Monitoring namespace: YAML manifest exists (lawapp-monitoring.yaml), not deploye
 ### Owner-supplied secrets/config gaps (code cannot fix)
 | # | Gap |
 |---|---|
-| 1 | ANTHROPIC_API_KEY=placeholder — complex assessments return insufficient_grounding |
-| 2 | STRIPE_SECRET_KEY/STRIPE_WEBHOOK_SECRET absent — Stripe live mode untestable |
+| 1 | ANTHROPIC_API_KEY=placeholder  -  complex assessments return insufficient_grounding |
+| 2 | STRIPE_SECRET_KEY/STRIPE_WEBHOOK_SECRET absent  -  Stripe live mode untestable |
 | 3 | kubeconfig for Talos/Hetzner cluster not available on this machine |
 | 4 | FCL bulk computational-analysis licence not obtained |
-| 5 | wasm-pack not installed — WASM rebuild script fails with clear install instructions |
+| 5 | wasm-pack not installed  -  WASM rebuild script fails with clear install instructions |
 
 ### Coding gaps (still fixable by Claude, noted for next sprint)
 | # | Gap | Severity |
 |---|---|---|
-| 1 | Ingestion not automated on Docker start — requires manual `docker compose run --rm ingestion` | MEDIUM |
+| 1 | Ingestion not automated on Docker start  -  requires manual `docker compose run --rm ingestion` | MEDIUM |
 | 2 | `retrieval_audit` table writes not confirmed in hybrid search path | LOW |
 | 3 | WASM rebuild automation in CI (wasm-pack install in CI action) | LOW |
 | 4 | Stripe live webhook: DB update confirmed only in test mode | LOW |
@@ -437,7 +437,7 @@ Monitoring namespace: YAML manifest exists (lawapp-monitoring.yaml), not deploye
 ### External licence gaps
 | # | Gap |
 |---|---|
-| 1 | Find Case Law (FCL) computational-analysis licence — case_law_chunks=0 |
+| 1 | Find Case Law (FCL) computational-analysis licence  -  case_law_chunks=0 |
 
 ### Compliance/legal review gaps
 | # | Gap |
@@ -450,15 +450,15 @@ Monitoring namespace: YAML manifest exists (lawapp-monitoring.yaml), not deploye
 
 ## 26. Final Verdict
 
-**LOCAL DEMO READY** — proven from clean `docker compose down -v && docker compose up -d --build` with the following manual step required:
+**LOCAL DEMO READY**  -  proven from clean `docker compose down -v && docker compose up -d --build` with the following manual step required:
 ```bash
 docker compose run --rm ingestion python -m ingestion.legislation.ingest && \
 docker compose run --rm ingestion python -m ingestion.acas.ingest && \
 docker compose run --rm ingestion python -m ingestion.embeddings.embedder
 ```
 
-**STAGING READY: NO** — Kubernetes not deployed (kubeconfig absent), real AI key absent, Stripe keys absent.
+**STAGING READY: NO**  -  Kubernetes not deployed (kubeconfig absent), real AI key absent, Stripe keys absent.
 
-**PRODUCTION CANDIDATE: NO** — Missing: real AI, real Stripe, Kubernetes deployment, FCL licence, DPIA, monitoring, backup/restore.
+**PRODUCTION CANDIDATE: NO**  -  Missing: real AI, real Stripe, Kubernetes deployment, FCL licence, DPIA, monitoring, backup/restore.
 
-**PRODUCTION READY: NO** — Same as above plus compliance gates.
+**PRODUCTION READY: NO**  -  Same as above plus compliance gates.

@@ -91,7 +91,7 @@
 ./backend/core/legal_graph.py:145:                FROM legal_nodes
 ./backend/core/legal_graph.py:164:                FROM legal_edges
 ./backend/core/legal_graph.py:200:        line = f"  [{node['node_type']}] {label}"
-./backend/core/legal_graph.py:248:          "sources":       list[str]  — ["hybrid", "legal_graph", "knowledge_graph"]
+./backend/core/legal_graph.py:248:          "sources":       list[str]   -  ["hybrid", "legal_graph", "knowledge_graph"]
 ./backend/core/legal_graph.py:268:        sources.append("knowledge_graph")
 ./backend/core/legal_graph.py:270:        reason = "high_risk_knowledge_graph_activated"
 ./db/migrations/018_brain_architecture.sql:74:-- ── legal_nodes ──────────────────────────────────────────────────────────────
@@ -110,7 +110,7 @@
 ./db/migrations/018_brain_architecture.sql:195:INSERT INTO legal_edges (from_node_id, to_node_id, relationship_type, notes)
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:76:| legal_nodes | ✓ | 15 (seeded ERA 1996 graph) |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:77:| legal_edges | ✓ | 14 |
-./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:143:| Graph RAG | PASS | legal_graph.py — legal_nodes/edges traversal |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:143:| Graph RAG | PASS | legal_graph.py  -  legal_nodes/edges traversal |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:185:| Graph RAG | yes | legal_graph.py | legal_nodes, legal_edges | /api/rag/graph | 24 | ✓ | PASS |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:186:| Knowledge Graph | yes | legal_graph.py | legal_nodes, legal_edges | get_concept_context() | 21 | ✓ | PASS |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:280:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ \
@@ -180,7 +180,7 @@
 ./reports/gemini-tests-files.txt:144:tests/knowledge_graph/__pycache__/__init__.cpython-314.pyc
 ./reports/gemini-tests-files.txt:145:tests/knowledge_graph/__pycache__/test_knowledge_graph.cpython-314-pytest-9.0.3.pyc
 ./reports/gemini-tests-files.txt:146:tests/knowledge_graph/test_knowledge_graph.py
-./reports/lawapp-code-change-summary.md:15:| `backend/core/legal_graph.py` | Brain Step 9 — Graph RAG query (legal_nodes/edges), RAG source selector |
+./reports/lawapp-code-change-summary.md:15:| `backend/core/legal_graph.py` | Brain Step 9  -  Graph RAG query (legal_nodes/edges), RAG source selector |
 ./reports/lawapp-code-change-summary.md:38:| `tests/graph_rag/test_graph_rag.py` | 24 | Legal graph traversal, source selection |
 ./reports/lawapp-code-change-summary.md:39:| `tests/knowledge_graph/test_knowledge_graph.py` | 21 | legal_nodes/edges schema + paths |
 ./reports/lawapp-end-to-end-product-completion-report.md:114:legal_nodes:             15 rows   ✓ (seeded ERA 1996 graph)
@@ -195,10 +195,10 @@
 ./reports/lawapp-new-architecture-technology-status.md:56:| **Knowledge Graph** | YES | Step 9 (KG context enrichment) | legal_nodes, legal_edges | get_concept_context() | tests/knowledge_graph/ 21 passing | `pytest tests/knowledge_graph/` | **PASS** | Needs richer node types for discrimination/whistleblowing |
 ./reports/lawapp-new-architecture-technology-status.md:132:| legal_nodes | Knowledge graph nodes (15 seeded) | PASS |
 ./reports/lawapp-new-architecture-technology-status.md:133:| legal_edges | Knowledge graph edges (14 seeded) | PASS |
-./reports/lawapp-new-architecture-technology-status.md:226:- `tests/graph_rag/test_graph_rag.py` — 24 tests
-./reports/lawapp-new-architecture-technology-status.md:227:- `tests/knowledge_graph/test_knowledge_graph.py` — 21 tests
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:26:| Graph RAG (legal_nodes/edges) | ✓ | Step 9 | migration 018 | via brain trace | 24 ✓ | pytest graph_rag/ | **PASS** | — |
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:27:| Knowledge Graph | ✓ | Step 9 | migration 018 | get_concept_context() | 21 ✓ | pytest knowledge_graph/ | **PASS** | — |
+./reports/lawapp-new-architecture-technology-status.md:226:- `tests/graph_rag/test_graph_rag.py`  -  24 tests
+./reports/lawapp-new-architecture-technology-status.md:227:- `tests/knowledge_graph/test_knowledge_graph.py`  -  21 tests
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:26:| Graph RAG (legal_nodes/edges) | ✓ | Step 9 | migration 018 | via brain trace | 24 ✓ | pytest graph_rag/ | **PASS** |  -  |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:27:| Knowledge Graph | ✓ | Step 9 | migration 018 | get_concept_context() | 21 ✓ | pytest knowledge_graph/ | **PASS** |  -  |
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:52:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ 
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:71:legal_nodes:      15 rows (seeded)              ✓
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:72:legal_edges:      14 rows (seeded)              ✓

@@ -1,15 +1,15 @@
 """
-Deadline urgency and reminder state — Phase 3E.
+Deadline urgency and reminder state  -  Phase 3E.
 
 Purely deterministic: urgency is computed from the stored limitation_date
 versus a reference date. No model involvement.
 
 Thresholds (in priority order):
-  expired        — limitation_date is in the past
-  due_within_7   — 0–7 days remaining
-  due_within_14  — 8–14 days remaining
-  due_within_30  — 15–30 days remaining
-  safe           — more than 30 days remaining
+  expired         -  limitation_date is in the past
+  due_within_7    -  0–7 days remaining
+  due_within_14   -  8–14 days remaining
+  due_within_30   -  15–30 days remaining
+  safe            -  more than 30 days remaining
 
 GUARDRAIL: urgency state is computed by code from rules-derived dates only.
 The LLM never computes, estimates, or recalls deadline information.
@@ -32,9 +32,9 @@ _SAFE = "safe"
 
 URGENCY_LABELS: dict[str, str] = {
     "expired":       "Deadline has passed",
-    "due_within_7":  "Deadline within 7 days — act immediately",
-    "due_within_14": "Deadline within 14 days — act soon",
-    "due_within_30": "Deadline within 30 days — take action",
+    "due_within_7":  "Deadline within 7 days  -  act immediately",
+    "due_within_14": "Deadline within 14 days  -  act soon",
+    "due_within_30": "Deadline within 30 days  -  take action",
     "safe":          "No immediate urgency",
 }
 

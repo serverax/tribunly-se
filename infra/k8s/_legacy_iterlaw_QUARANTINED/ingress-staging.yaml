@@ -1,11 +1,11 @@
 ---
-# IterLaw — Staging ingress (IterLaw only — no global ingress changes)
+# IterLaw  -  Staging ingress (IterLaw only  -  no global ingress changes)
 # REVIEW BEFORE APPLY. Only apply after:
 #   1. AKS node Ready
 #   2. lawapp-backend pod Running and healthy
 #   3. Staging domain configured in DNS (or use port-forward instead)
 #
-# Default: DO NOT apply — use port-forward for first demo:
+# Default: DO NOT apply  -  use port-forward for first demo:
 #   kubectl port-forward -n iterlaw-ai svc/legal-orchestrator 8080:80
 #
 # Only apply this if a staging subdomain is already configured.

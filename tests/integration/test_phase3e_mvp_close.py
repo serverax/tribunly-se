@@ -1,5 +1,5 @@
 """
-Phase 3E — Deadline tracker, saved-case return, legal-boundary sweep, MVP journey.
+Phase 3E  -  Deadline tracker, saved-case return, legal-boundary sweep, MVP journey.
 
 Tests:
   Urgency computation (unit, deterministic dates):

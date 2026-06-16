@@ -1,6 +1,6 @@
-# CURSOR E2E TEST MATRIX — lawapp
+# CURSOR E2E TEST MATRIX  -  lawapp
 
-Maps product features to proof commands and expected evidence. **No fake PASS** — run commands and compare output.
+Maps product features to proof commands and expected evidence. **No fake PASS**  -  run commands and compare output.
 
 ---
 
@@ -9,7 +9,7 @@ Maps product features to proof commands and expected evidence. **No fake PASS** 
 | Symbol | Meaning |
 |--------|---------|
 | ✅ | Proven PASS this session (2026-06-14) |
-| ⚠️ | PARTIAL — service up but functional gap |
+| ⚠️ | PARTIAL  -  service up but functional gap |
 | ❌ | FAIL or not run |
 | 🔒 | Requires auth token |
 
@@ -53,7 +53,7 @@ Maps product features to proof commands and expected evidence. **No fake PASS** 
 |---------|---------------|----------|--------|
 | RAG search API | `POST http://localhost:8017/api/rag/search` JSON body | results with citations | ❌ 0 results |
 | RAG wired to brain | `bash scripts/proof/prove_lawapp_full_workflows.sh` (assess step) | citations in JSON | ✅ 8 citations (rules+graph) |
-| Graph context | Same — inspect assess JSON | `graph_context_used.used:true` | ✅ |
+| Graph context | Same  -  inspect assess JSON | `graph_context_used.used:true` | ✅ |
 | Ingestion pipeline | `docker compose --profile bootstrap run --rm db-bootstrap` | corpus_chunks increase | ❌ not run this session |
 | Graph tables | `SELECT COUNT(*) FROM graph_nodes;` | >0 | ⚠️ verify separately |
 

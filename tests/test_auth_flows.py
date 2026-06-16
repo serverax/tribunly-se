@@ -1,5 +1,5 @@
 """
-Auth session lifecycle — refresh / logout / verify-email / password-reset.
+Auth session lifecycle  -  refresh / logout / verify-email / password-reset.
 
 Endpoints (backend/api/auth_routes.py, prefix /api/auth):
   POST /api/auth/refresh        POST /api/auth/logout
@@ -7,7 +7,7 @@ Endpoints (backend/api/auth_routes.py, prefix /api/auth):
 
 These complete the email/password + magic-link auth surface. Single-use tokens
 (email-verify, password-reset) are captured at the delivery boundary
-(_send_link_email) — the same channel a real user receives them on.
+(_send_link_email)  -  the same channel a real user receives them on.
 
 Proven (conftest -> localhost:5435 lawapp DB):
   REFRESH

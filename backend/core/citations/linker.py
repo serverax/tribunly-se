@@ -1,4 +1,4 @@
-"""Link extracted citations to stored source records — never fabricates.
+"""Link extracted citations to stored source records  -  never fabricates.
 
 For each `Citation`, attempt to resolve it to a real row in the local corpus:
   - LEGISLATION  -> legislation (match section number + Act title)
@@ -8,7 +8,7 @@ For each `Citation`, attempt to resolve it to a real row in the local corpus:
 On a match, the citation is annotated with the real row id, source_type, and
 source_url, and resolved=True. On NO match the citation is left unresolved
 (resolved=False, source_id=None). A citation is NEVER assigned a manufactured
-id — an unresolved legal reference must surface as unresolved so the caller can
+id  -  an unresolved legal reference must surface as unresolved so the caller can
 decline to rely on it (constitution §9: unknown citation = unresolved).
 """
 from __future__ import annotations
@@ -78,7 +78,7 @@ def link_citations(citations: Sequence[Citation], conn=None) -> list[Citation]:
     """Resolve each citation against the corpus. Mutates and returns the list.
 
     Opens its own DB connection if `conn` is None. A DB error leaves all
-    citations unresolved (fail closed) rather than raising — the caller still
+    citations unresolved (fail closed) rather than raising  -  the caller still
     receives the extracted-but-unresolved citations and can act accordingly.
     """
     cits = list(citations)
@@ -101,7 +101,7 @@ def link_citations(citations: Sequence[Citation], conn=None) -> list[Citation]:
                 except Exception as exc:  # noqa: BLE001 - one bad row never fabricates
                     logger.debug("citation link skipped (%s): %s", cit.raw, exc)
     except Exception as exc:  # noqa: BLE001 - DB down -> all unresolved, fail closed
-        logger.warning("citation linking unavailable (%s) — all unresolved", exc)
+        logger.warning("citation linking unavailable (%s)  -  all unresolved", exc)
     finally:
         if own_conn and conn is not None:
             conn.close()

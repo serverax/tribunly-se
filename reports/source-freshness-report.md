@@ -15,8 +15,8 @@ Every row also carries `content_hash` (SHA-256 of body_text) for change detectio
 | acas_guidance | 12 | 2026-06-04 |
 | official_guidance (GOV.UK) | 7 | 2026-06-04 |
 | rules | 19 | 2026-06-04 |
-| bills | 0 | — |
-| case_law | 0 | — (licence-gated) |
+| bills | 0 |  -  |
+| case_law | 0 |  -  (licence-gated) |
 
 - **Staleness gate:** 0 rows older than 120 days → PASS.
 - **Hash coverage:** legislation 188/188; ACAS 12/12; GOV.UK 7/7 (`content_hash` set).

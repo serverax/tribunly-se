@@ -1,6 +1,6 @@
 ---
-# IterLaw — Staging Postgres + pgvector in iterlaw-ai
-# FOR STAGING DEMO ONLY. Data is ephemeral (no PVC — lost on pod restart).
+# IterLaw  -  Staging Postgres + pgvector in iterlaw-ai
+# FOR STAGING DEMO ONLY. Data is ephemeral (no PVC  -  lost on pod restart).
 # Add a PersistentVolumeClaim below the volume section for persistence.
 #
 # REVIEW BEFORE APPLY. Apply only after AKS node is Ready.
@@ -67,7 +67,7 @@ spec:
               mountPath: /var/lib/postgresql/data
       volumes:
         - name: postgres-data
-          emptyDir: {}   # ephemeral — replace with PVC for persistence
+          emptyDir: {}   # ephemeral  -  replace with PVC for persistence
 ---
 apiVersion: v1
 kind: Service

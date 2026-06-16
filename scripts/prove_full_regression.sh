@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_full_regression.sh — runs the complete legal-spine + MVP proof chain, then the
+# prove_full_regression.sh  -  runs the complete legal-spine + MVP proof chain, then the
 # full repo pytest suite. Non-zero if any proof fails.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1

@@ -31,10 +31,10 @@ spec:
           imagePullPolicy: Always
           # Long-lived outbox worker (drains the transactional outbox queue;
           # clean SIGTERM shutdown). backend.core.pipeline is a library module,
-          # not a daemon — running it here caused a restart loop.
+          # not a daemon  -  running it here caused a restart loop.
           command: ["python", "-m", "backend.core.outbox_worker"]
           env:
-            # Same DB credential source as lawapp-brain — the POSTGRES_* values
+            # Same DB credential source as lawapp-brain  -  the POSTGRES_* values
             # in lawapp-ai-secrets do not match the lawapp-postgres instance.
             - name: DATABASE_URL
               valueFrom:

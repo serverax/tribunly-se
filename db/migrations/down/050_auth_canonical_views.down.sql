@@ -2,11 +2,11 @@
 -- ============================================================================
 -- Reverses EXACTLY what 050 added, and nothing more. It MUST NOT touch the
 -- canonical wired auth tables (auth_sessions / oauth_identities / users / auth_*)
--- — those are owned by migration 047 and carry live data. This down migration
+--  -  those are owned by migration 047 and carry live data. This down migration
 -- only drops the canonical-name VIEWS and the reverse-lookup index that 050
 -- created, so applying 050 → down → 050 round-trips cleanly.
 --
--- Idempotent (IF EXISTS) — safe to re-run.
+-- Idempotent (IF EXISTS)  -  safe to re-run.
 -- ============================================================================
 
 BEGIN;

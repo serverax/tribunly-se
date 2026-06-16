@@ -1,5 +1,5 @@
 ---
-# IterLaw — source freshness check CronJob
+# IterLaw  -  source freshness check CronJob
 # Runs weekly; reports stale sources via GET /freshness endpoint.
 apiVersion: batch/v1
 kind: CronJob

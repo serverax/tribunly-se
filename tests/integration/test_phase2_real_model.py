@@ -1,5 +1,5 @@
 """
-Phase 2 closure — real model acceptance tests.
+Phase 2 closure  -  real model acceptance tests.
 
 REQUIRES:
   - OPENAI_API_KEY set (for embeddings + query embedding)
@@ -40,7 +40,7 @@ def haiku():
     key = settings.anthropic_api_key
     mid = settings.workhorse_model_id
     if key == "placeholder" or not key:
-        pytest.skip("ANTHROPIC_API_KEY not set — real model tests require it")
+        pytest.skip("ANTHROPIC_API_KEY not set  -  real model tests require it")
     if not mid:
         pytest.skip("WORKHORSE_MODEL_ID not set")
     return ClaudeReasoningModel(model_id=mid, api_key=key)
@@ -51,7 +51,7 @@ def haiku():
 FACT_PATTERNS = [
     {
         "id": "FP1",
-        "description": "Textbook UD — 4 years service, dismissed for conduct, no hearing",
+        "description": "Textbook UD  -  4 years service, dismissed for conduct, no hearing",
         "query": "I was dismissed for alleged misconduct after 4 years. No disciplinary hearing, no warning.",
         "facts": {
             "edt":                    "2026-04-01",
@@ -62,7 +62,7 @@ FACT_PATTERNS = [
             "acas_code_followed":     False,
             "weekly_pay":             600,
             "jurisdiction":           "EW",
-            # PII fields — must be stripped before model
+            # PII fields  -  must be stripped before model
             "claimant_name":          "Jane Smith",
             "employer_name":          "Acme Manufacturing Ltd",
             "email":                  "jane.smith@example.com",
@@ -70,7 +70,7 @@ FACT_PATTERNS = [
     },
     {
         "id": "FP2",
-        "description": "Below qualifying period — 14 months service (no ordinary UD)",
+        "description": "Below qualifying period  -  14 months service (no ordinary UD)",
         "query": "I was sacked after 14 months with no reason given.",
         "facts": {
             "edt":                "2026-03-15",
@@ -85,7 +85,7 @@ FACT_PATTERNS = [
     },
     {
         "id": "FP3",
-        "description": "Constructive dismissal — intolerable conditions, 3 years service",
+        "description": "Constructive dismissal  -  intolerable conditions, 3 years service",
         "query": "My employer cut my pay by 30% and moved me to a different role. I felt forced to resign after 3 years.",
         "facts": {
             "edt":                    "2026-02-28",
@@ -101,7 +101,7 @@ FACT_PATTERNS = [
     },
     {
         "id": "FP4",
-        "description": "With EC — dismissed 5 years service, used Early Conciliation",
+        "description": "With EC  -  dismissed 5 years service, used Early Conciliation",
         "query": "Dismissed after 5 years. Used ACAS Early Conciliation. Certificate received 3 weeks after I contacted them.",
         "facts": {
             "edt":                    "2026-03-01",
@@ -119,11 +119,11 @@ FACT_PATTERNS = [
     },
     {
         "id": "FP5",
-        "description": "Thin/ambiguous facts — short query, minimal information",
+        "description": "Thin/ambiguous facts  -  short query, minimal information",
         "query": "I think I was unfairly dismissed last year.",
         "facts": {
             "jurisdiction": "EW",
-            # Deliberately minimal — should trigger low confidence or insufficient_grounding
+            # Deliberately minimal  -  should trigger low confidence or insufficient_grounding
         },
     },
 ]
@@ -180,10 +180,10 @@ def test_ud_fact_pattern_real_model(pattern, haiku):
     # Deadline must always come from rules (when computable)
     if "deadline_info" in result:
         assert result["deadline_info"]["source"] == "rules", \
-            "deadline.source must be 'rules' — model must not generate deadlines"
+            "deadline.source must be 'rules'  -  model must not generate deadlines"
 
     # De-identification must have run (boundary_log present)
-    assert "boundary_log" in result, "boundary_log must be present — de-identification gate"
+    assert "boundary_log" in result, "boundary_log must be present  -  de-identification gate"
     bl = result["boundary_log"]
     assert bl.get("pii_in_output") == [], \
         f"PII found in model-bound payload: {bl.get('pii_in_output')}"
@@ -214,7 +214,7 @@ def test_fp2_below_qualifying_period(haiku):
 
     if "qualifying_check" in result and result["qualifying_check"]:
         qc = result["qualifying_check"]
-        # 14 months < 2 years — should not qualify for ordinary UD
+        # 14 months < 2 years  -  should not qualify for ordinary UD
         assert qc["meets_qualifying_period"] is False, \
             "14 months service must not meet the 2-year qualifying period"
         print(f"QUALIFYING CHECK: {qc}")
@@ -228,7 +228,7 @@ def test_fp5_thin_facts_insufficient_grounding(haiku):
 
     # Missing EDT or thin facts should not produce a full confident assessment
     assert result["status"] in ("missing_edt", "insufficient_grounding", "low_confidence"), \
-        f"Thin fact pattern produced '{result['status']}' — expected honest uncertainty"
+        f"Thin fact pattern produced '{result['status']}'  -  expected honest uncertainty"
 
 
 def test_deidentification_boundary_real_model(haiku):
@@ -268,7 +268,7 @@ def test_deidentification_boundary_real_model(haiku):
     }
     for pii_field in pii_expected_stripped:
         assert pii_field in boundary_log["fields_stripped"], \
-            f"PII field '{pii_field}' was NOT stripped — it may reach the model"
+            f"PII field '{pii_field}' was NOT stripped  -  it may reach the model"
         assert pii_field not in safe, \
             f"PII field '{pii_field}' found in safe_facts that would be sent to model"
 
@@ -289,9 +289,9 @@ def test_deidentification_boundary_real_model(haiku):
     )
     assert "boundary_log" in result
     bl = result["boundary_log"]
-    assert bl["pii_in_output"] == [], "PII found in model-bound payload — FAIL"
+    assert bl["pii_in_output"] == [], "PII found in model-bound payload  -  FAIL"
 
-    # Inspect the model boundary payload (keys only — no values)
+    # Inspect the model boundary payload (keys only  -  no values)
     if result.get("model_boundary_payload"):
         mbp = result["model_boundary_payload"]
         print(f"\nModel boundary payload (keys only, no values):")

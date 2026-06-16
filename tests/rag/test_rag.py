@@ -74,7 +74,7 @@ class TestHybridRetrieve:
         leg_count = cur.fetchone()[0]
         conn.close()
         if leg_count == 0:
-            pytest.skip("legislation table empty — run ingestion to populate semantic authorities")
+            pytest.skip("legislation table empty  -  run ingestion to populate semantic authorities")
         bundle = retrieve("unfair dismissal section 98", "unfair_dismissal", "EW", "2025-10-01")
         assert hasattr(bundle, "authorities")
         assert len(bundle.authorities) > 0

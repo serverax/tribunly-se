@@ -14,7 +14,7 @@ QUERY: 'unfair dismissal qualifying period'   (cosine NN, top-5)
     source_url=http://www.legislation.gov.uk/ukpga/2010/15/section/129
     parent_source_name=Equality Act 2010  base_url=https://www.legislation.gov.uk/ukpga/2010/15/data.xml
     chunk_hash=21c4587747921a415b3d775f7e3fc50b5a44349903c1c1879f398d03ed0c2ccd
-    snippet: Time limits 129 1 This section applies to— a a complaint relating to a breach of an equality clause or rule; b an application for a declaration referred to in section 127(3) or (4). 2 Proceedings on the complaint or appl
+    snippet: Time limits 129 1 This section applies to -  a a complaint relating to a breach of an equality clause or rule; b an application for a declaration referred to in section 127(3) or (4). 2 Proceedings on the complaint or appl
 
 [2] cos_dist=0.2070  chunk_id=4f547231-b754-469e-b6d3-a303bee6ef0a
     source_id=9  source_type=legislation  licence=active
@@ -30,7 +30,7 @@ QUERY: 'unfair dismissal qualifying period'   (cosine NN, top-5)
     source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/98
     parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
     chunk_hash=1df53108403372f9a77e3512a0a7e9a1d17355d103fd0a2c7417495eac6419d1
-    snippet: General. 98 1 In determining for the purposes of this Part whether the dismissal of an employee is fair or unfair, it is for the employer to show— a the reason (or, if more than one, the principal reason) for the dismiss
+    snippet: General. 98 1 In determining for the purposes of this Part whether the dismissal of an employee is fair or unfair, it is for the employer to show -  a the reason (or, if more than one, the principal reason) for the dismiss
 
 [4] cos_dist=0.2138  chunk_id=e8f5e622-3a93-4dd4-9b5e-f6a56141fc7f
     source_id=12  source_type=acas_guidance  licence=review
@@ -74,7 +74,7 @@ QUERY: 'employment tribunal time limit'   (cosine NN, top-5)
     source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/63
     parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
     chunk_hash=3c6755f3a956585f6b6093fd1a72094373fcf88e8ababda162496588017a9f49
-    snippet: Complaints to employment tribunals . 63 1 An employee may present a complaint to an employment tribunal that his employer— a has unreasonably refused to permit him to take time off as required by section 61, or b has fai
+    snippet: Complaints to employment tribunals . 63 1 An employee may present a complaint to an employment tribunal that his employer -  a has unreasonably refused to permit him to take time off as required by section 61, or b has fai
 
 [4] cos_dist=0.1921  chunk_id=759941bf-975b-4c93-be78-c6b2c8566153
     source_id=9  source_type=legislation  licence=active
@@ -82,7 +82,7 @@ QUERY: 'employment tribunal time limit'   (cosine NN, top-5)
     source_url=http://www.legislation.gov.uk/ukpga/1996/18/section/54
     parent_source_name=Employment Rights Act 1996  base_url=https://www.legislation.gov.uk/ukpga/1996/18/data.xml
     chunk_hash=ca97b29cba074c3149f0c991e719a0b7fcfa224044855c248956a7657f7bc57a
-    snippet: Complaints to employment tribunals . 54 1 An employee may present a complaint to an employment tribunal that his employer— a has unreasonably refused to permit him to take time off as required by section 52, or b has fai
+    snippet: Complaints to employment tribunals . 54 1 An employee may present a complaint to an employment tribunal that his employer -  a has unreasonably refused to permit him to take time off as required by section 52, or b has fai
 
 [5] cos_dist=0.1936  chunk_id=aff7b175-def6-4e85-8beb-0f81752943dd
     source_id=9  source_type=legislation  licence=active

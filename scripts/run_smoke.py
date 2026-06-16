@@ -21,13 +21,13 @@ BASE_URL = os.getenv("LAWAPP_SMOKE_BASE_URL", "http://lawapp-backend.lawapp-api.
 
 
 def fail(msg: str) -> int:
-    print(f"✗ SMOKE GATE: FAILED — {msg}")
+    print(f"✗ SMOKE GATE: FAILED  -  {msg}")
     return 1
 
 
 def main() -> int:
     print("=" * 70)
-    print("LAWAPP — LIVE SMOKE GATE")
+    print("LAWAPP  -  LIVE SMOKE GATE")
     print("=" * 70)
     print(f"Base URL: {BASE_URL}")
 

@@ -745,7 +745,7 @@
 ./backend/api/main.py:785:    from backend.core.envelope_encryption import envelope_encrypt_str
 ./backend/api/main.py:792:    _enc_metadata: Optional[str] = None   # EncryptedKeyBundle JSON for envelope path
 ./backend/api/main.py:815:                "Handoff lead PII envelope-encrypted via %s. "
-./backend/api/main.py:820:            logger.error("Handoff lead envelope encryption failed: %s — failing closed.", type(exc).__name__)
+./backend/api/main.py:820:            logger.error("Handoff lead envelope encryption failed: %s  -  failing closed.", type(exc).__name__)
 ./backend/api/main.py:877:                "envelope_kms" if _enc_metadata else
 ./backend/api/main.py:2422:    """Debug: run hybrid retrieval (BM25 + pgvector + SQL rules) and return citations."""
 ./backend/api/main.py:2431:    citations = [a.get("cite", "") for a in authorities if a.get("cite")]
@@ -823,14 +823,14 @@
 ./backend/api/main.py:2972:    items = get_memory(user_id, req.case_id, req.memory_type)
 ./backend/api/main.py:2976:@app.post("/api/evaluate")
 ./backend/api/main.py:2977:def api_evaluate(req: EvaluateRequest) -> dict:
-./backend/api/main.py:2978:    """Canonical: Legal Evaluation AI — evaluate an assessment before output."""
+./backend/api/main.py:2978:    """Canonical: Legal Evaluation AI  -  evaluate an assessment before output."""
 ./backend/api/main.py:2979:    from backend.core.evaluator import evaluate_assessment
 ./backend/api/main.py:2983:    result = evaluate_assessment(assessment, req.facts)
 ./backend/api/main.py:2994:@app.get("/api/mcp/tools")
 ./backend/api/main.py:2995:def api_mcp_tools() -> dict:
 ./backend/api/main.py:3014:@app.post("/api/cache/test")
 ./backend/api/main.py:3015:def api_cache_test(req: CacheTestRequest) -> dict:
-./backend/api/main.py:3016:    """Canonical: Semantic cache — lookup and safety classification."""
+./backend/api/main.py:3016:    """Canonical: Semantic cache  -  lookup and safety classification."""
 ./backend/api/main.py:3017:    from backend.core.semantic_cache import cache_lookup, cache_store
 ./backend/api/main.py:3019:    result = cache_lookup(req.query, req.jurisdiction, facts)
 ./backend/api/main.py:3020:    status = "cache_hit" if result["cache_hit"] else "cache_miss"
@@ -876,13 +876,13 @@
 ./backend/core/brain.py:23:  16. Apply legal boundary and safety policy
 ./backend/core/brain.py:24:  17. Save case memory (only if user authenticated and consented)
 ./backend/core/brain.py:31:GUARDRAIL: No case memory is saved without user_id, case_id, and consent.
-./backend/core/brain.py:60:    "retrieve_legal_evidence",# 11 — hybrid retrieval (SQL + BM25 + pgvector)
-./backend/core/brain.py:61:    "verify_citations",       # 12 — verify every citation against DB
-./backend/core/brain.py:62:    "compress_context",       # 13 — compress context preserving all citations
-./backend/core/brain.py:64:    "evaluate_draft",         # 15 — legal evaluation rubric
-./backend/core/brain.py:65:    "apply_safety_policy",    # 16 — legal boundary + safety gate (blocks if fail)
-./backend/core/brain.py:66:    "save_case_memory",       # 17 — persist to legal_memory if allowed
-./backend/core/brain.py:67:    "store_audit_log",        # 18 — immutable brain_traces + evaluation_results
+./backend/core/brain.py:60:    "retrieve_legal_evidence",# 11  -  hybrid retrieval (SQL + BM25 + pgvector)
+./backend/core/brain.py:61:    "verify_citations",       # 12  -  verify every citation against DB
+./backend/core/brain.py:62:    "compress_context",       # 13  -  compress context preserving all citations
+./backend/core/brain.py:64:    "evaluate_draft",         # 15  -  legal evaluation rubric
+./backend/core/brain.py:65:    "apply_safety_policy",    # 16  -  legal boundary + safety gate (blocks if fail)
+./backend/core/brain.py:66:    "save_case_memory",       # 17  -  persist to legal_memory if allowed
+./backend/core/brain.py:67:    "store_audit_log",        # 18  -  immutable brain_traces + evaluation_results
 ./backend/core/brain.py:78:        "citation_verification",
 ./backend/core/brain.py:79:        "evaluation",
 ./backend/core/brain.py:85:        "citation_verification",
@@ -1017,7 +1017,7 @@
 ./backend/core/context_compressor.py:33:def compress_bundle(
 ./backend/core/context_compressor.py:39:    Compress a retrieval bundle for the model context window.
 ./backend/core/context_compressor.py:43:        authorities:  list of authority dicts from the retrieval layer
-./backend/core/context_compressor.py:50:          "citations":        list[str] — every cite reference (guaranteed complete),
+./backend/core/context_compressor.py:50:          "citations":        list[str]  -  every cite reference (guaranteed complete),
 ./backend/core/context_compressor.py:59:            "compression_ratio": float,
 ./backend/core/context_compressor.py:60:            "citations_preserved": int,
 ./backend/core/context_compressor.py:79:    all_citations: list[str] = []
@@ -1061,9 +1061,9 @@
 ./backend/core/document_extractor.py:292:            "apt-get install tesseract-ocr && pip install pytesseract"
 ./backend/core/dp_report.py:48:            "retention_policy":    "NOT_IMPLEMENTED",
 ./backend/core/dp_report.py:118:            "retention_policy": "None defined",
-./backend/core/dp_report.py:137:                "real_ocr_pii_risk": "Phase 5B: real OCR will extract real PII — needs encryption pipeline",
+./backend/core/dp_report.py:137:                "real_ocr_pii_risk": "Phase 5B: real OCR will extract real PII  -  needs encryption pipeline",
 ./backend/core/dp_report.py:191:                "No data retention or deletion policy (Art.17 UK GDPR right to erasure)",
-./backend/core/dp_report.py:220:                "No data retention/deletion policy — Art.17 UK GDPR (production blocker)",
+./backend/core/dp_report.py:220:                "No data retention/deletion policy  -  Art.17 UK GDPR (production blocker)",
 ./backend/core/envelope_encryption.py:7:Encryption with envelope (aws_kms mode):
 ./backend/core/envelope_encryption.py:12:Decryption with envelope:
 ./backend/core/envelope_encryption.py:43:# ── String envelope encrypt/decrypt ──────────────────────────────────────────
@@ -1090,7 +1090,7 @@
 ./backend/core/envelope_encryption.py:223:    return envelope_decrypt_str(encrypted_value, bundle_json, provider)
 ./backend/core/evaluator.py:4:Every legal answer must pass evaluation before final output.
 ./backend/core/evaluator.py:5:Evaluation checks mirror and extend the governance gate.
-./backend/core/evaluator.py:8:  1. Citation validity — citations exist in DB
+./backend/core/evaluator.py:8:  1. Citation validity  -  citations exist in DB
 ./backend/core/evaluator.py:18:If evaluation fails on any CRITICAL check, the answer is blocked or
 ./backend/core/evaluator.py:61:def evaluate_assessment(
 ./backend/core/evaluator.py:68:    Run the legal evaluation rubric against a draft assessment.
@@ -1100,7 +1100,7 @@
 ./backend/core/evaluator.py:82:                        for c in citations[:10]]
 ./backend/core/evaluator.py:83:            result = verify_bundle_citations(cit_list)
 ./backend/core/evaluator.py:84:            citation_ok = result["pass_rate"] >= 0.5
-./backend/core/evaluator.py:86:            citation_ok = True  # DB unavailable — don't block
+./backend/core/evaluator.py:86:            citation_ok = True  # DB unavailable  -  don't block
 ./backend/core/evaluator.py:87:        check = {"check": "citation_validity", "passed": citation_ok, "severity": "high"}
 ./backend/core/evaluator.py:89:        if not citation_ok:
 ./backend/core/evaluator.py:90:            failures.append("citation_validity_low_pass_rate")
@@ -1110,25 +1110,25 @@
 ./backend/core/govern.py:51:    Run the five-check governance gate.
 ./backend/core/govern.py:61:            failure_reason="insufficient_grounding: retrieval bundle too weak to support assessment",
 ./backend/core/kms.py:5:envelope encryption support:
-./backend/core/kms.py:9:  AwsKmsProvider   — real AWS KMS via boto3; full envelope encryption (Phase 7D)
+./backend/core/kms.py:9:  AwsKmsProvider    -  real AWS KMS via boto3; full envelope encryption (Phase 7D)
 ./backend/core/kms.py:53:    Metadata about an envelope-encrypted data key.
 ./backend/core/kms.py:114:    # ── Phase 7D: envelope encryption methods ────────────────────────────────
 ./backend/core/kms.py:118:        Generate a new data key for envelope encryption.
 ./backend/core/kms.py:147:    def supports_envelope_encryption(self) -> bool:
 ./backend/core/kms.py:161:            "envelope_encryption_supported":   self.supports_envelope_encryption(),
 ./backend/core/kms.py:162:            "ciphertext_blob_persistence":     self.supports_envelope_encryption(),
-./backend/core/kms.py:172:    No real KMS — CiphertextBlob is empty (envelope encryption is simulated).
+./backend/core/kms.py:172:    No real KMS  -  CiphertextBlob is empty (envelope encryption is simulated).
 ./backend/core/kms.py:207:    def supports_envelope_encryption(self) -> bool:
-./backend/core/kms.py:266:    AWS KMS provider — full envelope encryption support (Phase 7D).
+./backend/core/kms.py:266:    AWS KMS provider  -  full envelope encryption support (Phase 7D).
 ./backend/core/kms.py:298:    # ── Phase 7D: envelope encryption ────────────────────────────────────────
 ./backend/core/kms.py:302:        Generate a new envelope-encrypted data key.
 ./backend/core/kms.py:360:    def supports_envelope_encryption(self) -> bool:
 ./backend/core/kms.py:406:            "envelope_encryption_supported":   self.supports_envelope_encryption(),
 ./backend/core/kms.py:408:                "IMPLEMENTED" if self.supports_envelope_encryption() else "NOT_CONFIGURED"
 ./backend/core/kms.py:410:            "note": "Phase 7D: full envelope encryption (GenerateDataKey + Decrypt).",
-./backend/core/legal_graph.py:249:          "primary":       str        — the primary source for retrieval
+./backend/core/legal_graph.py:249:          "primary":       str         -  the primary source for retrieval
 ./backend/core/legal_graph.py:255:    sources = ["hybrid"]     # hybrid (SQL rules + BM25 + pgvector) is always active
-./backend/core/log_scanner.py:7:NOT a production log aggregator — scans in-memory text for known values.
+./backend/core/log_scanner.py:7:NOT a production log aggregator  -  scans in-memory text for known values.
 ./backend/core/mcp_connectors.py:5:Every connector call is logged to mcp_tool_calls.
 ./backend/core/mcp_connectors.py:68:    GUARDRAIL: Every call is written to mcp_tool_calls audit table.
 ./backend/core/mcp_connectors.py:287:                    INSERT INTO mcp_tool_calls
@@ -1162,13 +1162,13 @@
 ./backend/core/models.py:27:    Citation, Deadline, RetrievalBundle, StructuredAssessment, ValueRange,
 ./backend/core/models.py:40:        bundle: RetrievalBundle,
 ./backend/core/models.py:69:    - Verify that the governance gate correctly handles insufficient_grounding.
-./backend/core/models.py:73:    The governance gate will route this to seek_solicitor — correct behaviour.
+./backend/core/models.py:73:    The governance gate will route this to seek_solicitor  -  correct behaviour.
 ./backend/core/models.py:79:        bundle: RetrievalBundle,
 ./backend/core/models.py:119:            citations=[],
 ./backend/core/models.py:158:        self, safe_facts: dict, bundle: RetrievalBundle, deadline_info: dict
 ./backend/core/models.py:185:  "citations": [{{"cite": "...", "url": "..."}}],
 ./backend/core/models.py:196:        bundle: RetrievalBundle,
-./backend/core/models.py:234:        # Enforce deadline.source = "rules" — governance gate also checks this,
+./backend/core/models.py:234:        # Enforce deadline.source = "rules"  -  governance gate also checks this,
 ./backend/core/models.py:258:    It returns a structured assessment DRAFT. The governance gate validates it
 ./backend/core/models.py:265:    BASE_URL = "https://openrouter.ai/api/v1"
 ./backend/core/models.py:313:            "provider":         "openrouter",
@@ -1180,8 +1180,8 @@
 ./backend/core/models.py:422:        mid = getattr(settings, "openrouter_model_fast", "")
 ./backend/core/pipeline.py:7:- Retrieval always runs before reasoning.
 ./backend/core/pipeline.py:30:from shared.schemas import ClassificationResult, RetrievalBundle, StructuredAssessment
-./backend/core/pipeline.py:64:      - {"status": "insufficient_grounding", ...}    — retrieval too weak
-./backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}         — passes governance
+./backend/core/pipeline.py:64:      - {"status": "insufficient_grounding", ...}     -  retrieval too weak
+./backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}          -  passes governance
 ./backend/core/pipeline.py:70:    (all stages run, governance gate exercises correctly) and to work correctly
 ./backend/core/pipeline.py:112:        "Retrieval: %d rules, %d authorities, insufficient_grounding=%s",
 ./backend/core/pipeline.py:160:    # key weaknesses from facts, citations from rules + BM25.
@@ -1189,7 +1189,7 @@
 ./backend/core/pipeline.py:199:    # assessment, upgrade to the deterministic result with proper citations.
 ./backend/core/pipeline.py:200:    if assessment.insufficient_grounding and det_ctx["citations"] and \
 ./backend/core/pipeline.py:212:            "citations":             [Citation(**c) for c in det_ctx["citations"]
-./backend/core/pipeline.py:233:    # ── Stage 6b: Audit log — written regardless of governance outcome ─────────
+./backend/core/pipeline.py:233:    # ── Stage 6b: Audit log  -  written regardless of governance outcome ─────────
 ./backend/core/pipeline.py:255:        "governance_result": {
 ./backend/core/pipeline.py:282:        "citations":             [c.model_dump() for c in a.citations],
 ./backend/core/pipeline.py:302:    Write one immutable audit row after every governance decision.
@@ -1209,9 +1209,9 @@
 ./backend/core/prompts/citation_locked.py:29:def build_citation_bound_prompt(
 ./backend/core/prompts/citation_locked.py:37:    chunks plus strict citation rules.
 ./backend/core/prompts/citation_locked.py:80:        "allowed_citation_ids": allowed_ids,
-./backend/core/retrieval/trust_scorer.py:2:Trust scorer for retrieval candidates — Phase 3.
+./backend/core/retrieval/trust_scorer.py:2:Trust scorer for retrieval candidates  -  Phase 3.
 ./backend/core/retrieval/trust_scorer.py:30:    Apply trust scores to retrieval candidates.
-./backend/core/retrieve.py:2:Stage 2 — Hybrid retrieval module.
+./backend/core/retrieve.py:2:Stage 2  -  Hybrid retrieval module.
 ./backend/core/retrieve.py:4:ALWAYS runs before any reasoning. Returns a RetrievalBundle of:
 ./backend/core/retrieve.py:30:from shared.schemas import RetrievalBundle
 ./backend/core/retrieve.py:31:from backend.core.retrieval.trust_scorer import score_authorities
@@ -1269,7 +1269,7 @@
 ./backend/core/score.py:80:        score += min(0.4, citation_count * 0.1)   # additional per citation
 ./backend/core/score.py:87:    bundle: RetrievalBundle,
 ./backend/core/score.py:123:    Check whether either score falls below the governance threshold.
-./backend/core/score.py:124:    Returns (failed, reason) — called by the governance gate.
+./backend/core/score.py:124:    Returns (failed, reason)  -  called by the governance gate.
 ./backend/core/semantic_cache.py:6:ALLOWED to cache:
 ./backend/core/semantic_cache.py:11:NOT ALLOWED to cache:
 ./backend/core/semantic_cache.py:17:  - Any query with safe_to_cache=False
@@ -1636,7 +1636,7 @@
 ./client/wasm/target/wasm32-unknown-unknown/release/deps/wasm_bindgen_shared-1923511bc374308b.d:9:/home/kalshafee/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasm-bindgen-shared-0.2.122/src/tys.rs:
 ./client/wasm/target/wasm32-unknown-unknown/release/lawapp_wasm.d:1:/mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/lawapp_wasm.wasm: /mnt/f/lawapp/client/wasm/src/lib.rs /mnt/f/lawapp/client/wasm/src/notice.rs
 ./client/wasm/target/wasm32-unknown-unknown/release/liblawapp_wasm.d:1:/mnt/f/lawapp/client/wasm/target/wasm32-unknown-unknown/release/liblawapp_wasm.rlib: /mnt/f/lawapp/client/wasm/src/lib.rs /mnt/f/lawapp/client/wasm/src/notice.rs
-./db/migrations/001_initial.sql:2:-- Employment Claim Co-Pilot — PostgreSQL 16 + pgvector
+./db/migrations/001_initial.sql:2:-- Employment Claim Co-Pilot  -  PostgreSQL 16 + pgvector
 ./db/migrations/001_initial.sql:6:CREATE EXTENSION IF NOT EXISTS vector;
 ./db/migrations/001_initial.sql:23:    embedding        vector(1536),                      -- dim = EMBEDDING_DIM
 ./db/migrations/001_initial.sql:36:    ON legislation USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
@@ -1654,7 +1654,7 @@
 ./db/migrations/003_phase2c_audit.sql:10:    retrieval_bundle    jsonb,                   -- BM25/pgvector authorities returned
 ./db/migrations/003_phase2c_audit.sql:16:    governance_result   jsonb       NOT NULL,    -- {passes, failure_reason}
 ./db/migrations/012_phase6_encryption_retention.sql:30:    policy_days int         NOT NULL,
-./db/migrations/013_phase7d_envelope_encryption.sql:1:-- Migration 013: Phase 7D — envelope encryption key metadata columns
+./db/migrations/013_phase7d_envelope_encryption.sql:1:-- Migration 013: Phase 7D  -  envelope encryption key metadata columns
 ./db/migrations/013_phase7d_envelope_encryption.sql:11:-- Index for querying unencrypted records (NULL = not yet envelope-encrypted)
 ./db/migrations/014_legal_corpus_expansion.sql:4:-- Extends retrieval sources for the full lawapp data spine.
 ./db/migrations/014_legal_corpus_expansion.sql:15:    document_type    text        NOT NULL DEFAULT 'guidance',  -- guidance | policy | tool
@@ -1726,8 +1726,8 @@
 ./db/migrations/019_brain_phase1_schema.sql:109:    ('/api/evaluate',               'evaluate_assessment',  true,  'Legal evaluation AI'),
 ./db/migrations/019_brain_phase1_schema.sql:110:    ('/api/mcp/tools',              'mcp_tools',            false, 'List MCP connector tools'),
 ./db/migrations/019_brain_phase1_schema.sql:113:    ('/api/cache/test',             'cache_test',           true,  'Semantic cache test'),
-./db/migrations/019_phase1_brain_safety.sql:5:--   safety_boundary_checks  — immutable log of every safety policy check at Brain step 16
-./db/migrations/019_phase1_brain_safety.sql:6:--   context_compression_log — log of context compression metrics at Brain step 13
+./db/migrations/019_phase1_brain_safety.sql:5:--   safety_boundary_checks   -  immutable log of every safety policy check at Brain step 16
+./db/migrations/019_phase1_brain_safety.sql:6:--   context_compression_log  -  log of context compression metrics at Brain step 13
 ./db/migrations/019_phase1_brain_safety.sql:11:-- Records every invocation of the Brain's "apply_safety_policy" step (step 16).
 ./db/migrations/019_phase1_brain_safety.sql:31:-- ── context_compression_log ──────────────────────────────────────────────────
 ./db/migrations/019_phase1_brain_safety.sql:32:-- Records context compression metrics at Brain step 13.
@@ -1749,24 +1749,24 @@
 ./Dockerfile.ingestion:23:       "pgvector>=0.3" \
 ./Dockerfile.ingestion:43:ENV FASTEMBED_CACHE_PATH=/app/fastembed_cache
 ./docs/00_README.md:25:| 03 | `03_DATABASE_DESIGN.md` | PostgreSQL + pgvector schemas (legislation, case_law, acas, rules, cases, etc.) |
-./docs/00_README.md:27:| 04 | `04_RAG_REASONING_SPEC.md` | The "algorithm brain" — RAG pipeline, structured-assessment schema, scoring, governance, de-identification |
-./docs/00_README.md:35:1. **Foundations & Data Spine** — repo, DB (pgvector), ingestion pipelines (the moat). Detailed APIs in `01a`.
-./docs/00_README.md:36:2. **Retrieval + Reasoning Core** — the brain: hybrid RAG → structured assessment, scoring, governance. Spec in `04`.
+./docs/00_README.md:27:| 04 | `04_RAG_REASONING_SPEC.md` | The "algorithm brain"  -  RAG pipeline, structured-assessment schema, scoring, governance, de-identification |
+./docs/00_README.md:35:1. **Foundations & Data Spine**  -  repo, DB (pgvector), ingestion pipelines (the moat). Detailed APIs in `01a`.
+./docs/00_README.md:36:2. **Retrieval + Reasoning Core**  -  the brain: hybrid RAG → structured assessment, scoring, governance. Spec in `04`.
 ./docs/00_README.md:48:- **RAG** → `04_RAG_REASONING_SPEC.md` (hybrid retrieval, §3) + `02_HLD` Layer 4
 ./docs/00_README.md:49:- **The algorithm / reasoning brain** → `04_RAG_REASONING_SPEC.md` (tiered reasoning §4, scoring §5, governance §6)
-./docs/00_README.md:59:2. **Grounding always:** legal answers come from retrieved, cited sources — never model memory.
-./docs/00_README.md:72:5. Exact Act chapter numbers, the first-tier ET court code, and all `rules` values/caps — pull and verify from the live API, never hardcode from memory.
-./docs/00_README.md:80:- Concentrate effort on retrieval + document generation — they ARE the value.
+./docs/00_README.md:59:2. **Grounding always:** legal answers come from retrieved, cited sources  -  never model memory.
+./docs/00_README.md:72:5. Exact Act chapter numbers, the first-tier ET court code, and all `rules` values/caps  -  pull and verify from the live API, never hardcode from memory.
+./docs/00_README.md:80:- Concentrate effort on retrieval + document generation  -  they ARE the value.
 ./docs/01a_PHASE1_API_APPENDIX.md:3:**Purpose:** Concrete endpoint, schema, licensing and rate-limit detail for the two core retrieval sources, so the agent can build the Phase 1 ingestion pipeline without further research. Pairs with `EMPLOYMENT_COPILOT_BUILD_PLAN.md` Phase 1.
-./docs/01a_PHASE1_API_APPENDIX.md:51:> Note: confirm the exact Act chapter numbers at ingestion time via the title-resolution endpoint rather than hardcoding from memory. (ERA 1996 is c.18; Equality Act 2010 is c.15 — but verify via the API, do not trust this line.)
-./docs/01_BUILD_PLAN.md:15:- **Grounding principle (GUARDRAIL):** Legal answers come from retrieved, cited, current sources — never from a model's unaided memory. Exact values (deadlines, caps, thresholds) come from deterministic data/logic, never from a generative model.
+./docs/01a_PHASE1_API_APPENDIX.md:51:> Note: confirm the exact Act chapter numbers at ingestion time via the title-resolution endpoint rather than hardcoding from memory. (ERA 1996 is c.18; Equality Act 2010 is c.15  -  but verify via the API, do not trust this line.)
+./docs/01_BUILD_PLAN.md:15:- **Grounding principle (GUARDRAIL):** Legal answers come from retrieved, cited, current sources  -  never from a model's unaided memory. Exact values (deadlines, caps, thresholds) come from deterministic data/logic, never from a generative model.
 ./docs/01_BUILD_PLAN.md:21:- PostgreSQL as primary store, with `pgvector` for embeddings (avoids a separate vector DB at this stage).
 ./docs/01_BUILD_PLAN.md:29:**Goal:** Stand up the project skeleton and the retrieval data spine. This is the moat; most effort lives here.
 ./docs/01_BUILD_PLAN.md:33:2. Provision PostgreSQL with `pgvector`. Define schemas for: `legislation`, `case_law`, `acas_guidance`, `rules` (deterministic legal facts: deadlines, caps, thresholds), each with `source_url`, `version`, `last_verified_at`, `effective_from`, `effective_to`.
 ./docs/01_BUILD_PLAN.md:37:6. Build the embedding + indexing job (chunk → embed → store in pgvector) plus structured-table population for the deterministic `rules` data.
-./docs/01_BUILD_PLAN.md:40:**GUARDRAILS:** Deterministic legal facts (time limits, compensation caps) go in structured `rules` tables with citations — never embedded as free text only. Store XML parsing as a maintainable module; CLML and LegalDocML are specialist schemas and need real parsing.
+./docs/01_BUILD_PLAN.md:40:**GUARDRAILS:** Deterministic legal facts (time limits, compensation caps) go in structured `rules` tables with citations  -  never embedded as free text only. Store XML parsing as a maintainable module; CLML and LegalDocML are specialist schemas and need real parsing.
 ./docs/01_BUILD_PLAN.md:44:- The `rules` table returns the correct unfair-dismissal time limit and current compensation cap, each with a source citation and effective date.
-./docs/01_BUILD_PLAN.md:50:## Phase 2 — Retrieval + Reasoning Core (the "brain")
+./docs/01_BUILD_PLAN.md:50:## Phase 2  -  Retrieval + Reasoning Core (the "brain")
 ./docs/01_BUILD_PLAN.md:56:2. **Hybrid retrieval module:** vector search (pgvector) for semantic matches + structured lookups for deterministic facts. Always runs. Returns a bundle of cited sources.
 ./docs/01_BUILD_PLAN.md:58:   - Workhorse model applies retrieved law to user facts, outputs a **structured assessment object** (not prose): `{claim_type, has_viable_claim (bool/uncertain), strength (low/med/high), value_range, key_weaknesses[], deadline, recommended_next_step, citations[]}`.
 ./docs/01_BUILD_PLAN.md:61:5. **Confidence + grounding scoring:** every assessment carries a grounding score (is each claim backed by a retrieved citation?) and a confidence score.
@@ -1776,21 +1776,21 @@
 ./docs/01_BUILD_PLAN.md:125:3. **Security/compliance hardening:** UK GDPR Article 9 review, data-retention policy, encryption audit, de-identification boundary test, DPIA.
 ./docs/01_BUILD_PLAN.md:144:3. **Scale infra:** review pgvector performance at volume; consider dedicated vector DB only if needed; cost-monitor the model tiers (workhorse vs escalation spend).
 ./docs/01_BUILD_PLAN.md:159:- **Vertical slices, not horizontal layers.** Prefer "one claim type working end to end" over "all retrieval done, no reasoning yet."
-./docs/01_BUILD_PLAN.md:161:- **Concentrate effort on retrieval + document generation** — these two ARE the value. Everything else is supporting cast.
+./docs/01_BUILD_PLAN.md:161:- **Concentrate effort on retrieval + document generation**  -  these two ARE the value. Everything else is supporting cast.
 ./docs/02_HLD_ARCHITECTURE.md:10:A five-layer system. Data flows top→bottom on the way in, bottom→top on the way out. The retrieval + data layers are the moat; the governance gate is the honesty proposition made into architecture.
 ./docs/02_HLD_ARCHITECTURE.md:30:                │ cited sources                  │ retrieval query
 ./docs/02_HLD_ARCHITECTURE.md:33:│  vector search (pgvector) + structured lookups (exact facts)     │
 ./docs/02_HLD_ARCHITECTURE.md:37:│ LAYER 5  DATA SPINE (PostgreSQL + pgvector)                      │
 ./docs/02_HLD_ARCHITECTURE.md:50:Coordinates the pipeline per request: **classify → retrieve → reason → generate → govern → respond.** Agents call tools (retrieval, generation, deadline calc, lead-routing) and manage state. **GUARDRAIL:** agents orchestrate the *workflow* and produce *drafts*; they never make the final legal judgment and never take a reserved action (filing, representing). Start as modules in one service; split into services only if scale demands.
-./docs/02_HLD_ARCHITECTURE.md:56:Output is a **structured assessment object** (claim type, viability, strength, value range, weaknesses, deadline, next step, citations) — validated before display. Full schema in `04_RAG_REASONING_SPEC.md`.
-./docs/02_HLD_ARCHITECTURE.md:59:### Layer 4 — Retrieval (RAG, hybrid) — the moat
+./docs/02_HLD_ARCHITECTURE.md:56:Output is a **structured assessment object** (claim type, viability, strength, value range, weaknesses, deadline, next step, citations)  -  validated before display. Full schema in `04_RAG_REASONING_SPEC.md`.
+./docs/02_HLD_ARCHITECTURE.md:59:### Layer 4  -  Retrieval (RAG, hybrid)  -  the moat
 ./docs/02_HLD_ARCHITECTURE.md:60:**Always runs first.** Two retrieval modes:
 ./docs/02_HLD_ARCHITECTURE.md:61:- **Semantic** (pgvector): finds relevant legislation sections, tribunal/EAT decisions, ACAS guidance by meaning.
 ./docs/02_HLD_ARCHITECTURE.md:63:Returns a bundle of **cited, current** sources. The reasoning layer answers *from this*, never from model memory. Detail in `04_RAG_REASONING_SPEC.md`.
 ./docs/02_HLD_ARCHITECTURE.md:66:PostgreSQL + pgvector. Tables: `legislation`, `case_law`, `acas_guidance`, `rules` (deterministic legal facts), plus `users`, `cases`, `documents`. Every legal record carries `source_url`, `version`/effective dates, `last_verified_at`. Ingestion pipelines (Phase 1) populate it; a change-detection job (content-hash based) keeps it current cheaply. Schemas in `03_DATABASE_DESIGN.md`.
 ./docs/02_HLD_ARCHITECTURE.md:72:3. **Retrieval always runs**: hybrid pull of cited authority + exact rules.
 ./docs/02_HLD_ARCHITECTURE.md:74:5. **Governance gate**: is every claim backed by a citation? is confidence sufficient? does anything cross the reserved-activity line?
-./docs/02_HLD_ARCHITECTURE.md:83:- **Grounding always**: legal output comes from retrieved, cited sources — never model memory.
+./docs/02_HLD_ARCHITECTURE.md:83:- **Grounding always**: legal output comes from retrieved, cited sources  -  never model memory.
 ./docs/02_HLD_ARCHITECTURE.md:100:| Retrieval | Hybrid: pgvector semantic + SQL structured | Semantic for text, deterministic for exact facts |
 ./docs/02_HLD_ARCHITECTURE.md:101:| Data | PostgreSQL + pgvector | Reuses existing stack; one store for vectors + structured |
 ./docs/03a_UNFAIR_DISMISSAL_SEED_SPEC.md:4:**Purpose:** Tell the Phase 1 ingestion agent exactly which legislation to fetch, which `rules` rows to seed, and how the deadline arithmetic works - so it does not improvise legal values. This is the artefact most likely to be got wrong if left to the agent's memory.
@@ -1806,11 +1806,11 @@
 ./docs/03_DATABASE_DESIGN.md:89:  embedding       vector(1536),
 ./docs/03_DATABASE_DESIGN.md:95:CREATE INDEX ON acas_guidance USING ivfflat (embedding vector_cosine_ops);
 ./docs/03_DATABASE_DESIGN.md:111:  authority_ref   text NOT NULL,                  -- citation, e.g. "ERA 1996 s.111(2)"
-./docs/03_DATABASE_DESIGN.md:201:Phase 1 must seed `rules` for unfair dismissal, each row citing the in-force authority. Examples of rule_keys to populate (VERIFY values + citations against the live API at ingest — do not trust any number from memory):
-./docs/04_RAG_REASONING_SPEC.md:4:**Core rule (GUARDRAIL):** Retrieval ALWAYS runs first. The reasoning model answers FROM retrieved, cited sources — never from its own memory. Exact facts (deadlines/caps) come from the structured `rules` table, never from generation. If grounding is insufficient, the system does NOT guess — it flags uncertainty or routes to a human.
+./docs/03_DATABASE_DESIGN.md:201:Phase 1 must seed `rules` for unfair dismissal, each row citing the in-force authority. Examples of rule_keys to populate (VERIFY values + citations against the live API at ingest  -  do not trust any number from memory):
+./docs/04_RAG_REASONING_SPEC.md:4:**Core rule (GUARDRAIL):** Retrieval ALWAYS runs first. The reasoning model answers FROM retrieved, cited sources  -  never from its own memory. Exact facts (deadlines/caps) come from the structured `rules` table, never from generation. If grounding is insufficient, the system does NOT guess  -  it flags uncertainty or routes to a human.
 ./docs/04_RAG_REASONING_SPEC.md:19:   │   b) SEMANTIC: pgvector top-k over legislation + case_law + acas_guidance
-./docs/04_RAG_REASONING_SPEC.md:43:## 3. Stage 2 — Retrieval (hybrid RAG)
-./docs/04_RAG_REASONING_SPEC.md:45:### 3a. Structured retrieval (deterministic — runs for every legal question)
+./docs/04_RAG_REASONING_SPEC.md:43:## 3. Stage 2  -  Retrieval (hybrid RAG)
+./docs/04_RAG_REASONING_SPEC.md:45:### 3a. Structured retrieval (deterministic  -  runs for every legal question)
 ./docs/04_RAG_REASONING_SPEC.md:46:Query `rules` by `claim_type` + `jurisdiction` + relevant date. Returns exact values WITH citations:
 ./docs/04_RAG_REASONING_SPEC.md:55:### 3b. Semantic retrieval (pgvector)
 ./docs/04_RAG_REASONING_SPEC.md:58:- Return chunks with `source_url`, citation, and similarity score.
@@ -1823,7 +1823,7 @@
 ./docs/04_RAG_REASONING_SPEC.md:139:- Answer a legal question from model memory without retrieval.
 ./docs/05_WASM_SPEC.md:13:It is deliberately scoped. Heavy reasoning, retrieval, and generation stay server-side.
 ./docs/05_WASM_SPEC.md:36:- RAG / vector search / retrieval.
-./docs/05_WASM_SPEC.md:45:- Implement WASM modules in a language with good WASM tooling (e.g. Rust → wasm-bindgen, or AssemblyScript) — choose per team capability; flag the choice.
+./docs/05_WASM_SPEC.md:45:- Implement WASM modules in a language with good WASM tooling (e.g. Rust → wasm-bindgen, or AssemblyScript)  -  choose per team capability; flag the choice.
 ./docs/06_USER_STORIES.md:15:- AC4: Every legal point in the result traces to a citation (grounding).
 ./docs/06_USER_STORIES.md:53:- AC3: Sources/citations are visible so the user can verify.
 ./docs/06_USER_STORIES.md:111:| US-1 Diagnosis | 3 | Retrieval + Reasoning + Governance |
@@ -1873,7 +1873,7 @@
 ./docs/dpia-review-checklist.md:54:- [ ] Retention policy and deletion endpoints are implemented (Phase 6)
 ./docs/env-production.template:71:# Required for pgvector semantic search. Without it, BM25 fallback is active.
 ./docs/FCL_APPLICATION_PREP.md:19:- Every output is grounded in cited retrieved sources; the governance gate routes to solicitors when confidence or grounding is insufficient.
-./docs/FCL_APPLICATION_PREP.md:54:> We are building a UK employment law self-help tool that helps workers assess whether they have an unfair dismissal claim, understand their rights and deadlines, and prepare tribunal documents. The system retrieves and cites primary legal sources (legislation, EAT and ET decisions, ACAS guidance) to produce grounded, source-cited assessments — rather than relying on generative model memory.
+./docs/FCL_APPLICATION_PREP.md:54:> We are building a UK employment law self-help tool that helps workers assess whether they have an unfair dismissal claim, understand their rights and deadlines, and prepare tribunal documents. The system retrieves and cites primary legal sources (legislation, EAT and ET decisions, ACAS guidance) to produce grounded, source-cited assessments  -  rather than relying on generative model memory.
 ./docs/FCL_APPLICATION_PREP.md:56:> EAT decisions are central to this: they establish how s.98 ERA 1996 "band of reasonable responses" is applied, how the ACAS Code is weighted, and how compensation is assessed. Without current EAT case law, the retrieval layer cannot properly ground its reasoning in judicial authority.
 ./docs/FCL_APPLICATION_PREP.md:70:> The communities we serve are dismissed workers (particularly those on lower incomes) and the broader public interest in accessible justice. Our methodology prioritises citation transparency, grounding every legal statement in a retrievable source, and honest acknowledgement of uncertainty.
 ./docs/FCL_APPLICATION_PREP.md:80:| Does your work focus on specific individuals? | No | Aggregated retrieval; no individual profiling |
@@ -1890,13 +1890,13 @@
 ./docs/FCL_APPLICATION_PREP.md:113:**9. Accurate data representation:** We do not claim our retrieval is complete. Coverage gaps (EAT ~2021+, ET from 2017; some decisions verbal/untranscribed) are known and will be disclosed to users. The system routes to a human when grounding is insufficient rather than proceeding.
 ./docs/FCL_SUBMISSION_RECORD.md:16:endpoints, for the purpose of populating and maintaining a vector index for
 ./docs/FCL_SUBMISSION_RECORD.md:17:semantic retrieval in the UK employment law self-help co-pilot.
-./docs/LEGAL_ACCURACY_PROCEDURES.md:3:**Owner:** must be a named human — this cannot be tribal memory or an agent task.
+./docs/LEGAL_ACCURACY_PROCEDURES.md:3:**Owner:** must be a named human  -  this cannot be tribal memory or an agent task.
 ./docs/pre-beta-runbook.md:140:- Run `scripts/run_retention.py --apply` periodically per retention policy
 ./infra/k8s/iterlaw/backend-deployment.yaml:83:              memory: 512Mi
 ./infra/k8s/iterlaw/backend-deployment.yaml:86:              memory: 1Gi
 ./infra/k8s/iterlaw/embedding-job.yaml:53:              memory: 1Gi
 ./infra/k8s/iterlaw/embedding-job.yaml:56:              memory: 4Gi
-./infra/k8s/iterlaw/external-db-connection.yaml:2:# IterLaw — external PostgreSQL + pgvector connection
+./infra/k8s/iterlaw/external-db-connection.yaml:2:# IterLaw  -  external PostgreSQL + pgvector connection
 ./infra/k8s/iterlaw/external-db-connection.yaml:5:# (e.g. Azure Database for PostgreSQL Flexible Server with pgvector extension).
 ./infra/k8s/iterlaw/external-db-connection.yaml:9:# Option B: Deploy in-cluster Postgres (see postgres-pgvector.yaml if needed).
 ./infra/k8s/iterlaw/external-db-connection.yaml:25:    pgvector must be enabled: CREATE EXTENSION IF NOT EXISTS vector;
@@ -1906,12 +1906,12 @@
 ./infra/k8s/iterlaw/ingestion-job-legislation.yaml:37:              memory: 256Mi
 ./infra/k8s/iterlaw/ingestion-job-legislation.yaml:40:              memory: 512Mi
 ./infra/k8s/iterlaw/networkpolicy.yaml:14:  policyTypes:
-./infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw — Staging Postgres + pgvector in iterlaw-ai
+./infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw  -  Staging Postgres + pgvector in iterlaw-ai
 ./infra/k8s/iterlaw/postgres-staging.yaml:37:          image: pgvector/pgvector:pg16
 ./infra/k8s/iterlaw/postgres-staging.yaml:61:              memory: 256Mi
 ./infra/k8s/iterlaw/postgres-staging.yaml:64:              memory: 512Mi
-./infra/k8s/iterlaw/rag-deployment.yaml:2:# IterLaw RAG worker — BM25 + pgvector retrieval service
-./infra/k8s/iterlaw/rag-deployment.yaml:6:# For MVP, the backend handles retrieval inline — this is optional.
+./infra/k8s/iterlaw/rag-deployment.yaml:2:# IterLaw RAG worker  -  BM25 + pgvector retrieval service
+./infra/k8s/iterlaw/rag-deployment.yaml:6:# For MVP, the backend handles retrieval inline  -  this is optional.
 ./infra/k8s/iterlaw/rag-deployment.yaml:50:              memory: 256Mi
 ./infra/k8s/iterlaw/rag-deployment.yaml:53:              memory: 512Mi
 ./infra/k8s/iterlaw/README.md:49:# 6. Network policy
@@ -1957,13 +1957,13 @@
 ./ingestion/case_law/akn_parser.py:132:        if not neutral_citation:
 ./ingestion/case_law/akn_parser.py:136:                neutral_citation = _extract_text(nc_el) or None
 ./ingestion/case_law/akn_parser.py:226:        neutral_citation=neutral_citation,
-./ingestion/case_law/ingest.py:105:        console.print(f"[green]{parsed.neutral_citation or 'no citation'} — {len(parsed.chunks)} chunk(s)[/green]")
+./ingestion/case_law/ingest.py:105:        console.print(f"[green]{parsed.neutral_citation or 'no citation'}  -  {len(parsed.chunks)} chunk(s)[/green]")
 ./ingestion/case_law/ingest.py:158:        console.print(f"  [green]{parsed.neutral_citation or doc_uri}[/green]")
 ./ingestion/case_law/ingest.py:171:            "neutral_citation": parsed.neutral_citation,
 ./ingestion/config.py:52:    openrouter_api_key: str = "placeholder"
 ./ingestion/config.py:53:    openrouter_model_fast: str = "meta-llama/llama-3.1-8b-instruct"    # fast/cheap tier
 ./ingestion/config.py:54:    openrouter_model_strong: str = "anthropic/claude-haiku-4-5"         # strong tier
-./ingestion/config.py:55:    openrouter_enabled: bool = False   # default OFF — must be explicitly enabled
+./ingestion/config.py:55:    openrouter_enabled: bool = False   # default OFF  -  must be explicitly enabled
 ./ingestion/db.py:86:            document_uri, fetch_url, neutral_citation, fclid, case_name, court_code,
 ./ingestion/db.py:90:            %(document_uri)s, %(fetch_url)s, %(neutral_citation)s, %(fclid)s,
 ./ingestion/db.py:96:            neutral_citation = EXCLUDED.neutral_citation,
@@ -1974,7 +1974,7 @@
 ./ingestion/db.py:202:            %(governance_result)s::jsonb, %(output_version)s
 ./ingestion/db.py:209:            "retrieval_bundle":   json.dumps(payload.get("retrieval_bundle", {})),
 ./ingestion/db.py:215:            "governance_result":  json.dumps(payload["governance_result"]),
-./ingestion/embeddings/embedder.py:5:Schema: vector(384) — see migration 016_vector_dim_384.sql
+./ingestion/embeddings/embedder.py:5:Schema: vector(384)  -  see migration 016_vector_dim_384.sql
 ./ingestion/embeddings/embedder.py:10:  - No mega-cache assertion errors
 ./ingestion/embeddings/embedder.py:44:# Use baked-in model cache if available (set during Docker build)
 ./ingestion/embeddings/embedder.py:45:_CACHE = _os.environ.get("FASTEMBED_CACHE_PATH", "/app/fastembed_cache")
@@ -2033,7 +2033,7 @@
 ./inventory_audit.txt:153:backend/core/evaluator.py:201:        "high_failures": len([c for c in checks if not c.get("passed") and c.get("severity") == "high"]),
 ./inventory_audit.txt:182:backend/core/memory.py:134:                pass
 ./inventory_audit.txt:189:backend/core/models.py:390:        key = getattr(settings, "openrouter_api_key", "placeholder")
-./inventory_audit.txt:212:backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}         — passes governance
+./inventory_audit.txt:212:backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}          -  passes governance
 ./inventory_audit.txt:214:backend/core/pipeline.py:161:    # This provides citations and structure even when the model is stubbed.
 ./inventory_audit.txt:249:backend/core/semantic_cache.py:127:                        pass
 ./inventory_audit.txt:251:backend/core/user_auth.py:37:  - JWKS cache never bypasses signature verification.
@@ -2085,7 +2085,7 @@
 ./inventory_audit.txt:446:tests/integration/test_phase2_real_model.py:198:    # If governance passed, check structural validity
 ./inventory_audit.txt:476:tests/integration/test_phase4a_upload_ocr.py:102:    "boundary_log": {"fields_passed": ["edt"], "fields_stripped": [], "pii_in_output": []},
 ./inventory_audit.txt:477:tests/integration/test_phase4a_upload_ocr.py:410:    assert resp.json()["safety_check"]["passed"] is True
-./inventory_audit.txt:710:tests/integration/test_phase7d_envelope_encryption.py:4:All boto3 calls are mocked — no real AWS credentials required.
+./inventory_audit.txt:710:tests/integration/test_phase7d_envelope_encryption.py:4:All boto3 calls are mocked  -  no real AWS credentials required.
 ./inventory_audit.txt:711:tests/integration/test_phase7d_envelope_encryption.py:44:  23.  Legal accuracy gate passes
 ./inventory_audit.txt:712:tests/integration/test_phase7d_envelope_encryption.py:58:from unittest.mock import MagicMock, patch
 ./inventory_audit.txt:713:tests/integration/test_phase7d_envelope_encryption.py:113:    blob_b64 = base64.b64encode(b"mock-ciphertext-blob").decode()
@@ -2144,7 +2144,7 @@
 ./inventory_audit.txt:766:tests/integration/test_phase7d_envelope_encryption.py:352:    mock_client = MagicMock()
 ./inventory_audit.txt:767:tests/integration/test_phase7d_envelope_encryption.py:353:    mock_client.decrypt.return_value = {"Plaintext": mock_plaintext}
 ./inventory_audit.txt:768:tests/integration/test_phase7d_envelope_encryption.py:354:    mock_boto3_client.return_value = mock_client
-./inventory_audit.txt:769:tests/integration/test_phase7e_envelope_integration.py:4:All boto3 calls are mocked — no real AWS credentials.
+./inventory_audit.txt:769:tests/integration/test_phase7e_envelope_integration.py:4:All boto3 calls are mocked  -  no real AWS credentials.
 ./inventory_audit.txt:770:tests/integration/test_phase7e_envelope_integration.py:37:  22.  Phase 7D tests still pass (envelope bundle behavior)
 ./inventory_audit.txt:771:tests/integration/test_phase7e_envelope_integration.py:38:  23.  Legal accuracy gate passes
 ./inventory_audit.txt:772:tests/integration/test_phase7e_envelope_integration.py:52:from unittest.mock import MagicMock, patch
@@ -2213,11 +2213,11 @@
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:81:| context_compression_log | ✓ | migration 019 |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:110:| POST /api/rag/hybrid-search | ✓ LIVE | hybrid SQL+vector retrieval |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:141:| Hybrid retrieval | PASS | SQL rules + BM25 + pgvector (retrieve.py) |
-./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:142:| Context compression | PASS | context_compressor.py — deduplication + citation preservation |
-./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:145:| Semantic cache | PASS | semantic_cache.py — personal data excluded |
-./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:147:| Evaluation AI | PASS | evaluator.py — 8-check rubric |
-./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:149:| Safety policy | PASS | Brain Step 16 — 4 critical checks |
-./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:152:| Memory engine | PASS | memory.py — consent-gated, user/case isolated |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:142:| Context compression | PASS | context_compressor.py  -  deduplication + citation preservation |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:145:| Semantic cache | PASS | semantic_cache.py  -  personal data excluded |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:147:| Evaluation AI | PASS | evaluator.py  -  8-check rubric |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:149:| Safety policy | PASS | Brain Step 16  -  4 critical checks |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:152:| Memory engine | PASS | memory.py  -  consent-gated, user/case isolated |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:184:| Hybrid Search | yes | retrieve.py, mcp_connectors.py | retrieval_audit | /api/rag/hybrid-search | 18 | ✓ | PASS |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:187:| Context Compression | yes | context_compressor.py | context_compression_log | Brain Step 13 | brain tests | ✓ | PASS |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:188:| Memory Engine | yes | memory.py | legal_memory | /api/memory/save,get | 9 | ✓ | PASS |
@@ -2230,19 +2230,19 @@
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:279:  tests/agents/ tests/citation_verification/ tests/evaluation/ tests/cache/ \
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:280:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ \
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:281:  tests/retrieval/ tests/rag/ tests/deadlines/ tests/user_isolation/ \
-./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:308:| B7 | Rate limiting uses in-memory — not production-safe | MEDIUM | Claude: configure Redis |
+./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:308:| B7 | Rate limiting uses in-memory  -  not production-safe | MEDIUM | Claude: configure Redis |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:320:| WASM Rust rebuild | PARTIAL | Binary exists; source in client/wasm/src/ |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:321:| AWS KMS envelope encryption | STUB | Local FERNET_V1 is real; KMS is phase 7 |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:322:| Rate limiting Redis backend | STUB | in-memory only |
 ./reports/claude-lawapp-coding-wiring-db-new-tech-implementation-proof.md:336:- ✓ Assessment with deterministic citations (QP-fail case)
 ./reports/claude-lawapp-final-implementation-signoff.md:21:| Brain had 16 steps (required 19) | Missing: select_rag_source, compress_context, apply_safety_policy, save_case_memory |
-./reports/claude-lawapp-final-implementation-signoff.md:77:- `backend/core/context_compressor.py` — NEW
-./reports/claude-lawapp-final-implementation-signoff.md:79:- `backend/core/mcp_connectors.py` — NEW (5 connectors)
+./reports/claude-lawapp-final-implementation-signoff.md:77:- `backend/core/context_compressor.py`  -  NEW
+./reports/claude-lawapp-final-implementation-signoff.md:79:- `backend/core/mcp_connectors.py`  -  NEW (5 connectors)
 ./reports/claude-lawapp-final-implementation-signoff.md:96:| 019_phase1_brain_safety.sql | safety_boundary_checks, context_compression_log, brain_traces new columns |
 ./reports/claude-lawapp-final-implementation-signoff.md:139:| Safety policy (Brain Step 16) | ✓ | Blocks guarantee language, reserved activity, deadline from non-rules |
-./reports/claude-lawapp-final-implementation-signoff.md:150:| Hybrid retrieval (SQL+BM25+pgvector) | ✓ — retrieve.py |
-./reports/claude-lawapp-final-implementation-signoff.md:152:| Context compression | ✓ — context_compressor.py |
-./reports/claude-lawapp-final-implementation-signoff.md:153:| Semantic cache | ✓ — semantic_cache.py, PII excluded |
+./reports/claude-lawapp-final-implementation-signoff.md:150:| Hybrid retrieval (SQL+BM25+pgvector) | ✓  -  retrieve.py |
+./reports/claude-lawapp-final-implementation-signoff.md:152:| Context compression | ✓  -  context_compressor.py |
+./reports/claude-lawapp-final-implementation-signoff.md:153:| Semantic cache | ✓  -  semantic_cache.py, PII excluded |
 ./reports/claude-lawapp-final-implementation-signoff.md:160:- Binary exists: `client/public/wasm/lawapp_wasm_bg.wasm`
 ./reports/claude-lawapp-final-implementation-signoff.md:164:- WASM Rust source: `client/wasm/src/lib.rs`
 ./reports/claude-lawapp-final-implementation-signoff.md:181:- Particulars of Claim: ✓ (5834 chars, ERA 1996 citations, boundary notice)
@@ -19737,9 +19737,9 @@
 ./reports/gemini-brain-ai-grep.txt:158:backend/core/agents/registry.py:374:            citations_used=citations,
 ./reports/gemini-brain-ai-grep.txt:172:backend/core/brain.py:19:  12. Verify citations
 ./reports/gemini-brain-ai-grep.txt:173:backend/core/brain.py:20:  13. Compress context while preserving citations
-./reports/gemini-brain-ai-grep.txt:177:backend/core/brain.py:60:    "retrieve_legal_evidence",# 11 — hybrid retrieval (SQL + BM25 + pgvector)
-./reports/gemini-brain-ai-grep.txt:178:backend/core/brain.py:61:    "verify_citations",       # 12 — verify every citation against DB
-./reports/gemini-brain-ai-grep.txt:179:backend/core/brain.py:62:    "compress_context",       # 13 — compress context preserving all citations
+./reports/gemini-brain-ai-grep.txt:177:backend/core/brain.py:60:    "retrieve_legal_evidence",# 11  -  hybrid retrieval (SQL + BM25 + pgvector)
+./reports/gemini-brain-ai-grep.txt:178:backend/core/brain.py:61:    "verify_citations",       # 12  -  verify every citation against DB
+./reports/gemini-brain-ai-grep.txt:179:backend/core/brain.py:62:    "compress_context",       # 13  -  compress context preserving all citations
 ./reports/gemini-brain-ai-grep.txt:180:backend/core/brain.py:78:        "citation_verification",
 ./reports/gemini-brain-ai-grep.txt:181:backend/core/brain.py:85:        "citation_verification",
 ./reports/gemini-brain-ai-grep.txt:182:backend/core/brain.py:92:        "citation_verification",
@@ -19809,11 +19809,11 @@
 ./reports/gemini-brain-ai-grep.txt:295:backend/core/citation_verifier.py:179:        result = verify_citation(cite, source_type)
 ./reports/gemini-brain-ai-grep.txt:296:backend/core/citation_verifier.py:197:    """Remove unverified citations from a bundle. Logs what was removed."""
 ./reports/gemini-brain-ai-grep.txt:297:backend/core/citation_verifier.py:200:    result = verify_bundle_citations(authorities)
-./reports/gemini-brain-ai-grep.txt:298:backend/core/citation_verifier.py:207:                "Citation removed (unverified): %s — reason: %s",
+./reports/gemini-brain-ai-grep.txt:298:backend/core/citation_verifier.py:207:                "Citation removed (unverified): %s  -  reason: %s",
 ./reports/gemini-brain-ai-grep.txt:299:backend/core/citation_verifier.py:209:                detail["reason"],
 ./reports/gemini-brain-ai-grep.txt:314:backend/core/context_compressor.py:4:Compresses the retrieved legal context bundle before passing it to the model.
 ./reports/gemini-brain-ai-grep.txt:315:backend/core/context_compressor.py:7:GUARDRAIL: No citation (cite + url) may be removed during compression.
-./reports/gemini-brain-ai-grep.txt:316:backend/core/context_compressor.py:50:          "citations":        list[str] — every cite reference (guaranteed complete),
+./reports/gemini-brain-ai-grep.txt:316:backend/core/context_compressor.py:50:          "citations":        list[str]  -  every cite reference (guaranteed complete),
 ./reports/gemini-brain-ai-grep.txt:317:backend/core/context_compressor.py:60:            "citations_preserved": int,
 ./reports/gemini-brain-ai-grep.txt:318:backend/core/context_compressor.py:79:    all_citations: list[str] = []
 ./reports/gemini-brain-ai-grep.txt:319:backend/core/context_compressor.py:84:            all_citations.append(cite)
@@ -19840,8 +19840,8 @@
 ./reports/gemini-brain-ai-grep.txt:362:backend/core/documents.py:624:    if citations:
 ./reports/gemini-brain-ai-grep.txt:363:backend/core/documents.py:626:            f"• {c.get('cite','')}  {c.get('url','')}" for c in citations[:4]
 ./reports/gemini-brain-ai-grep.txt:380:backend/core/evaluator.py:5:Evaluation checks mirror and extend the governance gate.
-./reports/gemini-brain-ai-grep.txt:381:backend/core/evaluator.py:8:  1. Citation validity — citations exist in DB
-./reports/gemini-brain-ai-grep.txt:382:backend/core/evaluator.py:13:  6. Hallucination risk — reasoning summary doesn't invent facts
+./reports/gemini-brain-ai-grep.txt:381:backend/core/evaluator.py:8:  1. Citation validity  -  citations exist in DB
+./reports/gemini-brain-ai-grep.txt:382:backend/core/evaluator.py:13:  6. Hallucination risk  -  reasoning summary doesn't invent facts
 ./reports/gemini-brain-ai-grep.txt:383:backend/core/evaluator.py:31:# ── Blocked phrases (extended from govern.py) ────────────────────────────────
 ./reports/gemini-brain-ai-grep.txt:384:backend/core/evaluator.py:71:      {"passed": bool, "reason": str | None, "checks": list[dict]}
 ./reports/gemini-brain-ai-grep.txt:385:backend/core/evaluator.py:77:    citations = assessment.get("citations", [])
@@ -19850,7 +19850,7 @@
 ./reports/gemini-brain-ai-grep.txt:388:backend/core/evaluator.py:82:                        for c in citations[:10]]
 ./reports/gemini-brain-ai-grep.txt:389:backend/core/evaluator.py:83:            result = verify_bundle_citations(cit_list)
 ./reports/gemini-brain-ai-grep.txt:390:backend/core/evaluator.py:84:            citation_ok = result["pass_rate"] >= 0.5
-./reports/gemini-brain-ai-grep.txt:391:backend/core/evaluator.py:86:            citation_ok = True  # DB unavailable — don't block
+./reports/gemini-brain-ai-grep.txt:391:backend/core/evaluator.py:86:            citation_ok = True  # DB unavailable  -  don't block
 ./reports/gemini-brain-ai-grep.txt:392:backend/core/evaluator.py:87:        check = {"check": "citation_validity", "passed": citation_ok, "severity": "high"}
 ./reports/gemini-brain-ai-grep.txt:393:backend/core/evaluator.py:89:        if not citation_ok:
 ./reports/gemini-brain-ai-grep.txt:394:backend/core/evaluator.py:90:            failures.append("citation_validity_low_pass_rate")
@@ -19877,10 +19877,10 @@
 ./reports/gemini-brain-ai-grep.txt:457:backend/core/memory.py:100:        raise ValueError("user_id and case_id are required to retrieve memory")
 ./reports/gemini-brain-ai-grep.txt:458:backend/core/models.py:10:pipeline (including governance gate) without any model call. Used for unit tests
 ./reports/gemini-brain-ai-grep.txt:468:backend/core/models.py:69:    - Verify that the governance gate correctly handles insufficient_grounding.
-./reports/gemini-brain-ai-grep.txt:471:backend/core/models.py:73:    The governance gate will route this to seek_solicitor — correct behaviour.
+./reports/gemini-brain-ai-grep.txt:471:backend/core/models.py:73:    The governance gate will route this to seek_solicitor  -  correct behaviour.
 ./reports/gemini-brain-ai-grep.txt:478:backend/core/models.py:119:            citations=[],
 ./reports/gemini-brain-ai-grep.txt:488:backend/core/models.py:185:  "citations": [{{"cite": "...", "url": "..."}}],
-./reports/gemini-brain-ai-grep.txt:497:backend/core/models.py:234:        # Enforce deadline.source = "rules" — governance gate also checks this,
+./reports/gemini-brain-ai-grep.txt:497:backend/core/models.py:234:        # Enforce deadline.source = "rules"  -  governance gate also checks this,
 ./reports/gemini-brain-ai-grep.txt:501:backend/core/models.py:258:    It returns a structured assessment DRAFT. The governance gate validates it
 ./reports/gemini-brain-ai-grep.txt:503:backend/core/models.py:265:    BASE_URL = "https://openrouter.ai/api/v1"
 ./reports/gemini-brain-ai-grep.txt:510:backend/core/models.py:313:            "provider":         "openrouter",
@@ -19891,8 +19891,8 @@
 ./reports/gemini-brain-ai-grep.txt:525:backend/core/models.py:421:        key = getattr(settings, "openrouter_api_key", "placeholder")
 ./reports/gemini-brain-ai-grep.txt:526:backend/core/models.py:422:        mid = getattr(settings, "openrouter_model_fast", "")
 ./reports/gemini-brain-ai-grep.txt:531:backend/core/pipeline.py:7:- Retrieval always runs before reasoning.
-./reports/gemini-brain-ai-grep.txt:540:backend/core/pipeline.py:64:      - {"status": "insufficient_grounding", ...}    — retrieval too weak
-./reports/gemini-brain-ai-grep.txt:542:backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}         — passes governance
+./reports/gemini-brain-ai-grep.txt:540:backend/core/pipeline.py:64:      - {"status": "insufficient_grounding", ...}     -  retrieval too weak
+./reports/gemini-brain-ai-grep.txt:542:backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}          -  passes governance
 ./reports/gemini-brain-ai-grep.txt:543:backend/core/pipeline.py:70:    (all stages run, governance gate exercises correctly) and to work correctly
 ./reports/gemini-brain-ai-grep.txt:547:backend/core/pipeline.py:112:        "Retrieval: %d rules, %d authorities, insufficient_grounding=%s",
 ./reports/gemini-brain-ai-grep.txt:553:backend/core/pipeline.py:160:    # key weaknesses from facts, citations from rules + BM25.
@@ -19900,7 +19900,7 @@
 ./reports/gemini-brain-ai-grep.txt:558:backend/core/pipeline.py:199:    # assessment, upgrade to the deterministic result with proper citations.
 ./reports/gemini-brain-ai-grep.txt:559:backend/core/pipeline.py:200:    if assessment.insufficient_grounding and det_ctx["citations"] and \
 ./reports/gemini-brain-ai-grep.txt:560:backend/core/pipeline.py:212:            "citations":             [Citation(**c) for c in det_ctx["citations"]
-./reports/gemini-brain-ai-grep.txt:566:backend/core/pipeline.py:233:    # ── Stage 6b: Audit log — written regardless of governance outcome ─────────
+./reports/gemini-brain-ai-grep.txt:566:backend/core/pipeline.py:233:    # ── Stage 6b: Audit log  -  written regardless of governance outcome ─────────
 ./reports/gemini-brain-ai-grep.txt:567:backend/core/pipeline.py:255:        "governance_result": {
 ./reports/gemini-brain-ai-grep.txt:576:backend/core/pipeline.py:282:        "citations":             [c.model_dump() for c in a.citations],
 ./reports/gemini-brain-ai-grep.txt:580:backend/core/pipeline.py:302:    Write one immutable audit row after every governance decision.
@@ -19958,7 +19958,7 @@
 ./reports/gemini-brain-ai-grep.txt:669:backend/core/score.py:79:        score += 0.3   # at least one semantic citation
 ./reports/gemini-brain-ai-grep.txt:670:backend/core/score.py:80:        score += min(0.4, citation_count * 0.1)   # additional per citation
 ./reports/gemini-brain-ai-grep.txt:676:backend/core/score.py:123:    Check whether either score falls below the governance threshold.
-./reports/gemini-brain-ai-grep.txt:677:backend/core/score.py:124:    Returns (failed, reason) — called by the governance gate.
+./reports/gemini-brain-ai-grep.txt:677:backend/core/score.py:124:    Returns (failed, reason)  -  called by the governance gate.
 ./reports/gemini-brain-ai-grep.txt:682:backend/core/semantic_cache.py:105:            "reason": "personal_or_sensitive_query",
 ./reports/gemini-brain-ai-grep.txt:683:backend/core/semantic_cache.py:160:        return {"stored": False, "reason": "personal_or_sensitive_query"}
 ./reports/gemini-brain-ai-grep.txt:684:backend/core/semantic_cache.py:189:        return {"stored": False, "reason": str(exc)}
@@ -19991,13 +19991,13 @@
 ./reports/gemini-brain-ai-grep.txt:755:ingestion/case_law/akn_parser.py:132:        if not neutral_citation:
 ./reports/gemini-brain-ai-grep.txt:756:ingestion/case_law/akn_parser.py:136:                neutral_citation = _extract_text(nc_el) or None
 ./reports/gemini-brain-ai-grep.txt:757:ingestion/case_law/akn_parser.py:226:        neutral_citation=neutral_citation,
-./reports/gemini-brain-ai-grep.txt:758:ingestion/case_law/ingest.py:105:        console.print(f"[green]{parsed.neutral_citation or 'no citation'} — {len(parsed.chunks)} chunk(s)[/green]")
+./reports/gemini-brain-ai-grep.txt:758:ingestion/case_law/ingest.py:105:        console.print(f"[green]{parsed.neutral_citation or 'no citation'}  -  {len(parsed.chunks)} chunk(s)[/green]")
 ./reports/gemini-brain-ai-grep.txt:759:ingestion/case_law/ingest.py:158:        console.print(f"  [green]{parsed.neutral_citation or doc_uri}[/green]")
 ./reports/gemini-brain-ai-grep.txt:760:ingestion/case_law/ingest.py:171:            "neutral_citation": parsed.neutral_citation,
 ./reports/gemini-brain-ai-grep.txt:765:ingestion/config.py:52:    openrouter_api_key: str = "placeholder"
 ./reports/gemini-brain-ai-grep.txt:766:ingestion/config.py:53:    openrouter_model_fast: str = "meta-llama/llama-3.1-8b-instruct"    # fast/cheap tier
 ./reports/gemini-brain-ai-grep.txt:767:ingestion/config.py:54:    openrouter_model_strong: str = "anthropic/claude-haiku-4-5"         # strong tier
-./reports/gemini-brain-ai-grep.txt:768:ingestion/config.py:55:    openrouter_enabled: bool = False   # default OFF — must be explicitly enabled
+./reports/gemini-brain-ai-grep.txt:768:ingestion/config.py:55:    openrouter_enabled: bool = False   # default OFF  -  must be explicitly enabled
 ./reports/gemini-brain-ai-grep.txt:770:ingestion/db.py:86:            document_uri, fetch_url, neutral_citation, fclid, case_name, court_code,
 ./reports/gemini-brain-ai-grep.txt:771:ingestion/db.py:90:            %(document_uri)s, %(fetch_url)s, %(neutral_citation)s, %(fclid)s,
 ./reports/gemini-brain-ai-grep.txt:772:ingestion/db.py:96:            neutral_citation = EXCLUDED.neutral_citation,
@@ -20115,7 +20115,7 @@
 ./reports/gemini-brain-ai-grep.txt:1156:tests/integration/test_phase2_real_model.py:171:    correctly computed deadline, and citations that support each stated point.
 ./reports/gemini-brain-ai-grep.txt:1159:tests/integration/test_phase2_real_model.py:198:    # If governance passed, check structural validity
 ./reports/gemini-brain-ai-grep.txt:1162:tests/integration/test_phase2_real_model.py:206:        assert isinstance(result["citations"], list)
-./reports/gemini-brain-ai-grep.txt:1169:tests/integration/test_phase3a_flows.py:14:  7. POST /assess — citations present in response for viable claim
+./reports/gemini-brain-ai-grep.txt:1169:tests/integration/test_phase3a_flows.py:14:  7. POST /assess  -  citations present in response for viable claim
 ./reports/gemini-brain-ai-grep.txt:1171:tests/integration/test_phase3a_flows.py:120:    for key in ("has_viable_claim", "strength", "citations"):
 ./reports/gemini-brain-ai-grep.txt:1172:tests/integration/test_phase3a_flows.py:126:def test_citations_present_in_assessment():
 ./reports/gemini-brain-ai-grep.txt:1173:tests/integration/test_phase3a_flows.py:127:    """A viable-claim assessment must include at least one citation."""
@@ -20159,11 +20159,11 @@
 ./reports/gemini-brain-ai-grep.txt:1342:tests/integration/test_phase8b_algorithm_brain.py:280:    assert result.passes is False, "Reserved activity language must fail governance"
 ./reports/gemini-brain-ai-grep.txt:1354:tests/integration/test_pipeline_stub.py:13:- The governance gate routes stub output to the correct fallback (insufficient_grounding)
 ./reports/gemini-brain-ai-grep.txt:1355:tests/integration/test_pipeline_stub.py:17:- Real assessment with citations supporting each claim: pending model + embeddings
-./reports/gemini-brain-ai-grep.txt:1359:tests/integration/test_pipeline_stub.py:68:    # Stub model returns insufficient_grounding — governance routes accordingly
+./reports/gemini-brain-ai-grep.txt:1359:tests/integration/test_pipeline_stub.py:68:    # Stub model returns insufficient_grounding  -  governance routes accordingly
 ./reports/gemini-brain-ai-grep.txt:1367:tests/integration/test_pipeline_stub.py:142:def test_stub_governance_routes_to_insufficient_grounding():
 ./reports/gemini-brain-ai-grep.txt:1368:tests/integration/test_pipeline_stub.py:144:    The stub model deliberately returns insufficient_grounding=True and no citations.
 ./reports/gemini-brain-ai-grep.txt:1369:tests/integration/test_pipeline_stub.py:145:    The governance gate must route this to the insufficient_grounding path.
-./reports/gemini-brain-ai-grep.txt:1370:tests/integration/test_pipeline_stub.py:146:    This proves the governance gate fires correctly — it's not a bug.
+./reports/gemini-brain-ai-grep.txt:1370:tests/integration/test_pipeline_stub.py:146:    This proves the governance gate fires correctly  -  it's not a bug.
 ./reports/gemini-brain-ai-grep.txt:1371:tests/integration/test_pipeline_stub.py:149:    # Stub has no real reasoning → governance routes to insufficient_grounding
 ./reports/gemini-brain-ai-grep.txt:1376:tests/integration/test_pipeline_stub.py:166:def test_five_realistic_fact_patterns_with_citations():
 ./reports/gemini-brain-ai-grep.txt:1377:tests/integration/test_pipeline_stub.py:169:    correctly computed deadline, and citations that actually support each point.
@@ -20257,8 +20257,8 @@
 ./reports/gemini-brain-ai-grep.txt:1593:tests/test_case_law_identifier_split.py:15:        neutral_citation="[2026] EAT 77",
 ./reports/gemini-brain-ai-grep.txt:1623:tests/test_govern.py:2:Tests for the governance gate.
 ./reports/gemini-brain-ai-grep.txt:1627:tests/test_govern.py:30:        citations=[Citation(cite="ERA 1996 s.98", url="https://legislation.gov.uk/...")],
-./reports/gemini-brain-ai-grep.txt:1649:tests/test_govern.py:78:    at construction time. This is the enforcement point — governance check 3
-./reports/gemini-brain-ai-grep.txt:1662:tests/test_govern.py:137:    # "no" claim — governance doesn't require weaknesses (it's already the honest answer)
+./reports/gemini-brain-ai-grep.txt:1649:tests/test_govern.py:78:    at construction time. This is the enforcement point  -  governance check 3
+./reports/gemini-brain-ai-grep.txt:1662:tests/test_govern.py:137:    # "no" claim  -  governance doesn't require weaknesses (it's already the honest answer)
 ./reports/gemini-brain-ai-grep.txt:1673:tests/test_wasm_document_preview.js:25:    reason_for_dismissal: 'conduct',
 ./reports/gemini-client-files.txt:15:client/public/wasm/.gitignore
 ./reports/gemini-client-files.txt:16:client/public/wasm/lawapp_wasm.d.ts
@@ -20593,7 +20593,7 @@
 ./reports/gemini-client-risk-grep.txt:34:client/public/wasm/lawapp_wasm.js:333:        module_or_path = fetch(module_or_path);
 ./reports/gemini-db-files.txt:13:db/migrations/013_phase7d_envelope_encryption.sql
 ./reports/gemini-db-files.txt:16:db/migrations/016_vector_dim_384.sql
-./reports/gemini-db-schema-grep.txt:1:db/migrations/001_initial.sql:2:-- Employment Claim Co-Pilot — PostgreSQL 16 + pgvector
+./reports/gemini-db-schema-grep.txt:1:db/migrations/001_initial.sql:2:-- Employment Claim Co-Pilot  -  PostgreSQL 16 + pgvector
 ./reports/gemini-db-schema-grep.txt:2:db/migrations/001_initial.sql:6:CREATE EXTENSION IF NOT EXISTS vector;
 ./reports/gemini-db-schema-grep.txt:5:db/migrations/001_initial.sql:23:    embedding        vector(1536),                      -- dim = EMBEDDING_DIM
 ./reports/gemini-db-schema-grep.txt:7:db/migrations/001_initial.sql:36:    ON legislation USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
@@ -20661,11 +20661,11 @@
 ./reports/gemini-db-schema-grep.txt:360:backend/api/main.py:2928:        "vector_results":  len([a for a in d.get("authorities", [])
 ./reports/gemini-db-schema-grep.txt:361:backend/api/main.py:2929:                                 if a.get("source_type", "") == "pgvector"]),
 ./reports/gemini-db-schema-grep.txt:392:backend/core/agents/registry.py:27:    allowed_tools = ["retrieve_rules", "hybrid_search", "citation_verify", "deadline_calculate"]
-./reports/gemini-db-schema-grep.txt:412:backend/core/brain.py:60:    "retrieve_legal_evidence",# 11 — hybrid retrieval (SQL + BM25 + pgvector)
+./reports/gemini-db-schema-grep.txt:412:backend/core/brain.py:60:    "retrieve_legal_evidence",# 11  -  hybrid retrieval (SQL + BM25 + pgvector)
 ./reports/gemini-db-schema-grep.txt:422:backend/core/brain.py:467:                     "run_rules_engine", "retrieve_legal_evidence", "verify_citations",
 ./reports/gemini-db-schema-grep.txt:449:backend/core/citation_verifier.py:93:    """Check case_law_documents for the cited neutral citation."""
 ./reports/gemini-db-schema-grep.txt:450:backend/core/citation_verifier.py:100:                    "SELECT 1 FROM case_law_documents "
-./reports/gemini-db-schema-grep.txt:458:backend/core/context_compressor.py:12:  1. Rule deduplication — deduplicate rules with identical rule_key (keep first)
+./reports/gemini-db-schema-grep.txt:458:backend/core/context_compressor.py:12:  1. Rule deduplication  -  deduplicate rules with identical rule_key (keep first)
 ./reports/gemini-db-schema-grep.txt:459:backend/core/context_compressor.py:28:_MAX_RULES_PER_KEY = 1            # deduplicate rules with same rule_key
 ./reports/gemini-db-schema-grep.txt:460:backend/core/context_compressor.py:34:    exact_rules: list[dict],
 ./reports/gemini-db-schema-grep.txt:461:backend/core/context_compressor.py:42:        exact_rules:  list of rule dicts from the rules table
@@ -20710,7 +20710,7 @@
 ./reports/gemini-db-schema-grep.txt:535:backend/core/mcp_connectors.py:253:                FROM rules;
 ./reports/gemini-db-schema-grep.txt:536:backend/core/memory.py:17:  - evidence_checklist: documents needed/uploaded
 ./reports/gemini-db-schema-grep.txt:537:backend/core/memory.py:97:               Never returns records from other users or cases.
-./reports/gemini-db-schema-grep.txt:549:backend/core/models.py:234:        # Enforce deadline.source = "rules" — governance gate also checks this,
+./reports/gemini-db-schema-grep.txt:549:backend/core/models.py:234:        # Enforce deadline.source = "rules"  -  governance gate also checks this,
 ./reports/gemini-db-schema-grep.txt:557:backend/core/pipeline.py:112:        "Retrieval: %d rules, %d authorities, insufficient_grounding=%s",
 ./reports/gemini-db-schema-grep.txt:563:backend/core/pipeline.py:160:    # key weaknesses from facts, citations from rules + BM25.
 ./reports/gemini-db-schema-grep.txt:595:backend/core/prompts/citation_locked.py:15:1. Use ONLY the legal sources I supply below. Do not invent statutes, regulations, cases, or guidance pages.
@@ -20737,7 +20737,7 @@
 ./reports/gemini-db-schema-grep.txt:629:backend/core/router.py:102:    use_rules_engine: bool
 ./reports/gemini-db-schema-grep.txt:630:backend/core/router.py:115:            "use_rules_engine": self.use_rules_engine,
 ./reports/gemini-db-schema-grep.txt:631:backend/core/router.py:146:            use_rules_engine=False,
-./reports/gemini-db-schema-grep.txt:632:backend/core/router.py:153:    # ── Path 2: Deadline-only — rules engine ─────────────────────────────────
+./reports/gemini-db-schema-grep.txt:632:backend/core/router.py:153:    # ── Path 2: Deadline-only  -  rules engine ─────────────────────────────────
 ./reports/gemini-db-schema-grep.txt:633:backend/core/router.py:156:            path="rules_engine_only",
 ./reports/gemini-db-schema-grep.txt:634:backend/core/router.py:161:            use_rules_engine=True,
 ./reports/gemini-db-schema-grep.txt:635:backend/core/router.py:177:            use_rules_engine=True,
@@ -20749,14 +20749,14 @@
 ./reports/gemini-db-schema-grep.txt:648:backend/domains/employment/assess_logic.py:6:citations from retrieved rules + BM25 authorities.
 ./reports/gemini-db-schema-grep.txt:649:backend/domains/employment/assess_logic.py:14:- Value ranges come from the rules table, never from model memory.
 ./reports/gemini-db-schema-grep.txt:695:ingestion/db.py:195:            case_id, fact_snapshot_hash, rules_used, retrieval_bundle,
-./reports/gemini-db-schema-grep.txt:698:ingestion/embeddings/embedder.py:5:Schema: vector(384) — see migration 016_vector_dim_384.sql
-./reports/gemini-db-schema-grep.txt:727:infra/k8s/iterlaw/external-db-connection.yaml:2:# IterLaw — external PostgreSQL + pgvector connection
+./reports/gemini-db-schema-grep.txt:698:ingestion/embeddings/embedder.py:5:Schema: vector(384)  -  see migration 016_vector_dim_384.sql
+./reports/gemini-db-schema-grep.txt:727:infra/k8s/iterlaw/external-db-connection.yaml:2:# IterLaw  -  external PostgreSQL + pgvector connection
 ./reports/gemini-db-schema-grep.txt:728:infra/k8s/iterlaw/external-db-connection.yaml:5:# (e.g. Azure Database for PostgreSQL Flexible Server with pgvector extension).
 ./reports/gemini-db-schema-grep.txt:729:infra/k8s/iterlaw/external-db-connection.yaml:9:# Option B: Deploy in-cluster Postgres (see postgres-pgvector.yaml if needed).
 ./reports/gemini-db-schema-grep.txt:731:infra/k8s/iterlaw/external-db-connection.yaml:25:    pgvector must be enabled: CREATE EXTENSION IF NOT EXISTS vector;
-./reports/gemini-db-schema-grep.txt:734:infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw — Staging Postgres + pgvector in iterlaw-ai
+./reports/gemini-db-schema-grep.txt:734:infra/k8s/iterlaw/postgres-staging.yaml:2:# IterLaw  -  Staging Postgres + pgvector in iterlaw-ai
 ./reports/gemini-db-schema-grep.txt:735:infra/k8s/iterlaw/postgres-staging.yaml:37:          image: pgvector/pgvector:pg16
-./reports/gemini-db-schema-grep.txt:736:infra/k8s/iterlaw/rag-deployment.yaml:2:# IterLaw RAG worker — BM25 + pgvector retrieval service
+./reports/gemini-db-schema-grep.txt:736:infra/k8s/iterlaw/rag-deployment.yaml:2:# IterLaw RAG worker  -  BM25 + pgvector retrieval service
 ./reports/gemini-db-schema-grep.txt:738:infra/k8s/iterlaw/secrets.example.yaml:15:  # PostgreSQL connection string (pgvector enabled)
 ./reports/gemini-db-schema-grep.txt:739:infra/k8s/iterlaw/secrets.example.yaml:25:  # OpenAI API key for pgvector embeddings (optional; BM25 active without it)
 ./reports/gemini-db-schema-grep.txt:744:infra/k8s/lawapp-postgres-sts.yaml:63:        image: pgvector/pgvector:pg16
@@ -21423,8 +21423,8 @@
 ./reports/gemini-tests-files.txt:208:tests/uploads/__pycache__/test_uploads.cpython-314-pytest-9.0.3.pyc
 ./reports/gemini-tests-files.txt:211:tests/user_isolation/__pycache__/__init__.cpython-314.pyc
 ./reports/gemini-tests-files.txt:212:tests/user_isolation/__pycache__/test_user_isolation.cpython-314-pytest-9.0.3.pyc
-./reports/lawapp-code-change-summary.md:14:| `backend/core/context_compressor.py` | Brain Step 13 — deduplicate rules, truncate authorities, preserve citations |
-./reports/lawapp-code-change-summary.md:16:| `backend/core/mcp_connectors.py` | MCP connector layer — 5 connectors, deny-by-default, audit-logged |
+./reports/lawapp-code-change-summary.md:14:| `backend/core/context_compressor.py` | Brain Step 13  -  deduplicate rules, truncate authorities, preserve citations |
+./reports/lawapp-code-change-summary.md:16:| `backend/core/mcp_connectors.py` | MCP connector layer  -  5 connectors, deny-by-default, audit-logged |
 ./reports/lawapp-code-change-summary.md:21:| `db/migrations/019_phase1_brain_safety.sql` | safety_boundary_checks + context_compression_log tables; brain_traces new columns |
 ./reports/lawapp-code-change-summary.md:40:| `tests/memory/test_memory.py` | 9 | Consent-gated memory, user isolation |
 ./reports/lawapp-code-change-summary.md:41:| `tests/mcp/test_mcp.py` | 17 | MCP connectors, deny-by-default, audit |
@@ -21450,7 +21450,7 @@
 ./reports/lawapp-end-to-end-product-completion-report.md:159:| **Memory Engine** | Brain Step 17: consent-gated `legal_memory` save; user_id + case_id required | **PASS** |
 ./reports/lawapp-end-to-end-product-completion-report.md:160:| **Evaluation AI** | Brain Step 15: 8-check rubric (citations, jurisdiction, deadline source, guarantee language, PII) | **PASS** |
 ./reports/lawapp-end-to-end-product-completion-report.md:164:| **Semantic Cache** | `semantic_cache` table; only non-personal queries cached; personal facts never cached | **PASS** |
-./reports/lawapp-end-to-end-product-completion-report.md:183:| M3 | Rate limiting uses in-memory — won't survive pod restart | Configure Redis for production rate limiting |
+./reports/lawapp-end-to-end-product-completion-report.md:183:| M3 | Rate limiting uses in-memory  -  won't survive pod restart | Configure Redis for production rate limiting |
 ./reports/lawapp-end-to-end-product-completion-report.md:206:| **Rate limiting uses in-memory** | slowapi in-memory; won't survive pod restart | Configure Redis: RATELIMIT_STORAGE_URI | **Claude** | NO | YES | YES |
 ./reports/lawapp-end-to-end-product-completion-report.md:229:python -m pytest tests/brain/ tests/legal_accuracy/ tests/security/ tests/router/ 
 ./reports/lawapp-end-to-end-product-completion-report.md:230:  tests/agents/ tests/citation_verification/ tests/evaluation/ tests/cache/ 
@@ -21460,9 +21460,9 @@
 ./reports/lawapp-feature-function-completion-audit.md:21:  tests/agents/ tests/citation_verification/ tests/evaluation/ tests/cache/ 
 ./reports/lawapp-feature-function-completion-audit.md:22:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ 
 ./reports/lawapp-feature-function-completion-audit.md:23:  tests/retrieval/ tests/rag/ tests/deadlines/ tests/user_isolation/ 
-./reports/lawapp-feature-function-completion-audit.md:41:| 7. Assessment results page | PASS | `grep "weakness\|citation\|deadline" client/public/pages/assessment.html` | All fields rendered | — |
-./reports/lawapp-feature-function-completion-audit.md:44:| 10. Document generation (PoC) | PASS | `python -c generate_particulars_of_claim(...)` | 5834 chars, ERA 1996 citations, boundary notice | — |
-./reports/lawapp-feature-function-completion-audit.md:51:| 17. Admin / freshness | PASS | DB counts | brain_traces: 222, audit_logs: 2442, mcp_tool_calls: 25 | — |
+./reports/lawapp-feature-function-completion-audit.md:41:| 7. Assessment results page | PASS | `grep "weakness\|citation\|deadline" client/public/pages/assessment.html` | All fields rendered |  -  |
+./reports/lawapp-feature-function-completion-audit.md:44:| 10. Document generation (PoC) | PASS | `python -c generate_particulars_of_claim(...)` | 5834 chars, ERA 1996 citations, boundary notice |  -  |
+./reports/lawapp-feature-function-completion-audit.md:51:| 17. Admin / freshness | PASS | DB counts | brain_traces: 222, audit_logs: 2442, mcp_tool_calls: 25 |  -  |
 ./reports/lawapp-feature-function-completion-audit.md:54:| 20. MCP connectors | PASS | `pytest tests/mcp/` | 17/17 pass; 5 connectors; deny-by-default; audit logged | Runtime connector wiring phase 2 |
 ./reports/lawapp-feature-function-completion-audit.md:141:grep -R "3 months|6 months|123543|751" client wasm -n
 ./reports/lawapp-feature-function-completion-audit.md:147:**WASM + JS fallback:** WASM loaded from `../wasm/lawapp_wasm.js`; JS fallback in `computeDeadline()`
@@ -21475,33 +21475,33 @@
 ./reports/lawapp-feature-function-completion-audit.md:388:| LOW | Rate limiting uses in-memory storage | Configure Redis for production |
 ./reports/lawapp-full-architecture-confirmation-report.txt:22:DB: PostgreSQL 16 + pgvector in lawapp-postgres pod (1/1 Running)
 ./reports/lawapp-full-architecture-confirmation-report.txt:23:Extensions: vector ✓  pgcrypto ✓  plpgsql ✓
-./reports/lawapp-full-architecture-confirmation-report.txt:45:  handoff_leads            DONE  — 0 rows (envelope encryption wired)
-./reports/lawapp-full-architecture-confirmation-report.txt:51:  retrieval_audit          DONE  — 0 rows (migration 015)
+./reports/lawapp-full-architecture-confirmation-report.txt:45:  handoff_leads            DONE   -  0 rows (envelope encryption wired)
+./reports/lawapp-full-architecture-confirmation-report.txt:51:  retrieval_audit          DONE   -  0 rows (migration 015)
 ./reports/lawapp-full-architecture-confirmation-report.txt:59:  pgvector extension:      INSTALLED ✓
-./reports/lawapp-full-architecture-confirmation-report.txt:60:  legislation.embedding:   vector(1536) column ✓ (no embeddings yet — OpenAI quota)
+./reports/lawapp-full-architecture-confirmation-report.txt:60:  legislation.embedding:   vector(1536) column ✓ (no embeddings yet  -  OpenAI quota)
 ./reports/lawapp-full-architecture-confirmation-report.txt:61:  official_guidance.embedding: vector(1536) ✓ (no embeddings yet)
 ./reports/lawapp-full-architecture-confirmation-report.txt:64:  pgvector retrieval:      CODED but BLOCKED (OpenAI quota for text-embedding-3-small)
-./reports/lawapp-full-architecture-confirmation-report.txt:112:retrieve_semantic() (pgvector) CODED backend/engine/retrieve.py:166 — BLOCKED (no embeddings)
+./reports/lawapp-full-architecture-confirmation-report.txt:112:retrieve_semantic() (pgvector) CODED backend/engine/retrieve.py:166  -  BLOCKED (no embeddings)
 ./reports/lawapp-full-architecture-confirmation-report.txt:114:citation bundle           DONE      retrieval bundle has authority_ref + source_url
 ./reports/lawapp-full-architecture-confirmation-report.txt:119:Retrieval order (implemented):
 ./reports/lawapp-full-architecture-confirmation-report.txt:121:  2. legislation → BM25 (DONE; pgvector BLOCKED)
 ./reports/lawapp-full-architecture-confirmation-report.txt:125:  6. legal_change_watch → warn-only (table exists, not wired to retrieval)
-./reports/lawapp-full-architecture-confirmation-report.txt:127:Hard rule: retrieval always runs before reasoning — ENFORCED in pipeline.py
+./reports/lawapp-full-architecture-confirmation-report.txt:127:Hard rule: retrieval always runs before reasoning  -  ENFORCED in pipeline.py
 ./reports/lawapp-full-architecture-confirmation-report.txt:130:  Rules retrieval: DONE
 ./reports/lawapp-full-architecture-confirmation-report.txt:158:  recommended_next_step, citations, grounding_score, confidence_score,
-./reports/lawapp-full-architecture-confirmation-report.txt:182:  retrieval_audit       DONE — retrieval type, authority counts
+./reports/lawapp-full-architecture-confirmation-report.txt:182:  retrieval_audit       DONE  -  retrieval type, authority counts
 ./reports/lawapp-full-architecture-confirmation-report.txt:207:POST /handoff/leads         DONE      envelope encryption
 ./reports/lawapp-full-architecture-confirmation-report.txt:265:  Encryption at rest (Fernet + envelope)
 ./reports/lawapp-full-architecture-confirmation-report.txt:277:  pgvector/semantic retrieval (BLOCKED: OpenAI quota)
 ./reports/lawapp-full-architecture-confirmation-report.txt:286:  pgvector embeddings (blocked on embedding API)
-./reports/lawapp-full-architecture-confirmation-report.txt:291:  OpenAI quota — blocks pgvector embeddings; BM25 active as fallback
+./reports/lawapp-full-architecture-confirmation-report.txt:291:  OpenAI quota  -  blocks pgvector embeddings; BM25 active as fallback
 ./reports/lawapp-full-architecture-confirmation-report.txt:308:  The retrieval, reasoning, and governance are all wired and tested.
 ./reports/lawapp-go-live-readiness-report.md:64:4.  **Unfair-dismissal assessment returns citations:** Verified (`Citations: 6`).
 ./reports/lawapp-local-demo-commands.md:46:python -m pytest tests/brain/ tests/legal_accuracy/ tests/security/ tests/router/ \
 ./reports/lawapp-local-demo-commands.md:47:  tests/agents/ tests/citation_verification/ tests/evaluation/ tests/cache/ \
 ./reports/lawapp-local-demo-commands.md:48:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ tests/uploads/ \
 ./reports/lawapp-local-demo-commands.md:49:  tests/retrieval/ tests/rag/ tests/deadlines/ tests/user_isolation/ \
-./reports/lawapp-local-demo-commands.md:97:Result: `has_viable_claim: no` — full citations, deadline, weaknesses returned without AI model.
+./reports/lawapp-local-demo-commands.md:97:Result: `has_viable_claim: no`  -  full citations, deadline, weaknesses returned without AI model.
 ./reports/lawapp-local-demo-commands.md:196:Expected output shows values from DB rules table with ERA 1996 citations.
 ./reports/lawapp-new-architecture-technology-status.md:13:Phase 1 Brain Algorithm foundation is complete and proven. The lawapp Brain now controls a 19-step pipeline with explicit source selection, context compression, safety policy enforcement, and consent-gated memory. All 303 critical tests pass.
 ./reports/lawapp-new-architecture-technology-status.md:38:python -m pytest tests/brain/ tests/legal_accuracy/ tests/security/ tests/router/ \
@@ -21509,11 +21509,11 @@
 ./reports/lawapp-new-architecture-technology-status.md:40:  tests/graph_rag/ tests/knowledge_graph/ tests/memory/ tests/mcp/ \
 ./reports/lawapp-new-architecture-technology-status.md:41:  tests/uploads/ tests/retrieval/ tests/rag/ tests/deadlines/ \
 ./reports/lawapp-new-architecture-technology-status.md:54:| **Hybrid Search** | YES | Step 11 (retrieve_legal_evidence) | rules table + pgvector | `/api/retrieve` | tests/retrieval/ 18 passing | `pytest tests/retrieval/` | **PASS** | Embeddings not ingested locally (no OpenAI key) |
-./reports/lawapp-new-architecture-technology-status.md:57:| **Context Compression** | YES | Step 13 (compress_context) | context_compression_log | logged in trace | tests/brain/ (step recorded) | brain API trace | **PASS** | — |
+./reports/lawapp-new-architecture-technology-status.md:57:| **Context Compression** | YES | Step 13 (compress_context) | context_compression_log | logged in trace | tests/brain/ (step recorded) | brain API trace | **PASS** |  -  |
 ./reports/lawapp-new-architecture-technology-status.md:58:| **Memory Engine** | YES | Step 17 (save_case_memory, consent-gated) | legal_memory table | consent gate in brain | tests/memory/ 9 passing | `pytest tests/memory/` | **PASS** | Returning-user case load UI not yet wired |
-./reports/lawapp-new-architecture-technology-status.md:59:| **Evaluation AI** | YES | Step 15 (evaluate_draft) | evaluation_results table | via brain trace | tests/evaluation/ passing | `pytest tests/evaluation/` | **PASS** | — |
+./reports/lawapp-new-architecture-technology-status.md:59:| **Evaluation AI** | YES | Step 15 (evaluate_draft) | evaluation_results table | via brain trace | tests/evaluation/ passing | `pytest tests/evaluation/` | **PASS** |  -  |
 ./reports/lawapp-new-architecture-technology-status.md:60:| **MCP Connectors** | PARTIAL | Step 18 (mcp_tool_calls logged) | mcp_tool_calls table | deny-by-default | tests/mcp/ 9 passing | `pytest tests/mcp/` | **PARTIAL** | Runtime connector wiring pending (interface + deny-by-default done) |
-./reports/lawapp-new-architecture-technology-status.md:62:| **AI Router** | YES | Step 9 (select_rag_source), router.py | routing_decisions table | `/api/router/classify` | tests/router/ passing | `pytest tests/router/` | **PASS** | — |
+./reports/lawapp-new-architecture-technology-status.md:62:| **AI Router** | YES | Step 9 (select_rag_source), router.py | routing_decisions table | `/api/router/classify` | tests/router/ passing | `pytest tests/router/` | **PASS** |  -  |
 ./reports/lawapp-new-architecture-technology-status.md:63:| **Semantic Cache** | YES | Between steps 11-13 | semantic_cache table | cache checks in retrieve | tests/cache/ passing | `pytest tests/cache/` | **PASS** | Cache invalidation on source version change PARTIAL |
 ./reports/lawapp-new-architecture-technology-status.md:64:| **WASM** | PARTIAL | Not wired to brain (client-only) | N/A | Client WASM binary exists | test_wasm_fallback.js | JS tests | **PARTIAL** | Rule values must come from server /api/rules endpoint |
 ./reports/lawapp-new-architecture-technology-status.md:129:| safety_boundary_checks | Safety policy gate log | PASS |
@@ -21529,23 +21529,23 @@
 ./reports/lawapp-new-architecture-technology-status.md:170:  citations_verified: 5
 ./reports/lawapp-new-architecture-technology-status.md:172:  memory_saved: false (no consent)
 ./reports/lawapp-new-architecture-technology-status.md:173:  evaluation.passed: true
-./reports/lawapp-new-architecture-technology-status.md:191:- `.claude/memory/lawapp-memory.json` — assistant memory, not runtime code
-./reports/lawapp-new-architecture-technology-status.md:222:- `backend/core/context_compressor.py` — Brain Step 13
-./reports/lawapp-new-architecture-technology-status.md:224:- `db/migrations/019_phase1_brain_safety.sql` — safety_boundary_checks + context_compression_log tables
-./reports/lawapp-new-architecture-technology-status.md:228:- `tests/memory/test_memory.py` — 9 tests
-./reports/lawapp-new-architecture-technology-status.md:229:- `tests/mcp/test_mcp.py` — 9 tests
-./reports/lawapp-new-architecture-technology-status.md:231:- `tests/retrieval/test_retrieval.py` — 18 tests
-./reports/lawapp-new-architecture-technology-status.md:248:| Embeddings not ingested (OpenAI API key needed) — pgvector queries return empty; insufficient_grounding on real queries | HIGH | Run `make embed` with real OPENAI_API_KEY or switch to fastembed for local ingestion |
+./reports/lawapp-new-architecture-technology-status.md:191:- `.claude/memory/lawapp-memory.json`  -  assistant memory, not runtime code
+./reports/lawapp-new-architecture-technology-status.md:222:- `backend/core/context_compressor.py`  -  Brain Step 13
+./reports/lawapp-new-architecture-technology-status.md:224:- `db/migrations/019_phase1_brain_safety.sql`  -  safety_boundary_checks + context_compression_log tables
+./reports/lawapp-new-architecture-technology-status.md:228:- `tests/memory/test_memory.py`  -  9 tests
+./reports/lawapp-new-architecture-technology-status.md:229:- `tests/mcp/test_mcp.py`  -  9 tests
+./reports/lawapp-new-architecture-technology-status.md:231:- `tests/retrieval/test_retrieval.py`  -  18 tests
+./reports/lawapp-new-architecture-technology-status.md:248:| Embeddings not ingested (OpenAI API key needed)  -  pgvector queries return empty; insufficient_grounding on real queries | HIGH | Run `make embed` with real OPENAI_API_KEY or switch to fastembed for local ingestion |
 ./reports/lawapp-new-architecture-technology-status.md:249:| MCP runtime connectors not wired (interface only) | MEDIUM | Implement source retrieval connectors in Phase 2 |
-./reports/lawapp-new-architecture-technology-status.md:259:1. **Ingest legal content** — Run legislation/case_law/ACAS ingestion with real API keys to populate pgvector. Until done, all semantic search returns empty and `insufficient_grounding=true`.
+./reports/lawapp-new-architecture-technology-status.md:259:1. **Ingest legal content**  -  Run legislation/case_law/ACAS ingestion with real API keys to populate pgvector. Until done, all semantic search returns empty and `insufficient_grounding=true`.
 ./reports/lawapp-phase1-live-cluster-wiring-report.txt:13:  lawapp-postgres   1/1 Running  pgvector/pgvector:pg16
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:25:| Hybrid Search (SQL+BM25+pgvector) | ✓ | Step 11 | rules+legislation+pgvector | /rules/{claim_type} | 18 ✓ | pytest retrieval/ | **PASS** | No case law embeddings yet |
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:28:| Context Compression | ✓ | Step 13 | context_compression_log | logged in trace | brain tests ✓ | brain API trace | **PASS** | — |
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:29:| Memory Engine (consent-gated) | ✓ | Step 17 | legal_memory | consent gate | 9 ✓ | pytest memory/ | **PASS** | — |
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:30:| Evaluation AI | ✓ | Step 15 | evaluation_results | via brain trace | passing ✓ | pytest evaluation/ | **PASS** | — |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:28:| Context Compression | ✓ | Step 13 | context_compression_log | logged in trace | brain tests ✓ | brain API trace | **PASS** |  -  |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:29:| Memory Engine (consent-gated) | ✓ | Step 17 | legal_memory | consent gate | 9 ✓ | pytest memory/ | **PASS** |  -  |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:30:| Evaluation AI | ✓ | Step 15 | evaluation_results | via brain trace | passing ✓ | pytest evaluation/ | **PASS** |  -  |
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:31:| MCP Connectors | ✓ | Step 18 | mcp_tool_calls | call_tool() | 17 ✓ | pytest mcp/ | **PASS** | rules_lookup + legislation + documents + acas + freshness implemented |
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:33:| AI Router | ✓ | Steps 8+9 | routing_decisions | /api/router/classify | passing ✓ | pytest router/ | **PASS** | — |
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:34:| Semantic Cache | ✓ | Steps 11-13 | semantic_cache | retrieve layer | passing ✓ | pytest cache/ | **PASS** | — |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:33:| AI Router | ✓ | Steps 8+9 | routing_decisions | /api/router/classify | passing ✓ | pytest router/ | **PASS** |  -  |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:34:| Semantic Cache | ✓ | Steps 11-13 | semantic_cache | retrieve layer | passing ✓ | pytest cache/ | **PASS** |  -  |
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:35:| WASM | PARTIAL | Client-only | N/A | /rules/{claim_type} serves values | test_wasm_fallback.js | JS + endpoint proof | **PARTIAL** | WASM fetches rules from /rules/ endpoint ✓ |
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:50:python -m pytest tests/brain/ tests/legal_accuracy/ tests/security/ tests/router/ 
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:51:  tests/agents/ tests/citation_verification/ tests/evaluation/ tests/cache/ 
@@ -21558,17 +21558,17 @@
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:234:python -m pytest tests/mcp/ -q
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:251:Every call logged to mcp_tool_calls table: CONFIRMED
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:287:- `backend/core/context_compressor.py`
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:289:- `backend/core/mcp_connectors.py` — 5 runtime MCP connectors (NEW)
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:289:- `backend/core/mcp_connectors.py`  -  5 runtime MCP connectors (NEW)
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:300:- `tests/memory/test_memory.py` (9 tests)
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:301:- `tests/mcp/test_mcp.py` (17 tests — expanded with runtime connector tests)
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:301:- `tests/mcp/test_mcp.py` (17 tests  -  expanded with runtime connector tests)
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:303:- `tests/retrieval/test_retrieval.py` (18 tests)
-./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:338:| M3 | **Rate limiting uses in-memory storage** — will not survive pod restart in production | Configure Redis and set `RATELIMIT_STORAGE_URI` in K8s config |
+./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:338:| M3 | **Rate limiting uses in-memory storage**  -  will not survive pod restart in production | Configure Redis and set `RATELIMIT_STORAGE_URI` in K8s config |
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:374:kubectl exec -n lawapp-rag deploy/lawapp-postgres -- psql -U lawapp -d lawapp -c "SELECT extname FROM pg_extension WHERE extname IN ('vector','pgcrypto');"
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:375:# Expected: vector, pgcrypto
 ./reports/lawapp-phase1-to-phase3-readiness-final-audit.md:396:| pgvector + pgcrypto extensions | UNVERIFIED |
 ./reports/lawapp-phase2-rag-semantic-completion-report.txt:6:GOAL: Enable pgvector semantic retrieval without OpenAI API dependency.
-./reports/lawapp-phase2-rag-semantic-completion-report.txt:10:  Schema: migration 016 — vector(1536) → vector(384) on all corpus tables
-./reports/lawapp-phase2-rag-semantic-completion-report.txt:13:MIGRATION 016 — db/migrations/016_vector_dim_384.sql
+./reports/lawapp-phase2-rag-semantic-completion-report.txt:10:  Schema: migration 016  -  vector(1536) → vector(384) on all corpus tables
+./reports/lawapp-phase2-rag-semantic-completion-report.txt:13:MIGRATION 016  -  db/migrations/016_vector_dim_384.sql
 ./reports/lawapp-phase2-rag-semantic-completion-report.txt:16:           embedding column → vector(384)
 ./reports/lawapp-phase2-rag-semantic-completion-report.txt:64:  3. pgvector IVFFlat index needs `ANALYZE` after embeddings loaded
 ./reports/lawapp-talos-owner-runbook.md:156:    CREATE EXTENSION IF NOT EXISTS vector;
@@ -21592,8 +21592,8 @@
 ./reports/local-regression-20260601-103835.txt:190:tests/integration/test_semantic_retrieval.py:23: in <module>
 ./reports/local-regression-20260601-103835.txt:214:ERROR tests/integration/test_phase4a_upload_ocr.py
 ./reports/local-regression-20260601-103835.txt:219:ERROR tests/integration/test_semantic_retrieval.py
-./reports/phase-ci-cd-automation-report.txt:66:  OPENAI_API_KEY      — enables pgvector embeddings; NOT needed until pgvector unblocked
-./reports/phase-ci-cd-automation-report.txt:99:3. pgvector corpus empty (legislation/case_law/acas = 0 rows) — BM25 active
+./reports/phase-ci-cd-automation-report.txt:66:  OPENAI_API_KEY       -  enables pgvector embeddings; NOT needed until pgvector unblocked
+./reports/phase-ci-cd-automation-report.txt:99:3. pgvector corpus empty (legislation/case_law/acas = 0 rows)  -  BM25 active
 ./reports/phase-ci-cd-automation-report.txt:106:Then proceed to Phase G: retrieval + reasoning vertical slice.
 ./reports/phase-deployment-smoke-report.txt:9:  lawapp-postgres 1/1  Running  image: pgvector/pgvector:pg16
 ./reports/phase-deployment-smoke-report.txt:31:  Extensions: vector ✓  pgcrypto ✓
@@ -21626,9 +21626,9 @@
 ./reports/phase3c-document-generation-report.txt:31:      deadline_info, value_range, citations, has_viable_claim, strength
 ./reports/phase3c-document-generation-report.txt:116:  citations                 → "Limitation" section (PoC), Section F (SoL)
 ./reports/phase3e-mvp-close-report.txt:131:  - 3 skipped tests: BLOCKED_BY_OPENAI_QUOTA (pgvector embeddings)
-./reports/phase4a-upload-ocr-report.txt:102:  tests/integration/test_phase4a_upload_ocr.py — 29 integration tests
-./reports/phase4a-upload-ocr-report.txt:103:  reports/phase4a-upload-ocr-report.txt      — this report
-./reports/phase4a-upload-ocr-report.txt:121:TESTS (test_phase4a_upload_ocr.py) — 29 tests
+./reports/phase4a-upload-ocr-report.txt:102:  tests/integration/test_phase4a_upload_ocr.py  -  29 integration tests
+./reports/phase4a-upload-ocr-report.txt:103:  reports/phase4a-upload-ocr-report.txt       -  this report
+./reports/phase4a-upload-ocr-report.txt:121:TESTS (test_phase4a_upload_ocr.py)  -  29 tests
 ./reports/phase5a-hardening-report.txt:67:  [✗] Data retention / deletion policy (Art.17 UK GDPR)
 ./reports/phase5c-verification-report.txt:62:  Note: case_law_verified means the citation is to a reported court/tribunal decision.
 ./reports/phase5c-verification-report.txt:64:  legislation.gov.uk. The citations are correct and well-established authority.
@@ -21641,15 +21641,15 @@
 ./reports/phase7a-jwks-rs256-report.txt:10:    - Added _fetch_jwks(): fetches JWKS from JWT_JWKS_URL with 5-minute TTL cache;
 ./reports/phase7a-jwks-rs256-report.txt:39:    Key cache:   5-minute in-memory TTL cache; thread-safe
 ./reports/phase7a-jwks-rs256-report.txt:59:    - JWKS cache never bypasses signature verification
-./reports/phase7c-kms-provider-report.txt:69:    envelope_encryption:     NOT_IMPLEMENTED — Phase 7D
+./reports/phase7c-kms-provider-report.txt:69:    envelope_encryption:     NOT_IMPLEMENTED  -  Phase 7D
 ./reports/phase7c-kms-provider-report.txt:71:  Note: Full envelope encryption (persisting CiphertextBlob alongside ciphertext
-./reports/phase7c-kms-provider-report.txt:114:  4. Full envelope encryption (persist CiphertextBlob) — Phase 7D
+./reports/phase7c-kms-provider-report.txt:114:  4. Full envelope encryption (persist CiphertextBlob)  -  Phase 7D
 ./reports/phase7d-envelope-encryption-report.txt:18:        supports_envelope_encryption() → bool
 ./reports/phase7d-envelope-encryption-report.txt:26:    - EnvKeyProvider envelope: returns env key + empty bundle (dev mode)
 ./reports/phase7d-envelope-encryption-report.txt:28:    - status() updated: envelope_encryption_supported, ciphertext_blob_persistence
 ./reports/phase7d-envelope-encryption-report.txt:31:    - encryption_at_rest: added envelope_encryption_supported,
 ./reports/phase7d-envelope-encryption-report.txt:34:  db/migrations/013_phase7d_envelope_encryption.sql
-./reports/phase7d-envelope-encryption-report.txt:40:  tests/integration/test_phase7d_envelope_encryption.py  (NEW — 24 tests)
+./reports/phase7d-envelope-encryption-report.txt:40:  tests/integration/test_phase7d_envelope_encryption.py  (NEW  -  24 tests)
 ./reports/phase7d-envelope-encryption-report.txt:99:    envelope_encryption_supported:       true
 ./reports/phase7d-envelope-encryption-report.txt:110:    ✓ Phase 7D: Full envelope encryption (GenerateDataKey + Decrypt)
 ./reports/phase8a-intelligence-wasm-audit-report.txt:11:  B. RAG / Legal Retrieval
@@ -21657,11 +21657,11 @@
 ./reports/phase8a-intelligence-wasm-audit-report.txt:68:All deterministic fields (deadline, value_range, citations) computed before model call.
 ./reports/phase8a-intelligence-wasm-audit-report.txt:88:  citations                    IMPLEMENTED (cite + url)
 ./reports/phase8a-intelligence-wasm-audit-report.txt:99:5 governance checks:
-./reports/phase8a-intelligence-wasm-audit-report.txt:100:  1. Grounding check:         IMPLEMENTED — citations must support claims
+./reports/phase8a-intelligence-wasm-audit-report.txt:100:  1. Grounding check:         IMPLEMENTED  -  citations must support claims
 ./reports/phase8a-intelligence-wasm-audit-report.txt:112:Evidence: tests/integration/test_phase2d_hardening.py (governance_blocks_reserved_activity)
 ./reports/phase8a-intelligence-wasm-audit-report.txt:150:── B1. Retrieval Architecture ───────────────────────────────────────────────
-./reports/phase8a-intelligence-wasm-audit-report.txt:154:retrieve()           EXISTS — orchestrates rules + semantic/keyword retrieval
-./reports/phase8a-intelligence-wasm-audit-report.txt:158:retrieve_semantic()  EXISTS — pgvector cosine search; falls back to BM25 if
+./reports/phase8a-intelligence-wasm-audit-report.txt:154:retrieve()           EXISTS  -  orchestrates rules + semantic/keyword retrieval
+./reports/phase8a-intelligence-wasm-audit-report.txt:158:retrieve_semantic()  EXISTS  -  pgvector cosine search; falls back to BM25 if
 ./reports/phase8a-intelligence-wasm-audit-report.txt:161:Hybrid retrieval: rules (always) + semantic (pgvector if available) + BM25 fallback
 ./reports/phase8a-intelligence-wasm-audit-report.txt:162:RetrievalBundle: {exact_rules, authorities, insufficient_grounding}
 ./reports/phase8a-intelligence-wasm-audit-report.txt:195:── B4. Embedding / pgvector ─────────────────────────────────────────────────
@@ -21677,17 +21677,17 @@
 ./reports/phase8a-intelligence-wasm-audit-report.txt:238:Citation bundle               IMPLEMENTED RetrievalBundle schema
 ./reports/phase8a-intelligence-wasm-audit-report.txt:240:Weak retrieval handling       PARTIAL     insufficient_grounding=True; floor=0
 ./reports/phase8a-intelligence-wasm-audit-report.txt:243:  beyond seed data). BM25 has little to search. Retrieval returns rules only.
-./reports/phase8a-intelligence-wasm-audit-report.txt:252:WASM files (.wasm):               NONE — no compiled WASM exists
-./reports/phase8a-intelligence-wasm-audit-report.txt:254:wasm-pack / build pipeline:       NONE — no build configuration
+./reports/phase8a-intelligence-wasm-audit-report.txt:252:WASM files (.wasm):               NONE  -  no compiled WASM exists
+./reports/phase8a-intelligence-wasm-audit-report.txt:254:wasm-pack / build pipeline:       NONE  -  no build configuration
 ./reports/phase8a-intelligence-wasm-audit-report.txt:257:Evidence: `find . -name "*.wasm"` returns zero results.
 ./reports/phase8a-intelligence-wasm-audit-report.txt:302:WASM module (.wasm)         MISSING     find . -name "*.wasm" returns 0 results
 ./reports/phase8a-intelligence-wasm-audit-report.txt:343:Legislation retrieval           PARTIAL     retrieve.py (BM25; sparse)    HIGH       8C
 ./reports/phase8a-intelligence-wasm-audit-report.txt:344:Case law retrieval              PARTIAL     retrieve.py (FCL blocked)     HIGH       8C
 ./reports/phase8a-intelligence-wasm-audit-report.txt:345:ACAS retrieval                  PARTIAL     retrieve.py (no bulk ingest)  HIGH       8C
 ./reports/phase8a-intelligence-wasm-audit-report.txt:347:pgvector/semantic retrieval     BLOCKED     OpenAI quota exhausted         HIGH       8C
-./reports/phase8a-intelligence-wasm-audit-report.txt:354:WASM module (.wasm)             MISSING     —                              HIGH       8D
+./reports/phase8a-intelligence-wasm-audit-report.txt:354:WASM module (.wasm)             MISSING      -                               HIGH       8D
 ./reports/phase8a-intelligence-wasm-audit-report.txt:371:  Scope: Harden pipeline; add real-model health check; tighten governance;
-./reports/phase8a-intelligence-wasm-audit-report.txt:374:Phase 8C — RAG Production Retrieval
+./reports/phase8a-intelligence-wasm-audit-report.txt:374:Phase 8C  -  RAG Production Retrieval
 ./reports/phase8a-intelligence-wasm-audit-report.txt:376:  Reason: Legal corpus is thin; pgvector blocked; ACAS/case_law minimal.
 ./reports/phase8a-intelligence-wasm-audit-report.txt:385:  Scope: Build WASM module (Rust + wasm-pack); integrate with intake;
 ./reports/phase8a-intelligence-wasm-audit-report.txt:390:  Reason: Document preview requires server round-trip; no citation display.
@@ -21704,7 +21704,7 @@
 ./reports/phase8b-algorithm-brain-report.txt:77:  Columns:       id, document_uri, neutral_citation, fclid, case_name, court_code,
 ./reports/phase8b-algorithm-brain-report.txt:79:                 embedding vector(1536), content_hash, source_url,
 ./reports/phase8b-algorithm-brain-report.txt:89:                 embedding vector(1536), source_url, effective_from,
-./reports/phase8b-algorithm-brain-report.txt:117:    encryption_key_metadata jsonb — DONE (migration 013 — envelope encryption)
+./reports/phase8b-algorithm-brain-report.txt:117:    encryption_key_metadata jsonb  -  DONE (migration 013  -  envelope encryption)
 ./reports/phase8b-algorithm-brain-report.txt:141:  Tests:         tests/integration/test_phase7e_envelope_integration.py
 ./reports/phase8b-algorithm-brain-report.txt:147:  Columns:       fact_snapshot_hash, rules_used, retrieval_bundle,
 ./reports/phase8b-algorithm-brain-report.txt:149:                 confidence_score, governance_result
@@ -21718,7 +21718,7 @@
 ./reports/phase8b-algorithm-brain-report.txt:299:  Logic:       Computes grounding_score from citation count, confidence_score from
 ./reports/phase8b-algorithm-brain-report.txt:312:               test_governance_blocks_reserved_activity (Phase 8B)
 ./reports/phase8b-algorithm-brain-report.txt:322:               recommended_next_step, citations, grounding_score,
-./reports/phase8b-algorithm-brain-report.txt:326:  Status:      DONE — fires when retrieval bundle is weak OR model cannot ground.
+./reports/phase8b-algorithm-brain-report.txt:326:  Status:      DONE  -  fires when retrieval bundle is weak OR model cannot ground.
 ./reports/phase8b-algorithm-brain-report.txt:342:rules structured retrieval:
 ./reports/phase8b-algorithm-brain-report.txt:348:  Status:   DONE. retrieve_keyword() uses PostgreSQL full-text search tsvector.
 ./reports/phase8b-algorithm-brain-report.txt:352:pgvector semantic retrieval:
@@ -21733,11 +21733,11 @@
 ./reports/phase8b-algorithm-brain-report.txt:395:quota. Corpus thin. Citations from rules table reliable; corpus citations limited.
 ./reports/phase8b-algorithm-brain-report.txt:401:Is there a .wasm binary?           NO
 ./reports/phase8b-algorithm-brain-report.txt:402:Rust / wasm-pack build pipeline?   NO
-./reports/phase8b-algorithm-brain-report.txt:428:WASM build command: N/A — no Rust source or wasm-pack pipeline exists.
-./reports/phase8b-algorithm-brain-report.txt:442:  AC4: Every legal point traced to citation — DONE (govern gate 1, citations field)
+./reports/phase8b-algorithm-brain-report.txt:428:WASM build command: N/A  -  no Rust source or wasm-pack pipeline exists.
+./reports/phase8b-algorithm-brain-report.txt:442:  AC4: Every legal point traced to citation  -  DONE (govern gate 1, citations field)
 ./reports/phase8b-algorithm-brain-report.txt:471:  Files: backend/api/main.py, backend/engine/envelope_encryption.py
-./reports/phase8b-algorithm-brain-report.txt:475:  AC2: Explanatory notes available — PARTIAL (citations shown, not explanatory notes)
-./reports/phase8b-algorithm-brain-report.txt:514:  AC1: Handoff packages assessment + docs as lead — DONE (envelope encrypted)
+./reports/phase8b-algorithm-brain-report.txt:475:  AC2: Explanatory notes available  -  PARTIAL (citations shown, not explanatory notes)
+./reports/phase8b-algorithm-brain-report.txt:514:  AC1: Handoff packages assessment + docs as lead  -  DONE (envelope encrypted)
 ./reports/phase8b-algorithm-brain-report.txt:545:Handoff leads envelope encryption:
 ./reports/phase8b-algorithm-brain-report.txt:549:  Tests:    tests/integration/test_phase7e_envelope_integration.py (24/24 PASS)
 ./reports/phase8b-algorithm-brain-report.txt:551:Cases envelope encryption:
@@ -21748,10 +21748,10 @@
 ./reports/phase8b-algorithm-brain-report.txt:635:| RAG               | PARTIAL  | Rules+BM25 ACTIVE. pgvector BLOCKED (OpenAI).   |
 ./reports/phase8b-algorithm-brain-report.txt:637:| WASM              | MISSING  | No .wasm binary. JS fallback covers deadline.    |
 ./reports/phase8b-algorithm-brain-report.txt:659:  Phase 8C: Cases envelope encryption upgrade
-./reports/phase8b-algorithm-brain-report.txt:660:    — Extend envelope encryption path to POST /cases (mirror Phase 7E pattern)
-./reports/phase8b-algorithm-brain-report.txt:661:    — Smallest safe step; reuses existing kms.py + envelope_encryption.py
+./reports/phase8b-algorithm-brain-report.txt:660:     -  Extend envelope encryption path to POST /cases (mirror Phase 7E pattern)
+./reports/phase8b-algorithm-brain-report.txt:661:     -  Smallest safe step; reuses existing kms.py + envelope_encryption.py
 ./reports/phase8b-algorithm-brain-report.txt:662:  Phase 8D: pgvector unblock OR self-hosted embedding model
-./reports/phase8b-algorithm-brain-report.txt:664:    — Unblocks semantic retrieval without OpenAI quota dependency
+./reports/phase8b-algorithm-brain-report.txt:664:     -  Unblocks semantic retrieval without OpenAI quota dependency
 ./reports/phase8b-system-readiness-full-audit.txt:59:  Phase: 3 (governance + scoring)
 ./reports/phase8b-system-readiness-full-audit.txt:72:           backend/engine/envelope_encryption.py
 ./reports/phase8b-system-readiness-full-audit.txt:76:         tests/integration/test_phase7e_envelope_integration.py
@@ -21811,7 +21811,7 @@
 ./scripts/run_legal_accuracy.py:55:    print(f"  citations:           {len(grounded.get('citations') or [])}")
 ./scripts/run_legal_accuracy.py:66:    if not grounded.get("citations"):
 ./scripts/run_legal_accuracy.py:67:        return _fail("grounded assessment returned no citations")
-./scripts/run_retention.py:3:Retention policy runner — Phase 6.
+./scripts/run_retention.py:3:Retention policy runner  -  Phase 6.
 ./scripts/run_retention.py:92:                    (records_processed, records_deleted, policy_days, notes)
 ./scripts/run_retention.py:119:    parser = argparse.ArgumentParser(description="Lawapp retention policy runner")
 ./scripts/run_smoke.py:60:        "citations": len(grounded_json.get("citations") or []),
@@ -21874,7 +21874,7 @@
 ./tests/cache/test_cache.py:23:        assert _is_safe_to_cache("My employer dismissed me after 5 years") is False
 ./tests/cache/test_cache.py:26:        assert _is_safe_to_cache("Will I win my claim?") is False
 ./tests/cache/test_cache.py:29:        assert _is_safe_to_cache("What should I accept in a settlement agreement?") is False
-./tests/cache/test_cache.py:32:        assert _is_safe_to_cache("My discrimination case — what should I do?") is False
+./tests/cache/test_cache.py:32:        assert _is_safe_to_cache("My discrimination case  -  what should I do?") is False
 ./tests/cache/test_cache.py:35:        assert _is_safe_to_cache("What is unfair dismissal?", {"edt": "2025-10-01"}) is False
 ./tests/cache/test_cache.py:38:        assert _is_safe_to_cache("Explain dismissal", {"case_id": "abc123"}) is False
 ./tests/cache/test_cache.py:43:        result = cache_lookup("What is unfair dismissal?", "EW")
@@ -22016,7 +22016,7 @@
 ./tests/integration/test_phase2_real_model.py:171:    correctly computed deadline, and citations that support each stated point.
 ./tests/integration/test_phase2_real_model.py:198:    # If governance passed, check structural validity
 ./tests/integration/test_phase2_real_model.py:206:        assert isinstance(result["citations"], list)
-./tests/integration/test_phase3a_flows.py:14:  7. POST /assess — citations present in response for viable claim
+./tests/integration/test_phase3a_flows.py:14:  7. POST /assess  -  citations present in response for viable claim
 ./tests/integration/test_phase3a_flows.py:120:    for key in ("has_viable_claim", "strength", "citations"):
 ./tests/integration/test_phase3a_flows.py:126:def test_citations_present_in_assessment():
 ./tests/integration/test_phase3a_flows.py:127:    """A viable-claim assessment must include at least one citation."""
@@ -22087,7 +22087,7 @@
 ./tests/integration/test_phase7e_envelope_integration.py:282:    "email": "envelope@test.invalid",
 ./tests/integration/test_phase7e_envelope_integration.py:349:def test_aws_kms_mode_encryption_method_envelope(mock_boto3_client):
 ./tests/integration/test_phase7e_envelope_integration.py:359:        assert data.get("encryption_method") == "envelope_kms"
-./tests/integration/test_phase7e_envelope_integration.py:366:    """Env mode: no envelope bundle — encryption_key_metadata should be NULL."""
+./tests/integration/test_phase7e_envelope_integration.py:366:    """Env mode: no envelope bundle  -  encryption_key_metadata should be NULL."""
 ./tests/integration/test_phase7e_envelope_integration.py:381:        # env mode: no envelope bundle stored
 ./tests/integration/test_phase7e_envelope_integration.py:412:    from backend.core.envelope_encryption import (
 ./tests/integration/test_phase7e_envelope_integration.py:413:        envelope_encrypt_str, decrypt_pii_field
@@ -22105,11 +22105,11 @@
 ./tests/integration/test_pipeline_stub.py:13:- The governance gate routes stub output to the correct fallback (insufficient_grounding)
 ./tests/integration/test_pipeline_stub.py:16:- Semantic retrieval: authorities will be [] until embeddings exist
 ./tests/integration/test_pipeline_stub.py:17:- Real assessment with citations supporting each claim: pending model + embeddings
-./tests/integration/test_pipeline_stub.py:68:    # Stub model returns insufficient_grounding — governance routes accordingly
+./tests/integration/test_pipeline_stub.py:68:    # Stub model returns insufficient_grounding  -  governance routes accordingly
 ./tests/integration/test_pipeline_stub.py:142:def test_stub_governance_routes_to_insufficient_grounding():
 ./tests/integration/test_pipeline_stub.py:144:    The stub model deliberately returns insufficient_grounding=True and no citations.
 ./tests/integration/test_pipeline_stub.py:145:    The governance gate must route this to the insufficient_grounding path.
-./tests/integration/test_pipeline_stub.py:146:    This proves the governance gate fires correctly — it's not a bug.
+./tests/integration/test_pipeline_stub.py:146:    This proves the governance gate fires correctly  -  it's not a bug.
 ./tests/integration/test_pipeline_stub.py:149:    # Stub has no real reasoning → governance routes to insufficient_grounding
 ./tests/integration/test_pipeline_stub.py:157:def test_semantic_retrieval_returns_legislation():
 ./tests/integration/test_pipeline_stub.py:166:def test_five_realistic_fact_patterns_with_citations():
@@ -22120,14 +22120,14 @@
 ./tests/integration/test_rules_canonical.py:74:    The live retrieval query must never return a prospective row.
 ./tests/integration/test_rules_canonical.py:85:            f"Prospective rows leaked into live retrieval for EDT {edt}: "
 ./tests/integration/test_rules_deadline_phase1.py:101:def test_all_rules_have_citations():
-./tests/integration/test_semantic_retrieval.py:2:Phase 2 — Semantic retrieval tests.
+./tests/integration/test_semantic_retrieval.py:2:Phase 2  -  Semantic retrieval tests.
 ./tests/integration/test_semantic_retrieval.py:7:These tests prove that the semantic leg of the hybrid retrieval returns real
 ./tests/integration/test_semantic_retrieval.py:10:similarity score. The citations produced here are what the reasoning model
 ./tests/integration/test_semantic_retrieval.py:15:    tests/integration/test_semantic_retrieval.py -v -s
 ./tests/integration/test_semantic_retrieval.py:51:# ── Semantic retrieval tests ──────────────────────────────────────────────────
 ./tests/integration/test_semantic_retrieval.py:53:def test_semantic_retrieval_returns_legislation():
 ./tests/integration/test_semantic_retrieval.py:65:    print(f"\nReturned {len(results)} chunks from semantic retrieval:")
-./tests/integration/test_semantic_retrieval.py:71:    assert len(results) > 0, "Semantic retrieval returned empty — embeddings may not be present"
+./tests/integration/test_semantic_retrieval.py:71:    assert len(results) > 0, "Semantic retrieval returned empty  -  embeddings may not be present"
 ./tests/integration/test_semantic_retrieval.py:83:def test_semantic_retrieval_fairness_reasons():
 ./tests/integration/test_semantic_retrieval.py:109:def test_semantic_retrieval_acas_code():
 ./tests/integration/test_semantic_retrieval.py:126:def test_semantic_retrieval_case_law():
@@ -22153,7 +22153,7 @@
 ./tests/mcp/test_mcp.py:149:        cur.execute("SELECT COUNT(*) FROM mcp_tool_calls;")
 ./tests/mcp/test_mcp.py:155:        from backend.core.mcp_connectors import list_allowed_tools
 ./tests/mcp/test_mcp.py:162:        from backend.core.mcp_connectors import list_prohibited_tools
-./tests/memory/test_memory.py:2:Memory Engine unit tests — lawapp consent-gated case memory.
+./tests/memory/test_memory.py:2:Memory Engine unit tests  -  lawapp consent-gated case memory.
 ./tests/memory/test_memory.py:5:  - save_memory requires user_id + case_id
 ./tests/memory/test_memory.py:6:  - get_memory is user/case scoped
 ./tests/memory/test_memory.py:7:  - cross-user memory access is blocked
@@ -22188,13 +22188,13 @@
 ./tests/rag/test_rag.py:92:        # EW jurisdiction retrieval
 ./tests/rag/test_rag.py:99:# ── BM25 keyword retrieval ────────────────────────────────────────────────────
 ./tests/rag/test_rag.py:101:class TestKeywordRetrieval:
-./tests/retrieval/test_retrieval.py:2:Hybrid Retrieval unit tests — lawapp RAG layer.
+./tests/retrieval/test_retrieval.py:2:Hybrid Retrieval unit tests  -  lawapp RAG layer.
 ./tests/retrieval/test_retrieval.py:4:Tests hybrid search: SQL rules + pgvector semantic + BM25 keyword.
 ./tests/retrieval/test_retrieval.py:5:Retrieval must always run before reasoning.
 ./tests/retrieval/test_retrieval.py:6:All legal answers must have citations.
 ./tests/retrieval/test_retrieval.py:14:from shared.schemas import RetrievalBundle
-./tests/retrieval/test_retrieval.py:18:    """Deterministic SQL rules retrieval — always first in pipeline."""
-./tests/retrieval/test_retrieval.py:64:    """Full hybrid retrieval — SQL rules + pgvector + BM25."""
+./tests/retrieval/test_retrieval.py:18:    """Deterministic SQL rules retrieval  -  always first in pipeline."""
+./tests/retrieval/test_retrieval.py:64:    """Full hybrid retrieval  -  SQL rules + pgvector + BM25."""
 ./tests/retrieval/test_retrieval.py:73:        assert isinstance(bundle, RetrievalBundle)
 ./tests/retrieval/test_retrieval.py:123:        assert isinstance(bundle, RetrievalBundle)
 ./tests/retrieval/test_retrieval.py:125:    def test_upw_retrieval_returns_bundle(self):
@@ -22227,10 +22227,10 @@
 ./tests/test_case_law_identifier_split.py:15:        neutral_citation="[2026] EAT 77",
 ./tests/test_govern.py:2:Tests for the governance gate.
 ./tests/test_govern.py:30:        citations=[Citation(cite="ERA 1996 s.98", url="https://legislation.gov.uk/...")],
-./tests/test_govern.py:78:    at construction time. This is the enforcement point — governance check 3
-./tests/test_govern.py:137:    # "no" claim — governance doesn't require weaknesses (it's already the honest answer)
+./tests/test_govern.py:78:    at construction time. This is the enforcement point  -  governance check 3
+./tests/test_govern.py:137:    # "no" claim  -  governance doesn't require weaknesses (it's already the honest answer)
 ./tests/test_wasm_document_preview.js:82:    assert(result.computed_by === 'client_wasm_or_js_fallback',
-./tests/uploads/test_uploads.py:2:Document Upload Architecture tests — lawapp multimodal readiness.
+./tests/uploads/test_uploads.py:2:Document Upload Architecture tests  -  lawapp multimodal readiness.
 ./tests/user_isolation/test_user_isolation.py:6:  - User A cannot read User B's memory
 ./tests/user_isolation/test_user_isolation.py:132:    def test_memory_requires_user_and_case_id(self):
 ./tests/user_isolation/test_user_isolation.py:133:        from backend.core.memory import save_memory, get_memory

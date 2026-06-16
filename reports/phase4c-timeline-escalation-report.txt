@@ -1,6 +1,6 @@
-PHASE 4C — CASE TIMELINE TRACKING, ESCALATION STATE, PHASE 4 DEPTH COMPLETION
+PHASE 4C  -  CASE TIMELINE TRACKING, ESCALATION STATE, PHASE 4 DEPTH COMPLETION
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -32,22 +32,22 @@ GUARDRAILS:
   - Timeline notes "not legal advice" and does not imply platform manages litigation
 
 ═══════════════════════════════════════════════════════════════════════════════
-ESCALATION (backend/engine/timeline.py — compute_escalation())
+ESCALATION (backend/engine/timeline.py  -  compute_escalation())
 ═══════════════════════════════════════════════════════════════════════════════
 
 States (priority order):
-  1. solicitor_recommended  — seek_solicitor or (insufficient + low strength)
-  2. handoff_started        — handoff lead exists for this case
-  3. urgent_deadline        — deadline expired, within 7 or within 14 days
-  4. needs_review           — insufficient_grounding or strength=low
-  5. watch                  — deadline within 30 days
-  6. none                   — no escalation needed
+  1. solicitor_recommended   -  seek_solicitor or (insufficient + low strength)
+  2. handoff_started         -  handoff lead exists for this case
+  3. urgent_deadline         -  deadline expired, within 7 or within 14 days
+  4. needs_review            -  insufficient_grounding or strength=low
+  5. watch                   -  deadline within 30 days
+  6. none                    -  no escalation needed
 
 Returns: state, state_label, triggered_states, urgency, days_remaining,
          next_action, escalation_note.
 
 GUARDRAIL: Never claims a solicitor has accepted the case.
-GUARDRAIL: Purely deterministic — no model involvement.
+GUARDRAIL: Purely deterministic  -  no model involvement.
 GUARDRAIL: next_action text never implies platform manages litigation.
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -62,16 +62,16 @@ Valid event_types (11):
 Valid sources (4):
   user_entered | rules_engine | confirmed_extraction | system_generated
 
-source='rules_engine' is reserved — users cannot set it via POST endpoint.
+source='rules_engine' is reserved  -  users cannot set it via POST endpoint.
 
 ═══════════════════════════════════════════════════════════════════════════════
 ENDPOINTS
 ═══════════════════════════════════════════════════════════════════════════════
 
-GET   /cases/{id}/timeline                   — full timeline (auto + DB)
-POST  /cases/{id}/timeline/events            — add manual event
-PATCH /cases/{id}/timeline/events/{event_id} — update event title/date/status
-GET   /cases/{id}/escalation[?as_of=DATE]    — escalation state
+GET   /cases/{id}/timeline                    -  full timeline (auto + DB)
+POST  /cases/{id}/timeline/events             -  add manual event
+PATCH /cases/{id}/timeline/events/{event_id}  -  update event title/date/status
+GET   /cases/{id}/escalation[?as_of=DATE]     -  escalation state
 
 as_of param on escalation: allows deterministic testing with fixed reference date.
 
@@ -79,10 +79,10 @@ as_of param on escalation: allows deterministic testing with fixed reference dat
 FILES CREATED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  db/migrations/009_phase4c_timeline.sql      — case_timeline_events table
-  backend/engine/timeline.py                  — timeline builder + escalation
-  tests/integration/test_phase4c_timeline.py  — 23+ integration tests
-  reports/phase4c-timeline-escalation-report.txt — this report
+  db/migrations/009_phase4c_timeline.sql       -  case_timeline_events table
+  backend/engine/timeline.py                   -  timeline builder + escalation
+  tests/integration/test_phase4c_timeline.py   -  23+ integration tests
+  reports/phase4c-timeline-escalation-report.txt  -  this report
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES MODIFIED
@@ -108,12 +108,12 @@ DATA-PROTECTION NOTES
 
   - Timeline uses only de-identified assessment data and confirmed extracted facts
   - Unconfirmed and rejected extracted facts are excluded at get_confirmed_facts()
-  - Manual events can include user-supplied text — stored in case_timeline_events
+  - Manual events can include user-supplied text  -  stored in case_timeline_events
   - No PII from uploads included in timeline events
   - No external API calls
 
 ═══════════════════════════════════════════════════════════════════════════════
-PHASE 4 DEPTH — COMPLETION STATEMENT
+PHASE 4 DEPTH  -  COMPLETION STATEMENT
 ═══════════════════════════════════════════════════════════════════════════════
 
 Phase 4 is COMPLETE across all sub-phases:

@@ -1,5 +1,5 @@
 """
-Graph RAG unit tests — lawapp legal knowledge graph.
+Graph RAG unit tests  -  lawapp legal knowledge graph.
 
 Tests legal_nodes/legal_edges DB tables and graph traversal.
 Verifies unfair dismissal subgraph is populated with correct nodes.

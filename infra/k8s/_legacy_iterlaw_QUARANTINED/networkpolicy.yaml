@@ -1,5 +1,5 @@
 ---
-# IterLaw — NetworkPolicy: backend can reach DB and egress for API calls.
+# IterLaw  -  NetworkPolicy: backend can reach DB and egress for API calls.
 # Only allow ingress to backend from within the cluster.
 # No public ingress until health is proven.
 apiVersion: networking.k8s.io/v1

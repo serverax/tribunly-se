@@ -1,6 +1,6 @@
-PHASE 6 — PRODUCTION BLOCKERS CLOSURE
+PHASE 6  -  PRODUCTION BLOCKERS CLOSURE
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -56,8 +56,8 @@ New DB columns (migration 012):
 API response includes: pii_encrypted: true/false on POST /handoff/leads.
 
 Phase 6 limitations (NOT production-ready for key management):
-  - Key in env var — no HSM, no KMS, no key rotation
-  - Fernet (AES-128-CBC) — AES-256-GCM recommended for production
+  - Key in env var  -  no HSM, no KMS, no key rotation
+  - Fernet (AES-128-CBC)  -  AES-256-GCM recommended for production
   - Phase 7: HSM integration, key rotation, separate keys per data class
   - cases.facts_encrypted: column exists; not populated in Phase 6
     (assessment jsonb is already de-identified; intake facts not persisted)
@@ -67,8 +67,8 @@ Phase 6 limitations (NOT production-ready for key management):
 ═══════════════════════════════════════════════════════════════════════════════
 
 New endpoints:
-  DELETE /cases/{case_id}         — soft delete; sets deleted_at; 404 on GET
-  DELETE /handoff/leads/{lead_id} — clears PII fields; sets deleted_at
+  DELETE /cases/{case_id}          -  soft delete; sets deleted_at; 404 on GET
+  DELETE /handoff/leads/{lead_id}  -  clears PII fields; sets deleted_at
 
 New DB columns (migration 012):
   - cases: deleted_at timestamptz
@@ -76,36 +76,36 @@ New DB columns (migration 012):
   - retention_runs: audit log of retention script runs
 
 Admin endpoint:
-  GET /admin/retention-status?retention_days=N  — report old records (no delete)
+  GET /admin/retention-status?retention_days=N   -  report old records (no delete)
 
 Script:
-  scripts/run_retention.py  — dry run by default; --apply to execute
+  scripts/run_retention.py   -  dry run by default; --apply to execute
   Soft-deletes cases older than RETENTION_CASES_DAYS (default 90)
   Clears PII from handoff leads older than RETENTION_HANDOFF_DAYS (default 30)
 
 GUARDRAIL: Audit logs preserved; only PII cleared. Consent records retained.
-GUARDRAIL: run_retention.py is DRY RUN by default — require --apply flag.
+GUARDRAIL: run_retention.py is DRY RUN by default  -  require --apply flag.
 
 ═══════════════════════════════════════════════════════════════════════════════
 4. PRIVACY NOTICE AND DPIA ARTEFACTS
 ═══════════════════════════════════════════════════════════════════════════════
 
-docs/privacy-notice-draft.md — DRAFT artefact
+docs/privacy-notice-draft.md  -  DRAFT artefact
   - Covers: who we are, data collected, legal basis, retention, rights, security
-  - Status: DRAFT — not legally reviewed, not suitable for publication
+  - Status: DRAFT  -  not legally reviewed, not suitable for publication
   - Legal review and DPO sign-off required before use
 
-docs/dpia-artefact.md — DPIA in progress
+docs/dpia-artefact.md  -  DPIA in progress
   - Covers: processing description, necessity, risk identification, Art.9 assessment,
     mitigation measures, ICO prior consultation recommendation, sign-off checklist
-  - Status: IN PROGRESS — not completed, not legally reviewed
+  - Status: IN PROGRESS  -  not completed, not legally reviewed
   - DPO and legal counsel review required before production
 
 Both files verified present by test_phase6_production.py and production
 readiness report.
 
 ═══════════════════════════════════════════════════════════════════════════════
-REMAINING BLOCKERS — STILL NOT_PRODUCTION_READY
+REMAINING BLOCKERS  -  STILL NOT_PRODUCTION_READY
 ═══════════════════════════════════════════════════════════════════════════════
 
 The /admin/production-readiness endpoint correctly returns NOT_PRODUCTION_READY.
@@ -114,11 +114,11 @@ Remaining before production:
   1. HSM/KMS key management (env var key not suitable for production)
   2. DPIA legally reviewed and signed off by qualified DPO/lawyer
   3. Privacy notice legally reviewed and published
-  4. User authentication (OAuth/JWT) for end-users — Phase 7
-  5. No live deployment — Phase 7
-  6. Formal consent management system — Phase 7
-  7. Breach notification procedure — Phase 7
-  8. Subject access request (SAR) process — Phase 7
+  4. User authentication (OAuth/JWT) for end-users  -  Phase 7
+  5. No live deployment  -  Phase 7
+  6. Formal consent management system  -  Phase 7
+  7. Breach notification procedure  -  Phase 7
+  8. Subject access request (SAR) process  -  Phase 7
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES CREATED

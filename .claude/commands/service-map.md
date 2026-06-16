@@ -1,5 +1,5 @@
 ---
-description: Produce/refresh the microservice service map — classify each service REAL+WIRED / STUB / DEAD with health evidence.
+description: Produce/refresh the microservice service map  -  classify each service REAL+WIRED / STUB / DEAD with health evidence.
 ---
 
 # /service-map

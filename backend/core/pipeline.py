@@ -1,5 +1,5 @@
 """
-Phase 2 — Assessment pipeline orchestrator.
+Phase 2  -  Assessment pipeline orchestrator.
 
 Stages: classify → retrieve → reason → score → govern → respond.
 
@@ -8,7 +8,7 @@ GUARDRAILS enforced here:
 - Deadline is computed deterministically and injected into the assessment.
 - De-identification runs before any model call.
 - Out-of-scope and insufficient-grounding routes are hard exits.
-- The model interface requires an explicit model instance — no default.
+- The model interface requires an explicit model instance  -  no default.
 
 Usage:
     from backend.core.pipeline import assess
@@ -100,7 +100,7 @@ def _validate_fact_dates(facts: dict) -> Optional[dict]:
 
     Returns an {"status": "invalid_date", "field_errors": {...}} response dict
     when a supplied date is malformed or impossible, else None.
-    Only validates keys that are present — absence is handled downstream.
+    Only validates keys that are present  -  absence is handled downstream.
     """
     today = date.today()
 
@@ -110,7 +110,7 @@ def _validate_fact_dates(facts: dict) -> Optional[dict]:
         except ValueError:
             return None, {
                 "status": "invalid_date",
-                "field_errors": {key_label: f"'{raw}' is not a valid date — use YYYY-MM-DD."},
+                "field_errors": {key_label: f"'{raw}' is not a valid date  -  use YYYY-MM-DD."},
                 "message": f"Could not parse date: {raw}",
             }
 
@@ -159,11 +159,11 @@ def assess(
     Run the full assessment pipeline for a single query + fact pattern.
 
     Returns one of:
-      - {"status": "not_supported", ...}              — out-of-scope
-      - {"status": "insufficient_grounding", ...}    — retrieval too weak
-      - {"status": "low_confidence", ...}             — below threshold
-      - {"status": "ok", "assessment": {...}}         — passes governance
-      - {"status": "model_not_configured", ...}       — no model provided
+      - {"status": "not_supported", ...}               -  out-of-scope
+      - {"status": "insufficient_grounding", ...}     -  retrieval too weak
+      - {"status": "low_confidence", ...}              -  below threshold
+      - {"status": "ok", "assessment": {...}}          -  passes governance
+      - {"status": "model_not_configured", ...}        -  no model provided
 
     The pipeline is structured to demonstrate Phase 2 with the stub model
     (all stages run, governance gate exercises correctly) and to work correctly
@@ -172,7 +172,7 @@ def assess(
 
     # ── Stage 0: Date sanity (BEFORE classification) ───────────────────────
     # A malformed/impossible date must come back as a field-level error, never
-    # as "out of scope" — vague queries with broken dates would otherwise be
+    # as "out of scope"  -  vague queries with broken dates would otherwise be
     # refused by the classifier before the user learns their date is wrong.
     _early = _validate_fact_dates(facts)
     if _early is not None:
@@ -215,7 +215,7 @@ def assess(
 
     # ── Jurisdiction gate (fail-closed) ────────────────────────────────────
     # Northern Ireland is a separate employment-law regime and is NOT ingested.
-    # If the jurisdiction has no verified rules, fail closed — never reuse GB law.
+    # If the jurisdiction has no verified rules, fail closed  -  never reuse GB law.
     from backend.core.retrieve import jurisdiction_supported as _jur_supported, juris_codes as _jcodes
     if not _jur_supported(jurisdiction):
         return {
@@ -273,7 +273,7 @@ def assess(
             deadline_info["deadline_warning"] = (
                 f"⚠ This deadline appears to have PASSED ({abs(_days_left)} days ago, "
                 f"on {_lim.isoformat()}). Out-of-time claims are only accepted in "
-                f"limited circumstances — seek advice from ACAS or a solicitor "
+                f"limited circumstances  -  seek advice from ACAS or a solicitor "
                 f"IMMEDIATELY if you still wish to claim."
             )
         elif _days_left <= 14:
@@ -281,7 +281,7 @@ def assess(
             deadline_info["deadline_warning"] = (
                 f"⚠ URGENT: only {_days_left} day(s) left until the deadline on "
                 f"{_lim.isoformat()}. You must notify ACAS (Early Conciliation) "
-                f"before a tribunal claim — act now."
+                f"before a tribunal claim  -  act now."
             )
         elif _days_left <= 42:
             deadline_info["urgency_level"] = "urgent"
@@ -297,7 +297,7 @@ def assess(
     _write_deadline_audit(claim_type, jurisdiction, ref_date, deadline_info,
                           time_limit_rule, ec_day_a, ec_day_b)
 
-    # ── Qualifying period check (unfair dismissal only — no QP for unpaid wages)
+    # ── Qualifying period check (unfair dismissal only  -  no QP for unpaid wages)
     qualifying_check = None
     if claim_type == "unfair_dismissal":
         qp_rule = next(
@@ -321,7 +321,7 @@ def assess(
     logger.info("De-identification boundary: %s", boundary_log)
 
     # ── Stage 3b: Deterministic pre-assessment ────────────────────────────────
-    # Compute everything that doesn't require model judgment — value range,
+    # Compute everything that doesn't require model judgment  -  value range,
     # key weaknesses from facts, citations from rules + BM25.
     # This provides citations and structure even when the model is stubbed.
     if claim_type == "unpaid_wages":
@@ -356,7 +356,7 @@ def assess(
     # The legal knowledge graph (legal_nodes/legal_edges, BFS-traversed) resolves
     # legal RELATIONSHIPS (statute -> test -> limitation -> remedy), not isolated
     # snippets. We inject it into safe_facts so the reasoning engine (ART) is FORCED
-    # to ingest the graph before reasoning commences — closing the variable-drop gap
+    # to ingest the graph before reasoning commences  -  closing the variable-drop gap
     # where graph_context was computed in brain.py then dropped before this stage.
     # Fail-soft: if no subgraph exists for this claim, reasoning proceeds unchanged.
     if graph_context is None:
@@ -476,7 +476,7 @@ def assess(
     gov_result = govern(assessment)
     logger.info("Governance: passes=%s reason=%s", gov_result.passes, gov_result.failure_reason)
 
-    # ── Stage 6b: Audit log — written regardless of governance outcome ─────────
+    # ── Stage 6b: Audit log  -  written regardless of governance outcome ─────────
     # Stores only safe metadata. No raw user facts, PII, or case narrative.
     _write_audit_log(
         safe_facts=safe_facts,
@@ -518,7 +518,7 @@ def assess(
             return {**build_low_confidence_response(assessment, reason), **base_fields}
         return {**build_insufficient_grounding_response(reason), **base_fields}
 
-    # ── Stage 7: Respond — canonical structured assessment ───────────────────
+    # ── Stage 7: Respond  -  canonical structured assessment ───────────────────
     a = gov_result.patched_assessment
     return {
         "status":           "ok",
@@ -557,7 +557,7 @@ def _write_audit_log(
     """
     Write one immutable audit row after every governance decision.
 
-    Safe fields only — no personal data, no case narrative, no PII.
+    Safe fields only  -  no personal data, no case narrative, no PII.
     Fails silently rather than crashing the user-facing pipeline.
     """
     try:

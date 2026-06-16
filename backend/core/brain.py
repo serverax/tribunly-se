@@ -1,5 +1,5 @@
 """
-lawapp Brain Algorithm — UK Employment Law AI Central Controller.
+lawapp Brain Algorithm  -  UK Employment Law AI Central Controller.
 
 Every legal request MUST pass through the Brain. No agent, RAG module, LLM,
 or document generator may answer directly without Brain authorisation.
@@ -43,29 +43,29 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 
-# ── Step definitions (immutable — used in trace output) ─────────────────────
+# ── Step definitions (immutable  -  used in trace output) ─────────────────────
 # 19 steps as per PHASE 1 Brain Algorithm specification.
 
 BRAIN_STEPS = [
-    "authenticate",           # 1  — user authentication confirmed
-    "load_context",           # 2  — user_id and case_id loaded
-    "detect_jurisdiction",    # 3  — EW / SC / NI
-    "detect_legal_area",      # 4  — employment_law / out_of_scope
-    "detect_claim_type",      # 5  — unfair_dismissal / unpaid_wages / etc.
-    "detect_urgency",         # 6  — urgency level and days remaining
-    "detect_missing_facts",   # 7  — evidence gaps before agent selection
-    "select_agents",          # 8  — choose legal agents based on claim + urgency
-    "select_rag_source",      # 9  — choose RAG / Graph RAG / KG sources
-    "run_rules_engine",       # 10 — fetch deterministic rules from DB
-    "retrieve_legal_evidence",# 11 — hybrid retrieval (SQL + BM25 + pgvector)
-    "verify_citations",       # 12 — verify every citation against DB
-    "compress_context",       # 13 — compress context preserving all citations
-    "generate_draft",         # 14 — generate structured draft via pipeline
-    "evaluate_draft",         # 15 — legal evaluation rubric
-    "apply_safety_policy",    # 16 — legal boundary + safety gate (blocks if fail)
-    "save_case_memory",       # 17 — persist to legal_memory if allowed
-    "store_audit_log",        # 18 — immutable brain_traces + evaluation_results
-    "return_answer",          # 19 — final answer returned to caller
+    "authenticate",           # 1   -  user authentication confirmed
+    "load_context",           # 2   -  user_id and case_id loaded
+    "detect_jurisdiction",    # 3   -  EW / SC / NI
+    "detect_legal_area",      # 4   -  employment_law / out_of_scope
+    "detect_claim_type",      # 5   -  unfair_dismissal / unpaid_wages / etc.
+    "detect_urgency",         # 6   -  urgency level and days remaining
+    "detect_missing_facts",   # 7   -  evidence gaps before agent selection
+    "select_agents",          # 8   -  choose legal agents based on claim + urgency
+    "select_rag_source",      # 9   -  choose RAG / Graph RAG / KG sources
+    "run_rules_engine",       # 10  -  fetch deterministic rules from DB
+    "retrieve_legal_evidence",# 11  -  hybrid retrieval (SQL + BM25 + pgvector)
+    "verify_citations",       # 12  -  verify every citation against DB
+    "compress_context",       # 13  -  compress context preserving all citations
+    "generate_draft",         # 14  -  generate structured draft via pipeline
+    "evaluate_draft",         # 15  -  legal evaluation rubric
+    "apply_safety_policy",    # 16  -  legal boundary + safety gate (blocks if fail)
+    "save_case_memory",       # 17  -  persist to legal_memory if allowed
+    "store_audit_log",        # 18  -  immutable brain_traces + evaluation_results
+    "return_answer",          # 19  -  final answer returned to caller
 ]
 
 # ── Agent selection map ──────────────────────────────────────────────────────
@@ -205,7 +205,7 @@ def _run_safety_checks(assessment: dict, trace_id: str, user_id: Optional[str]) 
         dl_source = deadline_info.get("source", "unknown")
         c3_pass = dl_source in ("rules", "rules_engine") or not deadline_info
     else:
-        c3_pass = True  # Pydantic Deadline object — source field validated by schema
+        c3_pass = True  # Pydantic Deadline object  -  source field validated by schema
     checks.append({
         "check": "deadline_from_rules",
         "passed": c3_pass,
@@ -261,7 +261,7 @@ def _run_safety_checks(assessment: dict, trace_id: str, user_id: Optional[str]) 
 
 def get_deterministic_guide(claim_type: str = "unfair_dismissal",
                             jurisdiction: str = "EW") -> dict:
-    """Deterministic 'safe haven' content — rules-table only, no model. Returned
+    """Deterministic 'safe haven' content  -  rules-table only, no model. Returned
     when the generative model fails the corpus-citation gate after retries."""
     rules = []
     try:
@@ -298,7 +298,7 @@ def execute_generative_lane(query: str, context: Optional[dict] = None,
     """
     context = context or {}
 
-    # Path 1 — explicit free-text model: enforce corpus-UUID citation, else fallback.
+    # Path 1  -  explicit free-text model: enforce corpus-UUID citation, else fallback.
     if model is not None and hasattr(model, "stream_chat"):
         from backend.core.agentic.corpus_citation_guard import enforce_or_regenerate
         msgs = messages or [{"role": "user", "content": query}]
@@ -311,7 +311,7 @@ def execute_generative_lane(query: str, context: Optional[dict] = None,
             fallback_fn=lambda: get_deterministic_guide(claim_type, jurisdiction),
         )
 
-    # Path 2 — governed structured pipeline (retrieval + rules + governance).
+    # Path 2  -  governed structured pipeline (retrieval + rules + governance).
     effective_query = query or next(
         (m["content"] for m in reversed(messages or []) if m.get("role") == "user"), "")
     # Governed pipeline = pipeline.assess (retrieve -> deidentify -> reason ->
@@ -527,7 +527,7 @@ def run_brain(
         memory_consent: True only if user has explicitly consented to memory retention
 
     Returns dict with:
-        - "trace":          BrainTrace.to_dict() — full 19-step audit
+        - "trace":          BrainTrace.to_dict()  -  full 19-step audit
         - "assessment":     pipeline result
         - "agents_selected": list of activated agent names
         - "missing_facts":  evidence gaps detected at step 7
@@ -859,7 +859,7 @@ def run_brain(
         from backend.core.pipeline import assess as _assess
         # Knowledge Wiring (System Update 001): pass the graph_context computed at
         # Step 11 into the reasoning payload so ART ingests the legal relationship
-        # map BEFORE reasoning — closes the variable-drop where graph_context was
+        # map BEFORE reasoning  -  closes the variable-drop where graph_context was
         # previously computed then dropped before drafting.
         #
         # pipeline.assess now includes CitationGuard (LLM Fabric directive).

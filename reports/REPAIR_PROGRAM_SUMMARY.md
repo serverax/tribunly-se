@@ -2,7 +2,7 @@
 
 **Updated:** 2026-06-16  
 **Branch:** elease/lawapp-clean-snapshot  
-**Status:** **PARTIAL** — approved engineering batch landed; waivers remain  
+**Status:** **PARTIAL**  -  approved engineering batch landed; waivers remain  
 **Beta verdict:** **GO WITH RISK**  
 **Production:** **NO-GO**
 
@@ -17,7 +17,7 @@
 
 ## This approval ack
 
-- eports/REPAIR_APPROVAL_ACK_CURSOR.txt — cursor subagent ack after user all-approved
+- eports/REPAIR_APPROVAL_ACK_CURSOR.txt  -  cursor subagent ack after user all-approved
 
 ## Closed / partial engineering items (2026-06-16)
 

@@ -1,9 +1,9 @@
 -- 038_feedback_registry.sql
--- Evolving Intelligence Stack — Component C: Feedback Registry.
+-- Evolving Intelligence Stack  -  Component C: Feedback Registry.
 -- Post-outcome learning: when a case closes (e.g. tribunal ruling) the PII-stripped
 -- outcome is recorded as "Strategy X + Fact Y + Law Z = Outcome (win/loss)". The DSPy
 -- optimizer reads this registry + agent_validation_failures to propose better prompts.
--- NB: corrected migration number (the spec said 028, but 028 is already taken —
+-- NB: corrected migration number (the spec said 028, but 028 is already taken  - 
 -- repo is at 037). Idempotent; additive. No PII stored (deidentify before insert).
 
 CREATE TABLE IF NOT EXISTS feedback_registry (

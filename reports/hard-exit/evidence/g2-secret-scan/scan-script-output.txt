@@ -11,4 +11,4 @@ OWNER ACTION REQUIRED (not automatable here):
   2. Rewrite history (git filter-repo / BFG) to purge the blobs, then force-push.
   Changing the remote URL is NOT sufficient. (Force-push = owner-approved destructive step.)
 
-RESULT: PASS — no leaked secrets in working tree.
+RESULT: PASS  -  no leaked secrets in working tree.

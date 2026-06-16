@@ -1,5 +1,5 @@
 """
-Phase 1 proof — rules table effective-dating and deadline arithmetic.
+Phase 1 proof  -  rules table effective-dating and deadline arithmetic.
 
 Tests:
 1. Rules resolve correctly for current EDT (post-2026-04-06)
@@ -172,7 +172,7 @@ def test_deadline_haque_worked_example():
     assert result["limitation_date"] == "2016-10-20", \
         f"Expected 2016-10-20 (Haque facts), got {result['limitation_date']}"
     assert result["floor_applied"] is False
-    # Claimant presented 18 Oct 2016 — confirm this is before the deadline
+    # Claimant presented 18 Oct 2016  -  confirm this is before the deadline
     assert date.fromisoformat(result["limitation_date"]) >= date(2016, 10, 18)
 
 

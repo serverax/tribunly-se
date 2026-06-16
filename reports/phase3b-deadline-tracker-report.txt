@@ -1,6 +1,6 @@
-PHASE 3B — DETERMINISTIC DEADLINE TRACKER
+PHASE 3B  -  DETERMINISTIC DEADLINE TRACKER
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -23,15 +23,15 @@ A clean JS fallback was implemented rather than WASM for Phase 3B. Reasons:
   - The JS module (deadline.js) mirrors deadline.py function-by-function,
     so correctness is validated by the Python test suite.
   - WASM can replace the JS module in Phase 3C or later without any API
-    changes — the interface is stable.
+    changes  -  the interface is stable.
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES CREATED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  client/public/js/deadline.js         — client-side deadline calculator
-  tests/integration/test_phase3b_deadline.py — 15 integration tests
-  reports/phase3b-deadline-tracker-report.txt — this report
+  client/public/js/deadline.js          -  client-side deadline calculator
+  tests/integration/test_phase3b_deadline.py  -  15 integration tests
+  reports/phase3b-deadline-tracker-report.txt  -  this report
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES MODIFIED
@@ -64,19 +64,19 @@ addCalendarMonths(d, n):
   Adds N calendar months, clamping to month-end. Mirrors _add_months().
 
 computeDeadline(edtStr, timeLimitMonths, ecDayAStr, ecDayBStr):
-  Step 1 — base limit:
+  Step 1  -  base limit:
     anniversary = addCalendarMonths(edt, timeLimitMonths)
     baseLimit   = anniversary - 1 day   (ERA 1996 s.111(2))
 
   If no EC dates:
     return { limitation_date: baseLimit, ... }
 
-  Step 2 — EC stop-clock (ERA 1996 s.207B):
+  Step 2  -  EC stop-clock (ERA 1996 s.207B):
     if dayB < dayA: return { error: '...' }
     pauseDays = daysDiff(dayA, dayB)       [Day A+1 through Day B inclusive]
     adjusted  = baseLimit + pauseDays
 
-  Step 3 — floor:
+  Step 3  -  floor:
     floor      = addCalendarMonths(dayB, 1)
     final      = max(adjusted, floor)
     floorApplied = (final === floor && floor > adjusted)
@@ -85,7 +85,7 @@ fetchDeadlineRules(apiBase, claimType):
   Fetches /rules/{claimType}, extracts time_limit_months rule.
   Returns { timeLimitMonths, authorityRef, authorityUrl, effectiveFrom,
             effectiveTo, lastVerifiedAt }.
-  This is the ONLY source of timeLimitMonths — never hardcoded.
+  This is the ONLY source of timeLimitMonths  -  never hardcoded.
 
 ═══════════════════════════════════════════════════════════════════════════════
 BACKEND VALIDATION
@@ -132,7 +132,7 @@ LIVE PREVIEW BEHAVIOUR (intake.html)
   - Urgency warning (red card): ≤ 30 days from today to deadline
   - EC inline error: Day B < Day A shows error in the EC section
   - Authority ref shown in preview card (from rules API, e.g. ERA 1996 s.111(2))
-  - Rules API failure is non-fatal — preview silently absent, form still works
+  - Rules API failure is non-fatal  -  preview silently absent, form still works
   - On submit: client_deadline included in request body for backend validation
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -140,7 +140,7 @@ CARRY-FORWARD
 ═══════════════════════════════════════════════════════════════════════════════
 
   - WASM replacement of JS deadline module (Phase 3C or later)
-  - CORS headers (Phase 3B/3C — once client is on separate origin)
+  - CORS headers (Phase 3B/3C  -  once client is on separate origin)
   - 3 skipped tests remain: BLOCKED_BY_OPENAI_QUOTA (unchanged)
   - assessment_audit_logs.case_id wiring (Phase 3+)
   - DB migrations 004-006 not yet applied

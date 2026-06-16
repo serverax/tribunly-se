@@ -1,5 +1,5 @@
 """
-Phase 2C regression suite — 10 required scenarios + OpenRouter gate tests.
+Phase 2C regression suite  -  10 required scenarios + OpenRouter gate tests.
 
 All tests run against:
   - Existing corpus (rules 14 rows, legislation 80 chunks, ACAS 14 chunks, EAT 5 decisions)
@@ -29,7 +29,7 @@ from ingestion.config import settings
 
 STUB = StubReasoningModel()
 
-# Standard clean facts (no PII — safe for all paths)
+# Standard clean facts (no PII  -  safe for all paths)
 _BASE = {
     "edt":                    "2026-04-01",
     "service_start_date":     "2023-04-01",  # ~3 years
@@ -266,7 +266,7 @@ def test_deterministic_context_citations_all_have_url():
 # ── OpenRouter gate tests (no real API call needed) ───────────────────────────
 
 def test_openrouter_disabled_by_default(monkeypatch):
-    """OPENROUTER_ENABLED defaults to False — OpenRouter must not be selected."""
+    """OPENROUTER_ENABLED defaults to False  -  OpenRouter must not be selected."""
     monkeypatch.delenv("LAWAPP_LLM_PROVIDER", raising=False)
     from ingestion.config import Settings, SettingsConfigDict
     # Create a fresh settings with OpenRouter explicitly disabled
@@ -295,7 +295,7 @@ def test_openrouter_payload_contains_no_pii():
         "jurisdiction": "EW",
     }
     safe, bl = deidentify(pii_facts)
-    # Verify de-id ran correctly — this is what any model (including OpenRouter) would receive
+    # Verify de-id ran correctly  -  this is what any model (including OpenRouter) would receive
     assert "claimant_name" not in safe
     assert "employer_name" not in safe
     assert "edt" in safe
@@ -356,7 +356,7 @@ def test_openrouter_output_rejected_if_no_citations():
 
 
 def test_openrouter_timeout_returns_insufficient_grounding():
-    """Simulated timeout must not crash the engine — returns MODEL_UNAVAILABLE."""
+    """Simulated timeout must not crash the engine  -  returns MODEL_UNAVAILABLE."""
     from backend.core.models import OpenRouterReasoningModel
     from backend.core.retrieve import retrieve
     from backend.domains.employment.deadline import compute_limitation_date
@@ -370,7 +370,7 @@ def test_openrouter_timeout_returns_insufficient_grounding():
             # Simulate network failure
             raise ConnectionError("simulated timeout")
 
-    # Can't instantiate directly without valid key — test at the class level
+    # Can't instantiate directly without valid key  -  test at the class level
     from shared.schemas import StructuredAssessment
     # Verify the fallback code path is present in the class
     import inspect

@@ -40,7 +40,7 @@ This creates a stable environment where your agents have the freedom to grow wit
 To make this official, we will deploy the Constitution into your agent's read-only environment and create the Memory Database where it stores its self-reflections.
 
 1. Mount the Constitution
-We need to add the constitution.md to your deployment so the agent can "read" its own rules. We use a ConfigMap for this—it’s the clean, professional way to inject instructions into a Kubernetes pod.
+We need to add the constitution.md to your deployment so the agent can "read" its own rules. We use a ConfigMap for this - it’s the clean, professional way to inject instructions into a Kubernetes pod.
 
 Bash
 # Create the ConfigMap with the Constitution

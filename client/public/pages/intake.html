@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free diagnosis — lawapp</title>
+  <title>Free diagnosis  -  lawapp</title>
   <link rel="stylesheet" href="/css/styles.css">
   <style>
     .wizard-panel { display: none; }
@@ -85,7 +85,7 @@
           <div class="form-group">
             <label for="edt">Dismissal date (EDT) <span aria-hidden="true" style="color:#dc3545">*</span></label>
             <input type="date" id="edt" name="edt" required aria-required="true" aria-describedby="err-edt" oninput="updateDeadlinePreview()">
-            <p class="field-hint">Effective date of termination — the last day of your employment.</p>
+            <p class="field-hint">Effective date of termination  -  the last day of your employment.</p>
             <p class="error-msg" id="err-edt">Please enter your dismissal date.</p>
           </div>
           <div class="form-group">
@@ -140,11 +140,11 @@
         <!-- Live deadline preview -->
         <div class="deadline-preview" id="deadline-preview" style="display:none;" aria-live="polite" aria-atomic="true">
           <h4>⏱ Estimated tribunal deadline</h4>
-          <div class="date-value" id="preview-date">—</div>
+          <div class="date-value" id="preview-date"> - </div>
           <div id="preview-badge" style="margin-top:0.4rem;"></div>
           <p class="deadline-note" id="preview-note"></p>
           <p class="deadline-note" style="font-size:0.78rem;color:#888;margin-top:0.5rem;">
-            Based on rules from ERA 1996 s.111(2). This is indicative only — verify with ACAS or a solicitor.
+            Based on rules from ERA 1996 s.111(2). This is indicative only  -  verify with ACAS or a solicitor.
           </p>
         </div>
       </div>
@@ -164,7 +164,7 @@
         <div class="form-group">
           <label>Were you given warnings before dismissal?</label>
           <div class="radio-group">
-            <label><input type="radio" name="warnings_given" value="yes"> Yes — verbal or written warnings given</label>
+            <label><input type="radio" name="warnings_given" value="yes"> Yes  -  verbal or written warnings given</label>
             <label><input type="radio" name="warnings_given" value="no"> No warnings given</label>
             <label><input type="radio" name="warnings_given" value="final_only"> Final written warning only</label>
           </div>
@@ -173,9 +173,9 @@
         <div class="form-group">
           <label>Was a fair procedure followed by your employer?</label>
           <div class="radio-group">
-            <label><input type="radio" name="procedure" value="true"> Yes — investigation, meeting, and right to be accompanied</label>
-            <label><input type="radio" name="procedure" value="false"> No — little or no procedure was followed</label>
-            <label><input type="radio" name="procedure" value="partial"> Partial — some procedure but with gaps</label>
+            <label><input type="radio" name="procedure" value="true"> Yes  -  investigation, meeting, and right to be accompanied</label>
+            <label><input type="radio" name="procedure" value="false"> No  -  little or no procedure was followed</label>
+            <label><input type="radio" name="procedure" value="partial"> Partial  -  some procedure but with gaps</label>
           </div>
         </div>
 
@@ -329,9 +329,9 @@
     errB.classList.remove('visible');
 
     if (dayA && edt && dayA < edt) {
-      errA.textContent = 'Day A is before your dismissal date — check this is correct.';
+      errA.textContent = 'Day A is before your dismissal date  -  check this is correct.';
       errA.classList.add('visible');
-      // Not blocking — technically possible in rare cases
+      // Not blocking  -  technically possible in rare cases
     }
     if (dayB && dayA && dayB < dayA) {
       errB.textContent = 'Day B cannot be before Day A.';
@@ -358,7 +358,7 @@
     // Impossible-date checks (mirrors the server's invalid_date validation)
     const today = new Date().toISOString().slice(0, 10);
     if (edt && edt > today) {
-      errEdt.textContent = 'Dismissal date cannot be in the future — enter the date your employment actually ended.';
+      errEdt.textContent = 'Dismissal date cannot be in the future  -  enter the date your employment actually ended.';
       errEdt.classList.add('visible'); ok = false;
     }
     if (edt && service && service >= edt) {
@@ -398,12 +398,12 @@
     let badgeClass, badgeText, note;
     if (daysLeft < 0) {
       badgeClass = 'passed'; badgeText = 'Deadline passed';
-      note = 'The standard deadline has passed. You may still have grounds to apply for an extension in exceptional circumstances — seek legal advice urgently.';
+      note = 'The standard deadline has passed. You may still have grounds to apply for an extension in exceptional circumstances  -  seek legal advice urgently.';
     } else if (daysLeft <= 7) {
-      badgeClass = 'critical'; badgeText = `${daysLeft} days — URGENT`;
+      badgeClass = 'critical'; badgeText = `${daysLeft} days  -  URGENT`;
       note = 'Deadline within one week. Contact ACAS immediately if you have not done so.';
     } else if (daysLeft <= 30) {
-      badgeClass = 'urgent'; badgeText = `${daysLeft} days — Act soon`;
+      badgeClass = 'urgent'; badgeText = `${daysLeft} days  -  Act soon`;
       note = 'You should contact ACAS early conciliation soon to protect your deadline.';
     } else {
       badgeClass = 'safe'; badgeText = `${daysLeft} days remaining`;
@@ -463,7 +463,7 @@
       if (dayB) facts.ec_day_b = dayB;
     }
 
-    // Brief facts (de-identified client-side label — server further strips)
+    // Brief facts (de-identified client-side label  -  server further strips)
     const brief = form.brief_facts ? form.brief_facts.value.trim() : '';
     if (brief) facts.brief_facts = brief;
 
@@ -480,7 +480,7 @@
       if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
       const data = await resp.json();
       // Field-level validation errors come back as status=invalid_date with
-      // field_errors — show them on the form instead of a generic failure.
+      // field_errors  -  show them on the form instead of a generic failure.
       if (data.status === 'invalid_date' && data.field_errors) {
         form.style.display = 'block';
         document.getElementById('loading').style.display = 'none';

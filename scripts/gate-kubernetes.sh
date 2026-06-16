@@ -100,10 +100,10 @@ kubectl -n lawapp-api logs deploy/lawapp-backend --tail=20 2>&1 | grep -E "ERROR
 
 echo ""
 if [ "$FAIL" -eq 0 ]; then
-  echo "KUBERNETES GATE: PASSED — cluster is healthy."
+  echo "KUBERNETES GATE: PASSED  -  cluster is healthy."
   exit 0
 else
-  echo "KUBERNETES GATE: FAILED — see failures above."
+  echo "KUBERNETES GATE: FAILED  -  see failures above."
   echo "Run: bash scripts/deploy-talos.sh"
   exit 1
 fi

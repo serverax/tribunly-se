@@ -1,4 +1,4 @@
-TRACK B — B2 Partial module disposition (13 modules)
+TRACK B  -  B2 Partial module disposition (13 modules)
 Date: 2026-06-15
 Decision: PERMANENT SCOPE CUT (not promoted to production)
 
@@ -6,7 +6,7 @@ Modules fenced (UI hidden + API not_covered):
 | module_key | label | DB status | product disposition | API proof |
 |------------|-------|-----------|---------------------|-----------|
 | constructive_dismissal | Constructive dismissal | partial | scope_cut | workflow returns not_covered if forced via API* |
-| discrimination | Discrimination | partial | scope_cut | PASS — not_covered |
+| discrimination | Discrimination | partial | scope_cut | PASS  -  not_covered |
 | equal_pay | Equal pay | partial | scope_cut | scope_cut constant |
 | health_and_safety | Health and safety | partial | scope_cut | scope_cut constant |
 | maternity_rights | Maternity rights | partial | scope_cut | scope_cut constant |
@@ -34,7 +34,7 @@ reports/track_b_scope_cut_response.json
 
 ## GO_LIVE_MODE gate
 - GO_LIVE_MODE=beta: PASS (partial allowed with verified rules + fail-closed product)
-- GO_LIVE_MODE=production: FAIL (expected — 13 modules remain partial in DB catalogue)
+- GO_LIVE_MODE=production: FAIL (expected  -  13 modules remain partial in DB catalogue)
 
 ## Verdict
-PASS — formal permanent scope cut documented; depth-before-breadth enforced
+PASS  -  formal permanent scope cut documented; depth-before-breadth enforced

@@ -86,4 +86,4 @@ backend/api/main.py:3496:@app.get("/api/cases/{case_id}/documents")
 backend/core/brain.py:519:    routing_decision = _route(message, facts, claim_type)
 backend/core/config_validation.py:11:GUARDRAIL: Call validate_startup_config() in the FastAPI lifespan handler.
 backend/core/router.py:123:def route(message: str, facts: dict, claim_type: Optional[str] = None) -> RoutingDecision:
-backend/core/user_auth.py:376:    Takes plain string values — NOT FastAPI Header() objects.
+backend/core/user_auth.py:376:    Takes plain string values  -  NOT FastAPI Header() objects.

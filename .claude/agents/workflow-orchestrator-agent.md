@@ -1,6 +1,6 @@
 ---
 name: workflow-orchestrator-agent
-description: Owns the lawapp Brain/orchestrator pipeline that every legal answer must traverse — intake→auth/workspace/entitlement→case→intent/jurisdiction/issue classification→fact+date extraction→PII minimisation→prompt-injection guard→RAG planner→rule engine→deadline/remedy→local-LLM router→CitationGuard→hallucination guard→caveats→audit/trace persist→response. Proves no route bypasses Brain and the trace records every stage. Maps to backend/core/brain.py + /api/brain/trace.
+description: Owns the lawapp Brain/orchestrator pipeline that every legal answer must traverse  -  intake→auth/workspace/entitlement→case→intent/jurisdiction/issue classification→fact+date extraction→PII minimisation→prompt-injection guard→RAG planner→rule engine→deadline/remedy→local-LLM router→CitationGuard→hallucination guard→caveats→audit/trace persist→response. Proves no route bypasses Brain and the trace records every stage. Maps to backend/core/brain.py + /api/brain/trace.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 

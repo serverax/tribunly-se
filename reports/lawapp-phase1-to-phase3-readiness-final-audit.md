@@ -1,8 +1,8 @@
-# lawapp — Phase 1 to Phase 3 Readiness Final Audit
+# lawapp  -  Phase 1 to Phase 3 Readiness Final Audit
 
-**Project:** lawapp — UK Employment Law AI Assistant  
+**Project:** lawapp  -  UK Employment Law AI Assistant  
 **Date:** 2026-06-04  
-**Git commit:** 095be01 (+ uncommitted changes — see Section N)  
+**Git commit:** 095be01 (+ uncommitted changes  -  see Section N)  
 **Branch:** master  
 **Auditor:** Claude Code
 
@@ -10,9 +10,9 @@
 
 ## A. Executive Status
 
-**READY FOR INTERNAL TALOS DEMO:** NO — Kubernetes deployment not yet applied (kubectl unavailable on this machine; manifests created, owner must apply)  
-**READY FOR PUBLIC STAGING:** NO — Real AI model blocked (ANTHROPIC_API_KEY=placeholder), case law embeddings empty  
-**READY FOR PRODUCTION:** NO — See Section P: Production Blockers
+**READY FOR INTERNAL TALOS DEMO:** NO  -  Kubernetes deployment not yet applied (kubectl unavailable on this machine; manifests created, owner must apply)  
+**READY FOR PUBLIC STAGING:** NO  -  Real AI model blocked (ANTHROPIC_API_KEY=placeholder), case law embeddings empty  
+**READY FOR PRODUCTION:** NO  -  See Section P: Production Blockers
 
 ---
 
@@ -20,21 +20,21 @@
 
 | Technology | Implemented | Wired to Brain | DB/Migration | API Exposed | Tests | Command Proof | Status | Notes |
 |---|---|---|---|---|---|---|---|---|
-| lawapp Brain Algorithm (19 steps) | ✓ | N/A | migration 018+019 | /api/brain/trace (20/min rate limited) | 43 ✓ | curl proof | **PASS** | — |
+| lawapp Brain Algorithm (19 steps) | ✓ | N/A | migration 018+019 | /api/brain/trace (20/min rate limited) | 43 ✓ | curl proof | **PASS** |  -  |
 | Agentic AI (9 agents incl. DocumentDrafting) | ✓ | Step 8 | brain_traces.agents_used | /api/agents | 15 ✓ | pytest agents/ | **PASS** | Document generation agent wired to documents.py |
 | Hybrid Search (SQL+BM25+pgvector) | ✓ | Step 11 | rules+legislation+pgvector | /rules/{claim_type} | 18 ✓ | pytest retrieval/ | **PASS** | No case law embeddings yet |
-| Graph RAG (legal_nodes/edges) | ✓ | Step 9 | migration 018 | via brain trace | 24 ✓ | pytest graph_rag/ | **PASS** | — |
-| Knowledge Graph | ✓ | Step 9 | migration 018 | get_concept_context() | 21 ✓ | pytest knowledge_graph/ | **PASS** | — |
-| Context Compression | ✓ | Step 13 | context_compression_log | logged in trace | brain tests ✓ | brain API trace | **PASS** | — |
-| Memory Engine (consent-gated) | ✓ | Step 17 | legal_memory | consent gate | 9 ✓ | pytest memory/ | **PASS** | — |
-| Evaluation AI | ✓ | Step 15 | evaluation_results | via brain trace | passing ✓ | pytest evaluation/ | **PASS** | — |
+| Graph RAG (legal_nodes/edges) | ✓ | Step 9 | migration 018 | via brain trace | 24 ✓ | pytest graph_rag/ | **PASS** |  -  |
+| Knowledge Graph | ✓ | Step 9 | migration 018 | get_concept_context() | 21 ✓ | pytest knowledge_graph/ | **PASS** |  -  |
+| Context Compression | ✓ | Step 13 | context_compression_log | logged in trace | brain tests ✓ | brain API trace | **PASS** |  -  |
+| Memory Engine (consent-gated) | ✓ | Step 17 | legal_memory | consent gate | 9 ✓ | pytest memory/ | **PASS** |  -  |
+| Evaluation AI | ✓ | Step 15 | evaluation_results | via brain trace | passing ✓ | pytest evaluation/ | **PASS** |  -  |
 | MCP Connectors | ✓ | Step 18 | mcp_tool_calls | call_tool() | 17 ✓ | pytest mcp/ | **PASS** | rules_lookup + legislation + documents + acas + freshness implemented |
 | Multimodal Upload Readiness | PARTIAL | deidentify strips raw_document | documents table | /cases/{id}/uploads | 11 ✓ | pytest uploads/ | **PARTIAL** | OCR/extraction Phase 4 |
-| AI Router | ✓ | Steps 8+9 | routing_decisions | /api/router/classify | passing ✓ | pytest router/ | **PASS** | — |
-| Semantic Cache | ✓ | Steps 11-13 | semantic_cache | retrieve layer | passing ✓ | pytest cache/ | **PASS** | — |
+| AI Router | ✓ | Steps 8+9 | routing_decisions | /api/router/classify | passing ✓ | pytest router/ | **PASS** |  -  |
+| Semantic Cache | ✓ | Steps 11-13 | semantic_cache | retrieve layer | passing ✓ | pytest cache/ | **PASS** |  -  |
 | WASM | PARTIAL | Client-only | N/A | /rules/{claim_type} serves values | test_wasm_fallback.js | JS + endpoint proof | **PARTIAL** | WASM fetches rules from /rules/ endpoint ✓ |
 | Security/Data Protection | ✓ | Steps 1+3+16 | audit_logs | enforced all endpoints | 15 ✓ | pytest security/ | **PASS** | Rate limiting added |
-| Audit Logging | ✓ | Step 18 | brain_traces, safety_boundary_checks | via brain trace | brain tests ✓ | brain API trace | **PASS** | — |
+| Audit Logging | ✓ | Step 18 | brain_traces, safety_boundary_checks | via brain trace | brain tests ✓ | brain API trace | **PASS** |  -  |
 | Rate Limiting | ✓ | FastAPI middleware | N/A | /auth/register(10/m), /assess(30/m), /brain/trace(20/m) | 7 ✓ | pytest rate_limiting/ | **PASS** | Uses slowapi; Redis recommended for production |
 | Document Generation | ✓ | DocumentDraftingAgent | documents table | /documents/generate | 10 ✓ | pytest documents/ | **PASS** | PoC + SoL + LBA + ET1 notes; templates only, no freeform AI |
 | Kubernetes Deployment | BLOCKED | N/A | Manifests created | N/A | N/A | kubectl unavailable | **BLOCKED** | See Section O |
@@ -65,7 +65,7 @@ Output:
 Command: python -c "SELECT COUNT(*) FROM {table}"
 
 legislation:      80 rows, 80 with embeddings   ✓
-case_law_chunks:   0 rows, 0 with embeddings    ✗ (empty — needs FCL ingestion)
+case_law_chunks:   0 rows, 0 with embeddings    ✗ (empty  -  needs FCL ingestion)
 acas_guidance:    12 rows, 12 with embeddings   ✓
 rules:            19 rows                        ✓
 legal_nodes:      15 rows (seeded)              ✓
@@ -253,12 +253,12 @@ Every call logged to mcp_tool_calls table: CONFIRMED
 
 ---
 
-## K. Security — No Dangerous Logging
+## K. Security  -  No Dangerous Logging
 
 ```bash
 grep -R "print(.*facts|logger.*facts|console.log.*facts" backend client -n
-→ backend/api/main.py:703: logger.warning("Failed to decrypt facts...") — SAFE (error log only, no fact values)
-→ tests/integration/test_phase2_real_model.py:262: print(f"Safe facts (keys only): ...") — TEST FILE ONLY, keys only, no values
+→ backend/api/main.py:703: logger.warning("Failed to decrypt facts...")  -  SAFE (error log only, no fact values)
+→ tests/integration/test_phase2_real_model.py:262: print(f"Safe facts (keys only): ...")  -  TEST FILE ONLY, keys only, no values
 ```
 
 No raw personal data logged in backend or client production code.
@@ -286,7 +286,7 @@ No OrdinoxAI, Sakina, RightsNow, IterLaw, or Railway references in any runtime f
 **Created:**
 - `backend/core/context_compressor.py`
 - `backend/core/legal_graph.py`
-- `backend/core/mcp_connectors.py` — 5 runtime MCP connectors (NEW)
+- `backend/core/mcp_connectors.py`  -  5 runtime MCP connectors (NEW)
 - `db/migrations/019_phase1_brain_safety.sql`
 - `infra/k8s/lawapp-namespaces.yaml` (NEW)
 - `infra/k8s/lawapp-configmaps.yaml` (NEW)
@@ -298,24 +298,24 @@ No OrdinoxAI, Sakina, RightsNow, IterLaw, or Railway references in any runtime f
 - `tests/graph_rag/test_graph_rag.py` (24 tests)
 - `tests/knowledge_graph/test_knowledge_graph.py` (21 tests)
 - `tests/memory/test_memory.py` (9 tests)
-- `tests/mcp/test_mcp.py` (17 tests — expanded with runtime connector tests)
+- `tests/mcp/test_mcp.py` (17 tests  -  expanded with runtime connector tests)
 - `tests/uploads/test_uploads.py` (11 tests)
 - `tests/retrieval/test_retrieval.py` (18 tests)
-- `tests/rate_limiting/test_rate_limiting.py` (7 tests — NEW)
-- `tests/documents/test_documents.py` (10 tests — NEW)
+- `tests/rate_limiting/test_rate_limiting.py` (7 tests  -  NEW)
+- `tests/documents/test_documents.py` (10 tests  -  NEW)
 - `reports/lawapp-new-architecture-technology-status.md`
 - `reports/lawapp-phase1-to-phase3-readiness-final-audit.md` (this file)
 
 **Modified:**
-- `backend/core/brain.py` — 16→19 steps, lawapp naming
-- `backend/core/deidentify.py` — added raw_document to PII strip list
-- `backend/core/agents/registry.py` — added DocumentDraftingAgent (wired to documents.py)
-- `backend/api/main.py` — rate limiting (slowapi), lawapp naming, 19-step docstring
-- `infra/k8s/lawapp-postgres-sts.yaml` — fixed POSTGRES_USER=lawapp, fsGroup dedup
-- `pyproject.toml` — added fastembed>=0.4, slowapi>=0.1.9
-- `scripts/run-migrations.sh` — fixed namespace iterlaw-ai → lawapp-rag
-- `tests/brain/test_brain.py` — updated to 19 steps
-- `.env` — POSTGRES_PORT=5435 (avoid native PG18 port conflict)
+- `backend/core/brain.py`  -  16→19 steps, lawapp naming
+- `backend/core/deidentify.py`  -  added raw_document to PII strip list
+- `backend/core/agents/registry.py`  -  added DocumentDraftingAgent (wired to documents.py)
+- `backend/api/main.py`  -  rate limiting (slowapi), lawapp naming, 19-step docstring
+- `infra/k8s/lawapp-postgres-sts.yaml`  -  fixed POSTGRES_USER=lawapp, fsGroup dedup
+- `pyproject.toml`  -  added fastembed>=0.4, slowapi>=0.1.9
+- `scripts/run-migrations.sh`  -  fixed namespace iterlaw-ai → lawapp-rag
+- `tests/brain/test_brain.py`  -  updated to 19 steps
+- `.env`  -  POSTGRES_PORT=5435 (avoid native PG18 port conflict)
 
 ---
 
@@ -325,17 +325,17 @@ No OrdinoxAI, Sakina, RightsNow, IterLaw, or Railway references in any runtime f
 
 | # | Blocker | Action Required |
 |---|---|---|
-| H1 | **ANTHROPIC_API_KEY=placeholder** — StubReasoningModel active | Owner to set real API key in `.env` and K8s secret |
-| H2 | **Kubernetes not applied** — manifests exist but not deployed | Owner to run commands in Section I from WSL |
+| H1 | **ANTHROPIC_API_KEY=placeholder**  -  StubReasoningModel active | Owner to set real API key in `.env` and K8s secret |
+| H2 | **Kubernetes not applied**  -  manifests exist but not deployed | Owner to run commands in Section I from WSL |
 | H3 | **Case law embeddings empty** (case_law_chunks=0) | Apply for FCL bulk access licence, run `python -m ingestion.case_law.ingest` |
 
 ### MEDIUM (blocks staging)
 
 | # | Blocker | Action Required |
 |---|---|---|
-| M1 | **Real model reasoning not proven** — all brain trace outputs are `insufficient_grounding` due to stub | Set ANTHROPIC_API_KEY; run real assessment |
-| M2 | **Public ingress not configured** — lawapp-ingress.yaml exists but no domain/cert | Configure DNS + TLS cert-manager in K8s cluster |
-| M3 | **Rate limiting uses in-memory storage** — will not survive pod restart in production | Configure Redis and set `RATELIMIT_STORAGE_URI` in K8s config |
+| M1 | **Real model reasoning not proven**  -  all brain trace outputs are `insufficient_grounding` due to stub | Set ANTHROPIC_API_KEY; run real assessment |
+| M2 | **Public ingress not configured**  -  lawapp-ingress.yaml exists but no domain/cert | Configure DNS + TLS cert-manager in K8s cluster |
+| M3 | **Rate limiting uses in-memory storage**  -  will not survive pod restart in production | Configure Redis and set `RATELIMIT_STORAGE_URI` in K8s config |
 
 ### LOW
 

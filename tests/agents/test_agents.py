@@ -64,7 +64,7 @@ class TestEmploymentLawAgent:
         agent = EmploymentLawAgent()
         facts = {"claim_type": "unfair_dismissal", "jurisdiction": "EW"}
         result = agent.process("I was dismissed", facts, bundle=None)
-        # Agent returns gaps as field names or labels — either accepted
+        # Agent returns gaps as field names or labels  -  either accepted
         gaps_str = " ".join(result.evidence_gaps)
         assert "edt" in gaps_str or "termination" in gaps_str or result.status == "insufficient_facts"
 

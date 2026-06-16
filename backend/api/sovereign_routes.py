@@ -35,7 +35,7 @@ def _trace_id() -> str:
 
 @router.post("/api/v1/lawapp/ingest")
 def ingest(req: IngestRequest):
-    """Reverse data flow — deterministic extraction written to user_legal_profiles."""
+    """Reverse data flow  -  deterministic extraction written to user_legal_profiles."""
     from backend.core.sovereign.extract import extract_employment_vars, write_user_profile
     trace = _trace_id()
     user_id = req.user_id or str(_uuid.uuid4())

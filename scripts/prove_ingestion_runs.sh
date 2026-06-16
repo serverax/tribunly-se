@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_ingestion_runs.sh — ingestion is tracked, auditable, fail-closed.
+# prove_ingestion_runs.sh  -  ingestion is tracked, auditable, fail-closed.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp (service 'db')"

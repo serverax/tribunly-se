@@ -2,7 +2,7 @@
 Shared Pydantic schemas used by both the ingestion pipeline and the backend API.
 
 The STRUCTURED ASSESSMENT OBJECT is the canonical output of the reasoning layer.
-It is data, not prose — validated before display, scored, and rendered by the client.
+It is data, not prose  -  validated before display, scored, and rendered by the client.
 Full spec: docs/04_RAG_REASONING_SPEC.md §4.
 """
 
@@ -54,7 +54,7 @@ class StructuredAssessment(BaseModel):
     key_weaknesses: list[str]        # GUARDRAIL: must be non-empty for non-trivial cases
     employer_arguments: list[str] = Field(
         default_factory=list,
-        description="What the employer may argue — deterministic from facts and reason",
+        description="What the employer may argue  -  deterministic from facts and reason",
     )
 
     deadline: Optional[Deadline]

@@ -1,7 +1,7 @@
 """
-Root test conftest — ensures all tests connect to the local lawapp DB.
+Root test conftest  -  ensures all tests connect to the local lawapp DB.
 
-DATABASE_URL may be set to a foreign cloud DB — cleared here to ensure lawapp tests use the local Docker DB.
+DATABASE_URL may be set to a foreign cloud DB  -  cleared here to ensure lawapp tests use the local Docker DB.
 LAWAPP_AUTH_MODE=mock enables real user identity in tests (X-User-ID header).
 PAYMENT_MODE=disabled keeps paid output blocked unless a test explicitly seeds
 DB-backed paid state or enables stripe_test.
@@ -11,7 +11,7 @@ GUARDRAIL: Never connect lawapp tests to a foreign database.
 
 import os
 
-# Clear foreign DATABASE_URL — tests always use local Docker DB
+# Clear foreign DATABASE_URL  -  tests always use local Docker DB
 os.environ.pop("DATABASE_URL", None)
 
 # DB connection. Use setdefault so an explicit environment (e.g. the ingestion
@@ -89,7 +89,7 @@ def _disable_rate_limiters():
     The register/login/magic-link routes are rate-limited (e.g. 10/minute) and
     keyed on the client IP. Under TestClient every call shares one IP, so running
     the auth suites together would trip the limit and 429. Rate limiting is a
-    production concern proven by its own tests — it must not make functional
+    production concern proven by its own tests  -  it must not make functional
     suites flaky. Disable the actual Limiter instances the decorators are bound
     to (setting app.state.limiter alone does not affect them)."""
     for module_path, attr in (
@@ -101,7 +101,7 @@ def _disable_rate_limiters():
             mod = importlib.import_module(module_path)
             getattr(mod, attr).enabled = False
         except Exception:
-            pass  # limiter not present in this context — nothing to disable
+            pass  # limiter not present in this context  -  nothing to disable
     yield
 
 
@@ -114,5 +114,5 @@ def _reset_rules_engine_cache():
         from services.lawapp_rules_engine.cache import reset_caches
         reset_caches()
     except Exception:
-        pass  # service module not importable in this test context — nothing to reset
+        pass  # service module not importable in this test context  -  nothing to reset
     yield

@@ -1,7 +1,7 @@
 """
-Phase 7D — Envelope encryption (GenerateDataKey + CiphertextBlob) tests.
+Phase 7D  -  Envelope encryption (GenerateDataKey + CiphertextBlob) tests.
 
-All boto3 calls are mocked — no real AWS credentials required.
+All boto3 calls are mocked  -  no real AWS credentials required.
 
 Tests:
   EncryptedKeyBundle:
@@ -9,15 +9,15 @@ Tests:
    2.  Bundle round-trips from JSON correctly
    3.  has_kms_ciphertext() reflects CiphertextBlob presence
 
-  AwsKmsProvider — generate_data_key:
+  AwsKmsProvider  -  generate_data_key:
    4.  generate_data_key returns (plaintext_key, bundle) on success
-   5.  Plaintext key is transient — NOT stored in bundle
+   5.  Plaintext key is transient  -  NOT stored in bundle
    6.  CiphertextBlob is base64 in bundle
    7.  Bundle provider_key_id is KMS ARN (NOT the data key)
    8.  KMS failure → (None, None) fails closed
    9.  Missing ARN → (None, None) without API call
 
-  AwsKmsProvider — decrypt_data_key:
+  AwsKmsProvider  -  decrypt_data_key:
   10.  decrypt_data_key returns plaintext key matching original
   11.  Empty CiphertextBlob → None fails closed
   12.  KMS Decrypt failure → None fails closed
@@ -116,7 +116,7 @@ def test_bundle_serializes_without_plaintext():
         provider_key_id=_MOCK_KMS_ARN,
     )
     j = bundle.to_json()
-    # No plaintext — just metadata
+    # No plaintext  -  just metadata
     assert "plaintext" not in j.lower()
     assert "data_key" not in j.lower()
     assert _MOCK_KMS_ARN in j   # ARN in metadata is acceptable (KMS key reference)

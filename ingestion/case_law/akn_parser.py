@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 AKN_NS = "http://docs.oasis-open.org/legaldocml/ns/akn/3.0"
 # Confirmed from live XML: xmlns:uk="https://caselaw.nationalarchives.gov.uk/akn"
-# (NOT /terms — that was wrong and caused all uk: elements to return None)
+# (NOT /terms  -  that was wrong and caused all uk: elements to return None)
 UK_NS  = "https://caselaw.nationalarchives.gov.uk/akn"
 
 NSMAP = {"akn": AKN_NS, "uk": UK_NS}

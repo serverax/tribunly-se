@@ -2,7 +2,7 @@
 -- UK legal dataset provenance + ingestion audit.
 --   legal_sources         : registry of every authorised source (one row per source).
 --   corpus_ingestion_runs : one row per ingestion run (what ran, counts, pass/fail).
--- Idempotent (IF NOT EXISTS); additive only. No fake/seed rows — populated by the
+-- Idempotent (IF NOT EXISTS); additive only. No fake/seed rows  -  populated by the
 -- Corpus Ingestion AIA from the domain pack (domains/employment_uk/).
 
 CREATE TABLE IF NOT EXISTS legal_sources (

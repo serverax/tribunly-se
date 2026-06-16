@@ -2,7 +2,7 @@
 #
 # The single adapter (backend/core/agentic/litellm_adapter.py) is the ONLY caller
 # (AC-006). All payloads are de-identified before any cloud call (AC-007/008).
-# Keys are read from the environment only — never commit secrets.
+# Keys are read from the environment only  -  never commit secrets.
 
 model_list:
   # Year-1 substitute for the local edge SLM. AEE / SEA / Citation Guard use this.

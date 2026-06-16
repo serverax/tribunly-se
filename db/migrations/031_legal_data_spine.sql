@@ -2,7 +2,7 @@
 -- Legal data spine: jurisdiction model, taxonomy, chunk labels, and provenance
 -- extensions to legal_sources / corpus_ingestion_runs, plus jurisdiction_code +
 -- applies_to_* on every legal table. Embedding dim = 384 (local bge-small; the
--- spec's vector(1536) was for OpenAI — lawapp runs the local 384-dim model).
+-- spec's vector(1536) was for OpenAI  -  lawapp runs the local 384-dim model).
 -- Idempotent; additive; backfills existing rows. No fake legal content.
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
@@ -23,7 +23,7 @@ INSERT INTO legal_jurisdictions (jurisdiction_code, country_code, label, legal_s
  ('GB','GB','Great Britain','Employment law covering England, Wales and Scotland where legislation applies GB-wide', true,  'Default for ordinary unfair dismissal MVP.'),
  ('EW','EW','England and Wales','England and Wales', true,  NULL),
  ('S','SCT','Scotland','Scots law', true,  'Shares GB employment-law values where source applies GB-wide.'),
- ('NI','NIR','Northern Ireland','Northern Ireland employment law', true, 'Separate legislation (e.g. Employment Rights (NI) Order 1996). NOT yet ingested — unsupported / fail-closed.'),
+ ('NI','NIR','Northern Ireland','Northern Ireland employment law', true, 'Separate legislation (e.g. Employment Rights (NI) Order 1996). NOT yet ingested  -  unsupported / fail-closed.'),
  ('UK','UK','United Kingdom','UK-wide source or institution', true, 'Only where the source is genuinely UK-wide.')
 ON CONFLICT (jurisdiction_code) DO NOTHING;
 

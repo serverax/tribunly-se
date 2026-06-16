@@ -2,7 +2,7 @@
 LAWAPP Admin Service
 ====================
 Admin dashboard and observability endpoints.
-All metrics are queried from the database in REAL TIME — no hardcoded values.
+All metrics are queried from the database in REAL TIME  -  no hardcoded values.
 
 Service Contract: port 8007
 Endpoints:

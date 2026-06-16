@@ -1,5 +1,5 @@
 """
-Workflow A — evidence intake / AEE tests (Sovereign Trinity order Workflow A).
+Workflow A  -  evidence intake / AEE tests (Sovereign Trinity order Workflow A).
 
 Proves:
   * AEE extracts at least one fact from a dismissal letter, ISO-normalised,
@@ -36,7 +36,7 @@ def test_aee_extracts_unconfirmed_normalised_facts():
     # GUARDRAIL: every extracted fact starts unconfirmed
     for f in facts:
         assert f["status"] == "unconfirmed"
-    # AEE normalises dates to ISO format (deterministic — proven directly)
+    # AEE normalises dates to ISO format (deterministic  -  proven directly)
     assert _normalise_date("10 May 2026") == "2026-05-10"
 
 

@@ -1,6 +1,6 @@
 ---
 name: local-llm-router-agent
-description: Owns model routing — local Ollama default, model selection by task/risk, external LLM disabled unless explicitly allowed, direct-provider calls blocked, fail-closed/safe fallback on provider failure, cost/quota guard, routing decision in the Brain trace. Enforces "no external LLM bypass". Maps to backend/core/models.py + agentic adapters + the local-Ollama policy tests.
+description: Owns model routing  -  local Ollama default, model selection by task/risk, external LLM disabled unless explicitly allowed, direct-provider calls blocked, fail-closed/safe fallback on provider failure, cost/quota guard, routing decision in the Brain trace. Enforces "no external LLM bypass". Maps to backend/core/models.py + agentic adapters + the local-Ollama policy tests.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 

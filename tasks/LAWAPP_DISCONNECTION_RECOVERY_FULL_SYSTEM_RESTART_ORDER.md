@@ -1,4 +1,4 @@
-# LAWAPP — DISCONNECTION RECOVERY FULL-SYSTEM RESTART ORDER
+# LAWAPP  -  DISCONNECTION RECOVERY FULL-SYSTEM RESTART ORDER
 ## Ultimate Restricted Aggressive Acceptance Criteria for All Functions, Features, Technologies, DBs, Wiring, Frontend, Backend, RAG, AIA, WASM, CI/CD and Kubernetes
 
 **File name:** `LAWAPP_DISCONNECTION_RECOVERY_FULL_SYSTEM_RESTART_ORDER.md`  
@@ -40,7 +40,7 @@ If any task file is missing, recreate it from the user-provided content or ask t
 
 ---
 
-# 1. OWNER POSITION — NO FAILED, BLOCKED, PARTIAL OR ISOLATED PASS
+# 1. OWNER POSITION  -  NO FAILED, BLOCKED, PARTIAL OR ISOLATED PASS
 
 The owner does **not** accept:
 
@@ -98,7 +98,7 @@ NOT ACCEPTED
 
 ---
 
-# 2. LOOP RULE — APPLY BEFORE, DURING, AND AFTER EVERY TASK
+# 2. LOOP RULE  -  APPLY BEFORE, DURING, AND AFTER EVERY TASK
 
 For every task, repeat this loop.
 
@@ -341,7 +341,7 @@ OCR currently returns 501 / Phase 4 disabled.
 
 Choose one.
 
-### Option A — Implement OCR
+### Option A  -  Implement OCR
 
 Must prove:
 
@@ -358,7 +358,7 @@ frontend journey
 audit row
 ```
 
-### Option B — Exclude OCR from acceptance
+### Option B  -  Exclude OCR from acceptance
 
 Must prove:
 

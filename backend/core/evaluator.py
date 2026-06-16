@@ -5,15 +5,15 @@ Every legal answer must pass evaluation before final output.
 Evaluation checks mirror and extend the governance gate.
 
 Evaluation rubric:
-  1. Citation validity — citations exist in DB
-  2. Authority hierarchy — primary legislation > case law > guidance
-  3. Jurisdiction — answer matches requested jurisdiction
-  4. Limitation/deadline logic — dates are rule-derived, not estimated
-  5. Missing evidence — key gaps were stated, not ignored
-  6. Hallucination risk — reasoning summary doesn't invent facts
-  7. Overconfident advice — no guarantees, no reserved activities
-  8. Human review requirement — high-risk claims flagged
-  9. Data privacy — no PII in output
+  1. Citation validity  -  citations exist in DB
+  2. Authority hierarchy  -  primary legislation > case law > guidance
+  3. Jurisdiction  -  answer matches requested jurisdiction
+  4. Limitation/deadline logic  -  dates are rule-derived, not estimated
+  5. Missing evidence  -  key gaps were stated, not ignored
+  6. Hallucination risk  -  reasoning summary doesn't invent facts
+  7. Overconfident advice  -  no guarantees, no reserved activities
+  8. Human review requirement  -  high-risk claims flagged
+  9. Data privacy  -  no PII in output
 
 If evaluation fails on any CRITICAL check, the answer is blocked or
 returned to the brain for correction.
@@ -79,7 +79,7 @@ def evaluate_assessment(
         try:
             from backend.core.citation_verifier import verify_bundle_citations
             from ingestion.db import get_connection as _gc
-            # Check if source tables have been ingested — skip citation DB check if empty
+            # Check if source tables have been ingested  -  skip citation DB check if empty
             _conn = _gc()
             try:
                 with _conn.cursor() as _cur:
@@ -89,7 +89,7 @@ def evaluate_assessment(
                 _conn.close()
 
             if _leg_count == 0:
-                # Source tables not ingested — can't verify DB citations; don't block
+                # Source tables not ingested  -  can't verify DB citations; don't block
                 citation_ok = True
             else:
                 cit_list = [{"cite": c.get("cite", c) if isinstance(c, dict) else c, "type": "legislation"}
@@ -97,7 +97,7 @@ def evaluate_assessment(
                 result = verify_bundle_citations(cit_list)
                 citation_ok = result["pass_rate"] >= 0.5
         except Exception:
-            citation_ok = True  # DB unavailable — don't block
+            citation_ok = True  # DB unavailable  -  don't block
         check = {"check": "citation_validity", "passed": citation_ok, "severity": "high"}
         checks.append(check)
         if not citation_ok:
@@ -163,7 +163,7 @@ def evaluate_assessment(
     else:
         checks.append({"check": "deadline_statement_accuracy", "passed": True, "severity": "medium"})
 
-    # ── Check 6: Honesty — weaknesses stated for viable claims ───────────────
+    # ── Check 6: Honesty  -  weaknesses stated for viable claims ───────────────
     viable = assessment.get("has_viable_claim") in ("yes", "uncertain")
     weaknesses = assessment.get("key_weaknesses", [])
     honesty_ok = (not viable) or bool(weaknesses)

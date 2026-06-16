@@ -1,7 +1,7 @@
 """
-T-004 — Embed NULL-embedding corpus_chunks using the SAME model as existing rows.
+T-004  -  Embed NULL-embedding corpus_chunks using the SAME model as existing rows.
 
-Model: BAAI/bge-small-en-v1.5 via fastembed (384-dim, ONNX) — matches the 92
+Model: BAAI/bge-small-en-v1.5 via fastembed (384-dim, ONNX)  -  matches the 92
 existing embedded chunks (embedding_model='bge-small-en-v1.5', vector(384)).
 
 ADDITIVE only: UPDATE embedding column on rows WHERE embedding IS NULL.
@@ -56,7 +56,7 @@ def flush(ids, texts):
         assert len(lst) == EMBED_DIM, f"bad dim {len(lst)} for {rid}"
         if not any(abs(x) > 1e-9 for x in lst):
             zero_vectors += 1
-            raise RuntimeError(f"all-zero vector produced for {rid} — refusing")
+            raise RuntimeError(f"all-zero vector produced for {rid}  -  refusing")
         cur.execute(
             "UPDATE corpus_chunks "
             "SET embedding = %s::vector, embedding_model = %s, "

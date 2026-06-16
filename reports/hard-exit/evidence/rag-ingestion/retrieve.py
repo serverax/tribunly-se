@@ -1,5 +1,5 @@
 """
-T-004 retrieval proof — embeds real queries with the SAME model (bge-small-en-v1.5)
+T-004 retrieval proof  -  embeds real queries with the SAME model (bge-small-en-v1.5)
 and runs pgvector cosine nearest-neighbour over corpus_chunks, joining legal_sources
 for provenance. Read-only.
 """

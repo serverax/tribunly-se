@@ -1,9 +1,9 @@
 """
-Phase 7A — RS256/JWKS JWT verification tests.
+Phase 7A  -  RS256/JWKS JWT verification tests.
 
 Tests:
   RS256/JWKS verification (direct):
-   1.  Valid RS256 JWT accepted — correct sub returned
+   1.  Valid RS256 JWT accepted  -  correct sub returned
    2.  Expired RS256 token rejected (401)
    3.  Wrong issuer rejected (401)
    4.  Wrong audience rejected (401)

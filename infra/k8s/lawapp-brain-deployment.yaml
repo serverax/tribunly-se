@@ -1,7 +1,7 @@
 ---
-# lawapp Brain Algorithm — Kubernetes Deployment
+# lawapp Brain Algorithm  -  Kubernetes Deployment
 # Namespace: lawapp-ai
-# Service: lawapp-brain (internal only — not exposed to public internet)
+# Service: lawapp-brain (internal only  -  not exposed to public internet)
 #
 # The Brain is the ONLY authorised entry point to the reasoning layer.
 # All other services route through the Brain API.
@@ -70,9 +70,9 @@ spec:
               value: "lawapp-postgres.lawapp-api.svc.cluster.local"
             - name: POSTGRES_PORT
               value: "5432"
-            # Local Inference Fabric (Ollama) — local-only reasoning, NO external LLM (T-008).
+            # Local Inference Fabric (Ollama)  -  local-only reasoning, NO external LLM (T-008).
             # NOTE: target the WORKING service `ollama-inference` (llm-inference-service has a stale
-            # selector and 0 endpoints — see llm-inference-fabric.yaml).
+            # selector and 0 endpoints  -  see llm-inference-fabric.yaml).
             - name: LOCAL_INFERENCE_ENABLED
               value: "true"
             - name: LOCAL_INFERENCE_URL
@@ -92,7 +92,7 @@ spec:
             periodSeconds: 10
             failureThreshold: 3
           livenessProbe:
-            # Liveness must NOT depend on the DB — a DB outage marks the pod NotReady
+            # Liveness must NOT depend on the DB  -  a DB outage marks the pod NotReady
             # (readiness=/health) without crash-looping the container.
             # tcpSocket (not httpGet /livez): the currently deployed :latest image predates the
             # /livez route and 404s on it, which would itself crash-loop. TCP checks the process is
@@ -128,4 +128,4 @@ spec:
       port: 8000
       targetPort: 8000
       protocol: TCP
-  type: ClusterIP   # Internal only — Brain is not exposed to public internet
+  type: ClusterIP   # Internal only  -  Brain is not exposed to public internet

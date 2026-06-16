@@ -2,12 +2,12 @@
 Password hashing for the lawapp auth stack.
 
 Uses PBKDF2-HMAC-SHA256 from the Python standard library (no external crypto
-dependency — bcrypt/argon2 are not in the project's dependency set). Format:
+dependency  -  bcrypt/argon2 are not in the project's dependency set). Format:
 
     pbkdf2_sha256$<iterations>$<salt_hex>$<hash_hex>
 
 GUARDRAILS:
-  * Constant-time comparison (hmac.compare_digest) — no early-exit timing leak.
+  * Constant-time comparison (hmac.compare_digest)  -  no early-exit timing leak.
   * Per-password random salt (os.urandom).
   * Backward-compatible verification of the legacy `<salt_hex>:<hash_hex>` format
     written by the original backend/api/main.py register endpoint, so existing
@@ -36,7 +36,7 @@ def validate_password_strength(password: str) -> None:
     Enforce a minimal password policy. Raises WeakPasswordError on failure.
 
     Policy: length >= MIN_PASSWORD_LENGTH and at least one letter and one digit.
-    Deliberately conservative — magic-link / OAuth users avoid passwords entirely.
+    Deliberately conservative  -  magic-link / OAuth users avoid passwords entirely.
     """
     if not isinstance(password, str) or len(password) < MIN_PASSWORD_LENGTH:
         raise WeakPasswordError(

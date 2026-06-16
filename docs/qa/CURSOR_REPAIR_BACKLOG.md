@@ -1,4 +1,4 @@
-# CURSOR REPAIR BACKLOG — lawapp
+# CURSOR REPAIR BACKLOG  -  lawapp
 
 Format: ID | Severity | Area | Symptom | Root cause | Evidence | Files affected | Repair steps | Acceptance criteria | Test command | Owner | Status
 

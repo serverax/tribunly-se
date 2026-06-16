@@ -1,4 +1,4 @@
-# 007c — Legal Data Engineering Transform Proof
+# 007c  -  Legal Data Engineering Transform Proof
 
 **Owner agent:** legal-data-engineer-agent
 **Stage:** 2 of legal-data chain · **State:** backlog · **Depends on:** 007b (raw manifest)

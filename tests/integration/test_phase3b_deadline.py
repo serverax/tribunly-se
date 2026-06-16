@@ -1,5 +1,5 @@
 """
-Phase 3B — Deterministic deadline tracker integration tests.
+Phase 3B  -  Deterministic deadline tracker integration tests.
 
 Validates:
   1. Rules API returns time_limit_months with authority_ref and last_verified_at
@@ -87,7 +87,7 @@ def test_rules_api_no_prospective_rows():
             f"Prospective rule leaked into API response: {rule['rule_key']}"
 
 
-# ── 2. Deadline arithmetic — Python (mirrors JS) ──────────────────────────────
+# ── 2. Deadline arithmetic  -  Python (mirrors JS) ──────────────────────────────
 
 def test_deadline_edt_only():
     """EDT only: base limit = anniversary - 1 day. No EC stop-clock."""
@@ -143,7 +143,7 @@ def test_deadline_ec_floor_bites():
 
 
 def test_deadline_ec_day_b_before_day_a_rejected():
-    """Invalid EC dates (Day B < Day A) — form validation must catch this."""
+    """Invalid EC dates (Day B < Day A)  -  form validation must catch this."""
     # This test exercises the intake form validation path via the assess endpoint:
     # the backend pipeline itself doesn't error on this (it would just compute
     # a negative pause); the client validates it. We confirm the pipeline
@@ -153,7 +153,7 @@ def test_deadline_ec_day_b_before_day_a_rejected():
         "query": "unfair dismissal", "facts": facts,
         "jurisdiction": "EW", "use_model": False,
     })
-    # Should not 500 — pipeline must handle gracefully
+    # Should not 500  -  pipeline must handle gracefully
     assert resp.status_code == 200
     data = resp.json()
     assert "status" in data

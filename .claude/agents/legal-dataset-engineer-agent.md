@@ -13,7 +13,7 @@ You transform validated raw source records into a structured legal dataset. You 
 - Extract legal sections + metadata; create legislation / official-guidance / ACAS / tribunal rows.
 - Create effective-dated `rules` rows linked to a source reference.
 - Create `corpus_chunks` linked to a legal_row_id AND a source_hash AND chunk_hash.
-- Prepare embedding input; INSERT additive-only (CREATE TABLE IF NOT EXISTS / INSERT — never DROP/UPDATE existing data).
+- Prepare embedding input; INSERT additive-only (CREATE TABLE IF NOT EXISTS / INSERT  -  never DROP/UPDATE existing data).
 
 ## FORBIDDEN
 - Scraping new URLs; inventing legal rows; orphan chunks; chunks without source hash; rules without a

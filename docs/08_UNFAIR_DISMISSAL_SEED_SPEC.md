@@ -289,7 +289,7 @@ last_verified_at: [set at ingest time]
 
 The Employment Rights (Increase of Limits) Order 2026 (SI 2026/310) sets a **minimum basic award of £9,157** under ERA 1996 s.120. This figure is confirmed as of 6 April 2026.
 
-**Critical scoping constraint:** this minimum applies only where dismissal is automatically unfair on specific grounds listed in s.120 — namely dismissals in contravention of ss.100(1)(a) or (b), 101A(d), 102(1), or 103. These are the health-and-safety, working-time, trustee, and employee-representative automatically-unfair categories. It is **not** a minimum for ordinary unfair dismissal generally.
+**Critical scoping constraint:** this minimum applies only where dismissal is automatically unfair on specific grounds listed in s.120  -  namely dismissals in contravention of ss.100(1)(a) or (b), 101A(d), 102(1), or 103. These are the health-and-safety, working-time, trustee, and employee-representative automatically-unfair categories. It is **not** a minimum for ordinary unfair dismissal generally.
 
 **Do not seed this as a general `unfair_dismissal.*` rule.** Seeding it without the automatically-unfair scope would mislead the assessment engine into applying a floor that does not exist for ordinary UD claims.
 
@@ -401,7 +401,7 @@ date_under_3      = base_limit_date + conciliation_days
 **Authority: Luton BC v Haque UKEAT/0180/17/JOJ, paragraph 17 (ratio) and paragraph 26 (worked example).**
 
 Para 17: "(4) operates to extend the time limit as first modified by (3)."
-Para 26 establishes that (3) always runs first, but may produce no modification (e.g. where Day A = Day B, conciliation_days = 0 and date_under_3 = base_limit_date). (4) is then tested against whatever (3) produced — whether that is an extended date or the unchanged primary date. This is the critical distinction: (3) is not a prerequisite for (4); it is a mandatory first step that may happen to change nothing.
+Para 26 establishes that (3) always runs first, but may produce no modification (e.g. where Day A = Day B, conciliation_days = 0 and date_under_3 = base_limit_date). (4) is then tested against whatever (3) produced  -  whether that is an extended date or the unchanged primary date. This is the critical distinction: (3) is not a prerequisite for (4); it is a mandatory first step that may happen to change nothing.
 
 ```
 one_month_after_B = add_calendar_months(ec_day_b, 1)    # clamp per 5.1
@@ -436,7 +436,7 @@ date_under_3 (2 Jul) NOT in [1 Apr, 20 May] -> (4) not triggered.
 Final = 2026-07-02.
 ```
 
-**Worked check 2 - (4) floor bites (Day B after primary limit; Day A was before it — coherent):**
+**Worked check 2 - (4) floor bites (Day B after primary limit; Day A was before it  -  coherent):**
 ```
 EDT 2026-01-10 -> base_limit_date 2026-04-09 (add 3m = 2026-04-10 - 1 day).
 Day A 2026-04-05 [<= 2026-04-09: gate passes. EC started before limit].

@@ -1,4 +1,4 @@
-"""lawapp-citation-guard — every LLM legal claim must cite a real local corpus UUID.
+"""lawapp-citation-guard  -  every LLM legal claim must cite a real local corpus UUID.
 
 Wraps backend.core.agentic.corpus_citation_guard. A citation is valid ONLY if its
 UUID exists in `corpus_chunks`. Fabricated UUIDs (e.g. the all-zeros UUID) return

@@ -1,5 +1,5 @@
 """
-Phase 5A — Validation, hardening, accuracy regression, and production-readiness tests.
+Phase 5A  -  Validation, hardening, accuracy regression, and production-readiness tests.
 
 Tests:
   Legal accuracy regression:
@@ -276,7 +276,7 @@ def test_dp_report_model_boundary_implemented():
 # ── 14-16. Log scanner ────────────────────────────────────────────────────────
 
 def test_log_scanner_catches_known_pii():
-    log_text = "Processing case — user Alice Johnson from Big Corp Ltd"
+    log_text = "Processing case  -  user Alice Johnson from Big Corp Ltd"
     known_pii = ["Alice Johnson", "Big Corp Ltd", "alice@bigcorp.com"]
     found = scan_for_pii(log_text, known_pii)
     assert "Alice Johnson" in found
@@ -393,7 +393,7 @@ def test_invalid_funnel_event_name_rejected():
 
 
 def test_funnel_event_metadata_no_raw_facts():
-    """Metadata should store structured flags only — not raw text or PII."""
+    """Metadata should store structured flags only  -  not raw text or PII."""
     case_id = _make_case()
     resp = client.post("/funnel/events", json={
         "event_name": "upload_added",

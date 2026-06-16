@@ -1,5 +1,5 @@
 ================================================================================
-PHASE 1 — LIVE CLUSTER WIRING REPORT
+PHASE 1  -  LIVE CLUSTER WIRING REPORT
 lawapp | namespace: iterlaw-ai | 2026-06-02
 ================================================================================
 
@@ -16,7 +16,7 @@ SERVICES
   lawapp-backend    ClusterIP 10.104.194.17  :80
   lawapp-postgres   ClusterIP 10.109.37.31   :5432
 
-SECRETS (key names only — no values)
+SECRETS (key names only  -  no values)
   lawapp-secrets     Opaque  10 keys
   ghcr-pull-secret   dockerconfigjson
 
@@ -51,7 +51,7 @@ LIVE SMOKE TESTS (all via kubectl exec -n iterlaw-ai)
      rules:            19
    PASS ✓
 
-4. /api/diagnosis — unfair dismissal
+4. /api/diagnosis  -  unfair dismissal
    Facts: edt=2026-03-01, service_start_date=2023-01-01, conduct, £600/wk, EW
    Response:
      status:           insufficient_grounding
@@ -66,7 +66,7 @@ LIVE SMOKE TESTS (all via kubectl exec -n iterlaw-ai)
      - insufficient_grounding is HONEST BEHAVIOUR (stub mode), not an error
    PASS ✓
 
-5. /api/diagnosis — out-of-scope
+5. /api/diagnosis  -  out-of-scope
    Query: "My landlord is evicting me"
    Response: {"status":"not_supported","matter_type":"out_of_scope"}
    PASS ✓

@@ -1,17 +1,17 @@
 """
-SUBAGENT 8 — Database Engineer: auth database schema proof.
+SUBAGENT 8  -  Database Engineer: auth database schema proof.
 
 Runs against the live local Docker DB (tests/conftest.py points POSTGRES_* at
 localhost:5435). Proves, with real SQL against real tables:
 
-  * schema is correct      — all six required entities resolve
+  * schema is correct       -  all six required entities resolve
                              (users, user_identities, user_sessions, auth_events,
                               onboarding_profiles, conversion_events)
-  * indexes work           — email / provider_id / session_id indexes exist AND
+  * indexes work            -  email / provider_id / session_id indexes exist AND
                              are actually chosen by the planner
-  * migrations run cleanly — 050 is idempotent (re-runnable) and reversible
+  * migrations run cleanly  -  050 is idempotent (re-runnable) and reversible
                              (up → down → up round-trips)
-  * no duplicate prevention bypassed — duplicate email is rejected,
+  * no duplicate prevention bypassed  -  duplicate email is rejected,
                              provider-account merge integrity holds, account
                              linking of multiple providers to one user works
 
@@ -19,7 +19,7 @@ Design notes:
   * user_sessions / user_identities / onboarding_profiles are canonical-name
     VIEWS over the WIRED base tables (auth_sessions / oauth_identities / users).
     Verifying them therefore verifies the real session/identity/onboarding store
-    the auth service writes to — not a parallel copy.
+    the auth service writes to  -  not a parallel copy.
   * conversion_events is owned by SUBAGENT 5 (migration 049); this suite verifies
     its existence + indexes because it is one of the six required entities.
   * Every test cleans up the rows it inserts (unique marker prefix), so the suite
@@ -86,7 +86,7 @@ def _explain_index_forced(sql: str, params: tuple) -> str:
     """Return the EXPLAIN plan with seq scans disabled, in a SINGLE session.
 
     On a small table the planner correctly prefers a Seq Scan (cheaper than an
-    index for a handful of rows) — that is healthy behaviour, not a missing
+    index for a handful of rows)  -  that is healthy behaviour, not a missing
     index. Disabling enable_seqscan forces the planner to reveal whether a
     USABLE index exists for the predicate: if one does it picks an Index Scan,
     otherwise it falls back to Seq Scan. So 'Index Scan' here proves the index
@@ -150,7 +150,7 @@ def test_required_entity_exists(entity):
 
 
 def test_session_and_identity_views_expose_canonical_columns():
-    """user_sessions exposes session_id; user_identities exposes provider_id —
+    """user_sessions exposes session_id; user_identities exposes provider_id  - 
     the stable identifiers the rest of the product refers to."""
     us_cols = {r[0] for r in _q(
         "SELECT column_name FROM information_schema.columns WHERE table_name='user_sessions'")}
@@ -162,7 +162,7 @@ def test_session_and_identity_views_expose_canonical_columns():
 
 def test_views_are_backed_by_the_wired_base_tables():
     """The canonical-name views must read the WIRED base tables (single source of
-    truth) — not a duplicate copy. Confirm the dependency in pg_depend."""
+    truth)  -  not a duplicate copy. Confirm the dependency in pg_depend."""
     for view, base in [("user_sessions", "auth_sessions"),
                        ("user_identities", "oauth_identities"),
                        ("onboarding_profiles", "users")]:
@@ -239,7 +239,7 @@ def test_provider_id_index_serves_lookup(new_user):
 
 def test_duplicate_email_rejected_case_insensitive(new_user):
     """No duplicate accounts: a second user with the same email (different case)
-    is rejected by the unique index — the prevention cannot be bypassed."""
+    is rejected by the unique index  -  the prevention cannot be bypassed."""
     email = f"{_MARK}-{uuid.uuid4()}@example.test"
     new_user(email)
     with pytest.raises(psycopg2.IntegrityError):
@@ -248,7 +248,7 @@ def test_duplicate_email_rejected_case_insensitive(new_user):
 
 def test_provider_merge_integrity(new_user):
     """Provider merge: one provider account (provider, subject) cannot be linked
-    to two different users — the UNIQUE(provider, subject) key prevents it."""
+    to two different users  -  the UNIQUE(provider, subject) key prevents it."""
     u1, u2 = new_user(), new_user()
     subject = f"{_MARK}-sub-{uuid.uuid4()}"
     _q("INSERT INTO oauth_identities (user_id, provider, subject) VALUES (%s::uuid,'google',%s)",

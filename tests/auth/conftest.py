@@ -5,11 +5,11 @@ Runs against the live local Docker DB (configured by the root tests/conftest.py)
 in LAWAPP_AUTH_MODE=mock with the in-memory email backend (default under pytest).
 
 Fixtures:
-  client       — FastAPI TestClient bound to the real app.
-  unique_email — a fresh random email per call.
-  db_query     — run a parametrised SQL query against the live DB.
-  email_outbox — the in-memory auth-email outbox (cleared each test).
-  oidc         — factory that mints provider ID tokens + installs a fake JWKS,
+  client        -  FastAPI TestClient bound to the real app.
+  unique_email  -  a fresh random email per call.
+  db_query      -  run a parametrised SQL query against the live DB.
+  email_outbox  -  the in-memory auth-email outbox (cleared each test).
+  oidc          -  factory that mints provider ID tokens + installs a fake JWKS,
                  so OAuth verification is exercised end-to-end with real crypto.
 """
 

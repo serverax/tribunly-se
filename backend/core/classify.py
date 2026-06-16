@@ -1,11 +1,11 @@
 """
-Stage 1 — Classification module.
+Stage 1  -  Classification module.
 
 Routes incoming queries to matter type + intent, or out-of-scope.
 
-Method (Phase 8B — two-stage):
-  Stage A: keyword rules — cheap, instant, no model call.
-  Stage B: ML/workhorse model — for ambiguous cases only.
+Method (Phase 8B  -  two-stage):
+  Stage A: keyword rules  -  cheap, instant, no model call.
+  Stage B: ML/workhorse model  -  for ambiguous cases only.
 
 Stage B rules:
   - Called ONLY when keyword stage returns "ambiguous".
@@ -40,7 +40,7 @@ def _scoped(matter_type: str, intent: str) -> ClassificationResult:
 
     The registry is the single source of truth for supported scope: a matter type
     is in_scope only if an ENABLED domain owns it. If the owning domain is ever
-    disabled in the registry, classification fails closed automatically — no edit
+    disabled in the registry, classification fails closed automatically  -  no edit
     to this module required (CLAUDE.md §9/§17: fail closed; never guess in_scope).
     """
     return ClassificationResult(
@@ -108,7 +108,7 @@ Classify the following enquiry into EXACTLY ONE of these categories:
   unpaid_wages
   out_of_scope
 
-Reply with ONLY the category name — no explanation, no punctuation.
+Reply with ONLY the category name  -  no explanation, no punctuation.
 If you cannot determine the category with confidence, reply: out_of_scope
 
 Enquiry: {query}"""
@@ -275,9 +275,9 @@ def _classify_with_model(query: str) -> Optional[str]:
     """
     Use the workhorse model to classify an ambiguous query.
 
-    GUARDRAIL: Only the query text is sent — NO personal facts or user data.
+    GUARDRAIL: Only the query text is sent  -  NO personal facts or user data.
     Query is truncated to 300 characters to prevent accidental PII leakage.
-    Model failure always returns None (conservative — never guesses in_scope=True).
+    Model failure always returns None (conservative  -  never guesses in_scope=True).
 
     Returns: 'unfair_dismissal' | 'unpaid_wages' | 'out_of_scope' | None
     """
@@ -299,7 +299,7 @@ def _classify_with_model(query: str) -> Optional[str]:
         model   = getattr(settings, "workhorse_model_id", "claude-haiku-4-5-20251001") or \
                   "claude-haiku-4-5-20251001"
 
-        # GUARDRAIL: only query text, truncated — never personal facts
+        # GUARDRAIL: only query text, truncated  -  never personal facts
         safe_query = query[:300].strip()
 
         response = client.messages.create(
@@ -321,7 +321,7 @@ def _classify_with_model(query: str) -> Optional[str]:
                 )
                 return cat
 
-        # Unrecognised response — conservative fallback
+        # Unrecognised response  -  conservative fallback
         logger.warning("_classify_with_model: unrecognised model response. Returning None.")
         return None
 
@@ -337,7 +337,7 @@ def _classify_with_model(query: str) -> Optional[str]:
 
 def classify(query: str, facts: dict | None = None) -> ClassificationResult:
     """
-    Classify an incoming query — two-stage.
+    Classify an incoming query  -  two-stage.
 
     Stage A: keyword rules (fast, no model call).
     Stage B: ML model fallback for genuinely ambiguous queries (query text only).
@@ -359,7 +359,7 @@ def classify(query: str, facts: dict | None = None) -> ClassificationResult:
             in_scope=False,
         )
 
-    # Unpaid wages (checked before UD — more specific)
+    # Unpaid wages (checked before UD  -  more specific)
     if _has_any(text, _UPW_KEYWORDS) and not _has_any(text, _UD_KEYWORDS):
         intent = (
             "deadline_check" if _has_any(text, _DEADLINE_KEYWORDS) else
@@ -378,7 +378,7 @@ def classify(query: str, facts: dict | None = None) -> ClassificationResult:
         return _scoped("unfair_dismissal", intent)
 
     # ── Stage B: ML model for ambiguous cases ──────────────────────────────────
-    # Query text only — no personal facts.
+    # Query text only  -  no personal facts.
     try:
         ml_result = _classify_with_model(query)
     except Exception:
@@ -391,7 +391,7 @@ def classify(query: str, facts: dict | None = None) -> ClassificationResult:
     if ml_result == "out_of_scope":
         return ClassificationResult(matter_type="out_of_scope", intent="diagnosis", in_scope=False)
 
-    # Still ambiguous — conservative: treat as out of supported scope.
+    # Still ambiguous  -  conservative: treat as out of supported scope.
     # Never guess in_scope=True for genuinely ambiguous queries.
     return ClassificationResult(matter_type="ambiguous", intent="diagnosis", in_scope=False)
 

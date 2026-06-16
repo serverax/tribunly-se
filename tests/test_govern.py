@@ -65,17 +65,17 @@ def test_both_scores_above_threshold_passes():
         confidence_score=CONFIDENCE_THRESHOLD + 0.1,
     )
     result = govern(a)
-    # May still fail on other checks — just verify scores aren't the reason
+    # May still fail on other checks  -  just verify scores aren't the reason
     if not result.passes:
         assert "score_threshold" not in result.failure_reason
 
 
-# ── Check 3: determinism — deadline.source must be "rules" ───────────────────
+# ── Check 3: determinism  -  deadline.source must be "rules" ───────────────────
 
 def test_pydantic_enforces_rules_source():
     """
     Pydantic's Literal["rules"] on Deadline.source rejects any other value
-    at construction time. This is the enforcement point — governance check 3
+    at construction time. This is the enforcement point  -  governance check 3
     is belt-and-suspenders for JSON parsed from model output. The schema
     itself is the primary guard.
     """
@@ -83,7 +83,7 @@ def test_pydantic_enforces_rules_source():
     with _pytest.raises(Exception):  # pydantic ValidationError
         Deadline(
             limitation_date=date(2026, 8, 9),
-            source="model",   # invalid — Pydantic rejects this
+            source="model",   # invalid  -  Pydantic rejects this
             authority="ERA 1996 s.111(2)",
         )
 
@@ -119,7 +119,7 @@ def test_outcome_guarantee_blocked():
     assert "boundary_violation" in result.failure_reason
 
 
-# ── Check 5: honesty — key_weaknesses required for non-trivial cases ──────────
+# ── Check 5: honesty  -  key_weaknesses required for non-trivial cases ──────────
 
 def test_missing_weaknesses_blocked_for_viable_claim():
     a = _make_assessment(has_viable_claim="yes", key_weaknesses=[])
@@ -134,7 +134,7 @@ def test_missing_weaknesses_blocked_for_uncertain():
     assert "honesty_violation" in result.failure_reason
 
 def test_weaknesses_required_not_for_no_claim():
-    # "no" claim — governance doesn't require weaknesses (it's already the honest answer)
+    # "no" claim  -  governance doesn't require weaknesses (it's already the honest answer)
     a = _make_assessment(
         has_viable_claim="no",
         strength="low",

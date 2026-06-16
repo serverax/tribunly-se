@@ -1,4 +1,4 @@
-"""Graph linker — Perpetual Law Brain stage 3.
+"""Graph linker  -  Perpetual Law Brain stage 3.
 
 Maps an approved legal document into the knowledge graph: upserts a legal_node for
 the document and creates legal_edges to EXISTING nodes it cites. Edges are only
@@ -80,7 +80,7 @@ class GraphLinker:
         if not source_url:
             raise ValueError("refusing to create a legal_edge without provenance (source_url)")
         if not self.node_exists(conn, to_node_id, jurisdiction):
-            return False  # unresolved — caller logs it
+            return False  # unresolved  -  caller logs it
         with conn.cursor() as cur:
             cur.execute(
                 """SELECT 1 FROM legal_edges

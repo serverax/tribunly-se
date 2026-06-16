@@ -1,6 +1,6 @@
-# lawapp — Sovereign Trinity Workflow Build Order
+# lawapp  -  Sovereign Trinity Workflow Build Order
 
-**Status:** Open workflow order — keep this document expandable. More workflows, acceptance gates, and domain modules may be added later.
+**Status:** Open workflow order  -  keep this document expandable. More workflows, acceptance gates, and domain modules may be added later.
 
 **Project:** lawapp  
 **Root:** `F:\lawapp` / `/mnt/f/lawapp`  
@@ -35,7 +35,7 @@ find /mnt -path '*LEGAL_AI_GURU_GUIDE.md' -o -path '*LEGAL_AI_UX_GURU_GUIDE.md' 
 If any guide is missing, Claude must stop and report:
 
 ```text
-BLOCKED — REQUIRED GURU GUIDE MISSING
+BLOCKED  -  REQUIRED GURU GUIDE MISSING
 ```
 
 No workaround. No guessing. No implementation before reading the guides.
@@ -76,7 +76,7 @@ frontend user action
 Anything less is:
 
 ```text
-NOT ACCEPTED — NOT WORKFLOW PROVEN
+NOT ACCEPTED  -  NOT WORKFLOW PROVEN
 ```
 
 ---
@@ -127,7 +127,7 @@ It must own:
 
 No legal route may bypass Brain.
 
-### Agent AEE — Analysis and Evidence Extraction
+### Agent AEE  -  Analysis and Evidence Extraction
 
 Purpose:
 
@@ -147,7 +147,7 @@ Used by:
 - bundle generation
 - ET1 document generation
 
-### Agent ART — Algorithmic Reasoning and Triage
+### Agent ART  -  Algorithmic Reasoning and Triage
 
 Purpose:
 
@@ -168,7 +168,7 @@ Used by:
 - risk score
 - human review queue
 
-### Agent SEA — Strategic Execution and Automation
+### Agent SEA  -  Strategic Execution and Automation
 
 Purpose:
 
@@ -290,7 +290,7 @@ Acceptance:
 
 This section remains open. Add more workflows as the product grows.
 
-### Workflow A — Zero-friction multimodal intake
+### Workflow A  -  Zero-friction multimodal intake
 
 User uploads or pastes messy evidence:
 
@@ -346,7 +346,7 @@ Acceptance:
 
 ---
 
-### Workflow B — Constructive dismissal algorithm
+### Workflow B  -  Constructive dismissal algorithm
 
 Agent ART must process constructive dismissal through a deterministic matrix:
 
@@ -396,7 +396,7 @@ Acceptance:
 
 ---
 
-### Workflow C — Fast Opinion Case HUD
+### Workflow C  -  Fast Opinion Case HUD
 
 HUD fields:
 
@@ -431,7 +431,7 @@ Acceptance:
 
 ---
 
-### Workflow D — Schedule of Loss calculator
+### Workflow D  -  Schedule of Loss calculator
 
 Required calculations:
 
@@ -462,7 +462,7 @@ Acceptance:
 
 ---
 
-### Workflow E — Settlement calculator and strategy simulator
+### Workflow E  -  Settlement calculator and strategy simulator
 
 Outputs:
 
@@ -488,7 +488,7 @@ Acceptance:
 
 ---
 
-### Workflow F — Vento band discriminator
+### Workflow F  -  Vento band discriminator
 
 Acceptance:
 
@@ -501,7 +501,7 @@ Acceptance:
 
 ---
 
-### Workflow G — Hybrid Search and local law DB
+### Workflow G  -  Hybrid Search and local law DB
 
 Required local corpus:
 
@@ -540,7 +540,7 @@ Acceptance:
 
 ---
 
-### Workflow H — ET1 and Particulars of Claim generator
+### Workflow H  -  ET1 and Particulars of Claim generator
 
 Required chain:
 
@@ -575,7 +575,7 @@ Acceptance:
 
 ---
 
-### Workflow I — Tribunal bundle assembler
+### Workflow I  -  Tribunal bundle assembler
 
 Required output:
 
@@ -603,7 +603,7 @@ Acceptance:
 
 ---
 
-### Workflow J — ACAS Early Conciliation and negotiation assistant
+### Workflow J  -  ACAS Early Conciliation and negotiation assistant
 
 Acceptance:
 
@@ -615,7 +615,7 @@ Acceptance:
 
 ---
 
-### Workflow K — OpenTelemetry Glass Engine
+### Workflow K  -  OpenTelemetry Glass Engine
 
 Required chain:
 
@@ -643,7 +643,7 @@ Acceptance:
 
 ---
 
-### Workflow L — Automated red-team gate
+### Workflow L  -  Automated red-team gate
 
 Required attacks:
 
@@ -670,7 +670,7 @@ Acceptance:
 
 ---
 
-### Workflow M — B2C paid document unlock
+### Workflow M  -  B2C paid document unlock
 
 Acceptance:
 
@@ -683,7 +683,7 @@ Acceptance:
 
 ---
 
-### Workflow N — B2B HR compliance module future
+### Workflow N  -  B2B HR compliance module future
 
 Future domain module for employers/SMEs.
 
@@ -699,7 +699,7 @@ Acceptance:
 
 ---
 
-### Workflow O — Solicitor/human handoff
+### Workflow O  -  Solicitor/human handoff
 
 Acceptance:
 
@@ -826,13 +826,13 @@ reports/lawapp-sovereign-trinity-final-readiness.md
 Verdict can only be:
 
 ```text
-READY — SOVEREIGN TRINITY WORKFLOWS FULLY PROVEN
+READY  -  SOVEREIGN TRINITY WORKFLOWS FULLY PROVEN
 ```
 
 or:
 
 ```text
-NOT READY — SOVEREIGN TRINITY WORKFLOWS NOT FULLY PROVEN
+NOT READY  -  SOVEREIGN TRINITY WORKFLOWS NOT FULLY PROVEN
 ```
 
 No other verdict is allowed.
@@ -894,9 +894,9 @@ This document is intentionally open.
 When new user needs, competitor gaps, review pain points, legal modules, or product ideas appear, append them as new workflows:
 
 ```text
-Workflow P — ...
-Workflow Q — ...
-Workflow R — ...
+Workflow P  -  ...
+Workflow Q  -  ...
+Workflow R  -  ...
 ```
 
 Do not delete existing workflows unless the owner explicitly approves removal.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lawapp — Local E2E Smoke Journey
+# lawapp  -  Local E2E Smoke Journey
 # Proves the full product journey via curl against the local Docker backend.
 # Usage: bash scripts/smoke_local_journey.sh
 # Requires: Docker Compose running (docker compose up -d)
@@ -63,15 +63,15 @@ section "5. Auth /me"
 ME_STATUS=$(http_status -H "Authorization: Bearer ${TOKEN_A}" "${BASE}/auth/me")
 [ "$ME_STATUS" = "200" ] && ok "/auth/me → 200" || fail "/auth/me" "HTTP $ME_STATUS"
 
-# ── Step 6: Assessment (deterministic — short service) ────────────────────────
-section "6. Assessment (10 months — deterministic QP fail)"
+# ── Step 6: Assessment (deterministic  -  short service) ────────────────────────
+section "6. Assessment (10 months  -  deterministic QP fail)"
 ASSESS=$(curl -s -X POST "${BASE}/assess" \
   -H "Content-Type: application/json" \
   -d '{"query":"dismissed after 10 months","facts":{"edt":"2026-03-01","service_start_date":"2025-05-01","reason_for_dismissal":"conduct","was_procedure_followed":"false","weekly_pay":500,"jurisdiction":"EW"},"jurisdiction":"EW"}')
 A_STATUS=$(echo "$ASSESS" | json_field "status")
 A_VIABLE=$(echo "$ASSESS" | json_field "has_viable_claim")
 [ "$A_STATUS" = "ok" ] && ok "Assessment status=ok" || fail "Assessment status" "$A_STATUS"
-[ "$A_VIABLE" = "no" ] && ok "has_viable_claim=no (QP fails — correct)" || fail "has_viable_claim" "$A_VIABLE"
+[ "$A_VIABLE" = "no" ] && ok "has_viable_claim=no (QP fails  -  correct)" || fail "has_viable_claim" "$A_VIABLE"
 
 CITATIONS=$(echo "$ASSESS" | python -c "import sys,json; print(len(json.load(sys.stdin).get('citations',[])))" 2>/dev/null)
 [ "${CITATIONS:-0}" -gt 0 ] && ok "Assessment has $CITATIONS citations" || fail "Citations" "count=$CITATIONS"
@@ -113,7 +113,7 @@ TOKEN_B=$(echo "$LOGIN_B" | json_field "access_token")
 ISO_STATUS=$(http_status -H "Authorization: Bearer ${TOKEN_B}" "${BASE}/cases/${CASE_ID}")
 [ "$ISO_STATUS" = "403" ] && ok "User B blocked on User A case → 403" || fail "User isolation" "HTTP $ISO_STATUS (expected 403)"
 
-# ── Step 11: Payment session (hardened contract — no raw token unlock) ───────
+# ── Step 11: Payment session (hardened contract  -  no raw token unlock) ───────
 section "11. Payment session (legacy shim, payment-gated)"
 PAY=$(curl -s -X POST "${BASE}/api/payment/create-session" \
   -H "Content-Type: application/json" \
@@ -127,7 +127,7 @@ PAY_TOKEN=$(echo "$PAY" | json_field "payment_token")
 [ -z "$PAY_TOKEN" ] && ok "No raw unlock token issued (DB-backed paid access only)" \
   || fail "Payment token" "raw token issued: ${PAY_TOKEN:0:20}..."
 
-# ── Step 12: Document generation (unpaid — never full content) ───────────────
+# ── Step 12: Document generation (unpaid  -  never full content) ───────────────
 section "12. Document generation (unpaid preview only)"
 DOC_STATUS=$(curl -s -o /tmp/smoke_doc.json -w "%{http_code}" -X POST "${BASE}/documents/generate" \
   -H "Content-Type: application/json" \
@@ -139,7 +139,7 @@ elif [ "$DOC_STATUS" = "200" ]; then
   DOC_PAID=$(cat /tmp/smoke_doc.json | json_field "payment_required")
   [ "$DOC_PAID" = "True" ] || [ "$DOC_PAID" = "true" ] \
     && ok "Unpaid generation preview-gated (payment_required=true)" \
-    || fail "Document payment gate" "200 with payment_required=$DOC_PAID — unpaid unlock!"
+    || fail "Document payment gate" "200 with payment_required=$DOC_PAID  -  unpaid unlock!"
 else
   fail "Document generation" "HTTP $DOC_STATUS"
 fi

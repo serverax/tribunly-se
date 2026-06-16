@@ -1,5 +1,5 @@
 """
-Phase 2E — Assessment audit log integration tests.
+Phase 2E  -  Assessment audit log integration tests.
 
 Proves:
   1. A passing governed assessment writes exactly one audit row
@@ -148,7 +148,7 @@ def test_audit_row_contains_no_personal_data():
     ]
     for value in pii_values:
         assert value not in audit_json, \
-            f"PII value '{value}' found in audit row JSON — must never be stored"
+            f"PII value '{value}' found in audit row JSON  -  must never be stored"
 
     # PII FIELD NAMES may appear ONLY in boundary_log.fields_stripped
     # (proving they were stripped, not as stored data). They must NOT appear
@@ -158,9 +158,9 @@ def test_audit_row_contains_no_personal_data():
     for pii_key in ("claimant_name", "employer_name", "date_of_birth",
                     "national_insurance", "home_address", "email"):
         assert pii_key not in passed, \
-            f"PII field '{pii_key}' found in boundary_log.fields_passed — was not stripped"
+            f"PII field '{pii_key}' found in boundary_log.fields_passed  -  was not stripped"
 
-    print(f"\nAudit row PII check: PASS — no PII values in audit, "
+    print(f"\nAudit row PII check: PASS  -  no PII values in audit, "
           f"all PII fields confirmed stripped (not in fields_passed)")
 
 

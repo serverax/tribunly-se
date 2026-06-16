@@ -1,8 +1,8 @@
-# Database Design — UK Employment Claim Co-Pilot
+# Database Design  -  UK Employment Claim Co-Pilot
 
 **Engine:** PostgreSQL 15+ with the `pgvector` extension.
 **Pairs with:** `02_HLD_ARCHITECTURE.md` (Layer 5), `04_RAG_REASONING_SPEC.md`.
-**Principle (GUARDRAIL):** Deterministic legal facts (deadlines, caps, thresholds) live in the structured `rules` table and are queried by code — they are NEVER stored only as embedded free text and NEVER inferred by a model. Every legal record carries source + version + verification date.
+**Principle (GUARDRAIL):** Deterministic legal facts (deadlines, caps, thresholds) live in the structured `rules` table and are queried by code  -  they are NEVER stored only as embedded free text and NEVER inferred by a model. Every legal record carries source + version + verification date.
 
 ---
 
@@ -95,7 +95,7 @@ CREATE TABLE acas_guidance (
 CREATE INDEX ON acas_guidance USING ivfflat (embedding vector_cosine_ops);
 ```
 
-### 2.4 `rules` — DETERMINISTIC legal facts (the critical table)
+### 2.4 `rules`  -  DETERMINISTIC legal facts (the critical table)
 This is where exactness lives. Time limits, caps, thresholds. Queried by code, never by the model. Each rule cites its authority.
 ```sql
 CREATE TABLE rules (
@@ -194,11 +194,11 @@ CREATE VIEW source_freshness AS
 
 ## 4. Data-protection notes (UK GDPR Article 9)
 - `cases.facts_encrypted` and `documents.storage_ref` hold special-category data (discrimination/health) → encrypt at rest; minimise; define retention + deletion (`ON DELETE CASCADE` supports user erasure).
-- Never copy raw fact data into logs or into payloads bound for third-party models — de-identify at the boundary (see `04_RAG_REASONING_SPEC.md`).
+- Never copy raw fact data into logs or into payloads bound for third-party models  -  de-identify at the boundary (see `04_RAG_REASONING_SPEC.md`).
 - Build a DPIA before launch (Phase 5).
 
 ## 5. Seed-data note (unfair dismissal)
-Phase 1 must seed `rules` for unfair dismissal, each row citing the in-force authority. Examples of rule_keys to populate (VERIFY values + citations against the live API at ingest — do not trust any number from memory):
+Phase 1 must seed `rules` for unfair dismissal, each row citing the in-force authority. Examples of rule_keys to populate (VERIFY values + citations against the live API at ingest  -  do not trust any number from memory):
 - `unfair_dismissal.time_limit_months`
 - `unfair_dismissal.early_conciliation_required`
 - `unfair_dismissal.qualifying_period`

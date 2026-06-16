@@ -1,8 +1,8 @@
-TRACK B — B5 Lower-priority backlog (document/fix)
+TRACK B  -  B5 Lower-priority backlog (document/fix)
 Date: 2026-06-15
 
 ## datetime.utcnow deprecation
-Status: DOCUMENTED (not bulk-fixed — services tree)
+Status: DOCUMENTED (not bulk-fixed  -  services tree)
 Files: backend/services/*/main.py, backend/core/user_auth.py
 Recommendation: replace with datetime.now(timezone.utc) in dedicated hygiene PR
 
@@ -24,4 +24,4 @@ Status: DOCUMENTED
 - Health shows ai_provider.active=true when cluster endpoint reachable
 
 ## Verdict
-PASS — documented; no unsafe changes applied in Track B
+PASS  -  documented; no unsafe changes applied in Track B

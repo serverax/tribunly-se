@@ -1,8 +1,8 @@
 """
-Corpus embedding job — embeds public legal source chunks only.
+Corpus embedding job  -  embeds public legal source chunks only.
 
 Model: BAAI/bge-small-en-v1.5 via fastembed (384-dim, ONNX, no torch required)
-Schema: vector(384) — see migration 016_vector_dim_384.sql
+Schema: vector(384)  -  see migration 016_vector_dim_384.sql
 
 fastembed advantages:
   - No torch dependency (uses ONNX Runtime)
@@ -31,7 +31,7 @@ from ingestion.db import get_connection
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
-    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+    format="%(asctime)s %(levelname)s %(name)s  -  %(message)s",
 )
 logger = logging.getLogger(__name__)
 console = Console()
@@ -144,7 +144,7 @@ def _flush_batch(conn, table: str, ids: list, texts: list[str]) -> None:
 
 def embed_all(table_filter: Optional[str] = None) -> None:
     tables = [table_filter] if table_filter else TABLES
-    console.print(f"[bold green]Embedding job — model: {EMBED_MODEL} ({EMBED_DIM}-dim, fastembed ONNX)[/bold green]")
+    console.print(f"[bold green]Embedding job  -  model: {EMBED_MODEL} ({EMBED_DIM}-dim, fastembed ONNX)[/bold green]")
     total = 0
     for table in tables:
         count = embed_table(table)

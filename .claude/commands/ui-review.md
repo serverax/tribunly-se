@@ -1,5 +1,5 @@
 ---
-description: Review lawapp UI/UX — design-system consistency, accessibility, working buttons, real backend wiring, honest copy.
+description: Review lawapp UI/UX  -  design-system consistency, accessibility, working buttons, real backend wiring, honest copy.
 ---
 
 # /ui-review

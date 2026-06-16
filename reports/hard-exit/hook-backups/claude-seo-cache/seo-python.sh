@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Resolver shim: find a working Python 3 and exec the hook with it.
-# Host-agnostic — works in MINGW64/Git Bash, WSL, macOS, Linux.
+# Host-agnostic  -  works in MINGW64/Git Bash, WSL, macOS, Linux.
 # - Skips the Microsoft Store stub (it exits 49 on `-c`, so the probe fails).
 # - Converts POSIX path args to native Windows form via cygpath when present
 #   (Git Bash), so Windows python.org interpreters can open them.

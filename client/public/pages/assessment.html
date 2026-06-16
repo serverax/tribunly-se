@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your diagnosis — lawapp</title>
+  <title>Your diagnosis  -  lawapp</title>
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
   <script src="/js/a11y.js"></script>
@@ -97,7 +97,7 @@
   // Surface the backend trace id on every status path (ok, not_supported,
   // insufficient_grounding, missing_edt) so support/audit can correlate the
   // exact request in server logs and the brain_traces table. Honest debug
-  // surface — shows nothing if no trace id was captured.
+  // surface  -  shows nothing if no trace id was captured.
   function appendDiagnostics() {
     if (!traceId) return;
     if (document.getElementById('diagnostics-trace')) return;
@@ -199,7 +199,7 @@
       
       const p = document.createElement('p');
       p.style.marginTop = '.75rem';
-      p.textContent = 'We do not have enough information to assess your case with confidence. This is an honest answer — not a refusal.';
+      p.textContent = 'We do not have enough information to assess your case with confidence. This is an honest answer  -  not a refusal.';
       
       const ul = document.createElement('ul');
       ul.style.margin = '1rem 0';
@@ -472,7 +472,7 @@
     const col1 = document.createElement('div');
     const label = document.createElement('div');
     label.className = 'deadline-label';
-    label.textContent = passed ? 'Tribunal deadline — PASSED' : 'Tribunal deadline';
+    label.textContent = passed ? 'Tribunal deadline  -  PASSED' : 'Tribunal deadline';
     const dateVal = document.createElement('div');
     dateVal.className = 'deadline-date';
     dateVal.textContent = formatDate(dt);
@@ -536,7 +536,7 @@
     if (dl.ec_applied === true) {
       if (dl.pause_days != null) rows.push(['ACAS EC stop-clock', `+${dl.pause_days} days`]);
       if (dl.ec_floor) rows.push(['EC floor (1 month after cert.)', dl.ec_floor]);
-      if (dl.floor_applied === true) rows.push(['Floor applied', 'yes — floor date is later than the adjusted limit']);
+      if (dl.floor_applied === true) rows.push(['Floor applied', 'yes  -  floor date is later than the adjusted limit']);
     } else if (dl.ec_applied === false) {
       rows.push(['ACAS EC stop-clock', 'not applied (no EC dates supplied)']);
     }
@@ -682,7 +682,7 @@
 
   function renderNextStep(step) {
     const map = {
-      'free_diagnosis_only': {label: 'Diagnosis only — seek solicitor', desc: 'Based on the information available, we recommend speaking with a qualified employment solicitor before proceeding.'},
+      'free_diagnosis_only': {label: 'Diagnosis only  -  seek solicitor', desc: 'Based on the information available, we recommend speaking with a qualified employment solicitor before proceeding.'},
       'prepare_documents':   {label: 'Prepare your claim documents', desc: 'Your case appears viable. The next step is to start ACAS Early Conciliation and prepare your ET1 particulars.'},
       'seek_solicitor':      {label: 'Seek a solicitor', desc: 'This case has complexity that warrants regulated legal advice from a qualified solicitor before you take further steps.'},
     };
@@ -723,7 +723,7 @@
     pIntro.style.fontSize = '.875rem';
     pIntro.style.color = 'var(--muted)';
     pIntro.style.margin = '.5rem 0 .75rem';
-    pIntro.textContent = 'Generate a draft Particulars of Claim or Schedule of Loss based on your assessment. These are self-help drafts — not legal advice. Review and verify before use. lawapp does not file or represent you.';
+    pIntro.textContent = 'Generate a draft Particulars of Claim or Schedule of Loss based on your assessment. These are self-help drafts  -  not legal advice. Review and verify before use. lawapp does not file or represent you.';
     
     card.append(h3, pIntro);
 
@@ -826,7 +826,7 @@
     boundaryNotice.style.marginBottom = '1rem';
     boundaryNotice.style.fontSize = '.8rem';
     const strong = document.createElement('strong');
-    strong.textContent = 'Self-help draft — NOT legal advice. ';
+    strong.textContent = 'Self-help draft  -  NOT legal advice. ';
     boundaryNotice.append(strong, document.createTextNode('Review carefully. lawapp does not file or represent you.'));
     
     const textarea = document.createElement('textarea');
@@ -895,7 +895,7 @@
     pDisclaimer.style.fontSize = '.8rem';
     pDisclaimer.style.color = 'var(--muted)';
     pDisclaimer.style.marginBottom = '1rem';
-    pDisclaimer.textContent = 'lawapp is not a solicitor. This is a referral lead — we do not provide legal advice, file claims, or represent you. No solicitor-client relationship is created by submitting.';
+    pDisclaimer.textContent = 'lawapp is not a solicitor. This is a referral lead  -  we do not provide legal advice, file claims, or represent you. No solicitor-client relationship is created by submitting.';
     
     const formContainer = document.createElement('div');
     formContainer.id = 'handoff-form-container';
@@ -1212,7 +1212,7 @@
   }
 
   function formatMoney(n, currency) {
-    if (n == null) return '—';
+    if (n == null) return ' - ';
     const sym = currency === 'GBP' ? '£' : (currency || '');
     return sym + Number(n).toLocaleString('en-GB', {maximumFractionDigits:0});
   }

@@ -1,5 +1,5 @@
 ---
-description: Enter lawapp autonomous recovery mode — read constitution + guides, freeze state, route blockers through the subagent workflow.
+description: Enter lawapp autonomous recovery mode  -  read constitution + guides, freeze state, route blockers through the subagent workflow.
 ---
 
 # /recover

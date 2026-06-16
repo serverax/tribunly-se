@@ -1,6 +1,6 @@
-# Data Protection Impact Assessment (DPIA) — ARTEFACT IN PROGRESS
+# Data Protection Impact Assessment (DPIA)  -  ARTEFACT IN PROGRESS
 
-**Status:** IN PROGRESS — Not completed. Not legally reviewed.  
+**Status:** IN PROGRESS  -  Not completed. Not legally reviewed.  
 **Phase:** 6 placeholder. Legal and DPO review required.  
 **Date:** 2026-06-01  
 **Regulation:** UK GDPR / Data Protection Act 2018
@@ -26,7 +26,7 @@ A DPIA is likely required before deploying lawapp to real users, because:
 ## 1. Description of processing
 
 **Controller:** [TO BE COMPLETED]  
-**Processor(s):** [AI provider if used — Anthropic, OpenRouter. TO BE CONFIRMED]
+**Processor(s):** [AI provider if used  -  Anthropic, OpenRouter. TO BE CONFIRMED]
 
 **Purposes:**
 - Provide self-help employment law information
@@ -61,7 +61,7 @@ A DPIA is likely required before deploying lawapp to real users, because:
 | Uploaded files contain special category data | High | High | Encryption at rest (Phase 6) | Medium |
 | AI model receives PII | Low | Very High | 14-field de-identification; boundary_log | Low |
 | Uploaded files leaked | Medium | High | Local encryption (Phase 6); no external storage | Medium |
-| Data breach (key compromise) | Low | Very High | Env var key (Phase 6 only — HSM in Phase 7) | Medium-High |
+| Data breach (key compromise) | Low | Very High | Env var key (Phase 6 only  -  HSM in Phase 7) | Medium-High |
 | Inadequate retention | Medium | Medium | Soft-delete + retention script (Phase 6) | Low |
 | Special category data in case summary | Medium | High | User-entered only; no systematic processing | Medium |
 

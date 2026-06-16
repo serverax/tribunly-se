@@ -1,5 +1,5 @@
 """
-Phase 4B — Premium tribunal bundle integration tests.
+Phase 4B  -  Premium tribunal bundle integration tests.
 
 Tests:
   Bundle preview:

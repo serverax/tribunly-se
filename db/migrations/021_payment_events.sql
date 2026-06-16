@@ -1,10 +1,10 @@
--- Migration 021 — Payment events audit table
+-- Migration 021  -  Payment events audit table
 -- Idempotent Stripe webhook processing.
 -- Prevents duplicate event handling and stores payment audit trail.
 
 CREATE TABLE IF NOT EXISTS payment_events (
     id              BIGSERIAL PRIMARY KEY,
-    stripe_event_id TEXT        NOT NULL UNIQUE,   -- Stripe event.id — idempotency key
+    stripe_event_id TEXT        NOT NULL UNIQUE,   -- Stripe event.id  -  idempotency key
     event_type      TEXT        NOT NULL,           -- e.g. checkout.session.completed
     payment_mode    TEXT        NOT NULL,           -- test_simulator | stripe_test | stripe_live
     session_id      TEXT,                           -- Stripe checkout session ID

@@ -5,7 +5,7 @@ Every agent:
   - Has a fixed name, description, and allowed_tools list
   - Has a prohibited_actions list (guardrails)
   - Has a process() method called by the Brain
-  - May NOT answer directly — output goes through Brain → Evaluation → Answer
+  - May NOT answer directly  -  output goes through Brain → Evaluation → Answer
   - MUST return a structured AgentResult, never raw prose
 """
 

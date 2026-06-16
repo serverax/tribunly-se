@@ -16,7 +16,7 @@ def _db_up():
         return False
 
 
-pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN — DB not accessible")
+pytestmark = pytest.mark.skipif(not _db_up(), reason="UNPROVEN  -  DB not accessible")
 
 UD_FACTS = {
     "edt": "2025-10-01", "service_start_date": "2019-01-01",
@@ -53,7 +53,7 @@ def test_assessment_writes_deadline_audit_with_rules_used():
             juris, rules_used, final_dl = cur.fetchone()
             # GB-wide employment law is recorded under the canonical 'GB' code.
             assert juris in ("EW", "GB")
-            assert rules_used is not None, "rules_used missing — deadline not traced to rules"
+            assert rules_used is not None, "rules_used missing  -  deadline not traced to rules"
             assert final_dl is not None
     finally:
         conn.close()

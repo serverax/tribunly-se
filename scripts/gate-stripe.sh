@@ -45,7 +45,7 @@ if [ -z "$WEBHOOK_SECRET" ] || echo "$WEBHOOK_SECRET" | grep -qE "placeholder|wh
   FAIL=1
 else
   if ! echo "$WEBHOOK_SECRET" | grep -q "whsec_"; then
-    echo "WARN: STRIPE_WEBHOOK_SECRET does not start with whsec_ — may be invalid."
+    echo "WARN: STRIPE_WEBHOOK_SECRET does not start with whsec_  -  may be invalid."
   else
     echo "PASS: STRIPE_WEBHOOK_SECRET is set."
   fi
@@ -60,7 +60,7 @@ fi
 
 echo ""
 if [ "$FAIL" -eq 0 ]; then
-  echo "GATE PASSED — Stripe appears configured."
+  echo "GATE PASSED  -  Stripe appears configured."
   echo ""
   echo "To apply in Docker:"
   echo "  Add to .env:  PAYMENT_MODE=stripe_test (or stripe_live)"
@@ -68,7 +68,7 @@ if [ "$FAIL" -eq 0 ]; then
   echo "  Verify:       curl http://localhost:8000/api/payment/status | jq ."
   exit 0
 else
-  echo "GATE FAILED — Stripe not properly configured."
+  echo "GATE FAILED  -  Stripe not properly configured."
   echo ""
   echo "Required environment variables:"
   echo "  STRIPE_SECRET_KEY=sk_test_YOUR_KEY   (from Stripe dashboard)"

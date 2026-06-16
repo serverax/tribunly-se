@@ -1,5 +1,5 @@
 """
-Payment access control — HARDENED no-bypass contract.
+Payment access control  -  HARDENED no-bypass contract.
 
 Document access is granted ONLY by a DB-backed entitlement set via a real,
 signature-verified Stripe webhook. No raw token, no test_simulator, no demo unlock.
@@ -19,7 +19,7 @@ def client():
 
 class TestPaymentGatingIntegrity:
     """
-    Fail-closed contract: anonymous callers (no verifiable identity — including
+    Fail-closed contract: anonymous callers (no verifiable identity  -  including
     LAWAPP_AUTH_MODE=none) are rejected with 401 BEFORE any payment logic runs.
     Paid/unpaid gating with real identities is covered by tests/test_legacy_route_parity.py
     against seeded DB cases.
@@ -70,7 +70,7 @@ class TestPaymentStatusNotFromBody:
 
 class TestPaymentWebhook:
     def test_webhook_endpoint_exists(self, client):
-        """Endpoint exists (not 404) — but it must not accept unsigned events."""
+        """Endpoint exists (not 404)  -  but it must not accept unsigned events."""
         with patch.dict(os.environ, {"PAYMENT_MODE": "stripe_test", "STRIPE_WEBHOOK_SECRET": ""}):
             r = client.post("/api/payment/webhook", json={})
         assert r.status_code != 404

@@ -1,6 +1,6 @@
-PHASE 4A — DOCUMENT UPLOAD, OCR/EXTRACTION, USER CONFIRMATION
+PHASE 4A  -  DOCUMENT UPLOAD, OCR/EXTRACTION, USER CONFIRMATION
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 SCOPE
@@ -14,13 +14,13 @@ Phase 4A adds:
   5. Saved-case page updated to display uploads and extraction review state
 
 ═══════════════════════════════════════════════════════════════════════════════
-STORAGE — LOCAL/TEST-ONLY (NOT PRODUCTION-READY)
+STORAGE  -  LOCAL/TEST-ONLY (NOT PRODUCTION-READY)
 ═══════════════════════════════════════════════════════════════════════════════
 
 Phase 4A uploads are stored at: /tmp/lawapp_uploads/{case_id}/{upload_id}
   - No encryption at rest (Phase 5)
   - Container ephemeral storage only
-  - Every response includes storage_note: "LOCAL STORAGE — Phase 4A only..."
+  - Every response includes storage_note: "LOCAL STORAGE  -  Phase 4A only..."
   - DB stores only metadata (no file content in DB)
 
 Phase 5 replacement: encrypted object storage (S3/GCS + AES-256-GCM).
@@ -29,7 +29,7 @@ Phase 5 replacement: encrypted object storage (S3/GCS + AES-256-GCM).
 MOCK EXTRACTION (backend/engine/extraction.py)
 ═══════════════════════════════════════════════════════════════════════════════
 
-Phase 4A uses mock extraction — no actual OCR or LLM.
+Phase 4A uses mock extraction  -  no actual OCR or LLM.
 Real file bytes are NEVER read by the extraction module.
 
 Confidence scores per doc_type (higher = more reliable):
@@ -44,7 +44,7 @@ Confidence scores per doc_type (higher = more reliable):
 LOW_CONFIDENCE_THRESHOLD = 0.70
 
 Phase 5+: replace mock with Tesseract/Textract/Azure Form Recognizer.
-The interface is stable — callers use the same field dict shape.
+The interface is stable  -  callers use the same field dict shape.
 
 ═══════════════════════════════════════════════════════════════════════════════
 USER CONFIRMATION FLOW
@@ -71,11 +71,11 @@ PII fields EXCLUDED from apply-confirmed (Phase 5):
 ENDPOINTS
 ═══════════════════════════════════════════════════════════════════════════════
 
-POST /cases/{case_id}/uploads        — upload document (multipart)
-GET  /cases/{case_id}/uploads        — list upload metadata (no file content)
-POST /cases/{case_id}/uploads/{id}/extract          — mock extraction
-PATCH /cases/{case_id}/uploads/{id}/facts           — confirm/correct/reject
-POST /cases/{case_id}/uploads/{id}/apply-confirmed  — apply to case key_dates
+POST /cases/{case_id}/uploads         -  upload document (multipart)
+GET  /cases/{case_id}/uploads         -  list upload metadata (no file content)
+POST /cases/{case_id}/uploads/{id}/extract           -  mock extraction
+PATCH /cases/{case_id}/uploads/{id}/facts            -  confirm/correct/reject
+POST /cases/{case_id}/uploads/{id}/apply-confirmed   -  apply to case key_dates
 
 Supported content types: application/pdf, image/jpeg, image/png, image/tiff
 Supported doc_types: dismissal_letter, employment_contract, email_chain,
@@ -97,10 +97,10 @@ DATA PROTECTION NOTES
 FILES CREATED
 ═══════════════════════════════════════════════════════════════════════════════
 
-  db/migrations/008_phase4a_uploads.sql      — ALTER TABLE documents
-  backend/engine/extraction.py               — mock OCR extraction
-  tests/integration/test_phase4a_upload_ocr.py — 29 integration tests
-  reports/phase4a-upload-ocr-report.txt      — this report
+  db/migrations/008_phase4a_uploads.sql       -  ALTER TABLE documents
+  backend/engine/extraction.py                -  mock OCR extraction
+  tests/integration/test_phase4a_upload_ocr.py  -  29 integration tests
+  reports/phase4a-upload-ocr-report.txt       -  this report
 
 ═══════════════════════════════════════════════════════════════════════════════
 FILES MODIFIED
@@ -118,7 +118,7 @@ FILES MODIFIED
     - Legal notice unchanged and visible
 
 ═══════════════════════════════════════════════════════════════════════════════
-TESTS (test_phase4a_upload_ocr.py) — 29 tests
+TESTS (test_phase4a_upload_ocr.py)  -  29 tests
 ═══════════════════════════════════════════════════════════════════════════════
 
   test_pdf_upload_accepted

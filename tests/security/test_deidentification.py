@@ -1,5 +1,5 @@
 """
-De-identification tests — lawapp data protection boundary.
+De-identification tests  -  lawapp data protection boundary.
 
 Tests that:
   - every PII field is stripped before model calls

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-CI quality gate — rules legal verification.
+CI quality gate  -  rules legal verification.
 
 Reads all production-enabled rules (is_prospective=false) from the DB.
 Exits with code 1 if any are unverified or failed.
 
 Verification status rules:
-  verified           — passes gate
-  case_law_verified  — passes gate (case law authority)
-  prospective        — exempt from gate (is_prospective=true)
-  verification_required — FAILS gate (production blocker)
-  failed             — FAILS gate (verification contradicts rule)
+  verified            -  passes gate
+  case_law_verified   -  passes gate (case law authority)
+  prospective         -  exempt from gate (is_prospective=true)
+  verification_required  -  FAILS gate (production blocker)
+  failed              -  FAILS gate (verification contradicts rule)
 
 Usage (inside ingestion container):
     python scripts/check_rules_verification.py
@@ -54,7 +54,7 @@ def check_verification(rules: list[dict]) -> dict:
             failures.append({
                 "rule_key":        rule.get("rule_key"),
                 "effective_from":  str(rule.get("effective_from", "")),
-                "issue":           "verification_status column missing — run migration 011",
+                "issue":           "verification_status column missing  -  run migration 011",
             })
         elif status in ("verified", "case_law_verified"):
             summary[status] += 1
@@ -68,7 +68,7 @@ def check_verification(rules: list[dict]) -> dict:
                 "effective_from":  str(rule.get("effective_from", "")),
                 "claim_type":      rule.get("claim_type"),
                 "authority_ref":   rule.get("authority_ref"),
-                "issue":           f"status={status} — production rule unverified",
+                "issue":           f"status={status}  -  production rule unverified",
                 "notes":           rule.get("verification_notes") or "",
             })
         else:
@@ -86,7 +86,7 @@ def main() -> int:
     from ingestion.db import get_connection
 
     print("=" * 70)
-    print("LAWAPP — RULES LEGAL VERIFICATION GATE")
+    print("LAWAPP  -  RULES LEGAL VERIFICATION GATE")
     print("=" * 70)
 
     conn = get_connection()

@@ -1,4 +1,4 @@
-# Ingestion Runs — Proof Report
+# Ingestion Runs  -  Proof Report
 
 - **Timestamp:** 2026-06-05  **Branch:** main  **Commit:** a0968b0
 - **Command:** `bash scripts/prove_ingestion_runs.sh`

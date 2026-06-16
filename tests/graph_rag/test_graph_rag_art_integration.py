@@ -1,9 +1,9 @@
 """
-Graph-Awareness integration proof — System Update 001 (Knowledge Wiring).
+Graph-Awareness integration proof  -  System Update 001 (Knowledge Wiring).
 
 Proves the "variable drop" is closed: the legal relationship map produced by the
 BFS graph traversal (legal_nodes/legal_edges) is now INGESTED by the reasoning
-engine (Agent ART) before reasoning commences — not computed and dropped.
+engine (Agent ART) before reasoning commences  -  not computed and dropped.
 
 Two assertions, matching the directive:
   1. ART's input graph_context is non-null AND its nodes match the BFS traversal.
@@ -39,7 +39,7 @@ def test_art_input_graph_context_is_nonnull_and_matches_bfs():
     """trace.ART.input.graph_context is non-null and matches the BFS nodes."""
     subgraph = get_claim_subgraph("unfair_dismissal", "EW", max_depth=2)
     if not subgraph.get("nodes"):
-        pytest.skip("legal_nodes/legal_edges not seeded in this DB — BFS empty")
+        pytest.skip("legal_nodes/legal_edges not seeded in this DB  -  BFS empty")
 
     capture = _CapturingModel()
     facts = {
@@ -58,7 +58,7 @@ def test_art_input_graph_context_is_nonnull_and_matches_bfs():
     # 1) ART actually received the relationship map (non-null in its input).
     assert capture.captured_safe_facts is not None, "ART.reason() was never called"
     assert capture.captured_safe_facts.get("_legal_relationship_map"), \
-        "ART input graph_context is null — the variable was dropped before reasoning"
+        "ART input graph_context is null  -  the variable was dropped before reasoning"
 
     # 2) What ART saw matches the BFS traversal node set, exactly.
     used = result["graph_context_used"]
@@ -71,7 +71,7 @@ def test_art_input_graph_context_is_nonnull_and_matches_bfs():
 
 def test_relationship_map_is_rendered_and_prioritised_in_art_prompt():
     """The map appears in ART's prompt, ABOVE the isolated authority snippets.
-    No DB / no API key required — exercises the prompt builder directly."""
+    No DB / no API key required  -  exercises the prompt builder directly."""
     from backend.core.models import ClaudeReasoningModel
     from shared.schemas import RetrievalBundle
 

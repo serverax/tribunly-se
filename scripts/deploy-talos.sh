@@ -32,7 +32,7 @@ kubectl get ns | grep lawapp
 echo ""
 
 # ── Step 2: Secrets ─────────────────────────────────────────────────────────
-echo "=== Creating secrets (values from env vars — not committed) ==="
+echo "=== Creating secrets (values from env vars  -  not committed) ==="
 
 : "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}"
 : "${JWT_SECRET:?JWT_SECRET is required}"
@@ -113,7 +113,7 @@ kubectl -n lawapp-monitoring create secret generic lawapp-secrets \
   --from-literal=ENCRYPTION_KEY="${ENCRYPTION_KEY}" \
   --dry-run=client -o yaml | kubectl apply -f -
 
-echo "Secrets created (names only — values not shown):"
+echo "Secrets created (names only  -  values not shown):"
 kubectl get secrets -n lawapp-api        | grep -E "NAME|lawapp"
 kubectl get secrets -n lawapp-ai         | grep -E "NAME|lawapp"
 kubectl get secrets -n lawapp-rag        | grep -E "NAME|lawapp"
@@ -218,7 +218,7 @@ echo ""
 
 # ── Step 12: Ingress (only if ingress controller present) ────────────────────
 echo "=== Checking ingress controller ==="
-kubectl get pods -A | grep -E "traefik|ingress|nginx" || echo "No ingress controller found — apply manually when ready"
+kubectl get pods -A | grep -E "traefik|ingress|nginx" || echo "No ingress controller found  -  apply manually when ready"
 echo ""
 
 # ── Step 13: Final smoke test ────────────────────────────────────────────────

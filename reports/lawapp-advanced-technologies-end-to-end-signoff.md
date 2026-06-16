@@ -1,4 +1,4 @@
-# lawapp — Advanced Technologies End-to-End Signoff
+# lawapp  -  Advanced Technologies End-to-End Signoff
 **Date:** 2026-06-04 | **Branch:** main | **Commits:** 31204f7, 0fd709f
 
 ---
@@ -6,12 +6,12 @@
 ## FINAL VERDICT
 
 ```
-NOT READY — ADVANCED TECHNOLOGY WORKFLOW NOT FULLY PROVEN
+NOT READY  -  ADVANCED TECHNOLOGY WORKFLOW NOT FULLY PROVEN
 ```
 
 Core Brain wiring is extended and tested. 4 new modules created and wired into Brain.
 4 new DB tables applied to running container. 17 injection_guard tests pass.
-Remaining gaps listed below — fix blockers and rerun gates to reclassify.
+Remaining gaps listed below  -  fix blockers and rerun gates to reclassify.
 
 ---
 
@@ -62,11 +62,11 @@ SELECT COUNT(*) FROM payment_events; → 0 (table exists)
 
 ---
 
-## Remaining Gaps — NOT ACCEPTED
+## Remaining Gaps  -  NOT ACCEPTED
 
 | # | Section | Gap | Required action |
 |---|---|---|---|
-| 1 | §18 OpenTelemetry | No OTEL spans — only logs | Add opentelemetry-sdk, instrument routes |
+| 1 | §18 OpenTelemetry | No OTEL spans  -  only logs | Add opentelemetry-sdk, instrument routes |
 | 2 | §21 SAST/SCA | bandit/safety absent from CI | Add to lawapp-ci.yml |
 | 3 | §22 K8s admission | No PodSecurityStandard/Kyverno | Apply restricted policy to manifests |
 | 4 | §27 Load test | No locust/k6 script | Create tests/load/locustfile.py |
@@ -84,21 +84,21 @@ Fix these 13 gaps and rerun to reclassify as READY.
 
 ---
 
-## Session 2026-06-04 (continuation) — Gap closure progress
+## Session 2026-06-04 (continuation)  -  Gap closure progress
 
-### §17 Event Bus / Queue / Outbox — PROVEN (code path), corpus-gated for live HTTP
+### §17 Event Bus / Queue / Outbox  -  PROVEN (code path), corpus-gated for live HTTP
 
 **Status: outbox lifecycle ACCEPTED. Live HTTP `ok` event blocked only by owner #13 (empty legal corpus).**
 
 Wiring & implementation:
-- `brain.py` Step 18b (line ~784) publishes `assessment_complete` to the outbox on a successful (`status == "ok"`) audited assessment — fail-open, never blocks the user answer. Confirmed live in rebuilt container (`grep -c publish_outbox_event backend/core/brain.py` = 2 inside container).
-- `backend/core/outbox.py` `claim_batch(worker_id, limit)` — atomic claim:
+- `brain.py` Step 18b (line ~784) publishes `assessment_complete` to the outbox on a successful (`status == "ok"`) audited assessment  -  fail-open, never blocks the user answer. Confirmed live in rebuilt container (`grep -c publish_outbox_event backend/core/brain.py` = 2 inside container).
+- `backend/core/outbox.py` `claim_batch(worker_id, limit)`  -  atomic claim:
   `WHERE status='pending' AND retry_count < max_retries ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT n`, sets `status='processing'`, `worker_id`, preserves `trace_id`.
 - `mark_processed` → `status='processed'`, sets `processed_at`, clears `last_error`.
 - `mark_failed(event_id, error)` → `retry_count+1`, records truncated `last_error` (no PII), returns to `pending`, moves to `dead_letter` at `max_retries`.
-- `backend/core/outbox_worker.py` — consumer: `run_once()`, `process_forever()`, CLI `--once`; dispatch registry; logs exception class/message only (no PII).
-- `db/migrations/025_outbox_worker_columns.sql` — adds `last_error`, `processed_at` + partial pending index. Applied to running DB (12 columns confirmed).
-- `docker-compose.yml` — `outbox-worker` service wired (built image `lawapp-outbox-worker`, `--once` exits 0).
+- `backend/core/outbox_worker.py`  -  consumer: `run_once()`, `process_forever()`, CLI `--once`; dispatch registry; logs exception class/message only (no PII).
+- `db/migrations/025_outbox_worker_columns.sql`  -  adds `last_error`, `processed_at` + partial pending index. Applied to running DB (12 columns confirmed).
+- `docker-compose.yml`  -  `outbox-worker` service wired (built image `lawapp-outbox-worker`, `--once` exits 0).
 
 Proof (all run this session against the real compose DB):
 ```
@@ -115,10 +115,10 @@ Transitions proven: pending→processing (claim, SKIP LOCKED) ok · processing�
 
 Live HTTP path (`POST /api/brain/trace`, authed): route→brain executes; returned `insufficient_grounding` because the legal corpus is empty (owner #13), so Step 18b correctly published **no** event (fail-closed). The `ok`→event→processed path is proven deterministically by `tests/test_brain_outbox.py` (only the corpus/LLM `pipeline.assess` substituted). **Live HTTP `ok` event remains gated on owner #13 corpus ingestion.**
 
-### §21 SAST / SCA / container scan — IMPLEMENTED in CI (pending first CI run)
-- `.github/workflows/lawapp-ci.yml` new `security-scan` job: bandit (high-severity block), pip-audit (vuln deps block), trivy fs scan (HIGH/CRITICAL), trivy config scan of `infra/k8s`. **Not yet proven green on a CI run** — NOT ACCEPTED until CI executes and passes.
+### §21 SAST / SCA / container scan  -  IMPLEMENTED in CI (pending first CI run)
+- `.github/workflows/lawapp-ci.yml` new `security-scan` job: bandit (high-severity block), pip-audit (vuln deps block), trivy fs scan (HIGH/CRITICAL), trivy config scan of `infra/k8s`. **Not yet proven green on a CI run**  -  NOT ACCEPTED until CI executes and passes.
 
 ### Still NOT ACCEPTED (remaining code-only gaps this session)
-OpenTelemetry · feature flags · load testing · 50-case eval dataset · final gate scripts · backup/restore · K8s admission policies · crash reporting — not yet implemented/proven.
+OpenTelemetry · feature flags · load testing · 50-case eval dataset · final gate scripts · backup/restore · K8s admission policies · crash reporting  -  not yet implemented/proven.
 
-**Verdict unchanged: NOT READY — ADVANCED TECHNOLOGY WORKFLOW NOT FULLY PROVEN.**
+**Verdict unchanged: NOT READY  -  ADVANCED TECHNOLOGY WORKFLOW NOT FULLY PROVEN.**

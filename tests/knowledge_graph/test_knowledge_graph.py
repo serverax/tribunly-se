@@ -1,5 +1,5 @@
 """
-Knowledge Graph unit tests — lawapp legal concept mapping.
+Knowledge Graph unit tests  -  lawapp legal concept mapping.
 
 Tests that the legal knowledge graph correctly maps:
   - claim type → legal tests

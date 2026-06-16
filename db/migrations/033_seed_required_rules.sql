@@ -1,7 +1,7 @@
 -- 033_seed_required_rules.sql
 -- Seed the two remaining required GB unfair-dismissal rule keys, fully cited and
 -- effective-dated. Values come from primary legislation already in the corpus
--- (TULRCA 1992 s.207A; ERA 1996 s.111(2)(b)) — not hardcoded in app logic.
+-- (TULRCA 1992 s.207A; ERA 1996 s.111(2)(b))  -  not hardcoded in app logic.
 -- Idempotent via the (rule_key, jurisdiction, effective_from) unique key.
 
 INSERT INTO rules

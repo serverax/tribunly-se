@@ -11,7 +11,7 @@ that module must expose a ``TEMPLATES`` mapping of:
                       "generator": Callable | None } }
 
 Placeholder/disabled domains declare no templates_module and resolve to an empty
-registry — proving template isolation between domains.
+registry  -  proving template isolation between domains.
 """
 
 from __future__ import annotations

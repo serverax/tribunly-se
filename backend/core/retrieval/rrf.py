@@ -1,14 +1,14 @@
 """Reciprocal Rank Fusion (RRF) for hybrid legal retrieval.
 
-Merges independently-ranked result lists — lexical BM25 (PostgreSQL full-text)
-and semantic (pgvector cosine) — into one ranking using RRF:
+Merges independently-ranked result lists  -  lexical BM25 (PostgreSQL full-text)
+and semantic (pgvector cosine)  -  into one ranking using RRF:
 
     rrf_score(d) = Σ_l  1 / (k + rank_l(d))
 
 where rank_l(d) is the 1-based position of document d in list l, and k is a
 smoothing constant (default 60, the value from the original Cormack et al. RRF
 paper). A document found by BOTH paths accumulates both reciprocals and so
-ranks above a document found by only one — this is the property that makes
+ranks above a document found by only one  -  this is the property that makes
 hybrid retrieval beat either path alone.
 
 DETERMINISTIC-RULES BOUNDARY (constitution §9):
@@ -53,7 +53,7 @@ def _default_key(r: dict) -> tuple:
 
 # Citation-like tokens we treat as an explicit authority reference in the query.
 # UK-shaped: "s.98" / "section 98", neutral citations "[2021] UKSC 1",
-# and Act-with-section "ERA 1996 s 98". Deliberately conservative — a false
+# and Act-with-section "ERA 1996 s 98". Deliberately conservative  -  a false
 # positive here only means a small boost, never a fabricated result.
 _SECTION_RE = re.compile(r"\b(?:s|section|reg|regulation|art|article)\.?\s*(\d+[A-Za-z]?)\b", re.I)
 _NEUTRAL_CITATION_RE = re.compile(r"\[\d{4}\]\s*[A-Z]{2,6}\s*\d+", re.I)
@@ -97,9 +97,9 @@ def reciprocal_rank_fusion(
 
     Args:
         lexical:  results in lexical-rank order (best first). Each may carry a
-                  per-list score under 'rank' (ts_rank) — preserved as lexical_score.
+                  per-list score under 'rank' (ts_rank)  -  preserved as lexical_score.
         semantic: results in semantic-rank order (best first). Each may carry a
-                  'distance' (cosine) — preserved as vector_score = 1 - distance.
+                  'distance' (cosine)  -  preserved as vector_score = 1 - distance.
         k:        RRF smoothing constant (default 60).
         query:    original user query, used only for exact-citation boosting.
         key_fn:   identity function for cross-list dedup (default _default_key).
@@ -123,7 +123,7 @@ def reciprocal_rank_fusion(
             kk = key(r)
             entry = merged.get(kk)
             if entry is None:
-                entry = dict(r)  # shallow copy — never mutate caller's dicts
+                entry = dict(r)  # shallow copy  -  never mutate caller's dicts
                 entry["rrf_score"] = 0.0
                 entry["lexical_rank"] = None
                 entry["semantic_rank"] = None

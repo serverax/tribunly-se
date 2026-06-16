@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_corpus_quality.sh — data-science quality gates over the legal corpus.
+# prove_corpus_quality.sh  -  data-science quality gates over the legal corpus.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp (service 'db')"

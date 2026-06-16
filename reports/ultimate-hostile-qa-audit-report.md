@@ -1,4 +1,4 @@
-> **STALE — HISTORICAL ONLY (banner added 2026-06-10).** This document predates the current release state. The active source of truth is [docs/GO_LIVE_HANDOFF_2026-06-10.md](../docs/GO_LIVE_HANDOFF_2026-06-10.md) and branch `release/lawapp-clean-snapshot`. Do not use this file for release decisions.
+> **STALE  -  HISTORICAL ONLY (banner added 2026-06-10).** This document predates the current release state. The active source of truth is [docs/GO_LIVE_HANDOFF_2026-06-10.md](../docs/GO_LIVE_HANDOFF_2026-06-10.md) and branch `release/lawapp-clean-snapshot`. Do not use this file for release decisions.
 
 # lawapp Ultimate Hostile QA Audit Report
 
@@ -143,22 +143,22 @@
 
 ## 20. Repair Plan
 
-### Phase 0 — Stop Bleeding
+### Phase 0  -  Stop Bleeding
 * (Completed) Removed `mock` auth and `test_simulator` payment bypasses.
 
-### Phase 1 — Data Spine Repair
+### Phase 1  -  Data Spine Repair
 * (Completed) Ingestion fetches live data from `legislation.gov.uk` and `acas.org.uk`.
 
-### Phase 2 — RAG and AI Repair
+### Phase 2  -  RAG and AI Repair
 * (Completed) Institutionalized `CitationGuard`. `orchestrator.execute_generative_lane` strictly enforces verified citations or falls back to deterministic safe-haven rules.
 
-### Phase 3 — Workflow Repair
+### Phase 3  -  Workflow Repair
 * (Completed) JWT isolation strictly enforced across all cases and document endpoints.
 
-### Phase 4 — Frontend Wiring Repair
+### Phase 4  -  Frontend Wiring Repair
 * (Completed) Verified frontend uses dynamic paths without hardcoded mock overrides.
 
-### Phase 5 — CI/CD and Proof Repair
+### Phase 5  -  CI/CD and Proof Repair
 * (Completed) CI/CD actions configured to fail on direct AI calls (`model.generate`, etc.) outside the orchestrator.
 
 ## 21. Exact Fix Instructions

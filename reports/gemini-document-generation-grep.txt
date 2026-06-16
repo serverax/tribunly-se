@@ -76,7 +76,7 @@ backend/core/router.py:44:    r"particulars of claim",
 backend/domains/employment/checklists/evidence_weight.py:21:    elif bool(re.search(r"\b(email|contract|minutes|letter|pdf|screenshot)\b", t, re.IGNORECASE)):
 client/public/css/styles.css:163:  div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
 client/public/index.html:37:    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-bottom:2rem;">
-client/public/index.html:56:        <p style="font-size:.9rem;color:var(--muted);margin-top:.5rem;">Particulars of Claim and Schedule of Loss when you're ready — with your actual facts, not a generic template.</p>
+client/public/index.html:56:        <p style="font-size:.9rem;color:var(--muted);margin-top:.5rem;">Particulars of Claim and Schedule of Loss when you're ready  -  with your actual facts, not a generic template.</p>
 client/public/js/document_preview.js:124:    const required = (documentType === 'schedule_of_loss' || documentType === 'particulars_of_claim')
 client/public/pages/assessment.html:568:      'prepare_documents':   {label: 'Prepare your claim documents', desc: 'Your case appears viable. The next step is to start ACAS Early Conciliation and prepare your ET1 particulars.'},
 client/public/pages/assessment.html:972:    document.getElementById('btn-poc')?.addEventListener('click', () => generateDoc('particulars_of_claim', assessment));

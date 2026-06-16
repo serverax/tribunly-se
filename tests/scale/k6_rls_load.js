@@ -1,4 +1,4 @@
-// T-010 — RLS / auth load test for TRUE 100k-concurrent validation (k6).
+// T-010  -  RLS / auth load test for TRUE 100k-concurrent validation (k6).
 //
 // The pytest scale suite (test_t010_rls_scale.py) proves RLS-under-concurrency and
 // the <20ms auth budget on one box. This k6 script drives the SAME security
@@ -18,7 +18,7 @@
 //   - LAWAPP_AUTH_MODE=jwt, rate limiter on Redis (shared across replicas).
 //   - Two seeded test users (A, B) each owning one case; short-lived JWTs.
 //
-// Run (example — 100k VUs needs a distributed k6 / k6-operator on the cluster):
+// Run (example  -  100k VUs needs a distributed k6 / k6-operator on the cluster):
 //   BASE_URL=https://api.lawapp.example \
 //   JWT_A=... JWT_B=... CASE_A=... CASE_B=... \
 //   k6 run --vus 2000 --duration 5m tests/scale/k6_rls_load.js
@@ -34,7 +34,7 @@ const JWT_B = __ENV.JWT_B || '';
 const CASE_A = __ENV.CASE_A || '';
 const CASE_B = __ENV.CASE_B || '';
 
-// SECURITY counters — any non-zero value here is a hard FAIL (privilege escalation).
+// SECURITY counters  -  any non-zero value here is a hard FAIL (privilege escalation).
 const rlsEscalations = new Counter('rls_privilege_escalations');
 const anonReads = new Counter('anon_reads_allowed');
 

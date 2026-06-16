@@ -1,4 +1,4 @@
--- Migration 018 — lawapp Brain Architecture Tables
+-- Migration 018  -  lawapp Brain Architecture Tables
 -- Creates tables for: brain traces, legal memory, semantic cache,
 --                     legal graph nodes/edges, routing decisions,
 --                     evaluation results, MCP tool calls.
@@ -174,21 +174,21 @@ CREATE INDEX IF NOT EXISTS mcp_tool_calls_tool_idx  ON mcp_tool_calls (tool_name
 
 INSERT INTO legal_nodes (node_id, node_type, label, description, jurisdiction, authority_level, source_ref, source_url)
 VALUES
-  ('ud_claim',            'claim_type',          'Unfair Dismissal',                 'ERA 1996 Part X — right not to be unfairly dismissed',                               'EW', 1, 'ERA 1996 s.94',  'https://www.legislation.gov.uk/ukpga/1996/18/section/94'),
-  ('employee_status',     'legal_test',          'Employee Status',                  'Must be an employee (not worker/self-employed) — ERA 1996 s.230',                    'EW', 1, 'ERA 1996 s.230', 'https://www.legislation.gov.uk/ukpga/1996/18/section/230'),
+  ('ud_claim',            'claim_type',          'Unfair Dismissal',                 'ERA 1996 Part X  -  right not to be unfairly dismissed',                               'EW', 1, 'ERA 1996 s.94',  'https://www.legislation.gov.uk/ukpga/1996/18/section/94'),
+  ('employee_status',     'legal_test',          'Employee Status',                  'Must be an employee (not worker/self-employed)  -  ERA 1996 s.230',                    'EW', 1, 'ERA 1996 s.230', 'https://www.legislation.gov.uk/ukpga/1996/18/section/230'),
   ('qualifying_service',  'legal_test',          'Qualifying Period',                '2 years continuous employment (or day-one rights exception)',                         'EW', 1, 'ERA 1996 s.108', 'https://www.legislation.gov.uk/ukpga/1996/18/section/108'),
   ('dismissal',           'legal_test',          'Fact of Dismissal',                'Actual dismissal, constructive dismissal, or expiry of fixed-term contract',          'EW', 1, 'ERA 1996 s.95',  'https://www.legislation.gov.uk/ukpga/1996/18/section/95'),
-  ('fair_reason',         'legal_test',          'Fair Reason for Dismissal',        'Capability, conduct, redundancy, statutory restriction, or SOSR — s.98(2)',           'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
-  ('reasonableness_test', 'legal_test',          'Range of Reasonable Responses',    'Was dismissal within band of reasonable responses? — s.98(4)',                       'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
-  ('procedure',           'procedure',           'Dismissal Procedure',              'ACAS Code of Practice — invite, meeting, appeal. Polkey reduction if not followed.',  'EW', 5, 'ACAS Code',      'https://www.acas.org.uk/acas-code-of-practice-on-disciplinary-and-grievance-procedures'),
-  ('acas_ec',             'procedure',           'ACAS Early Conciliation',          'Mandatory before ET1. Pauses limitation period — ERA 1996 s.207B',                   'EW', 1, 'ERA 1996 s.207B','https://www.legislation.gov.uk/ukpga/1996/18/section/207B'),
+  ('fair_reason',         'legal_test',          'Fair Reason for Dismissal',        'Capability, conduct, redundancy, statutory restriction, or SOSR  -  s.98(2)',           'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
+  ('reasonableness_test', 'legal_test',          'Range of Reasonable Responses',    'Was dismissal within band of reasonable responses?  -  s.98(4)',                       'EW', 1, 'ERA 1996 s.98',  'https://www.legislation.gov.uk/ukpga/1996/18/section/98'),
+  ('procedure',           'procedure',           'Dismissal Procedure',              'ACAS Code of Practice  -  invite, meeting, appeal. Polkey reduction if not followed.',  'EW', 5, 'ACAS Code',      'https://www.acas.org.uk/acas-code-of-practice-on-disciplinary-and-grievance-procedures'),
+  ('acas_ec',             'procedure',           'ACAS Early Conciliation',          'Mandatory before ET1. Pauses limitation period  -  ERA 1996 s.207B',                   'EW', 1, 'ERA 1996 s.207B','https://www.legislation.gov.uk/ukpga/1996/18/section/207B'),
   ('limitation_date',     'deadline',            'ET Limitation Date',               '3 months less one day from EDT (or EC floor). ERA 1996 s.111(2)',                     'EW', 1, 'ERA 1996 s.111', 'https://www.legislation.gov.uk/ukpga/1996/18/section/111'),
   ('basic_award',         'remedy',              'Basic Award',                      'Statutory formula: age × service years × weekly pay cap. ERA 1996 s.119',            'EW', 1, 'ERA 1996 s.119', 'https://www.legislation.gov.uk/ukpga/1996/18/section/119'),
   ('compensatory_award',  'remedy',              'Compensatory Award',               'Loss of earnings, future loss, benefits. Capped at lower of 52 weeks pay or £123,543', 'EW', 1, 'ERA 1996 s.123', 'https://www.legislation.gov.uk/ukpga/1996/18/section/123'),
   ('polkey_reduction',    'defence',             'Polkey Reduction',                 'Award reduced if fair outcome would have been same even with correct procedure',       'EW', 2, 'Polkey v Dayton Services [1988] AC 344', NULL),
-  ('contributory_fault',  'defence',             'Contributory Fault',               'Award reduced for claimant conduct contributing to dismissal — ERA 1996 s.122/123',   'EW', 1, 'ERA 1996 s.122', 'https://www.legislation.gov.uk/ukpga/1996/18/section/122'),
-  ('upw_claim',           'claim_type',          'Unpaid Wages / Unlawful Deduction','ERA 1996 Part II — right not to have unlawful deductions from wages',                 'EW', 1, 'ERA 1996 s.13',  'https://www.legislation.gov.uk/ukpga/1996/18/section/13'),
-  ('upw_limitation',      'deadline',            'UPW Limitation Date',              '3 months less one day from date of deduction — ERA 1996 s.23(2)',                     'EW', 1, 'ERA 1996 s.23',  'https://www.legislation.gov.uk/ukpga/1996/18/section/23')
+  ('contributory_fault',  'defence',             'Contributory Fault',               'Award reduced for claimant conduct contributing to dismissal  -  ERA 1996 s.122/123',   'EW', 1, 'ERA 1996 s.122', 'https://www.legislation.gov.uk/ukpga/1996/18/section/122'),
+  ('upw_claim',           'claim_type',          'Unpaid Wages / Unlawful Deduction','ERA 1996 Part II  -  right not to have unlawful deductions from wages',                 'EW', 1, 'ERA 1996 s.13',  'https://www.legislation.gov.uk/ukpga/1996/18/section/13'),
+  ('upw_limitation',      'deadline',            'UPW Limitation Date',              '3 months less one day from date of deduction  -  ERA 1996 s.23(2)',                     'EW', 1, 'ERA 1996 s.23',  'https://www.legislation.gov.uk/ukpga/1996/18/section/23')
 ON CONFLICT (node_id) DO NOTHING;
 
 -- Edges: unfair dismissal graph

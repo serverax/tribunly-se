@@ -1,4 +1,4 @@
--- Migration 010: Phase 5A — funnel event tracking
+-- Migration 010: Phase 5A  -  funnel event tracking
 -- Stores funnel events locally. No external analytics. case_id optional.
 -- GUARDRAIL: metadata must not contain raw personal facts or file content.
 

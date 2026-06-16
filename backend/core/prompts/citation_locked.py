@@ -1,5 +1,5 @@
 """
-Citation-locked prompt builder — Phase 3.
+Citation-locked prompt builder  -  Phase 3.
 Refactored from Iterlaw citationBoundPrompt.ts
 """
 from typing import List, TypedDict, Optional

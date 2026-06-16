@@ -57,7 +57,7 @@ def test_assess_reasoning_lane_blocks_uncited_output():
     body = _assess(REASONING_Q, UD_FACTS).json()
     # An 'ok' final answer MUST carry citations; otherwise it must not be 'ok'.
     if body.get("status") == "ok":
-        assert body.get("citations"), "ok answer with no citations — uncited output not blocked"
+        assert body.get("citations"), "ok answer with no citations  -  uncited output not blocked"
 
 
 def test_assess_reasoning_lane_blocks_ungrounded_output():
@@ -76,7 +76,7 @@ def test_assess_reasoning_lane_passes_critic_before_final_response():
 
 def test_assess_deidentifies_before_model():
     body = _assess(REASONING_Q, UD_FACTS).json()
-    assert "boundary_log" in body, "no boundary_log — de-identification not proven"
+    assert "boundary_log" in body, "no boundary_log  -  de-identification not proven"
 
 
 def test_stream_preview_not_final_advice(monkeypatch):
@@ -84,7 +84,7 @@ def test_stream_preview_not_final_advice(monkeypatch):
     monkeypatch.setenv("OLLAMA_BASE_URL", "http://127.0.0.1:1")
     s = client.post("/reasoning/stream", json={"query": REASONING_Q, "facts": UD_FACTS})
     assert s.headers["content-type"].startswith("text/event-stream")
-    # the stream is a preview — it must NOT claim to be the final governed assessment
+    # the stream is a preview  -  it must NOT claim to be the final governed assessment
     assert "final_governed_assessment" not in s.text
     # whereas /assess IS the governed result
     assert _assess(REASONING_Q, UD_FACTS).json()["result_type"] == "final_governed_assessment"

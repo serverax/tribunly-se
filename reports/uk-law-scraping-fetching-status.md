@@ -1,4 +1,4 @@
-# UK Law Scraping / Fetching — Status Report
+# UK Law Scraping / Fetching  -  Status Report
 
 - **Timestamp:** 2026-06-05  **Branch:** main  **Commit:** a0968b0
 - **Proof:** `scripts/prove_uk_law_scraping_fetching.sh`
@@ -17,7 +17,7 @@ reform-watch are **not started**. ACAS/GOV.UK depth and pre-2021 UKSI remain.
 | ACAS | **LIVE FETCHED FROM OFFICIAL SOURCE** | `ingestion/acas/ingest.py` | 36 (9 documents) | yes (`acas.org.uk`) | html | yes |
 | GOV.UK | **LIVE FETCHED FROM OFFICIAL SOURCE** | `ingestion/govuk/ingest.py` | 17 (incl. employment-tribunals, dismissal, redundancy, grievance, whistleblowing) | yes (`gov.uk`) | html | yes |
 | Find Case Law / National Archives | **BLOCKED BY LICENCE** (not complete) | `ingestion/sources/find_case_law.py` | **0** | n/a | akn (ready) | n/a |
-| Northern Ireland employment law | **NOT STARTED** (fail-closed only) | — | 0 NI chunks / 0 NI rules | n/a | n/a | n/a |
+| Northern Ireland employment law | **NOT STARTED** (fail-closed only) |  -  | 0 NI chunks / 0 NI rules | n/a | n/a | n/a |
 | UK Parliament Bills / reform-watch | **NOT STARTED** (monitoring-only by design) | `ingestion/bills/` (present) | 0 | n/a | n/a | n/a |
 
 ## Legislation proof (live)
@@ -52,7 +52,7 @@ Continuous employment, Employment status, etc.
 
 ## Bills / reform-watch (NOT STARTED)
 `bills` table present, 0 rows. Monitoring-only by design (UK Parliament Bills API /
-prospective legislation) — NOT legal authority, NOT claimed as fetched corpus.
+prospective legislation)  -  NOT legal authority, NOT claimed as fetched corpus.
 
 ## Chunks / embeddings / provenance (corpus_chunks = 247, all GB)
 | source_type | chunks | embedded | sourced |
@@ -64,7 +64,7 @@ prospective legislation) — NOT legal authority, NOT claimed as fetched corpus.
 0 missing source_url / chunk_hash / jurisdiction_code / embedding.
 
 ## What remains (depth)
-- Find Case Law — owner licence (BLOCKED).
+- Find Case Law  -  owner licence (BLOCKED).
 - Northern Ireland source mapping + ingestion (NOT STARTED).
 - Bills/reform-watch population (NOT STARTED, monitoring-only).
 - Pre-2021 Increase of Limits Orders; deeper multi-page ACAS guides; GOV.UK ET1/ET3 detail.

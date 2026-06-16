@@ -1,9 +1,9 @@
-# LAWAPP HARD-EXIT — REBOOT HANDOFF CONTINUATION REPORT
+# LAWAPP HARD-EXIT  -  REBOOT HANDOFF CONTINUATION REPORT
 
 Branch: `recovery/lawapp-autonomous-stabilisation`
 Cluster: `admin@ordinox-talos` (3 Talos control-plane nodes, no dedicated workers)
 Author: Claude Code (autonomous recovery)
-Verdict at start: **NOT READY — LAWAPP HARD BLOCKERS REMAIN**
+Verdict at start: **NOT READY  -  LAWAPP HARD BLOCKERS REMAIN**
 
 Evidence root: `reports/hard-exit/evidence/g1-live-failure/`
 
@@ -11,10 +11,10 @@ Evidence root: `reports/hard-exit/evidence/g1-live-failure/`
 
 ## G1 LIVE FAILURE CLASSIFICATION (evidence-based, pre-repair)
 
-Diagnosed from live cluster — NOT guessed. Raw evidence saved under
+Diagnosed from live cluster  -  NOT guessed. Raw evidence saved under
 `reports/hard-exit/evidence/g1-live-failure/` (pods, describe, events, logs).
 
-### 1. lawapp-brain (both replicas 0/1 Running, 221 + 270 restarts) — DB MISCONFIG + WRONG LIVENESS PROBE
+### 1. lawapp-brain (both replicas 0/1 Running, 221 + 270 restarts)  -  DB MISCONFIG + WRONG LIVENESS PROBE
 
 - **App startup:** SUCCEEDS. Logs show `Application startup complete` / `Uvicorn running`.
   (passes `validate_startup_config`, so production env vars are present for the brain).
@@ -35,20 +35,20 @@ Diagnosed from live cluster — NOT guessed. Raw evidence saved under
 - **Config/secrets missing?** No missing secret; the values present are *wrong target* (lawapp-api
   postgres instead of lawapp-rag, user `lawapp` instead of `lawapp_user`).
 
-### 2. lawapp-backend new ReplicaSet 6c85f79cbd (CrashLoopBackOff, 565 restarts) — MISSING PROD CONFIG (NOT DB)
+### 2. lawapp-backend new ReplicaSet 6c85f79cbd (CrashLoopBackOff, 565 restarts)  -  MISSING PROD CONFIG (NOT DB)
 
 - **Crash reason (previous+current logs):**
-  `StartupConfigError: Production startup failed — missing/invalid:
+  `StartupConfigError: Production startup failed  -  missing/invalid:
   ['ADMIN_API_KEY', 'APP_BASE_URL', 'JWT_ISSUER', 'JWT_AUDIENCE', 'AWS_KMS_KEY_ARN (KEY_MANAGEMENT_MODE=aws_kms)']`
   raised at `backend/core/config_validation.py:148` during `_lifespan` startup.
-- **Not a DB issue** — it never reaches DB; it aborts in startup config validation.
+- **Not a DB issue**  -  it never reaches DB; it aborts in startup config validation.
 - The **old** RS `7757c5df85` (1/1 Running, 3d16h) predates this spec and serves traffic
   (`/health` → `{"status":"ok","db":"connected"}` against the lawapp-rag DSN).
 - **Env/config issue:** the new deployment spec does not supply the 5 required production vars
   via `lawapp-config`/`lawapp-secrets`. `AWS_KMS_KEY_ARN` is only required because
   `KEY_MANAGEMENT_MODE=aws_kms`.
 
-### 3. Pending / unschedulable pods — CLUSTER CAPACITY + MISSING TOLERATION
+### 3. Pending / unschedulable pods  -  CLUSTER CAPACITY + MISSING TOLERATION
 
 - **Scheduler reason (events):** `0/3 nodes are available: 1 Too many pods, 2 node(s) had untolerated taint(s)`.
 - **Node taints:** `talos-138…` and `talos-5h3…` carry `node-role.kubernetes.io/control-plane:NoSchedule`;
@@ -56,14 +56,14 @@ Diagnosed from live cluster — NOT guessed. Raw evidence saved under
 - **Toleration gap:** working pods (e.g. brain) tolerate `node-role.kubernetes.io/control-plane`;
   the Pending pods (`lawapp-reasoning-worker`, 2nd `lawapp-rules-engine`, 2nd `lawapp-crawler`)
   **lack that toleration**, so they can only target the one untainted (full) node.
-- Also: `lawapp-monitoring` smoke-test CronJob pods are accumulating Pending (same cause) — noise.
+- Also: `lawapp-monitoring` smoke-test CronJob pods are accumulating Pending (same cause)  -  noise.
 
 ---
 
 ## G1 REPAIR PLAN (non-destructive, no owner-only action required for brain)
 
 1. **Brain DB**: set `DATABASE_URL` on `lawapp-brain` to the proven working lawapp-rag DSN
-   (value copied from the working backend's running env — never printed). `ingestion/config.py`
+   (value copied from the working backend's running env  -  never printed). `ingestion/config.py`
    uses `DATABASE_URL` first, overriding the wrong `POSTGRES_*`.
 2. **Brain liveness**: change liveness probe path `/health` → `/livez` (shallow, no DB).
 3. Rollout restart brain; prove Ready, `/health` 200, `/livez` 200, restart count stable, brain trace.
@@ -76,17 +76,17 @@ Diagnosed from live cluster — NOT guessed. Raw evidence saved under
 
 ---
 
-## G1 BRAIN REPAIR — EXECUTED + PROOF (non-destructive)
+## G1 BRAIN REPAIR  -  EXECUTED + PROOF (non-destructive)
 
 **Repair actions (live, reversible):**
 1. Created dedicated secret `lawapp-brain-db` (lawapp-ai) holding `DATABASE_URL` = the proven
    working DSN (`postgresql://lawapp_user:<redacted>@lawapp-postgres.lawapp-rag…:5432/lawapp`),
    value piped pod→secret, never printed.
-2. `kubectl patch deployment lawapp-brain` — added env `DATABASE_URL` (from that secret) so
+2. `kubectl patch deployment lawapp-brain`  -  added env `DATABASE_URL` (from that secret) so
    `ingestion/config.py` uses it ahead of the wrong `POSTGRES_*`. Isolated to the brain.
 3. Liveness probe `/health` → **`tcpSocket:8000`** (shallow, image-agnostic, no DB dependency).
    NOTE: the deployed `:latest` image returns **404 for `/livez`** (image predates the `/livez`
-   code at `main.py:347`), so an httpGet `/livez` liveness would itself crash-loop — hence TCP.
+   code at `main.py:347`), so an httpGet `/livez` liveness would itself crash-loop  -  hence TCP.
 
 **Proof (evidence files under `reports/hard-exit/evidence/g1-live-failure/`):**
 - `lawapp-brain` deploy: `READY 1/1`, `AVAILABLE 1`; pod `lawapp-brain-7f648cbf56-26lld`
@@ -113,10 +113,10 @@ DB-backed, reachable via Service, runs the 19-step algorithm.
    live lawapp-rag DB (audit-table deltas were 0 after the trace). Root cause = **schema drift**:
    `scripts/run-migrations.sh` targets the WRONG Postgres (`lawapp-api` / user `lawapp`) while the
    real data lives in `lawapp-rag` / `lawapp_user`. Fix = apply additive `018`/`019` migrations to
-   lawapp-rag — **BLOCKED: auto-mode classifier requires explicit user authorization for a live
+   lawapp-rag  -  **BLOCKED: auto-mode classifier requires explicit user authorization for a live
    shared-DB migration.** (Also affects G10: `corpus_chunks` from migration 032 likely missing too.)
 2. **RAG retrieval returns 0** for the brain trace (`sources_retrieved:0`, `rules_applied:0`,
-   `citations_verified:0`) — grounding pipeline not returning chunks. G10 concern.
+   `citations_verified:0`)  -  grounding pipeline not returning chunks. G10 concern.
 3. **Backend new RS `6c85f79cbd` still CrashLoopBackOff (G1b).** Exact cause: `lawapp-config` sets
    `KEY_MANAGEMENT_MODE=aws_kms` (forces `AWS_KMS_KEY_ARN`, which is unset) + missing
    `ADMIN_API_KEY/APP_BASE_URL/JWT_ISSUER/JWT_AUDIENCE`. Brain (same image) passes because it has
@@ -127,24 +127,24 @@ DB-backed, reachable via Service, runs the 19-step algorithm.
    `node-role.kubernetes.io/control-plane` toleration; only the one untainted node has capacity and
    it is full (102 pods). Fix = add toleration (posture decision) or correct replica counts.
 
-**Overall G1: NOT YET FULL PASS** — brain core proven; trace-persistence + backend RS + pending
+**Overall G1: NOT YET FULL PASS**  -  brain core proven; trace-persistence + backend RS + pending
 pods remain. Two fixes need an explicit production-change authorization (see decision below).
 
 ---
 
-## G2 — LEAKED PATs (working tree + git history)
+## G2  -  LEAKED PATs (working tree + git history)
 
 **Commands / proof (`reports/hard-exit/evidence/g2-secret-scan/`):**
-- Remotes: SSH only (`git@github.com:serverax/lawapp.git`) — **no embedded credentials**.
+- Remotes: SSH only (`git@github.com:serverax/lawapp.git`)  -  **no embedded credentials**.
 - Working tree: **CLEAN** (no PAT/secret patterns).
-- Git history: **GitHub PAT pattern PRESENT** in 3 commits — `6c5882e`, `a0968b0`, `e165295`
+- Git history: **GitHub PAT pattern PRESENT** in 3 commits  -  `6c5882e`, `a0968b0`, `e165295`
   (raw tokens never printed; redacted).
 - Hardened `scripts/security/scan-secrets-history.sh`: history findings are now **fatal by
   default** (`HISTORY_FAILS:-1`) → full scan exits **1** (`scan-script-output-failclosed.txt`);
   working-tree-only mode (`SCAN_HISTORY=0`) still exits 0 for pre-commit.
 - CI reference: `.github/workflows/lawapp-ci.yml:146` runs the scan (working-tree mode).
 
-**G2 verdict: FAIL — OWNER ACTION REQUIRED.** A real GitHub PAT pattern exists in git history.
+**G2 verdict: FAIL  -  OWNER ACTION REQUIRED.** A real GitHub PAT pattern exists in git history.
 Remediation is owner-only and was explicitly reserved in the handoff:
   1. **Rotate/revoke** the exposed PAT(s) in GitHub → Settings → Developer settings (account-owner only).
   2. **Rewrite history** (git filter-repo / BFG) to purge the blobs, then **force-push** (destructive,
@@ -153,7 +153,7 @@ Until both are done, the security gate correctly fails closed.
 
 ---
 
-## G1 CLOSURE — trace persistence + backend + pending pods (owner-authorized)
+## G1 CLOSURE  -  trace persistence + backend + pending pods (owner-authorized)
 
 Owner authorized: additive DB writes/migrations on lawapp-rag; backend env alignment; pod tolerations.
 
@@ -163,9 +163,9 @@ Owner authorized: additive DB writes/migrations on lawapp-rag; backend env align
 matches returned trace_id (`unfair_dismissal`). Evidence `28-brain-trace-persisted.txt`,
 `27-migrate-018/019*.txt`.
 ROOT FIX needed for durability: `scripts/run-migrations.sh` targets the WRONG namespace
-(`lawapp-api`) — should target `lawapp-rag` (logged for repair).
+(`lawapp-api`)  -  should target `lawapp-rag` (logged for repair).
 
-**Backend new RS (G1b) — FIXED.** Root cause = invalid `KEY_MANAGEMENT_MODE=aws_kms`
+**Backend new RS (G1b)  -  FIXED.** Root cause = invalid `KEY_MANAGEMENT_MODE=aws_kms`
 (valid set: env/kms_stub/disabled) forcing a missing `AWS_KMS_KEY_ARN`, plus missing
 `ADMIN_API_KEY/APP_BASE_URL/JWT_ISSUER/JWT_AUDIENCE`, plus wrong DB target. Fixes (live):
 `lawapp-config` → `KEY_MANAGEMENT_MODE=kms_stub` (+ `KMS_KEY_ID` already present) +
@@ -174,10 +174,10 @@ brain, never decoded); created `lawapp-backend-db` secret with the working lawap
 `DATABASE_URL` env. New RS `lawapp-backend-c8f4f55b5-v8lnn` = **1/1 Running, 0 restarts**,
 `/health → db:connected`. Old crashloop RS replaced. Evidence `30-backend-after.txt`.
 
-**Pending pods — 3 of 4 FIXED.** Added `node-role.kubernetes.io/control-plane` toleration to
+**Pending pods  -  3 of 4 FIXED.** Added `node-role.kubernetes.io/control-plane` toleration to
 `lawapp-backend`, `lawapp-rules-engine`, `lawapp-crawler` → all **1/1 Running** on the tainted
 nodes (capacity 47/43 pods). `lawapp-reasoning-worker` now schedules but **CrashLoopBackOff
-exitCode 0 (Completed) instantly** — its command `python -m backend.core.pipeline` targets a
+exitCode 0 (Completed) instantly**  -  its command `python -m backend.core.pipeline` targets a
 **library with no `__main__`/run-loop** (never a daemon; the real worker is the separate
 `lawapp-worker` image `services.lawapp_worker.app`). It was always broken; being Pending merely
 hid it. Brain workflow is proven WITHOUT it. **Owner decision needed:** scale to 0 (recommended,
@@ -190,7 +190,7 @@ cleanup. Core runtime + DB-backed Brain workflow + persisted trace are command-p
 
 ---
 
-## G3 — WASM + pip-audit: PENDING (local, non-gated — next).
+## G3  -  WASM + pip-audit: PENDING (local, non-gated  -  next).
 
 ## AUTHORIZATION CHECKPOINT (harness safety-classifier gated a live-DB migration)
 
@@ -208,13 +208,13 @@ Decision requested from the owner before proceeding with these (see chat).
 
 ## CONSOLIDATED SESSION VERDICT
 
-Commits this session (branch recovery/lawapp-autonomous-stabilisation; NOT pushed — owner pushes):
+Commits this session (branch recovery/lawapp-autonomous-stabilisation; NOT pushed  -  owner pushes):
 - `2020979` G1+G3+G2-gate+G10-spine + agent files + board + frontend audit (+ redacted a leaked DB pw).
 - `4130c0d` G10/SA-001 raw UK sources + provenance manifest.
 
 | Blocker | Status | Proof |
 |---|---|---|
-| **G1** brain 503 / DB / runtime | **PASS** | brain 1/1, 0 restarts, /health 200, trace persisted (brain_traces 0→1); backend new RS 1/1 db:connected; rules-engine/crawler scheduled. Residual: reasoning-worker has no valid entrypoint (OWNER decision: scale-0 or implement) + old backup Job pods cleanup (OWNER) — both classifier-gated, non-critical. |
+| **G1** brain 503 / DB / runtime | **PASS** | brain 1/1, 0 restarts, /health 200, trace persisted (brain_traces 0→1); backend new RS 1/1 db:connected; rules-engine/crawler scheduled. Residual: reasoning-worker has no valid entrypoint (OWNER decision: scale-0 or implement) + old backup Job pods cleanup (OWNER)  -  both classifier-gated, non-critical. |
 | **G2** leaked PAT in history | **FAIL / OWNER-ACTION TRACKED** | working tree clean; PAT pattern in 3 history commits; scan now fails-closed; remediate script + runbook prepared. Owner must rotate PAT + rewrite history. Not a blocker for other tracks. |
 | **G3** WASM + pip-audit | **PASS** | wasm-pack build green; 13 cargo tests (incl. bad-input fail-closed); fixed real panic in compute_deadline; pip-audit "No known vulnerabilities"; no hardcoded legal values. |
 | **G10** legal-data provenance | **IN PROGRESS** | spine migrations applied to lawapp-rag (legal_sources + corpus_chunks w/ provenance cols + ingestion runs/audit). SA-001 scraper PASS (9 official sources, HTTP 200, real hashes). SA-002 transform → SA-003 embed/retrieve → SA-004 CitationGuard REMAIN. |
@@ -225,7 +225,7 @@ frontend/backend e2e (Playwright); k8s runtime gate; final-*.sh gates (to be aut
 SA-006 QA accept; G2 owner remediation.
 
 ## OVERALL PROJECT VERDICT
-**NOT READY — LAWAPP HARD BLOCKERS REMAIN** (G2 owner action; G10 chain incomplete; frontend upgrade;
+**NOT READY  -  LAWAPP HARD BLOCKERS REMAIN** (G2 owner action; G10 chain incomplete; frontend upgrade;
 final gates). G1 and G3 are repaired and command-proven; G10 foundation (DB spine + real raw sources)
 is in place and the pipeline is unblocked.
 

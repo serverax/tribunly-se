@@ -1,4 +1,4 @@
--- Migration 007: Phase 3D — handoff leads
+-- Migration 007: Phase 3D  -  handoff leads
 -- Stores contact information voluntarily submitted by users requesting solicitor referral.
 -- NOTE: contains PII (name, email). Phase 3D is local/test-only.
 -- Encryption at rest required before production deployment (Phase 5).

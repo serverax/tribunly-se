@@ -1,4 +1,4 @@
--- Migration 019 — Brain Phase 1 Schema Updates
+-- Migration 019  -  Brain Phase 1 Schema Updates
 -- Adds new columns to brain_traces for 19-step pipeline.
 -- Adds safety_boundary_checks audit table.
 -- Adds document_facts table for real document extraction.

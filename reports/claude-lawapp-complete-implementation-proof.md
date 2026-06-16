@@ -12,7 +12,7 @@
 
 What's complete:
 - Fresh `docker compose up -d --build` → 24/24 smoke journey PASS (reproducible)
-- 435 tests pass, 7 skip (ingestion tables empty — expected), 0 fail
+- 435 tests pass, 7 skip (ingestion tables empty  -  expected), 0 fail
 - Rules seeded automatically via migration 020_seed_rules.sql
 - JWT auth + user isolation (HTTP 403 proven)
 - 19-step brain pipeline
@@ -32,10 +32,10 @@ What requires owner action:
 ## 2. What Was Fixed
 
 ### Backend
-- Added `POST /api/deadline/calculate` — deterministic, uses rules table
-- Added `POST /api/payment/webhook` — test_simulator + Stripe stub
-- Added `GET /api/documents/{id}/download` — ownership enforced
-- Added `GET /api/cases/{id}/documents` — ownership enforced
+- Added `POST /api/deadline/calculate`  -  deterministic, uses rules table
+- Added `POST /api/payment/webhook`  -  test_simulator + Stripe stub
+- Added `GET /api/documents/{id}/download`  -  ownership enforced
+- Added `GET /api/cases/{id}/documents`  -  ownership enforced
 - Added `GET /api/sources/freshness` alias
 - Added `GET /api/rules/{claim_type}` alias
 - Health endpoint now reports ai_provider, auth_mode, payment_mode
@@ -43,7 +43,7 @@ What requires owner action:
 - Evaluator: citation check skips when legislation table empty
 
 ### DB
-- `db/migrations/020_seed_rules.sql` — 19 rules seeded automatically on fresh Docker start
+- `db/migrations/020_seed_rules.sql`  -  19 rules seeded automatically on fresh Docker start
 - Rules now present without manual Python script execution
 
 ### Security
@@ -71,7 +71,7 @@ What requires owner action:
 
 ```
 curl http://localhost:8000/health
-→ {"status":"ok","service":"lawapp-backend","db":"connected","auth_mode":"jwt","payment_mode":"test_simulator","ai_provider":{"provider":"stub","active":false,"note":"No AI key configured — StubReasoningModel active"}}
+→ {"status":"ok","service":"lawapp-backend","db":"connected","auth_mode":"jwt","payment_mode":"test_simulator","ai_provider":{"provider":"stub","active":false,"note":"No AI key configured  -  StubReasoningModel active"}}
 
 POST /api/deadline/calculate {"edt":"2026-05-10","claim_type":"unfair_dismissal"}
 → {"limitation_date":"2026-08-09","source":"rules","authority":"ERA 1996 s.111(2)","ec_applied":false}
@@ -122,9 +122,9 @@ python -m pytest tests/security/ → 75 passed, 3 skipped ✓
 ```
 
 JWT isolation: PASS  
-PII stripping: deidentify() before model.reason() — code-verified  
+PII stripping: deidentify() before model.reason()  -  code-verified  
 Rate limiting: slowapi, in-memory (Redis = Phase 2)  
-Encryption: test env skips (correct — no real key); production needs real ENCRYPTION_KEY  
+Encryption: test env skips (correct  -  no real key); production needs real ENCRYPTION_KEY  
 
 ---
 
@@ -150,37 +150,37 @@ Safety policy: passed=true confirmed
 
 | Technology | Status |
 |---|---|
-| Agentic AI (19-step brain) | DONE — all 19 steps run |
-| Hybrid Search | DONE — SQL+pgvector; 0 semantic results without ingestion |
-| Graph RAG | DONE — 15 nodes, 14 edges seeded |
-| Knowledge Graph | DONE — ERA 1996 paths implemented |
-| Context Compression | DONE — Brain step 13 |
-| Memory Engine | DONE — consent-gated, user/case isolated |
-| Evaluation AI | DONE — 8-check rubric |
-| MCP Connectors | DONE — 5 connectors, deny-by-default |
-| Multimodal AI | PARTIAL — upload schema safe; OCR = mock_extract() |
-| AI Router | DONE — routes by risk/complexity |
-| Semantic Cache | DONE — PII excluded |
-| WASM/JS fallback | PARTIAL — JS fallback active; WASM binary exists, not rebuilt |
+| Agentic AI (19-step brain) | DONE  -  all 19 steps run |
+| Hybrid Search | DONE  -  SQL+pgvector; 0 semantic results without ingestion |
+| Graph RAG | DONE  -  15 nodes, 14 edges seeded |
+| Knowledge Graph | DONE  -  ERA 1996 paths implemented |
+| Context Compression | DONE  -  Brain step 13 |
+| Memory Engine | DONE  -  consent-gated, user/case isolated |
+| Evaluation AI | DONE  -  8-check rubric |
+| MCP Connectors | DONE  -  5 connectors, deny-by-default |
+| Multimodal AI | PARTIAL  -  upload schema safe; OCR = mock_extract() |
+| AI Router | DONE  -  routes by risk/complexity |
+| Semantic Cache | DONE  -  PII excluded |
+| WASM/JS fallback | PARTIAL  -  JS fallback active; WASM binary exists, not rebuilt |
 
 ---
 
 ## 9. WASM Proof
 
-Binary: `client/public/wasm/lawapp_wasm_bg.wasm` (95KB) — exists  
-JS fallback: `computeDeadlineJS()` in deadline.js — active  
-Rules source: `fetchDeadlineRules()` calls GET /rules/{claimType} — no hardcoding  
-Status: PARTIAL — JS fallback functional; `scripts/rebuild-wasm.sh` needed
+Binary: `client/public/wasm/lawapp_wasm_bg.wasm` (95KB)  -  exists  
+JS fallback: `computeDeadlineJS()` in deadline.js  -  active  
+Rules source: `fetchDeadlineRules()` calls GET /rules/{claimType}  -  no hardcoding  
+Status: PARTIAL  -  JS fallback functional; `scripts/rebuild-wasm.sh` needed
 
 ---
 
 ## 10. OCR / Upload Proof
 
-Upload route: `POST /cases/{id}/uploads` — exists  
-Document table: `case_id`, `is_user_upload`, `extracted_facts` — correct schema  
-Raw document stripping: `raw_document` in `_PII_FIELDS` — PASS  
-OCR: `mock_extract()` stub — PARTIAL  
-Status: PARTIAL — architecture safe; real OCR Phase 4
+Upload route: `POST /cases/{id}/uploads`  -  exists  
+Document table: `case_id`, `is_user_upload`, `extracted_facts`  -  correct schema  
+Raw document stripping: `raw_document` in `_PII_FIELDS`  -  PASS  
+OCR: `mock_extract()` stub  -  PARTIAL  
+Status: PARTIAL  -  architecture safe; real OCR Phase 4
 
 ---
 
@@ -190,7 +190,7 @@ Status: PARTIAL — architecture safe; real OCR Phase 4
 bash -n scripts/deploy-talos.sh → PASS (syntax valid)
 Secret name audit: 10/10 manifest refs match script creates
 17 lawapp-*.yaml manifests covering all 5 namespaces
-Cluster: NOT deployed — BLOCKED_OWNER_ACTION
+Cluster: NOT deployed  -  BLOCKED_OWNER_ACTION
 ```
 
 Owner must run: `bash scripts/deploy-talos.sh` from WSL with kubeconfig

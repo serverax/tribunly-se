@@ -1,10 +1,10 @@
-"""Extract legal citations from free text — UK-first, US via optional eyecite.
+"""Extract legal citations from free text  -  UK-first, US via optional eyecite.
 
 Returns a list of `Citation` objects. Each carries its raw span, a coarse type,
 a normalised form, and `resolved=False` until the linker matches it to a stored
 source. Nothing here invents a citation: a token that does not match a known
 UK pattern (and is not recognised by eyecite, if installed) is simply not
-returned, or returned as type=UNKNOWN — never coerced into a fake authority.
+returned, or returned as type=UNKNOWN  -  never coerced into a fake authority.
 """
 from __future__ import annotations
 
@@ -113,7 +113,7 @@ def extract_citations(text: str, *, use_eyecite: bool = True) -> list[Citation]:
     found: list[Citation] = []
     claimed: list[tuple[int, int]] = []
 
-    # 1. UK neutral citations (highest priority — unambiguous court refs)
+    # 1. UK neutral citations (highest priority  -  unambiguous court refs)
     for m in _NEUTRAL_RE.finditer(text):
         raw = m.group(0)
         _add(found, claimed, Citation(
@@ -151,7 +151,7 @@ def extract_citations(text: str, *, use_eyecite: bool = True) -> list[Citation]:
             ))
 
     # 5. eyecite for any remaining US-style reporter citations (optional dep).
-    #    Failure to import or run eyecite must NEVER break extraction — UK results
+    #    Failure to import or run eyecite must NEVER break extraction  -  UK results
     #    are already captured above. We only ADD non-overlapping US citations.
     if use_eyecite:
         for cit in _extract_us_via_eyecite(text):
@@ -163,7 +163,7 @@ def extract_citations(text: str, *, use_eyecite: bool = True) -> list[Citation]:
 
 def _extract_us_via_eyecite(text: str) -> list[Citation]:
     """Best-effort US citation extraction via eyecite. Returns [] if eyecite is
-    not installed or errors — fail closed, never raise into the caller."""
+    not installed or errors  -  fail closed, never raise into the caller."""
     try:
         from eyecite import get_citations  # type: ignore
     except Exception:

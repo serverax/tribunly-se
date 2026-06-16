@@ -1,5 +1,5 @@
 """
-Production-readiness report — Phase 5C.
+Production-readiness report  -  Phase 5C.
 
 Honest, comprehensive status of the system's readiness for production deployment.
 This report is NOT a compliance certification.
@@ -103,13 +103,13 @@ def generate_production_readiness_report(
     # ── Overall blockers (Phase 6 update) ─────────────────────────────────────
     overall_blockers = []
     if not enc_key_set:
-        overall_blockers.append("ENCRYPTION_KEY not set — PII stored in plaintext")
+        overall_blockers.append("ENCRYPTION_KEY not set  -  PII stored in plaintext")
     overall_blockers.extend([
-        "HSM/KMS key management not implemented — env var key not suitable for production",
+        "HSM/KMS key management not implemented  -  env var key not suitable for production",
         "DPIA not legally reviewed or completed",
         "Privacy notice not legally reviewed or published",
-        "User authentication (OAuth/JWT) not implemented — admin key only covers admin routes",
-        "Live payment not configured (PAYMENT_ENABLED=false — mock mode only)",
+        "User authentication (OAuth/JWT) not implemented  -  admin key only covers admin routes",
+        "Live payment not configured (PAYMENT_ENABLED=false  -  mock mode only)",
     ])
 
     # ── Model boundary ─────────────────────────────────────────────────────────
@@ -126,7 +126,7 @@ def generate_production_readiness_report(
     payment_status = {
         "live_payment":     "ENABLED" if payment_enabled else "MOCK_ONLY",
         "production_ready": payment_enabled,
-        "note":             "PAYMENT_ENABLED=false — mock mode. Stripe integration required.",
+        "note":             "PAYMENT_ENABLED=false  -  mock mode. Stripe integration required.",
     }
 
     # ── Legal accuracy gate ────────────────────────────────────────────────────
@@ -201,7 +201,7 @@ def generate_production_readiness_report(
             "ollama_model":         os.getenv("LAWAPP_OLLAMA_MODEL", "qwen2.5:3b-instruct-q6_K"),
             "external_llm_allowed": False,
             "anthropic_configured": False,
-            "deterministic_upgrade":"IMPLEMENTED (assess_logic.py — runs before any model call)",
+            "deterministic_upgrade":"IMPLEMENTED (assess_logic.py  -  runs before any model call)",
             "production_grade": (
                 os.getenv("LAWAPP_LLM_PROVIDER", "") == "ollama_local"
                 and bool(os.getenv("LAWAPP_OLLAMA_BASE_URL", "").strip())
@@ -263,8 +263,8 @@ def generate_production_readiness_report(
                 )
             ),
             "note": (
-                "RS256+JWKS implemented (Phase 7A) — production-grade when JWT_JWKS_URL set. "
-                "HS256 (JWT_SECRET) implemented (Phase 6C) — dev/test quality only. "
+                "RS256+JWKS implemented (Phase 7A)  -  production-grade when JWT_JWKS_URL set. "
+                "HS256 (JWT_SECRET) implemented (Phase 6C)  -  dev/test quality only. "
                 "Mock auth (X-User-ID) for dev/test only."
             ),
         },
@@ -298,7 +298,7 @@ def generate_production_readiness_report(
             "provider_key_id_tracked": True,
             "envelope_encrypt_str_available": True,
             "envelope_decrypt_str_available": True,
-            "rotation_api":         "NOT_IMPLEMENTED — Phase 7F",
+            "rotation_api":         "NOT_IMPLEMENTED  -  Phase 7F",
             "db_schema_ready":      True,   # encryption_key_metadata jsonb (migration 013)
             "note": (
                 "Phase 7E: envelope encryption integrated into handoff-leads PII path. "
@@ -310,7 +310,7 @@ def generate_production_readiness_report(
             'backend.domains.employment.compliance', fromlist=['get_compliance_status']
         ).get_compliance_status(),
         # Phase 6D: required_evidence is now embedded inside get_compliance_status()
-        # under key "required_evidence" — no separate top-level field needed.
+        # under key "required_evidence"  -  no separate top-level field needed.
 
         # ── Phase 6B: controlled-beta vs production readiness ─────────────────
         **_compute_beta_production_readiness(
@@ -353,7 +353,7 @@ def _compute_beta_production_readiness(
     prod_blockers.extend(compliance.get("production_compliance_blockers", []))
     if not kms_ok:
         prod_blockers.append(
-            "KEY_MANAGEMENT_MODE=env is not production-grade — use kms_stub or real KMS (Phase 7)."
+            "KEY_MANAGEMENT_MODE=env is not production-grade  -  use kms_stub or real KMS (Phase 7)."
         )
     prod_blockers.append("No live deployment environment (Phase 7)")
 
@@ -397,7 +397,7 @@ def _controlled_beta_next_steps(cb_blockers: list[str], compliance: dict) -> lis
         })
         priority += 1
 
-    # ── Human review items (critical path — cannot be automated) ───────────────
+    # ── Human review items (critical path  -  cannot be automated) ───────────────
     dpia_comp = compliance.get("signoff", {}).get("dpia", {})
     dpia_reviewed = dpia_comp.get("reviewed_by_dpo", False) or dpia_comp.get("approved", False)
     dpia_evidence = dpia_comp.get("reviewer_name") and dpia_comp.get("review_date")

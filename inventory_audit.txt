@@ -36,7 +36,7 @@ backend/api/main.py:2227:    GUARDRAIL: No direct LLM calls bypass this endpoint
 backend/api/main.py:2439:        "status": "PASS" if result["passed"] else "FAIL",
 backend/api/main.py:2440:        "passed": result["passed"],
 backend/api/main.py:2549:        "pass_rate": round(verified / len(results), 2) if results else 1.0,
-backend/api/main.py:2590:            {"name": "email_import",       "allowed": False, "consent_required": True,  "description": "Import emails — disabled pending consent framework"},
+backend/api/main.py:2590:            {"name": "email_import",       "allowed": False, "consent_required": True,  "description": "Import emails  -  disabled pending consent framework"},
 backend/api/main.py:2611:    """MCP Gateway: test a tool call (no real action taken in this stub)."""
 backend/api/main.py:2636:                    (user_id, req.tool, req.action, allowed, req.consent_given, _json.dumps({"stub": True})),
 backend/api/main.py:2642:        pass
@@ -52,7 +52,7 @@ backend/core/brain.py:191:    c2_pass = found_reserved is None
 backend/core/brain.py:194:        "passed": c2_pass,
 backend/core/brain.py:198:    if not c2_pass:
 backend/core/brain.py:206:        c3_pass = dl_source in ("rules", "rules_engine") or not deadline_info
-backend/core/brain.py:208:        c3_pass = True  # Pydantic Deadline object — source field validated by schema
+backend/core/brain.py:208:        c3_pass = True  # Pydantic Deadline object  -  source field validated by schema
 backend/core/brain.py:211:        "passed": c3_pass,
 backend/core/brain.py:215:    if not c3_pass:
 backend/core/brain.py:221:    c4_pass = resp_j in ("EW", "SC", "NI") or assessment.get("status") == "not_supported"
@@ -91,7 +91,7 @@ backend/core/brain.py:784:                    evidence_gaps, evaluation_passed, 
 backend/core/brain.py:785:                    missing_facts, rag_sources, safety_passed, memory_saved
 backend/core/brain.py:807:                    evaluation_passed,
 backend/core/brain.py:811:                    safety_passed,
-backend/core/bundle.py:76:      - value must not start with '[Extracted' (placeholder — skip)
+backend/core/bundle.py:76:      - value must not start with '[Extracted' (placeholder  -  skip)
 backend/core/bundle.py:86:                continue  # skip placeholder values
 backend/core/bundle.py:543:   Seek urgent advice if the deadline has passed or is imminent.
 backend/core/citation_verifier.py:168:        "pass_rate": float,
@@ -106,7 +106,7 @@ backend/core/config_validation.py:62:    payment_mode    = os.getenv("PAYMENT_MO
 backend/core/config_validation.py:85:        if auth_mode in ("none", "mock"):
 backend/core/config_validation.py:100:                "Use kms_stub or real KMS (Phase 7)."
 backend/core/config_validation.py:102:        if kms_mode == "disabled":
-backend/core/config_validation.py:104:                "KEY_MANAGEMENT_MODE=disabled not allowed in production — encryption required."
+backend/core/config_validation.py:104:                "KEY_MANAGEMENT_MODE=disabled not allowed in production  -  encryption required."
 backend/core/config_validation.py:106:        if kms_mode == "kms_stub" and not os.getenv("KMS_KEY_ID"):
 backend/core/config_validation.py:108:                "KMS_KEY_ID (required for KEY_MANAGEMENT_MODE=kms_stub in production)"
 backend/core/conflict_detector.py:126:                pass
@@ -125,7 +125,7 @@ backend/core/documents.py:79:    return {"passed": passed, "violations": violati
 backend/core/documents.py:248:[Complete all placeholders above with your details before filing.]
 backend/core/documents.py:371:[Complete all placeholders above with your details before filing.]
 backend/core/dp_report.py:81:                "passport_number", "driving_licence",
-backend/core/dp_report.py:136:                "handling": "Mock extraction only — placeholders returned, no real OCR",
+backend/core/dp_report.py:136:                "handling": "Mock extraction only  -  placeholders returned, no real OCR",
 backend/core/dp_report.py:192:                "User authentication not implemented (user_id=NULL on all case records)",
 backend/core/dp_report.py:221:                "User authentication not implemented (production blocker)",
 backend/core/evaluator.py:4:Every legal answer must pass evaluation before final output.
@@ -156,7 +156,7 @@ backend/core/extraction.py:8:PHASE 5+: Replace mock with real OCR (Tesseract/AWS
 backend/core/extraction.py:12:  - Raw file bytes are NEVER passed to this module.
 backend/core/extraction.py:13:  - Extracted values are placeholders clearly marked for user review.
 backend/core/extraction.py:99:def mock_extract(doc_type: str) -> dict:
-backend/core/extraction.py:105:        "value":      str,    # placeholder — user must verify and correct
+backend/core/extraction.py:105:        "value":      str,    # placeholder  -  user must verify and correct
 backend/core/extraction.py:112:    PHASE 4A: values are placeholders. Real extraction is Phase 5.
 backend/core/extraction.py:152:            continue   # don't apply placeholder values
 backend/core/govern.py:15:Only a passing assessment exits the gate. Failing assessments return the
@@ -170,9 +170,9 @@ backend/core/govern.py:89:                passes=False,
 backend/core/govern.py:95:                passes=False,
 backend/core/govern.py:105:                passes=False,
 backend/core/govern.py:112:    return GovernanceResult(passes=True, patched_assessment=assessment)
-backend/core/kms.py:8:  KmsStubProvider  — represents a real KMS key reference; Phase 7B stub (no real API call)
-backend/core/kms.py:231:    """Phase 7B stub — no real KMS API call. Phase 7C/7D: use AwsKmsProvider."""
-backend/core/kms.py:236:        logger.warning("KmsStubProvider: using env key (stub — value not logged).")
+backend/core/kms.py:8:  KmsStubProvider   -  represents a real KMS key reference; Phase 7B stub (no real API call)
+backend/core/kms.py:231:    """Phase 7B stub  -  no real KMS API call. Phase 7C/7D: use AwsKmsProvider."""
+backend/core/kms.py:236:        logger.warning("KmsStubProvider: using env key (stub  -  value not logged).")
 backend/core/kms.py:257:            "note": "Phase 7B stub: KMS_KEY_ID configured; no real API call. Use aws_kms mode.",
 backend/core/kms.py:435:        base["note"] = "Encryption disabled. Development/testing only. Production blocker."
 backend/core/kms.py:449:    elif mode == "kms_stub":
@@ -190,26 +190,26 @@ backend/core/models.py:390:        key = getattr(settings, "openrouter_api_key",
 backend/core/models.py:392:        if key and key != "placeholder" and mid:
 backend/core/models.py:400:    ant_key = getattr(settings, "anthropic_api_key", "placeholder")
 backend/core/models.py:402:    if ant_key and ant_key != "placeholder" and ant_mid:
-backend/core/models.py:407:            logger.warning("Anthropic init failed: %s — using stub", exc)
-backend/core/payment.py:5:  mock        (default): any non-empty token accepted — test/dev only
+backend/core/models.py:407:            logger.warning("Anthropic init failed: %s  -  using stub", exc)
+backend/core/payment.py:5:  mock        (default): any non-empty token accepted  -  test/dev only
 backend/core/payment.py:6:  disabled:              payment gate always blocks; all docs return payment_required=True
-backend/core/payment.py:7:  stripe_test:           Stripe test API validation (Phase 7 — stub; fails safely)
-backend/core/payment.py:8:  stripe_live:           Stripe live API; requires STRIPE_SECRET_KEY (Phase 7 — stub)
+backend/core/payment.py:7:  stripe_test:           Stripe test API validation (Phase 7  -  stub; fails safely)
+backend/core/payment.py:8:  stripe_live:           Stripe live API; requires STRIPE_SECRET_KEY (Phase 7  -  stub)
 backend/core/payment.py:10:Backward compat: if PAYMENT_ENABLED=false and PAYMENT_MODE not set → 'mock'
-backend/core/payment.py:14:GUARDRAIL: PAYMENT_MODE=disabled completely blocks paid output — useful for maintenance.
+backend/core/payment.py:14:GUARDRAIL: PAYMENT_MODE=disabled completely blocks paid output  -  useful for maintenance.
 backend/core/payment.py:34:    if mode in ("mock", "disabled", "stripe_test", "stripe_live"):
 backend/core/payment.py:36:    # Backward compat: honour legacy PAYMENT_ENABLED=false → 'mock'
 backend/core/payment.py:38:    return "mock"
 backend/core/payment.py:45:    mock:        any non-empty token = paid (test/dev)
 backend/core/payment.py:46:    disabled:    always False (payment gate blocks all output)
-backend/core/payment.py:47:    stripe_test: Phase 7 stub — raises NotImplementedError (safe failure)
+backend/core/payment.py:47:    stripe_test: Phase 7 stub  -  raises NotImplementedError (safe failure)
 backend/core/payment.py:48:    stripe_live: validates STRIPE_SECRET_KEY present, then Phase 7 stub
 backend/core/payment.py:52:    if mode == "disabled":
 backend/core/payment.py:53:        logger.debug("Payment mode=disabled: all paid requests blocked.")
 backend/core/payment.py:56:    if mode == "mock":
 backend/core/payment.py:59:        logger.debug("Mock payment accepted (PAYMENT_MODE=mock, token present).")
 backend/core/payment.py:68:            "Use PAYMENT_MODE=mock for testing."
-backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}         — passes governance
+backend/core/pipeline.py:66:      - {"status": "ok", "assessment": {...}}          -  passes governance
 backend/core/pipeline.py:69:    The pipeline is structured to demonstrate Phase 2 with the stub model
 backend/core/pipeline.py:161:    # This provides citations and structure even when the model is stubbed.
 backend/core/pipeline.py:190:    # ── Stage 4: Reason (model or deterministic fallback) ─────────────────────
@@ -228,10 +228,10 @@ backend/core/production_readiness.py:67:                "VERIFIED" if ct_result[
 backend/core/production_readiness.py:76:        rules_ok = rd.get("rules_gate_passed", False)
 backend/core/production_readiness.py:82:            "Encryption at rest not implemented",
 backend/core/production_readiness.py:84:            "User authentication not implemented",
-backend/core/production_readiness.py:108:        "HSM/KMS key management not implemented — env var key not suitable for production",
-backend/core/production_readiness.py:111:        "User authentication (OAuth/JWT) not implemented — admin key only covers admin routes",
-backend/core/production_readiness.py:112:        "Live payment not configured (PAYMENT_ENABLED=false — mock mode only)",
-backend/core/production_readiness.py:129:        "note":             "PAYMENT_ENABLED=false — mock mode. Stripe integration required.",
+backend/core/production_readiness.py:108:        "HSM/KMS key management not implemented  -  env var key not suitable for production",
+backend/core/production_readiness.py:111:        "User authentication (OAuth/JWT) not implemented  -  admin key only covers admin routes",
+backend/core/production_readiness.py:112:        "Live payment not configured (PAYMENT_ENABLED=false  -  mock mode only)",
+backend/core/production_readiness.py:129:        "note":             "PAYMENT_ENABLED=false  -  mock mode. Stripe integration required.",
 backend/core/production_readiness.py:199:                os.getenv("ANTHROPIC_API_KEY") not in ("placeholder", "sk-ant-placeholder")
 backend/core/production_readiness.py:208:                os.getenv("ANTHROPIC_API_KEY") not in ("placeholder", "sk-ant-placeholder")
 backend/core/production_readiness.py:212:                "Without it, deterministic pre-assessment runs and stub returns insufficient_grounding. "
@@ -241,7 +241,7 @@ backend/core/production_readiness.py:273:            "live_ready":  (os.getenv("
 backend/core/production_readiness.py:276:            "note":        "mock mode for tests; stripe_live requires STRIPE_SECRET_KEY + Phase 7.",
 backend/core/production_readiness.py:341:    if not ver_result.get("passed", False):
 backend/core/production_readiness.py:342:        cb_blockers.append("Rules verification gate not passing")
-backend/core/production_readiness.py:356:            "KEY_MANAGEMENT_MODE=env is not production-grade — use kms_stub or real KMS (Phase 7)."
+backend/core/production_readiness.py:356:            "KEY_MANAGEMENT_MODE=env is not production-grade  -  use kms_stub or real KMS (Phase 7)."
 backend/core/retrieve.py:10:    keyword-search substitute. Do not replace this stub with text search.
 backend/core/retrieve.py:37:# proceed to the stub reasoning path. Raise to 2+ once embeddings exist.
 backend/core/score.py:14:set grows. Starting values chosen to pass most well-grounded assessments and
@@ -275,7 +275,7 @@ client/public/pages/assessment.html:1016:      document.getElementById('btn-poc'
 client/public/pages/assessment.html:1017:      document.getElementById('btn-sol').disabled = false;
 client/public/pages/assessment.html:1043:      document.getElementById('hf-submit').disabled = true;
 client/public/pages/assessment.html:1064:        document.getElementById('hf-submit').disabled = false;
-client/public/pages/case_detail.html:299:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time — this is a high hurdle. Seek solicitor advice urgently.'
+client/public/pages/case_detail.html:299:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time  -  this is a high hurdle. Seek solicitor advice urgently.'
 client/public/pages/case_detail.html:408:    i1.type = 'text'; i1.id = 'hf2-name'; i1.required = true; i1.placeholder = 'Full name';
 client/public/pages/case_detail.html:420:    i2.type = 'email'; i2.id = 'hf2-email'; i2.required = true; i2.placeholder = 'you@example.com';
 client/public/pages/case_detail.html:491:      span.textContent = escalation.days_remaining > 0 ? escalation.days_remaining + ' days to deadline' : 'Deadline passed';
@@ -297,7 +297,7 @@ client/public/pages/register.html:81:      errText.textContent = 'Email and pass
 client/public/pages/register.html:86:    if (password !== confirm) {
 client/public/pages/register.html:96:        body: JSON.stringify({ email, password })
 client/public/pages/register.html:109:        body: JSON.stringify({ email, password })
-client/public/pages/saved_case.html:254:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time — this is a high hurdle. Seek solicitor advice urgently.'
+client/public/pages/saved_case.html:254:      ? 'Your ET claim deadline has passed. An extension requires showing it was "not reasonably practicable" to present the claim in time  -  this is a high hurdle. Seek solicitor advice urgently.'
 client/public/pages/saved_case.html:321:    i1.type = 'text'; i1.id = 'hf2-name'; i1.required = true; i1.placeholder = 'Full name';
 client/public/pages/saved_case.html:333:    i2.type = 'email'; i2.id = 'hf2-email'; i2.required = true; i2.placeholder = 'you@example.com';
 client/public/pages/saved_case.html:404:      span.textContent = escalation.days_remaining > 0 ? escalation.days_remaining + ' days to deadline' : 'Deadline passed';
@@ -315,13 +315,13 @@ ingestion/config.py:20:    postgres_password: str = "changeme"
 ingestion/config.py:34:            f"postgresql://{self.postgres_user}:{self.postgres_password}"
 ingestion/config.py:39:    openai_api_key: str = "placeholder"
 ingestion/config.py:44:    anthropic_api_key: str = "placeholder"
-ingestion/config.py:47:    # ── Reasoning model (OpenRouter — optional, disabled by default) ──────────
+ingestion/config.py:47:    # ── Reasoning model (OpenRouter  -  optional, disabled by default) ──────────
 ingestion/config.py:51:    # Never enable this until de-id is proven (test_deidentify.py passes).
 ingestion/config.py:52:    openrouter_api_key: str = "placeholder"
-ingestion/config.py:115:    # TODO: Equality Act 2010 (ukpga/2010/15) — Phase 5 (discrimination). Deferred.
+ingestion/config.py:115:    # TODO: Equality Act 2010 (ukpga/2010/15)  -  Phase 5 (discrimination). Deferred.
 ingestion/db.py:190:    Called after the governance decision, regardless of pass/fail.
 ingestion/legislation/clml_parser.py:107:            pass
-ingestion/rules/verify_sources.py:32:# These are NOT hardcoded fixtures — they are the values from the fetches
+ingestion/rules/verify_sources.py:32:# These are NOT hardcoded fixtures  -  they are the values from the fetches
 ingestion/rules/verify_sources.py:118:    all_pass = True
 ingestion/rules/verify_sources.py:127:                all_pass = False
 ingestion/rules/verify_sources.py:137:    if all_pass and not RETRY_LATER:
@@ -409,7 +409,7 @@ tests/integration/test_phase2d_hardening.py:325:        openrouter_enabled    = 
 tests/integration/test_phase2d_hardening.py:326:        openrouter_api_key    = "placeholder"  # -> should fall through to next
 tests/integration/test_phase2d_hardening.py:328:        anthropic_api_key     = "placeholder"
 tests/integration/test_phase2d_hardening.py:332:    # Should be Stub since both external keys are placeholder
-tests/integration/test_phase2d_hardening.py:360:    """Governance is mandatory — no model output bypasses it."""
+tests/integration/test_phase2d_hardening.py:360:    """Governance is mandatory  -  no model output bypasses it."""
 tests/integration/test_phase2d_hardening.py:381:    assert result.passes is False
 tests/integration/test_phase2e_audit_log.py:5:  1. A passing governed assessment writes exactly one audit row
 tests/integration/test_phase2e_audit_log.py:88:def test_passing_assessment_writes_audit_row():
@@ -419,11 +419,11 @@ tests/integration/test_phase2e_audit_log.py:122:    assert "passes" in gr
 tests/integration/test_phase2e_audit_log.py:155:    # in fields_passed, rules_used, retrieval_bundle, or the hash.
 tests/integration/test_phase2e_audit_log.py:157:    passed = bl.get("fields_passed", [])
 tests/integration/test_phase2e_audit_log.py:160:        assert pii_key not in passed, \
-tests/integration/test_phase2e_audit_log.py:161:            f"PII field '{pii_key}' found in boundary_log.fields_passed — was not stripped"
+tests/integration/test_phase2e_audit_log.py:161:            f"PII field '{pii_key}' found in boundary_log.fields_passed  -  was not stripped"
 tests/integration/test_phase2e_audit_log.py:164:          f"all PII fields confirmed stripped (not in fields_passed)")
 tests/integration/test_phase2e_audit_log.py:200:    assert gr["passes"] == pipeline_gov.get("passes"), \
 tests/integration/test_phase2e_audit_log.py:201:        f"Audit governance passes={gr['passes']} != pipeline {pipeline_gov.get('passes')}"
-tests/integration/test_phase2_engine.py:8:while OpenAI quota is blocked — semantic stub returns [] but keyword runs).
+tests/integration/test_phase2_engine.py:8:while OpenAI quota is blocked  -  semantic stub returns [] but keyword runs).
 tests/integration/test_phase2_engine.py:43:    if not key or key == "placeholder":
 tests/integration/test_phase2_engine.py:77:    """In-scope UD with EDT reaches an assessment (stub routes to insufficient_grounding)."""
 tests/integration/test_phase2_engine.py:110:# ── Scenario 3: Qualifying period fail/pass ───────────────────────────────────
@@ -570,7 +570,7 @@ tests/integration/test_phase6a_deployment.py:295:def test_bundle_gate_still_work
 tests/integration/test_phase6a_deployment.py:298:                       json={"premium_token": "mock-premium"})
 tests/integration/test_phase6b_beta_readiness.py:6:   1.  Production mode blocks mock auth (auth_mode=mock → production blocker)
 tests/integration/test_phase6b_beta_readiness.py:9:   4.  Dev/test mode allows mock auth
-tests/integration/test_phase6b_beta_readiness.py:10:   5.  JWT mode parses Bearer token (stub — not crypto-verified)
+tests/integration/test_phase6b_beta_readiness.py:10:   5.  JWT mode parses Bearer token (stub  -  not crypto-verified)
 tests/integration/test_phase6b_beta_readiness.py:19:  10.  KMS stub does not claim real KMS is connected
 tests/integration/test_phase6b_beta_readiness.py:21:  12.  KMS mode kms_stub is accepted for production-grade flag
 tests/integration/test_phase6b_beta_readiness.py:26:  15.  Signed compliance changes readiness status (mock signoff)
@@ -639,7 +639,7 @@ tests/integration/test_phase7b_kms.py:117:def test_kms_stub_available_when_key_i
 tests/integration/test_phase7b_kms.py:126:def test_kms_stub_unavailable_without_key_id():
 tests/integration/test_phase7b_kms.py:132:def test_kms_stub_is_production_grade_when_configured():
 tests/integration/test_phase7b_kms.py:141:def test_kms_stub_kms_connected_always_false():
-tests/integration/test_phase7b_kms.py:142:    """kms_connected is always False in Phase 7B — honest about stub limitation."""
+tests/integration/test_phase7b_kms.py:142:    """kms_connected is always False in Phase 7B  -  honest about stub limitation."""
 tests/integration/test_phase7b_kms.py:154:def test_disabled_provider_not_production_grade():
 tests/integration/test_phase7b_kms.py:163:def test_kms_stub_in_production_requires_kms_key_id():
 tests/integration/test_phase7b_kms.py:164:    """In production mode, kms_stub without KMS_KEY_ID must fail validation."""
@@ -653,7 +653,7 @@ tests/integration/test_phase7b_kms.py:221:        "KEY_MANAGEMENT_MODE": "disabl
 tests/integration/test_phase7b_kms.py:226:        assert any("disabled" in m.lower() or "encryption" in m.lower()
 tests/integration/test_phase7b_kms.py:277:def test_kms_stub_with_key_id_shows_production_grade():
 tests/integration/test_phase7b_kms.py:290:def test_kms_stub_without_key_id_not_production_grade():
-tests/integration/test_phase7c_aws_kms.py:4:All boto3 calls are mocked — no real AWS credentials or connections required.
+tests/integration/test_phase7c_aws_kms.py:4:All boto3 calls are mocked  -  no real AWS credentials or connections required.
 tests/integration/test_phase7c_aws_kms.py:11:   4.  Health check: mock successful DescribeKey → kms_connected=True
 tests/integration/test_phase7c_aws_kms.py:12:   5.  Health check: mock failed DescribeKey → kms_connected=False (fails closed)
 tests/integration/test_phase7c_aws_kms.py:14:   7.  get_encryption_key: mock GenerateDataKey → returns Fernet-compatible bytes
@@ -707,7 +707,7 @@ tests/integration/test_phase7c_aws_kms.py:364:    mock_boto3_client.return_value
 tests/integration/test_phase7c_aws_kms.py:387:def test_kms_stub_still_shows_false_connected():
 tests/integration/test_phase7c_aws_kms.py:389:    os.environ["KMS_KEY_ID"] = "stub-key-id"
 tests/integration/test_phase7c_aws_kms.py:396:def test_disabled_provider_still_blocks():
-tests/integration/test_phase7d_envelope_encryption.py:4:All boto3 calls are mocked — no real AWS credentials required.
+tests/integration/test_phase7d_envelope_encryption.py:4:All boto3 calls are mocked  -  no real AWS credentials required.
 tests/integration/test_phase7d_envelope_encryption.py:44:  23.  Legal accuracy gate passes
 tests/integration/test_phase7d_envelope_encryption.py:58:from unittest.mock import MagicMock, patch
 tests/integration/test_phase7d_envelope_encryption.py:113:    blob_b64 = base64.b64encode(b"mock-ciphertext-blob").decode()
@@ -766,7 +766,7 @@ tests/integration/test_phase7d_envelope_encryption.py:351:    mock_plaintext = o
 tests/integration/test_phase7d_envelope_encryption.py:352:    mock_client = MagicMock()
 tests/integration/test_phase7d_envelope_encryption.py:353:    mock_client.decrypt.return_value = {"Plaintext": mock_plaintext}
 tests/integration/test_phase7d_envelope_encryption.py:354:    mock_boto3_client.return_value = mock_client
-tests/integration/test_phase7e_envelope_integration.py:4:All boto3 calls are mocked — no real AWS credentials.
+tests/integration/test_phase7e_envelope_integration.py:4:All boto3 calls are mocked  -  no real AWS credentials.
 tests/integration/test_phase7e_envelope_integration.py:37:  22.  Phase 7D tests still pass (envelope bundle behavior)
 tests/integration/test_phase7e_envelope_integration.py:38:  23.  Legal accuracy gate passes
 tests/integration/test_phase7e_envelope_integration.py:52:from unittest.mock import MagicMock, patch
@@ -819,7 +819,7 @@ tests/integration/test_phase7e_envelope_integration.py:464:def test_phase7d_bund
 tests/integration/test_phase7e_envelope_integration.py:466:    mock_client, plaintext, ciphertext_blob = _make_mock_kms_client()
 tests/integration/test_phase7e_envelope_integration.py:467:    mock_boto3_client.return_value = mock_client
 tests/integration/test_phase8b_algorithm_brain.py:23:  14.  Deterministic upgrade: stub + rich context → ok status
-tests/integration/test_phase8b_algorithm_brain.py:38:  23.  Full regression (tested separately — confirmed 655 passed)
+tests/integration/test_phase8b_algorithm_brain.py:38:  23.  Full regression (tested separately  -  confirmed 655 passed)
 tests/integration/test_phase8b_algorithm_brain.py:39:  24.  Legal accuracy gate passes
 tests/integration/test_phase8b_algorithm_brain.py:40:  25.  Rules verification gate passes
 tests/integration/test_phase8b_algorithm_brain.py:52:from unittest.mock import MagicMock, patch

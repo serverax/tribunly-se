@@ -1,4 +1,4 @@
-# LAWAPP — FINAL GAP-CLOSURE ORDER AFTER CLAUDE LOCAL DEMO REPORT
+# LAWAPP  -  FINAL GAP-CLOSURE ORDER AFTER CLAUDE LOCAL DEMO REPORT
 ## No Staging Claim Until Integrated Proof Passes
 
 **File name:** `LAWAPP_FINAL_GAP_CLOSURE_NO_STAGING_UNTIL_E2E_PROOF.md`  
@@ -32,7 +32,7 @@ Then execute this order.
 The current report is accepted only as:
 
 ```text
-LOCAL DEMO READY — LIMITED ACCEPTANCE
+LOCAL DEMO READY  -  LIMITED ACCEPTANCE
 ```
 
 It is **not** accepted as:
@@ -124,7 +124,7 @@ This is not acceptable for an end-to-end acceptance gate.
 
 Claude must implement one of these:
 
-### Option A — Automatic dev/test ingestion
+### Option A  -  Automatic dev/test ingestion
 
 After clean Docker start, a documented script must bring the full local demo to ready state in one command:
 
@@ -148,7 +148,7 @@ verify source freshness
 run smoke journey
 ```
 
-### Option B — Application refuses RAG-ready claim until ingestion done
+### Option B  -  Application refuses RAG-ready claim until ingestion done
 
 If ingestion is not automatic, `/health` and `/api/sources/freshness` must expose:
 
@@ -321,18 +321,18 @@ live keys missing = external blocker, not code blocker.
 Current report says:
 
 ```text
-OCR is honestly disabled — 501 Not Implemented
+OCR is honestly disabled  -  501 Not Implemented
 ```
 
 That is acceptable only if OCR is not claimed as completed.
 
 Claude must choose one:
 
-### Option A — Implement Phase 4 OCR
+### Option A  -  Implement Phase 4 OCR
 
 Prove PDF/DOCX/image extraction with tests and frontend journey.
 
-### Option B — Exclude OCR from all readiness claims
+### Option B  -  Exclude OCR from all readiness claims
 
 Keep route 501 and ensure:
 

@@ -1,4 +1,4 @@
-/* lawapp accessibility preferences — large text, high contrast, easy-read.
+/* lawapp accessibility preferences  -  large text, high contrast, easy-read.
    Loaded in <head> so saved prefs apply before first paint (no flash).
    Prefs persist per-browser in localStorage; no backend, no PII. */
 (function () {
@@ -20,7 +20,7 @@
     root.classList.toggle('a11y-hc', !!state.hc);
     root.classList.toggle('a11y-er', !!state.er);
   }
-  apply(); // run immediately during head parse — before body paints
+  apply(); // run immediately during head parse  -  before body paints
 
   function sync() {
     var btns = document.querySelectorAll('[data-a11y]');

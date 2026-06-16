@@ -1,5 +1,5 @@
 """
-backend.domains.immigration — PLACEHOLDER (not enabled).
+backend.domains.immigration  -  PLACEHOLDER (not enabled).
 
 This package exists so the platform's modular structure is symmetric and a real
 immigration domain can be dropped in later. It is registered in

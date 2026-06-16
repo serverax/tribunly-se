@@ -1,5 +1,5 @@
 """
-MCP Connector unit tests — lawapp tool registry and safety.
+MCP Connector unit tests  -  lawapp tool registry and safety.
 
 Tests the MCP interface layer:
   - deny-by-default for unlisted tools
@@ -9,7 +9,7 @@ Tests the MCP interface layer:
   - no tool may file claims, represent users, or send emails
 
 The MCP connector is in deny-by-default mode. Runtime connector
-integration is PARTIAL — interface and safety tests run here.
+integration is PARTIAL  -  interface and safety tests run here.
 """
 
 import os
@@ -132,7 +132,7 @@ class TestMCPRuntimeConnectors:
             "jurisdiction": "EW",
         })
         assert result["status"] == "ok"
-        # May return empty if no legislation ingested — check structure
+        # May return empty if no legislation ingested  -  check structure
         assert "results" in result["result"]
 
     def test_mcp_audit_written_on_call(self):

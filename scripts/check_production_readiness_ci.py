@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Production readiness check for CI — no running server or DB required.
+Production readiness check for CI  -  no running server or DB required.
 
 Generates the readiness report from config/files only (no DB rules query).
-Always exits 0 — this is a reporting script, not a hard gate.
+Always exits 0  -  this is a reporting script, not a hard gate.
 CI will see the output in the job log.
 
 Usage:
@@ -32,10 +32,10 @@ def main() -> int:
     from backend.core.user_auth import is_auth_controlled_beta_ready, is_auth_production_ready
 
     print("=" * 70)
-    print("LAWAPP — CI PRODUCTION READINESS CHECK (no DB required)")
+    print("LAWAPP  -  CI PRODUCTION READINESS CHECK (no DB required)")
     print("=" * 70)
 
-    # Config validation (dev mode — never fail_fast in CI without full env)
+    # Config validation (dev mode  -  never fail_fast in CI without full env)
     config = validate_startup_config(fail_fast=False)
     print(f"\nDeployment mode:   {config['deployment_mode']}")
     print(f"Auth mode:         {config['auth_mode']}")
@@ -46,7 +46,7 @@ def main() -> int:
 
     # KMS status
     kms = get_kms_status()
-    print(f"\nKey management:    {kms['mode']} — production-grade: {kms['production_grade']}")
+    print(f"\nKey management:    {kms['mode']}  -  production-grade: {kms['production_grade']}")
 
     # Auth status
     auth_cb = is_auth_controlled_beta_ready()
@@ -81,7 +81,7 @@ def main() -> int:
 
     print()
     print("=" * 70)
-    print("NOTE: This is a REPORTING check — exits 0 always.")
+    print("NOTE: This is a REPORTING check  -  exits 0 always.")
     print("NOT_PRODUCTION_READY is expected. Use production-readiness endpoint")
     print("for full status (requires running server with ADMIN_API_KEY).")
     print("=" * 70)

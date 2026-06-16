@@ -1,5 +1,5 @@
 ---
-# IterLaw namespaces — all five already exist in cluster.
+# IterLaw namespaces  -  all five already exist in cluster.
 # This file documents them for IaC parity. Do not re-apply if already present.
 apiVersion: v1
 kind: Namespace

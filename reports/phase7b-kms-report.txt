@@ -1,6 +1,6 @@
-PHASE 7B — KMS/HSM-READY KEY MANAGEMENT PROVIDER
+PHASE 7B  -  KMS/HSM-READY KEY MANAGEMENT PROVIDER
 Report date: 2026-06-01
-Status: COMPLETE — pending acceptance
+Status: COMPLETE  -  pending acceptance
 
 ═══════════════════════════════════════════════════════════════════════════════
 1. FILES CHANGED
@@ -28,7 +28,7 @@ Status: COMPLETE — pending acceptance
     encryption_at_rest: now shows key_provider field (provider name).
     Note updated to reflect Phase 7B provider abstraction.
 
-  tests/integration/test_phase7b_kms.py  (NEW — 23 tests)
+  tests/integration/test_phase7b_kms.py  (NEW  -  23 tests)
 
   tests/integration/test_phase6b_beta_readiness.py
     - test_kms_stub_does_not_claim_real_kms: hsm_connected → kms_connected (renamed)
@@ -48,7 +48,7 @@ Status: COMPLETE — pending acceptance
 
     KmsStubProvider (KEY_MANAGEMENT_MODE=kms_stub):
       - Validates KMS_KEY_ID is configured
-      - kms_connected=False always (Phase 7B stub — no real KMS API call)
+      - kms_connected=False always (Phase 7B stub  -  no real KMS API call)
       - is_production_grade()=True when KMS_KEY_ID configured
         (signals correct intent; real API in Phase 7C)
       - Falls back to EnvKeyProvider for actual key material
@@ -90,12 +90,12 @@ Status: COMPLETE — pending acceptance
   production_ready: FALSE
 
   Phase 7B closes:
-    ✓ "Real HSM/KMS key management" — PROVIDER ABSTRACTION COMPLETE
+    ✓ "Real HSM/KMS key management"  -  PROVIDER ABSTRACTION COMPLETE
       (KmsStubProvider interface + configuration; real KMS API is Phase 7C)
 
   Key management status when kms_stub + KMS_KEY_ID configured:
     is_production_grade_key_management() = True
-    kms_connected = False (honest — real API connection is Phase 7C)
+    kms_connected = False (honest  -  real API connection is Phase 7C)
 
 ═══════════════════════════════════════════════════════════════════════════════
 5. REMAINING PHASE 7 BLOCKERS
@@ -105,7 +105,7 @@ Status: COMPLETE — pending acceptance
   Closed by Phase 7B: KMS/HSM provider abstraction
 
   Still remaining:
-  3. Real KMS API connection (AWS/GCP/Vault) — Phase 7C
+  3. Real KMS API connection (AWS/GCP/Vault)  -  Phase 7C
   4. Live deployment environment
   5. Stripe live payment mode
   6. Subject Access Request (SAR) process
@@ -121,7 +121,7 @@ Status: COMPLETE — pending acceptance
   Mock KMS_KEY_ID in tests: arn:aws:kms:test:123:key/... (test-only, clearly labelled)
   No Dockerfiles changed (no new packages)
   No env files changed
-  No broad git add — explicit per-file staging used
+  No broad git add  -  explicit per-file staging used
 
 ═══════════════════════════════════════════════════════════════════════════════
 END PHASE 7B

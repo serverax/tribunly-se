@@ -24,7 +24,7 @@ WARNING on the 6-month time limit: the prospective row (is_prospective=True)
 is NEVER returned by the rules query. This module uses whatever time_limit_months
 is passed in. The caller is responsible for querying rules with is_prospective=false.
 If the commencement SI is published and the prospective row is promoted, the
-arithmetic here is identical — only the value changes, not the code.
+arithmetic here is identical  -  only the value changes, not the code.
 """
 
 from __future__ import annotations
@@ -62,10 +62,10 @@ def compute_limitation_date(
             "notes": str,
         }
 
-    DOES NOT compute the 'not reasonably practicable' extension — that is a
+    DOES NOT compute the 'not reasonably practicable' extension  -  that is a
     merits judgement routed to the honesty/uncertainty path, never asserted.
     """
-    # Step 1 — base limit: N months "beginning with" EDT → last day = anniversary - 1
+    # Step 1  -  base limit: N months "beginning with" EDT → last day = anniversary - 1
     anniversary = _add_months(edt, time_limit_months)
     base_limit = anniversary - timedelta(days=1)
 
@@ -82,12 +82,12 @@ def compute_limitation_date(
             ),
         }
 
-    # Step 2 — EC stop-clock (s.207B)
+    # Step 2  -  EC stop-clock (s.207B)
     # Pause = days from Day A+1 to Day B inclusive = Day B - Day A (in days)
     pause_days = (ec_day_b - ec_day_a).days
     adjusted = base_limit + timedelta(days=pause_days)
 
-    # Step 3 — floor: one calendar month after Day B
+    # Step 3  -  floor: one calendar month after Day B
     floor = _add_months(ec_day_b, 1)
 
     final = max(adjusted, floor)
@@ -122,7 +122,7 @@ def check_qualifying_period(
 
     Returns {meets_qualifying_period: bool, service_months: float, required: str}
     Day-one exceptions (discrimination, whistleblowing, health & safety, TU) are
-    separate rules not handled here — they have qualifying_period=0.
+    separate rules not handled here  -  they have qualifying_period=0.
     """
     service_days = (edt - service_start_date).days
     service_months = service_days / 30.44  # approximate

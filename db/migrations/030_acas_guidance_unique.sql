@@ -15,7 +15,7 @@ WHERE a.source_url = b.source_url
      OR ((a.embedding IS NULL) = (b.embedding IS NULL) AND a.id > b.id)
       );
 
--- 2) add the unique constraint (guarded — skip if it already exists)
+-- 2) add the unique constraint (guarded  -  skip if it already exists)
 DO $$
 BEGIN
     IF NOT EXISTS (

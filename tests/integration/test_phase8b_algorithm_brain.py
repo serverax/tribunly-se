@@ -1,15 +1,15 @@
 """
-Phase 8B — Algorithm Brain upgrade tests.
+Phase 8B  -  Algorithm Brain upgrade tests.
 
 Tests:
-  Classification — Stage A (keyword):
+  Classification  -  Stage A (keyword):
    1.  Unfair dismissal classification works (keyword)
    2.  Unpaid wages classification works (keyword)
    3.  Out-of-scope rejected safely
    4.  Ambiguous query without model → not_supported
    5.  Employment + OOS keywords → employment wins (not OOS)
 
-  Classification — Stage B (ML fallback):
+  Classification  -  Stage B (ML fallback):
    6.  Ambiguous query + model returns unfair_dismissal → in_scope
    7.  Ambiguous query + model returns unpaid_wages → in_scope
    8.  Ambiguous query + model returns out_of_scope → not in_scope
@@ -35,7 +35,7 @@ Tests:
   22.  production_grade reflects local Ollama runtime configuration
 
   Regressions:
-  23.  Full regression (tested separately — confirmed 655 passed)
+  23.  Full regression (tested separately  -  confirmed 655 passed)
   24.  Legal accuracy gate passes
   25.  Rules verification gate passes
 
@@ -120,7 +120,7 @@ def test_ambiguous_without_model_is_conservative():
 
 
 def test_employment_beats_oos_keywords():
-    """Employment signal overrides OOS keyword — should classify as employment."""
+    """Employment signal overrides OOS keyword  -  should classify as employment."""
     result = classify("I was dismissed and now facing eviction")
     # Employment keywords present → should NOT be out_of_scope
     assert result.matter_type == "unfair_dismissal"
@@ -179,7 +179,7 @@ def test_ml_classification_not_configured():
 
 def test_ml_classification_no_personal_facts():
     """
-    ML classification must only receive query text — never personal facts.
+    ML classification must only receive query text  -  never personal facts.
     Use a query with NO keyword matches so Stage B actually fires.
     """
     captured_calls = []
@@ -303,7 +303,7 @@ def test_pii_stripped_before_model_boundary():
 
 
 def test_ml_classification_query_truncated_safely():
-    """Query sent to ML model is limited to 300 chars — PII in long query is not sent."""
+    """Query sent to ML model is limited to 300 chars  -  PII in long query is not sent."""
     long_pii_query = "I was dismissed. " + "Alice Smith National Insurance AB123456C. " * 20
     captured = []
 
@@ -335,7 +335,7 @@ def test_readiness_reasoning_model_reflects_local_only_policy():
         rm = resp.json().get("reasoning_model", {})
         assert rm.get("anthropic_configured") is False
         assert rm.get("external_llm_allowed") is False
-        # production_grade tracks the LOCAL provider configuration only —
+        # production_grade tracks the LOCAL provider configuration only  - 
         # never an external API key (production_readiness.py contract).
         local_configured = (
             os.environ.get("LAWAPP_LLM_PROVIDER", "") == "ollama_local"
@@ -360,7 +360,7 @@ def test_legal_accuracy_gate_passes():
 
 def test_rules_verification_gate_passes():
     # Inherit the ambient DB env (container: db:5432; local dev: localhost:5435 via
-    # conftest). Only fill defaults that are absent — do NOT hardcode localhost:5435,
+    # conftest). Only fill defaults that are absent  -  do NOT hardcode localhost:5435,
     # which breaks in-container/CI runs.
     env = os.environ.copy()
     env.setdefault("POSTGRES_PORT", "5435")

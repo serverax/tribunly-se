@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_jurisdiction_model.sh — proves controlled jurisdiction model + NI fail-closed.
+# prove_jurisdiction_model.sh  -  proves controlled jurisdiction model + NI fail-closed.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp (service 'db')"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# prove_legal_data_spine.sh — proves the legal data spine schema exists and is wired.
+# prove_legal_data_spine.sh  -  proves the legal data spine schema exists and is wired.
 # DB target printed with password redacted. Real SQL only. Non-zero on hard failure.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1

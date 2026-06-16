@@ -64,7 +64,7 @@ lawapp-rag-ingestion-77c8c7cfbb-ltcrb   1/1     Running   0          24h
 lawapp-rag-retrieval-67877c778b-t5jmm   1/1     Running   0          24h
 lawapp-worker-c84989df6-gt4lg           1/1     Running   0          24h
 === FINAL clean sweep: any non-Running/non-Completed lawapp pod? ===
-CLEAN — all lawapp pods Running/Completed; no CrashLoop, no unexpected Pending
+CLEAN  -  all lawapp pods Running/Completed; no CrashLoop, no unexpected Pending
 === core readiness snapshot ===
 lawapp-ai/lawapp-brain: 1/1
 lawapp-api/lawapp-backend: 1/1

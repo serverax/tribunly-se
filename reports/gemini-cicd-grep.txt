@@ -155,7 +155,7 @@ scripts/deploy-talos.sh:22:kubectl config current-context
 scripts/deploy-talos.sh:25:kubectl get nodes -o wide
 scripts/deploy-talos.sh:30:kubectl apply -f infra/k8s/lawapp-namespaces.yaml
 scripts/deploy-talos.sh:31:kubectl get ns | grep lawapp
-scripts/deploy-talos.sh:35:echo "=== Creating secrets (values from env vars — not committed) ==="
+scripts/deploy-talos.sh:35:echo "=== Creating secrets (values from env vars  -  not committed) ==="
 scripts/deploy-talos.sh:48:# DB secret (lawapp-api)
 scripts/deploy-talos.sh:49:kubectl -n lawapp-api create secret generic lawapp-postgres-secret \
 scripts/deploy-talos.sh:53:  --dry-run=client -o yaml | kubectl apply -f -
@@ -223,7 +223,7 @@ scripts/deploy-talos.sh:209:kubectl apply -f infra/k8s/lawapp-security-policies.
 scripts/deploy-talos.sh:210:kubectl get networkpolicy -A | grep lawapp
 scripts/deploy-talos.sh:215:kubectl apply -f infra/k8s/lawapp-monitoring.yaml
 scripts/deploy-talos.sh:216:kubectl get cronjob -n lawapp-monitoring
-scripts/deploy-talos.sh:221:kubectl get pods -A | grep -E "traefik|ingress|nginx" || echo "No ingress controller found — apply manually when ready"
+scripts/deploy-talos.sh:221:kubectl get pods -A | grep -E "traefik|ingress|nginx" || echo "No ingress controller found  -  apply manually when ready"
 scripts/deploy-talos.sh:227:echo "  kubectl -n lawapp-api port-forward svc/lawapp-backend 8000:8000"
 scripts/deploy-talos.sh:235:kubectl get ns | grep lawapp
 scripts/deploy-talos.sh:237:kubectl get pods -n lawapp-api -o wide

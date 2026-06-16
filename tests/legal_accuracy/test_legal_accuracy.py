@@ -1,8 +1,8 @@
 """
-Legal accuracy regression suite — Phase 5A.
+Legal accuracy regression suite  -  Phase 5A.
 
 Tests the deterministic pipeline layer against known unfair dismissal
-fact patterns. Uses StubReasoningModel only — no real LLM, no quota dependency.
+fact patterns. Uses StubReasoningModel only  -  no real LLM, no quota dependency.
 
 This suite proves the deterministic guarantees of the engine:
   - Deadlines are always computed from rules, never guessed.
@@ -152,7 +152,7 @@ def test_fp3_qp_fails_for_day_one():
         assert qc.get("meets_qualifying_period") is False
 
 
-# ── FP4: EC applied — floor does NOT bite ────────────────────────────────────
+# ── FP4: EC applied  -  floor does NOT bite ────────────────────────────────────
 
 def test_fp4_deadline_floor_does_not_bite():
     """FP4: EC applied with 14-day pause, floor 2026-03-15 < extended 2026-04-14."""
@@ -179,7 +179,7 @@ def test_fp4_floor_not_applied():
         assert dl["floor_applied"] is False, "FP4: floor must NOT be applied"
 
 
-# ── FP5: EC applied — floor BITES ────────────────────────────────────────────
+# ── FP5: EC applied  -  floor BITES ────────────────────────────────────────────
 
 def test_fp5_deadline_floor_bites():
     """FP5: EC applied, 5-day pause, floor 2026-04-25 > extended 2026-04-05."""
@@ -274,7 +274,7 @@ def test_all_in_scope_deadlines_come_from_rules():
     """Every in-scope fact pattern must have deadline.source='rules'."""
     for fp in FACT_PATTERNS:
         if "no_deadline" in fp["expected"]:
-            continue  # FP7 — no deadline expected
+            continue  # FP7  -  no deadline expected
         result = _run(fp["facts"])
         dl = result.get("deadline_info") or {}
         if dl:
@@ -293,7 +293,7 @@ def test_all_results_have_boundary_log():
         if result.get("status") in ("missing_edt", "not_supported"):
             continue   # pipeline exits before reaching de-id stage
         assert "boundary_log" in result, \
-            f"{fp['id']}: boundary_log missing — de-identification gate not proven"
+            f"{fp['id']}: boundary_log missing  -  de-identification gate not proven"
 
 
 # ── Phase 5B: Unpaid wages legal accuracy ─────────────────────────────────────
@@ -307,7 +307,7 @@ def _get_upw(fp_id: str) -> dict:
 
 
 def test_upw1_deadline_correct():
-    """UPW1: Clear final salary — deadline 2026-06-29 from wages_due_date 2026-03-31.
+    """UPW1: Clear final salary  -  deadline 2026-06-29 from wages_due_date 2026-03-31.
     Anniversary = add_months(2026-03-31, 3) = 2026-06-30 (clamped); deadline = June 29."""
     fp = _get_upw("UPW1")
     result = _run_upw(fp)
@@ -318,12 +318,12 @@ def test_upw1_deadline_correct():
 
 
 def test_upw1_no_qualifying_period():
-    """UPW1: Unpaid wages has no qualifying period — must not apply QP check."""
+    """UPW1: Unpaid wages has no qualifying period  -  must not apply QP check."""
     fp = _get_upw("UPW1")
     result = _run_upw(fp)
     # QP check must NOT gate the wages claim
     assert result.get("qualifying_check") is None, \
-        "Unpaid wages must not have qualifying_check — it is a day-one right"
+        "Unpaid wages must not have qualifying_check  -  it is a day-one right"
 
 
 def test_upw2_series_routes_to_solicitor():
@@ -355,7 +355,7 @@ def test_upw4_missing_wages_date_status():
 
 
 def test_upw5_deadline_correct_and_expired():
-    """UPW5: Stale claim — deadline 2026-02-27 (Nov 30 + 3 months = Feb 28, -1 = Feb 27)."""
+    """UPW5: Stale claim  -  deadline 2026-02-27 (Nov 30 + 3 months = Feb 28, -1 = Feb 27)."""
     fp = _get_upw("UPW5")
     result = _run_upw(fp)
     dl = result.get("deadline_info") or {}

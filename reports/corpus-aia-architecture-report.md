@@ -1,10 +1,10 @@
-# Corpus Ingestion AIA — Architecture Report
+# Corpus Ingestion AIA  -  Architecture Report
 
 **Date:** 2026-06-05  **Status:** DONE AND PROVEN (employment_uk)
 
 ## What it is
 The **Corpus Ingestion AIA** (`backend/core/agents/corpus_ingestion_aia.py`) builds and
-maintains the local legal DB. It is **not** a user-facing reasoning agent — Workflow C
+maintains the local legal DB. It is **not** a user-facing reasoning agent  -  Workflow C
 reasons *only* from the DB this AIA populates. It is the only component allowed to
 fetch / parse / store legal sources.
 
@@ -22,7 +22,7 @@ fetch / parse / store legal sources.
 |---|---|
 | `validate_domain_pack(domain)` | pack + all manifests present; sources/rules declared; FCL licence-consistent |
 | `register_legal_sources(domain)` | upsert pack's authorised sources into `legal_sources` |
-| `validate_corpus(conn)` | row hygiene — reject rows missing source_url/content_hash/last_verified_at/section_ref/authority_ref; reject case_law without FCL flag |
+| `validate_corpus(conn)` | row hygiene  -  reject rows missing source_url/content_hash/last_verified_at/section_ref/authority_ref; reject case_law without FCL flag |
 | `validate_dataset(domain)` | every declared section present+cited+dated; every required rule present+cited+dated; registry populated; FCL fail-closed; + row hygiene |
 | `fcl_bulk_allowed()` | `FCL_BULK_LICENCE_GRANTED=true` required for any case_law |
 

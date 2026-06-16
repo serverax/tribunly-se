@@ -1,5 +1,5 @@
 """
-Governed orchestrator — classify → route → delegate → merge.
+Governed orchestrator  -  classify → route → delegate → merge.
 
 Single entry for domain-aware agent routing. Used by Brain step 11b and
 exposed as brain.Orchestrator for API callers.
@@ -52,10 +52,10 @@ class Orchestrator:
     Institutional governed pipeline orchestrator.
 
     Stages:
-      1. classify — jurisdiction, legal area, claim type (via classify module)
-      2. route    — select agents + tools from domain plugin
-      3. delegate — run each agent.process()
-      4. merge    — combine AgentResults into OrchestrationResult
+      1. classify  -  jurisdiction, legal area, claim type (via classify module)
+      2. route     -  select agents + tools from domain plugin
+      3. delegate  -  run each agent.process()
+      4. merge     -  combine AgentResults into OrchestrationResult
     """
 
     def classify(self, message: str, facts: dict, jurisdiction: str = "EW") -> dict:
@@ -114,7 +114,7 @@ class Orchestrator:
         for name in agent_names:
             agent = registry.get(name)
             if agent is None:
-                logger.warning("Unknown agent %r — skipped", name)
+                logger.warning("Unknown agent %r  -  skipped", name)
                 continue
             try:
                 results.append(agent.process(message, facts, bundle, jurisdiction))
@@ -207,7 +207,7 @@ class Orchestrator:
         jurisdiction: str = "EW",
         claim_type: str = "unfair_dismissal",
     ) -> dict:
-        """Backward-compatible entry — delegates to brain.execute_generative_lane."""
+        """Backward-compatible entry  -  delegates to brain.execute_generative_lane."""
         from backend.core.brain import execute_generative_lane as _lane
 
         return _lane(

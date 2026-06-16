@@ -1,4 +1,4 @@
--- Migration 022 — Seed Minimum Viable Legislation Corpus (ERA 1996)
+-- Migration 022  -  Seed Minimum Viable Legislation Corpus (ERA 1996)
 -- Ensures a deterministic baseline for reasoning without requiring external ingestion.
 
 -- Remove potential existing seed data to allow re-run

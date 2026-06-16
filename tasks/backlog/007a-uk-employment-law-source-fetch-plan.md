@@ -1,10 +1,10 @@
-# 007a — UK Employment-Law Source Fetch Plan
+# 007a  -  UK Employment-Law Source Fetch Plan
 
 **Owner agent:** uk-employment-law-scraper-agent
 **Stage:** 1 of legal-data chain · **State:** backlog · **Type:** plan (no fetch yet)
 
 ## Goal
-Produce a documented plan for fetching real UK employment-law sources — no transformation, no DB rows.
+Produce a documented plan for fetching real UK employment-law sources  -  no transformation, no DB rows.
 
 ## Deliverables
 - Target source inventory: legislation.gov.uk (ERA 1996 + relevant SIs, CLML/XML endpoints), ACAS guidance pages/docs, Find Case Law sample/single docs.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# SA-014 — scan services/** and backend/** for placeholder / stub / fake-success patterns.
+# SA-014  -  scan services/** and backend/** for placeholder / stub / fake-success patterns.
 # Reports findings honestly; does NOT auto-fix product code.
 # Exit 0 always (it is a report), but prints a FINDINGS COUNT for downstream gating.
 #
@@ -37,7 +37,7 @@ scan "static success without grounding (backend brain path)" 'return\s*\{[^}]*"a
 
 hdr "FINDINGS REQUIRING HUMAN JUDGEMENT (recorded, not auto-fixed)"
 cat <<'NOTE'
-1. services/lawapp_worker/app.py — `while True: time.sleep(...)` NO-OP body. The deployed
+1. services/lawapp_worker/app.py  -  `while True: time.sleep(...)` NO-OP body. The deployed
    lawapp-worker does no real task processing. Either wire it to a real queue or mark non-product.
 2. DEPLOYED lawapp-citation-guard image returns valid:true for the all-zeros fake UUID and for
    empty citations (live test, evidence/microservices/05). The SOURCE (services/lawapp_citation_guard/app.py)
@@ -45,7 +45,7 @@ cat <<'NOTE'
 3. brain/backend LOCAL_INFERENCE_URL -> llm-inference-service (DEAD svc, 0 endpoints). Repoint to
    ollama-inference. (owner-authorization pending)
 4. needs_db=False on lawapp_llm_gateway / lawapp_document_service / lawapp_crawler is BY DESIGN
-   (they proxy/generate, not DB-owning) — NOT a placeholder, recorded for completeness.
+   (they proxy/generate, not DB-owning)  -  NOT a placeholder, recorded for completeness.
 NOTE
 
 hdr "PATTERN-MATCH FINDINGS COUNT"

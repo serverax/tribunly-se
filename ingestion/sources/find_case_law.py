@@ -1,5 +1,5 @@
 """
-Find Case Law (National Archives) ingestion source — FULLY BUILT, FAIL-CLOSED.
+Find Case Law (National Archives) ingestion source  -  FULLY BUILT, FAIL-CLOSED.
 
 Bulk ingestion and computational analysis of Find Case Law require a National
 Archives computational-analysis licence. Until that is granted, this module
@@ -178,7 +178,7 @@ def _record_run(status: str, *, inserted=0, failed=0, blocker_reason=None, proof
 
 
 def ingest_bulk() -> dict:
-    """Bulk ingestion entrypoint — FAIL-CLOSED. Records blocker and returns unless
+    """Bulk ingestion entrypoint  -  FAIL-CLOSED. Records blocker and returns unless
     the licence is genuinely granted. Never writes fake rows."""
     if not bulk_licence_granted():
         reason = ("Find Case Law bulk ingestion and computational analysis require a "

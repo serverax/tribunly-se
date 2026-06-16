@@ -1,7 +1,7 @@
 """
 HTTP client for legislation.gov.uk with polite throttling.
 
-No API key required. No published rate limit — Fair Use Policy applies.
+No API key required. No published rate limit  -  Fair Use Policy applies.
 Throttle to LEGISLATION_REQUESTS_PER_SECOND (default 1 req/s) and use
 exponential back-off on 429/503.
 

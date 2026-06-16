@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# report_slow_legal_queries.sh — top slow queries via pg_stat_statements (if available).
+# report_slow_legal_queries.sh  -  top slow queries via pg_stat_statements (if available).
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 echo "DB target: postgres://lawapp:***@db:5432/lawapp (service 'db')"

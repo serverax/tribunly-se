@@ -7,7 +7,7 @@ counters and a /metrics + /ready endpoint.
 
 Export sink (chosen by owner): OTLP if OTEL_EXPORTER_OTLP_ENDPOINT is set,
 otherwise ConsoleSpanExporter for local proof. Degrades to request-id + counters
-only if the OpenTelemetry SDK is not installed — never breaks the app.
+only if the OpenTelemetry SDK is not installed  -  never breaks the app.
 
 Secret/PII safety:
   * auth/cookie/api-key headers are NEVER recorded on spans or logs
@@ -156,7 +156,7 @@ def _init_otel(app) -> None:
         elif os.getenv("OTEL_CONSOLE_EXPORT", "").lower() == "true":
             # Console span export ONLY when explicitly requested. Under frequent
             # kube-probe traffic the per-span console JSON floods stdout and starves
-            # /health, causing probe timeouts and pod restarts — so default = OFF.
+            # /health, causing probe timeouts and pod restarts  -  so default = OFF.
             provider.add_span_processor(SimpleSpanProcessor(ConsoleSpanExporter()))
         # else: no span exporter (request-id + in-process counters remain).
         trace.set_tracer_provider(provider)
@@ -189,7 +189,7 @@ def _init_otel(app) -> None:
         _OTEL_OK = True
     except Exception as exc:
         logger.warning(
-            "OpenTelemetry SDK unavailable — request-id + counters only: %s", exc
+            "OpenTelemetry SDK unavailable  -  request-id + counters only: %s", exc
         )
         _OTEL_OK = False
 
@@ -224,7 +224,7 @@ def _install_routes(app) -> None:
 
 def record_brain_metrics(result: dict) -> None:
     """Derive Brain counters from a run_brain() result and correlate the Brain
-    trace_id onto the active OTEL span. IDs only — no user facts touched."""
+    trace_id onto the active OTEL span. IDs only  -  no user facts touched."""
     try:
         trace = result.get("trace", {}) or {}
         status = (result.get("assessment", {}) or {}).get("status", "unknown")

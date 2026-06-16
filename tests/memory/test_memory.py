@@ -1,5 +1,5 @@
 """
-Memory Engine unit tests — lawapp consent-gated case memory.
+Memory Engine unit tests  -  lawapp consent-gated case memory.
 
 Tests that:
   - save_memory requires user_id + case_id
@@ -8,7 +8,7 @@ Tests that:
   - sensitive types are rejected at write
   - memory is never saved without consent
 
-No real DB required — tests validate contract and isolation logic.
+No real DB required  -  tests validate contract and isolation logic.
 """
 
 import pytest

@@ -1,5 +1,5 @@
 """
-Domain plugins — legal-area modules for agent orchestration.
+Domain plugins  -  legal-area modules for agent orchestration.
 
 Each plugin binds a retrieval domain tag (e.g. employment_uk) to:
   - supported claim types
@@ -57,7 +57,7 @@ class DomainPlugin(ABC):
 
 
 class EmploymentUkPlugin(DomainPlugin):
-    """First production plugin — maps employment domain → employment_uk pack."""
+    """First production plugin  -  maps employment domain → employment_uk pack."""
 
     _DEFAULT_AGENTS = [
         "employment_law",

@@ -1,7 +1,7 @@
 # Privacy Notice Legal Review Checklist
 
-**For lawapp — UK Employment Claim Co-Pilot**
-**Status:** PENDING — awaiting legal review
+**For lawapp  -  UK Employment Claim Co-Pilot**
+**Status:** PENDING  -  awaiting legal review
 
 ---
 
@@ -13,46 +13,46 @@ This document lists what legal counsel must verify before setting `legally_revie
 
 ---
 
-## 1. Legal Basis — Verify
+## 1. Legal Basis  -  Verify
 
 - [ ] The legal basis for processing is correctly stated for each purpose
-  - Assessment intake: candidate basis [to be determined by lawyer — Art.6(1)(b) or (f)]
-  - Handoff leads: consent (Art.6(1)(a)) — consent mechanism reviewed
+  - Assessment intake: candidate basis [to be determined by lawyer  -  Art.6(1)(b) or (f)]
+  - Handoff leads: consent (Art.6(1)(a))  -  consent mechanism reviewed
   - Uploaded files: [legal basis to be determined]
 - [ ] Legal basis is adequate and accurately described in the notice
 
-## 2. Data Controller Identity — Verify
+## 2. Data Controller Identity  -  Verify
 
 - [ ] Controller name and contact details are correct and up to date
 - [ ] DPO contact details (if applicable) are included
 - [ ] ICO registration number is correct (if registered)
 
-## 3. Categories of Data — Verify
+## 3. Categories of Data  -  Verify
 
 - [ ] All categories of personal data collected are listed
 - [ ] Special category data handling is addressed (uploaded documents may contain health data)
 - [ ] No categories are omitted or understated
 
-## 4. Retention Periods — Verify
+## 4. Retention Periods  -  Verify
 
 - [ ] Retention periods are stated for each category
 - [ ] Periods are legally defensible
-- [ ] Note: current implementation uses configurable retention (Phase 7 gap — must be set before publication)
+- [ ] Note: current implementation uses configurable retention (Phase 7 gap  -  must be set before publication)
 
-## 5. Subject Rights — Verify
+## 5. Subject Rights  -  Verify
 
 - [ ] All eight UK GDPR rights are addressed
-- [ ] Erasure process described (DELETE endpoints implemented — Phase 6)
-- [ ] SAR process described (not yet implemented — acknowledge gap or defer publication)
+- [ ] Erasure process described (DELETE endpoints implemented  -  Phase 6)
+- [ ] SAR process described (not yet implemented  -  acknowledge gap or defer publication)
 - [ ] Contact details for rights requests are correct
 
-## 6. Third-Party Processing — Verify
+## 6. Third-Party Processing  -  Verify
 
 - [ ] Anthropic (if used) is listed as a processor with appropriate basis
 - [ ] De-identification before AI call is accurately described
 - [ ] No processor is omitted
 
-## 7. International Transfers — Verify
+## 7. International Transfers  -  Verify
 
 - [ ] If Anthropic is outside UK/EEA, transfer mechanism is identified (SCCs or adequacy)
 - [ ] Transfer section is accurate

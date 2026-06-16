@@ -1,6 +1,6 @@
 ---
 name: microservices-integration-agent
-description: Owns the lawapp distributed services (services/**) and their integration — service factory compliance, health/readiness, trace IDs, contract + negative tests, and cross-service wiring. Ensures services are reachable and call real core logic.
+description: Owns the lawapp distributed services (services/**) and their integration  -  service factory compliance, health/readiness, trace IDs, contract + negative tests, and cross-service wiring. Ensures services are reachable and call real core logic.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 

@@ -1,16 +1,16 @@
 """Cross-service INTEGRATION proof (T-006 rule engine + T-007 deadline calc).
 
-These are not single-service contract tests — they wire the real distributed
+These are not single-service contract tests  -  they wire the real distributed
 service apps together in-process (Starlette TestClient bridges each ASGI app to a
 sync transport) and assert the behaviour the task requires:
 
   1. The rules-engine `/v1/deadline/calculate` produces a REAL limitation date from
      the rules table (the prior wrong-signature stub always returned 422).
   2. ONE trace id is propagated, unchanged, from the brain through BOTH the
-     rules-engine and the llm-gateway — and each service echoes it back
+     rules-engine and the llm-gateway  -  and each service echoes it back
      (cross-service tracing).
   3. The deterministic deadline is routed THROUGH the llm-gateway for explanation
-     (deadline_calc wired through the gateway), dates only — no PII to the model.
+     (deadline_calc wired through the gateway), dates only  -  no PII to the model.
   4. Fail-closed everywhere: rules DB down → no fabricated deadline; model
      unavailable → real deadline but an honest explanation_unavailable, never a
      hallucinated explanation.
@@ -65,8 +65,8 @@ def _patch_model(monkeypatch, chunks):
 @pytest.fixture
 def wire_brain(monkeypatch):
     """Point the brain's downstream client factories at in-process TestClients of the
-    real sibling apps, and spy on call_service to capture the trace id sent to — and
-    echoed by — each downstream service."""
+    real sibling apps, and spy on call_service to capture the trace id sent to  -  and
+    echoed by  -  each downstream service."""
     monkeypatch.setattr(brain_app, "RULES_ENGINE_CLIENT_FACTORY", lambda base: TestClient(rules))
     monkeypatch.setattr(brain_app, "LLM_GATEWAY_CLIENT_FACTORY", lambda base: TestClient(gateway))
 
@@ -180,7 +180,7 @@ def test_cross_service_trace_and_deadline_through_gateway(rules_db, wire_brain, 
 def test_cross_service_model_unavailable_fails_closed(rules_db, wire_brain, monkeypatch):
     """Model UNAVAILABLE: the real deterministic deadline is still returned and the
     trace still flows to both services, but the explanation is honestly marked
-    unavailable — never a fabricated explanation."""
+    unavailable  -  never a fabricated explanation."""
     _patch_model(monkeypatch, ["[MODEL_UNAVAILABLE]"])
     c = TestClient(brain)
     r = c.post("/v1/deadline/explain",

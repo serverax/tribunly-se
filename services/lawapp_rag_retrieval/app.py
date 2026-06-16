@@ -1,4 +1,4 @@
-"""lawapp-rag-retrieval — local-corpus hybrid retrieval (NO LLM, NO web).
+"""lawapp-rag-retrieval  -  local-corpus hybrid retrieval (NO LLM, NO web).
 
 Wraps backend.core.retrieve.retrieve: deterministic rules + pgvector/BM25
 authorities from the local corpus only. source is always "local_corpus" and the

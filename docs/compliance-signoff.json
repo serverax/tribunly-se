@@ -1,6 +1,6 @@
 {
-  "_comment": "Compliance sign-off state. Update when genuine review is completed. GUARDRAIL: reviewer_name AND review_date are REQUIRED when any sign-off flag is set true — a boolean alone is not sufficient evidence.",
-  "_phase": "6D — evidence structure formalised; awaiting DPO and legal review",
+  "_comment": "Compliance sign-off state. Update when genuine review is completed. GUARDRAIL: reviewer_name AND review_date are REQUIRED when any sign-off flag is set true  -  a boolean alone is not sufficient evidence.",
+  "_phase": "6D  -  evidence structure formalised; awaiting DPO and legal review",
   "_guidance": {
     "dpia": "See docs/dpia-review-checklist.md for what the DPO must verify before signing.",
     "privacy_notice": "See docs/privacy-review-checklist.md for what legal must verify before signing.",

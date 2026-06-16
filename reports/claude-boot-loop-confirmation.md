@@ -1,4 +1,4 @@
-# LAWAPP — CLAUDE BOOT LOOP CONFIRMATION REPORT
+# LAWAPP  -  CLAUDE BOOT LOOP CONFIRMATION REPORT
 
 **Timestamp:** 2026-06-04 (session restart after disconnection)
 **Branch:** main
@@ -6,17 +6,17 @@
 
 ---
 
-## 1. Files Read — Three Guru Guides
+## 1. Files Read  -  Three Guru Guides
 
-- `F:\Claude mcp\.claude\LEGAL_AI_GURU_GUIDE.md` — READ ✓
-- `F:\Claude mcp\.claude\LEGAL_AI_UX_GURU_GUIDE.md` — READ ✓
-- `F:\Claude mcp\.claude\LEGAL_AI_BACKEND_GURU_GUIDE.md` — READ ✓
+- `F:\Claude mcp\.claude\LEGAL_AI_GURU_GUIDE.md`  -  READ ✓
+- `F:\Claude mcp\.claude\LEGAL_AI_UX_GURU_GUIDE.md`  -  READ ✓
+- `F:\Claude mcp\.claude\LEGAL_AI_BACKEND_GURU_GUIDE.md`  -  READ ✓
 
-## 2. Files Read — Lawapp Order/Task Files
+## 2. Files Read  -  Lawapp Order/Task Files
 
-- `F:\lawapp\tasks\LAWAPP_PERMANENT_LOOP_ACCEPTANCE_RULEBOOK.md` — READ ✓
-- `F:\lawapp\tasks\LAWAPP_FINAL_GAP_CLOSURE_NO_STAGING_UNTIL_E2E_PROOF.md` — READ ✓
-- `F:\lawapp\tasks\LAWAPP_DISCONNECTION_RECOVERY_FULL_SYSTEM_RESTART_ORDER.md` — READ ✓
+- `F:\lawapp\tasks\LAWAPP_PERMANENT_LOOP_ACCEPTANCE_RULEBOOK.md`  -  READ ✓
+- `F:\lawapp\tasks\LAWAPP_FINAL_GAP_CLOSURE_NO_STAGING_UNTIL_E2E_PROOF.md`  -  READ ✓
+- `F:\lawapp\tasks\LAWAPP_DISCONNECTION_RECOVERY_FULL_SYSTEM_RESTART_ORDER.md`  -  READ ✓
 
 ---
 
@@ -25,7 +25,7 @@
 1. Project name is **lawapp**. Not RightsNow. Not IterLaw. Not Hermes.
 2. OrdinoxAI is separate from lawapp.
 3. The legal AI must never pretend to be a solicitor or law firm.
-4. lawapp provides information, assessment, and drafting only — unreserved activities under Legal Services Act 2007.
+4. lawapp provides information, assessment, and drafting only  -  unreserved activities under Legal Services Act 2007.
 5. No conducting litigation.
 6. No filing claims on behalf of users.
 7. No rights of audience.
@@ -47,15 +47,15 @@
 
 ---
 
-## 4. Confirmation — No Code Touched Before Reading
+## 4. Confirmation  -  No Code Touched Before Reading
 
 No files were edited before reading the three guru guides and three task files.
 
 Git working tree changes are from the **previous session** before disconnection:
-- `backend/core/retrieve.py` — retrieval_audit work in progress
-- `docker-compose.yml` — bootstrap/infra changes in progress
-- `client/public/css/styles.css`, `intake.html` — frontend a11y/design work from this session
-- `infra/k8s/iterlaw/` — legacy IterLaw quarantine (deletions) in progress
+- `backend/core/retrieve.py`  -  retrieval_audit work in progress
+- `docker-compose.yml`  -  bootstrap/infra changes in progress
+- `client/public/css/styles.css`, `intake.html`  -  frontend a11y/design work from this session
+- `infra/k8s/iterlaw/`  -  legacy IterLaw quarantine (deletions) in progress
 
 ---
 
@@ -79,7 +79,7 @@ Per LAWAPP_PERMANENT_LOOP_ACCEPTANCE_RULEBOOK.md:
 - No vague "should work" language
 - Only PASS with raw command output, or explicit blocker statement
 
-Current expected classification until proven: **EXTERNAL BLOCKER — NOT STAGING** (Talos kubeconfig may be absent)
+Current expected classification until proven: **EXTERNAL BLOCKER  -  NOT STAGING** (Talos kubeconfig may be absent)
 
 ---
 

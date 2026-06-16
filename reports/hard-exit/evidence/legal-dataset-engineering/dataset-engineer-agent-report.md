@@ -36,7 +36,7 @@ Every chunk: `source_id` (FK), `source_url`, `chunk_hash=sha256(body_text)`,
 `authority_ref`, `source_table='legal_sources'`, `jurisdiction_code`, `legal_topics`.
 `embedding` left NULL for T-004. All 798 verified NULL embedding.
 
-## Acceptance gates — all PASS
+## Acceptance gates  -  all PASS
 - legal rows link source_url + source_hash: YES (9/9, hashes match SA-001).
 - corpus_chunks link source_id + source_url + chunk_hash: YES (798/798 each).
 - every chunk joins a real legal_sources row (FK): YES (798/798).
@@ -57,11 +57,11 @@ Every chunk: `source_id` (FK), `source_url`, `chunk_hash=sha256(body_text)`,
   lives on every `corpus_chunks` row, which is where retrieval/CitationGuard read it.
 - Legislation chunked at section (P1group) granularity using the CLML namespace and
   `_extract_text` logic from `ingestion/legislation/clml_parser.py`. Schedules beyond
-  the section body and cross-reference resolution were not separately expanded — the
+  the section body and cross-reference resolution were not separately expanded  -  the
   528/565/134 provision counts in the manifest are full-Act counts; this slice
   captured the in-`<Body>` sections (435/235/88 deduped-by-hash sections).
 
-## No fake rows / no orphans / full traceability — confirmed.
+## No fake rows / no orphans / full traceability  -  confirmed.
 
 ## Handoff
 Ready for `db-rag-ingestion-agent` (T-004 embeddings + retrieval), then

@@ -1,5 +1,5 @@
 """
-Stage 5 — Governance gate (the honesty layer in code).
+Stage 5  -  Governance gate (the honesty layer in code).
 
 Applies five checks in order before any assessment proceeds to display.
 This is the UVP made into architecture: the gate enforces what the system
@@ -13,7 +13,7 @@ Checks (in order, per 04_RAG_REASONING_SPEC.md §6):
 5. Honesty: key_weaknesses populated for non-trivial cases; weak/no-claim stated plainly.
 
 Only a passing assessment exits the gate. Failing assessments return the
-appropriate fallback response — never a guess.
+appropriate fallback response  -  never a guess.
 """
 
 from __future__ import annotations
@@ -66,7 +66,7 @@ def govern(assessment: StructuredAssessment) -> GovernanceResult:
     if failed:
         return GovernanceResult(passes=False, failure_reason=f"score_threshold: {reason}")
 
-    # Check 3: determinism — deadline must come from rules, not generation
+    # Check 3: determinism  -  deadline must come from rules, not generation
     if assessment.deadline is not None:
         if assessment.deadline.source != "rules":
             return GovernanceResult(
@@ -77,7 +77,7 @@ def govern(assessment: StructuredAssessment) -> GovernanceResult:
                 ),
             )
 
-    # Check 4: legal boundary — no reserved-activity or outcome-guarantee language
+    # Check 4: legal boundary  -  no reserved-activity or outcome-guarantee language
     full_text = " ".join([
         assessment.reasoning_summary or "",
         " ".join(assessment.key_weaknesses),
@@ -96,7 +96,7 @@ def govern(assessment: StructuredAssessment) -> GovernanceResult:
                 failure_reason=f"boundary_violation: outcome-guarantee phrase detected: '{phrase}'",
             )
 
-    # Check 5: honesty — key_weaknesses required for non-trivial cases
+    # Check 5: honesty  -  key_weaknesses required for non-trivial cases
     if assessment.has_viable_claim in ("yes", "uncertain"):
         if not assessment.key_weaknesses or all(
             w.strip() == "" for w in assessment.key_weaknesses

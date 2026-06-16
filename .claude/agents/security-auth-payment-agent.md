@@ -1,6 +1,6 @@
 ---
 name: security-auth-payment-agent
-description: Owns lawapp security — auth modes, user/tenant ownership, payment no-bypass, PII handling, secret hygiene (incl. G2 leaked-PAT remediation), and negative security tests. Fail-closed; production-grade.
+description: Owns lawapp security  -  auth modes, user/tenant ownership, payment no-bypass, PII handling, secret hygiene (incl. G2 leaked-PAT remediation), and negative security tests. Fail-closed; production-grade.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 

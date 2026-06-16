@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Compensation estimator — lawapp</title>
+  <title>Compensation estimator  -  lawapp</title>
   <meta name="description" content="Estimate the statutory basic award for unfair dismissal, grounded in the effective-dated week's-pay cap from real UK law.">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath d='M24 3 43 10.5V27c0 11.4-8.4 19.9-19 23.9C13.4 46.9 5 38.4 5 27V10.5Z' fill='%2316314f'/%3E%3Cpath d='M16 40c0-8 8-6.5 8-13.5 0-6-5-6-5-12' fill='none' stroke='%232f9b91' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='13' r='3.7' fill='%23ffffff'/%3E%3C/svg%3E">
@@ -30,7 +30,7 @@
   <div class="tool-head">
     <span class="eyebrow">Free tool · Compensation estimator</span>
     <h1>Estimate your basic award</h1>
-    <p>Get a quick estimate of the statutory <strong>basic award</strong> for unfair dismissal — calculated from the real, effective-dated week's-pay cap, not a guess.</p>
+    <p>Get a quick estimate of the statutory <strong>basic award</strong> for unfair dismissal  -  calculated from the real, effective-dated week's-pay cap, not a guess.</p>
   </div>
 
   <div class="tool-layout">
@@ -57,7 +57,7 @@
     <section id="resultPanel" class="result-panel" hidden aria-live="polite">
       <div class="deadline-card" style="background:var(--grad-teal);">
         <div>
-          <div class="days" id="comp-amount">—</div>
+          <div class="days" id="comp-amount"> - </div>
           <div class="label">estimated statutory basic award</div>
         </div>
       </div>
@@ -71,7 +71,7 @@
           <table class="breakdown">
             <tbody id="comp-breakdown"></tbody>
             <tfoot>
-              <tr><td>Estimated basic award</td><td id="comp-total">—</td></tr>
+              <tr><td>Estimated basic award</td><td id="comp-total"> - </td></tr>
             </tfoot>
           </table>
 
@@ -141,7 +141,7 @@
     var note = document.getElementById("comp-note");
     note.textContent = "";
     var h = document.createElement("h3"); h.textContent = "What this covers";
-    var p = document.createElement("p"); p.textContent = b.note || "Statutory basic award only — excludes the compensatory award.";
+    var p = document.createElement("p"); p.textContent = b.note || "Statutory basic award only  -  excludes the compensatory award.";
     note.appendChild(h); note.appendChild(p);
 
     document.getElementById("gate-banner").hidden = LAWAPP_API.isLoggedIn();
@@ -180,6 +180,6 @@
 </script>
 
 
-  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict — verify dates with ACAS or a qualified adviser before relying on them.</p>
+  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict  -  verify dates with ACAS or a qualified adviser before relying on them.</p>
 </body>
 </html>

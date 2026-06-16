@@ -1,4 +1,4 @@
-name: lawapp — Build and push images
+name: lawapp  -  Build and push images
 
 # DEPRECATED (2026-06-10): image publication now happens in ci.yml build-push,
 # gated on the full test chain. Kept manual-only for ad-hoc rebuilds.

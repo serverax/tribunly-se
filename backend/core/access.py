@@ -1,4 +1,4 @@
-"""Access control module — User/tenant isolation and permission enforcement.
+"""Access control module  -  User/tenant isolation and permission enforcement.
 
 Stub implementation for testability. Provides:
 - User isolation checks (owns case / has workspace access)

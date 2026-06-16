@@ -46,7 +46,7 @@ class TestExtractedFactStructure:
         """Extracted facts must remain unconfirmed until user reviews them.
 
         OCR extraction is Phase 4 (returns 501). When implemented, extracted
-        facts must start as 'extracted_unconfirmed' — this test verifies the
+        facts must start as 'extracted_unconfirmed'  -  this test verifies the
         interface contract that must be maintained by any future implementation.
         """
         import pytest

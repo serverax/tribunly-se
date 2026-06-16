@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# End-to-end product gate — real auth→Brain answer; G10 provenance present with zero orphan chunks.
+# End-to-end product gate  -  real auth→Brain answer; G10 provenance present with zero orphan chunks.
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"; . scripts/lawapp/_gate_lib.sh
 
@@ -34,7 +34,7 @@ if [ "${cc:-0}" -gt 0 ] 2>/dev/null; then
   orph=$(psql_rag "select count(*) from corpus_chunks where chunk_hash is null or source_url is null")
   if [ "${orph:-1}" = "0" ]; then pass "zero orphan chunks (no null chunk_hash/source_url)"; else fail "orphan chunks present (count=$orph)"; fi
 else
-  fail "corpus_chunks EMPTY — G10 dataset not yet ingested (T-003/T-004 incomplete)"
+  fail "corpus_chunks EMPTY  -  G10 dataset not yet ingested (T-003/T-004 incomplete)"
 fi
 
 gate_result "final-end-to-end-product-gate"

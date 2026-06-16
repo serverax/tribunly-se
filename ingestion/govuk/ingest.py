@@ -3,7 +3,7 @@ GOV.UK Content API ingestion.
 
 Fetches official government guidance from https://www.gov.uk/api/content/{path}
 Stores in official_guidance table.
-Source type: explanation/support — NOT primary law.
+Source type: explanation/support  -  NOT primary law.
 
 Usage:
     python -m ingestion.govuk.ingest
@@ -29,7 +29,7 @@ logger  = logging.getLogger(__name__)
 GOVUK_API = "https://www.gov.uk/api/content"
 
 # Priority employment guidance paths (official GOV.UK content API).
-# Paths that 404 or return no body are skipped — no placeholder rows.
+# Paths that 404 or return no body are skipped  -  no placeholder rows.
 EMPLOYMENT_GUIDANCE_PATHS = [
     "/dismiss-staff",
     "/employment-tribunals",
@@ -57,7 +57,7 @@ EMPLOYMENT_GUIDANCE_PATHS = [
     "/taking-sick-leave",
     "/continuous-employment-what-it-is",
     "/dismissal",
-    # Phase 1 repair — additional licensed GOV.UK paths (verified 2026-06-16)
+    # Phase 1 repair  -  additional licensed GOV.UK paths (verified 2026-06-16)
     "/statutory-sick-pay",
     "/paternity-pay-leave",
     "/adoption-pay-leave",
@@ -101,7 +101,7 @@ def _extract_body(content: dict) -> str:
     if content.get("description"):
         parts.append(content["description"])
 
-    # Body text (HTML — store as-is; strip later if needed)
+    # Body text (HTML  -  store as-is; strip later if needed)
     details = content.get("details", {})
     if isinstance(details, dict):
         body = details.get("body", "")
@@ -128,7 +128,7 @@ def ingest_path(path: str, conn=None) -> bool:
     content = resp.json()
     body    = _extract_body(content)
     if not body:
-        logger.warning("No body text for %s — skipping", path)
+        logger.warning("No body text for %s  -  skipping", path)
         return False
 
     title        = content.get("title", path)
@@ -191,7 +191,7 @@ def ingest_path(path: str, conn=None) -> bool:
         with transaction() as cur:
             _exec(cur)
 
-    console.print(f"  [green]✓[/green] {path} — {len(body)} chars, {len(chunks)} chunk(s)")
+    console.print(f"  [green]✓[/green] {path}  -  {len(body)} chars, {len(chunks)} chunk(s)")
     return True
 
 
