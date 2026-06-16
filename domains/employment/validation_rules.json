@@ -1,0 +1,8 @@
+{
+  "version": "1",
+  "required_facts_by_module": {
+    "unfair_dismissal": ["dismissal_date", "employment_start_date"],
+    "unpaid_wages": ["wages_due_date"]
+  },
+  "jurisdiction_gate": ["EW", "S", "NI"]
+}

@@ -76,7 +76,9 @@ class EmploymentUkPlugin(DomainPlugin):
     ]
 
     def __init__(self) -> None:
-        cfg_path = _DOMAINS_ROOT / "employment_uk" / "domain_config.json"
+        cfg_path = _DOMAINS_ROOT / "employment" / "domain_config.json"
+        if not cfg_path.is_file():
+            cfg_path = _DOMAINS_ROOT / "employment_uk" / "domain_config.json"
         spec = DomainPluginSpec(
             domain_id="employment",
             title="UK Employment Law",

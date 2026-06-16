@@ -102,6 +102,7 @@ def retrieve_rules(
     claim_type: str,
     jurisdiction: str,
     edt: date,
+    domain: Optional[str] = None,
 ) -> list[dict]:
     """
     Fetch all current-in-force rules for the claim type and jurisdiction
@@ -112,6 +113,10 @@ def retrieve_rules(
     row have effective_to=NULL; only is_prospective=false prevents selecting
     the future law.
     """
+    if domain:
+        from backend.domains.registry import require_domain
+        require_domain(domain)
+
     conn = get_connection()
     try:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:

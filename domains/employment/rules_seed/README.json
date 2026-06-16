@@ -1,0 +1,4 @@
+{
+  "rules_seed_pointer": "../employment_uk/rules_manifest.yaml",
+  "note": "Runtime rules are served from PostgreSQL rules table (employment_rules namespace). This folder holds pack-local pointers only."
+}

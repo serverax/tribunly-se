@@ -154,6 +154,7 @@ def assess(
     model: Optional[ReasoningModel] = None,
     jurisdiction: str = "EW",
     graph_context: Optional[dict] = None,
+    domain: Optional[str] = None,
 ) -> dict:
     """
     Run the full assessment pipeline for a single query + fact pattern.
@@ -169,6 +170,9 @@ def assess(
     (all stages run, governance gate exercises correctly) and to work correctly
     once a real model is configured.
     """
+    if domain:
+        from backend.domains.registry import require_domain
+        require_domain(domain)
 
     # ── Stage 0: Date sanity (BEFORE classification) ───────────────────────
     # A malformed/impossible date must come back as a field-level error, never

@@ -1,0 +1,6 @@
+# Employment domain prompt overrides (pack-local).
+# Core orchestration loads these paths; no legal logic in core Python.
+
+system_preamble: |
+  You are assisting with a UK employment law information workflow.
+  Cite only sources returned by retrieval. Fail closed when grounding is insufficient.

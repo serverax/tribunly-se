@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lawapp.local/schemas/domain_pack.schema.json",
+  "title": "LawApp Domain Pack",
+  "type": "object",
+  "required": ["module_code", "title", "jurisdiction", "status"],
+  "properties": {
+    "module_code": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "country_code": { "type": "string", "minLength": 2, "maxLength": 2 },
+    "jurisdiction": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "enabled": { "type": "boolean" },
+    "status": {
+      "type": "string",
+      "enum": ["production", "partial", "stub", "unavailable"]
+    },
+    "rules_namespace": { "type": "string" },
+    "retrieval_domain": { "type": "string" },
+    "enabled_modules": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "ingestion_sources": { "type": "string" },
+    "template_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "prompt_overrides_path": { "type": "string" },
+    "validation_rules_path": { "type": "string" }
+  },
+  "additionalProperties": true
+}

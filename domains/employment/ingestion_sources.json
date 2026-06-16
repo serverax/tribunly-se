@@ -1,0 +1,8 @@
+{
+  "sources_manifest": "../employment_uk/sources.yaml",
+  "rules_manifest": "../employment_uk/rules_manifest.yaml",
+  "workflows_manifest": "../employment_uk/workflows.yaml",
+  "citation_policy": "../employment_uk/citation_policy.yaml",
+  "licence_policy": "../employment_uk/licence_policy.yaml",
+  "description": "Pointers to legacy employment_uk YAML manifests. DB rules table remains source of truth for runtime."
+}

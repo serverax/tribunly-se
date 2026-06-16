@@ -1,0 +1,16 @@
+{
+  "module_code": "immigration",
+  "title": "UK Immigration Law",
+  "country_code": "GB",
+  "jurisdiction": ["UK"],
+  "enabled": false,
+  "status": "stub",
+  "rules_namespace": null,
+  "retrieval_domain": null,
+  "enabled_modules": [],
+  "ingestion_sources": "ingestion_sources.json",
+  "template_paths": [],
+  "prompt_overrides_path": null,
+  "validation_rules_path": null,
+  "message": "Coming soon. No corpus, rules pack, or verified workflows yet."
+}

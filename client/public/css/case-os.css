@@ -6,7 +6,7 @@
      - Desktop:  min-width 1025px  full sidebar + two-column analysis
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
 :root {
   /* Figma-aligned Case OS tokens */
@@ -227,6 +227,37 @@
   color: var(--ink);
   margin: 0;
   line-height: 1.2;
+}
+
+.case-os-domain-badge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.75rem;
+}
+
+.domain-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--border, #d8dee9);
+  background: var(--surface, #f8fafc);
+  color: var(--ink-muted, #475569);
+}
+
+.domain-badge--production {
+  border-color: #86efac;
+  background: #ecfdf5;
+  color: #166534;
+}
+
+.domain-badge--soon {
+  border-style: dashed;
+  opacity: 0.85;
 }
 
 .case-os-topbar-actions {
@@ -852,3 +883,88 @@
     padding-inline: 1rem;
   }
 }
+
+/* Language switcher + RTL (multi-language v1) */
+.case-os-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.case-os-topbar-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.case-os-lang-switcher {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.case-os-lang-btn {
+  min-width: var(--cos-touch);
+  min-height: 2rem;
+  padding: 0 0.65rem;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.case-os-lang-btn.is-active {
+  background: var(--accent-tint);
+  color: var(--ink);
+}
+
+[dir="rtl"] .case-os-shell,
+body.is-rtl.case-os {
+  font-family: "Noto Naskh Arabic", var(--cos-font-ui);
+}
+
+[dir="rtl"] .case-os-sidebar {
+  right: 0;
+  left: auto;
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+
+[dir="rtl"] .case-os-nav a {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+[dir="rtl"] .case-os-topbar {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .case-os-bottom-nav {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .cos-split {
+  direction: rtl;
+}
+
+[dir="rtl"] .case-os-menu-toggle {
+  order: 2;
+}
+
+.case-os-boundary {
+  margin: 2rem auto 1.5rem;
+  max-width: 960px;
+  padding: 0 1rem 1.5rem;
+  font-size: 0.82rem;
+  color: var(--muted, #555);
+  border-top: 1px solid var(--border, #eaecf0);
+  padding-top: 0.75rem;
+}
+
+.case-os-boundary p {
+  margin: 0;
+}
+

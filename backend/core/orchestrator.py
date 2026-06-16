@@ -21,6 +21,7 @@ from typing import Any, Optional
 from backend.core.agents.base import AgentResult
 from backend.core.agents.registry import get_registry
 from backend.core.agents.domain_plugins import get_domain_plugin
+from backend.domains.constants import DOMAIN_DEFAULT
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +85,7 @@ class Orchestrator:
         self,
         claim_type: str,
         urgency: str = "safe",
-        domain: str = "employment",
+        domain: str = DOMAIN_DEFAULT,
     ) -> dict:
         from backend.domains.registry import require_domain, retrieval_domain_for
 
@@ -147,7 +148,7 @@ class Orchestrator:
         seen: set[str] = set()
         unique_gaps = [g for g in gaps if g not in seen and not seen.add(g)]
         return OrchestrationResult(
-            domain=route.get("domain", "employment"),
+            domain=route.get("domain", DOMAIN_DEFAULT),
             claim_type=route.get("claim_type", ""),
             agents_run=[ar.agent_name for ar in agent_results],
             agent_results=serialized,
@@ -165,7 +166,7 @@ class Orchestrator:
         jurisdiction: str = "EW",
         claim_type: Optional[str] = None,
         urgency: str = "safe",
-        domain: str = "employment",
+        domain: str = DOMAIN_DEFAULT,
         agent_names: Optional[list[str]] = None,
     ) -> OrchestrationResult:
         """Full classify → route → delegate → merge with stage audit trail."""
@@ -223,7 +224,7 @@ class Orchestrator:
             claim_type=claim_type,
         )
 
-    def available_tools(self, domain: str = "employment", claim_type: str = "unfair_dismissal") -> list[str]:
+    def available_tools(self, domain: str = DOMAIN_DEFAULT, claim_type: str = "unfair_dismissal") -> list[str]:
         route = self.route(claim_type, domain=domain)
         return list(route.get("tools") or [])
 

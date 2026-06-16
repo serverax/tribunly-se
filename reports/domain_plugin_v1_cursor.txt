@@ -1,0 +1,54 @@
+Domain Plugin System v1 - Deploy Proof
+Generated: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+Proof host: local uvicorn http://127.0.0.1:8010 (docker rebuild failed: Docker socket unavailable during build context transfer)
+
+## Pytest
+Command: python -m pytest tests/test_domain_pack_loader.py tests/test_domain_plugin_system.py tests/test_domain_modularity.py -q
+Result: 27 passed
+
+## GET /api/domains
+active_domain: employment
+count: 5
+packs: benefits (stub), debt (stub), employment (production, operational), housing (stub), immigration (stub)
+
+## POST /assess domain_code=employment
+status: ok
+domain_code: employment
+result_type: final_governed_assessment
+
+## POST /assess domain_code=immigration
+status: domain_unavailable
+domain_status: stub
+error: DomainDisabledError
+message: UK Immigration Law is not available in LawApp yet. Only enabled domain packs with verified corpus and rules can be assessed.
+result_type: domain_gate
+invokes_llm: false
+
+## Pack tree (top level)
+domains/
+  _schema/domain_pack.schema.json
+  employment/   (production)
+  immigration/  (stub)
+  housing/      (stub)
+  benefits/     (stub)
+  debt/         (stub)
+  employment_uk/ (legacy manifests, retained)
+
+## Backend wiring
+- backend/domains/loader.py, pack_contract.py, context.py, constants.py
+- backend/domains/registry.py (sync from packs)
+- backend/api/domain_routes.py -> GET /api/domains
+- backend/api/main.py assess domain gate + domain_code
+- backend/core/control_plane/mother_controller.py domain_code propagation
+- backend/core/control_plane/reasoning_router.py domain-scoped retrieval
+
+## Frontend
+- client/public/js/domain-badge.js
+- client/public/css/case-os.css badge styles
+- client/public/js/app-shell.js injects badge slot
+
+## Gaps
+- Docker image rebuild needed for containerized curl proof (build context ~206MB failed on socket)
+- rules_namespace SQL filter not yet applied in retrieve_rules
+- Full migration of employment_uk YAML into domains/employment/
