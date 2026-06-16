@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
-# System deps — libpq for psycopg2-binary, libxml2/libxslt for lxml,
+# System deps  -  libpq for psycopg2-binary, libxml2/libxslt for lxml,
 # curl for compose healthcheck, build-essential for any src-build fallbacks
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -76,6 +76,9 @@ COPY --chown=lawapp:lawapp client ./client
 COPY --chown=lawapp:lawapp scripts ./scripts
 COPY --chown=lawapp:lawapp docs ./docs
 COPY --chown=lawapp:lawapp docker-compose.yml ./docker-compose.yml
+COPY --chown=lawapp:lawapp .gitignore ./.gitignore
+COPY --chown=lawapp:lawapp .env.example ./.env.example
+COPY --chown=lawapp:lawapp .github ./.github
 COPY --chown=lawapp:lawapp tests ./tests
 
 EXPOSE 8000

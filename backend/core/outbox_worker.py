@@ -1,5 +1,5 @@
 """
-Outbox worker — drains pending ``outbox_events`` and drives the durable
+Outbox worker  -  drains pending ``outbox_events`` and drives the durable
 event lifecycle:  pending → processed  (on handler success)
                   pending → pending (retry) → dead_letter (at max_retries)
 
@@ -39,7 +39,16 @@ def _handle_assessment_complete(payload: dict, trace_id: object) -> bool:
     """Post-assessment fan-out point. The durable effect is the status
     transition itself; notification / evaluation / reindex hooks attach here.
     Idempotent and free of PII (payload carries IDs only)."""
-    if not payload.get("trace_id"):
+    # psycopg2 may return JSONB either as a dict or a string depending on
+    # driver/type-caster configuration. Be tolerant so the worker never
+    # fails the durable delivery path due to decoding shape.
+    if isinstance(payload, (str, bytes)):
+        import json
+        try:
+            payload = json.loads(payload)
+        except Exception:
+            pass
+    if not getattr(payload, "get", lambda _k, _d=None: None)("trace_id"):
         raise ValueError("assessment_complete event missing trace_id")
     logger.info("outbox: assessment_complete processed trace_id=%s", trace_id)
     return True
@@ -52,7 +61,7 @@ def _handle_ack(payload: dict, trace_id: object) -> bool:
     return True
 
 
-# Registry — tests monkeypatch this to exercise the failure path.
+# Registry  -  tests monkeypatch this to exercise the failure path.
 HANDLERS: dict[str, Handler] = {
     "assessment_complete":    _handle_assessment_complete,
     "legal_source_reindex":   _handle_ack,
@@ -72,7 +81,7 @@ WORKER_ID = f"worker-{os.getpid()}"
 def _dispatch(event: dict) -> None:
     handler = HANDLERS.get(event["event_type"])
     if handler is None:
-        logger.warning("outbox: no handler for type=%s — failing event=%s",
+        logger.warning("outbox: no handler for type=%s  -  failing event=%s",
                        event["event_type"], event["event_id"])
         outbox.mark_failed(event["event_id"], f"no handler for {event['event_type']}")
         return
@@ -80,7 +89,7 @@ def _dispatch(event: dict) -> None:
         handler(event["payload"], event["trace_id"])
         outbox.mark_processed(event["event_id"])
     except Exception as exc:  # handler failure → retry / dead-letter
-        # Log/record exception class + message only — never the payload (no PII).
+        # Log/record exception class + message only  -  never the payload (no PII).
         err = f"{type(exc).__name__}: {exc}"
         logger.warning("outbox: handler failed event=%s type=%s: %s",
                        event["event_id"], event["event_type"], err)
