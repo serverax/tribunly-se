@@ -176,7 +176,6 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 from backend.api.admin_workspace_routes import router as _admin_workspace_router
 app.include_router(_admin_workspace_router)
 
-
 @app.middleware("http")
 async def _auth_cookie_to_bearer(request: Request, call_next):
     """Bridge httpOnly auth cookies into the existing Bearer-token dependencies."""
@@ -239,6 +238,9 @@ app.include_router(_feedback_router)
 from backend.api.ingestion_proposal_routes import router as _ingestion_proposal_router
 app.include_router(_ingestion_proposal_router)
 
+from backend.api.i18n_routes import router as _i18n_router
+app.include_router(_i18n_router)
+
 # ── Free-tool login wall / resume-state routes ────────────────────────────────
 from backend.api.login_gate_routes import router as _login_gate_router
 app.include_router(_login_gate_router)
@@ -246,6 +248,9 @@ app.include_router(_login_gate_router)
 # ── Controlled chatbot routes: algorithm/rules/RAG/governance first ───────────
 from backend.chatbot.router import router as _chatbot_router
 app.include_router(_chatbot_router)
+
+from backend.api.domain_routes import router as _domain_router
+app.include_router(_domain_router)
 
 
 @app.get("/api/cases")
@@ -548,6 +553,7 @@ class AssessRequest(BaseModel):
     jurisdiction: str = "EW"
     use_model: bool = True          # set False to use StubReasoningModel (tests/dev)
     client_deadline: Optional[str] = None  # YYYY-MM-DD supplied by client-side calc
+    language: Optional[str] = None  # en | ar — multi-native rendering (not translation)
 
 
 def _backend_deadline_for_mismatch(req: AssessRequest, result: dict) -> Optional[str]:
@@ -644,7 +650,11 @@ def _assess_factual(req: "AssessRequest", decision) -> dict:
 
 @app.post("/assess")
 @_limiter.limit(_ASSESS_RATE_LIMIT)
-def assess_endpoint(request: Request, req: AssessRequest) -> dict:
+def assess_endpoint(
+    request: Request,
+    req: AssessRequest,
+    x_lawapp_domain: Optional[str] = Header(default=None, alias="X-Lawapp-Domain"),
+) -> dict:
     """
     Run the full assessment pipeline.
 
@@ -666,61 +676,55 @@ def assess_endpoint(request: Request, req: AssessRequest) -> dict:
     BM25 fallback over existing ingested corpus is active.
     FCL bulk ingestion remains blocked pending licence grant.
     """
-    # ── Path-Splitter (ADR): choose the lane FIRST, default behaviour ─────────
+    # Mother Algorithm Control Plane v1: single entry for all lanes
     from backend.core.path_splitter import route as _split, FAST_DETERMINISTIC
+    from backend.core.control_plane.mother_controller import MotherController, MotherInput
+
+    from backend.language_engine.shared.detector import normalize_locale, resolve_locale
+
     trace_id = getattr(request.state, "request_id", None) or str(_uuid.uuid4())
     _decision = _split(req.query, req.facts)
-    if _decision.lane == FAST_DETERMINISTIC:
-        # FACTUAL: deterministic rules-only, no LLM, cited, fail-closed.
-        result = _assess_factual(req, _decision)
-        result.setdefault("trace_id", trace_id)
-        return _apply_deadline_mismatch(req, result)
+    facts = req.facts or {}
+    locale = resolve_locale(
+        request,
+        body_language=req.language or facts.get("language") or facts.get("locale"),
+        sample_text=req.query,
+    )
 
-    # REASONING: the full governed pipeline (retrieval -> deidentify -> reason ->
-    # score -> govern). Generation NEVER runs before retrieval, and the response
-    # is the final_governed_assessment (not a raw stream preview).
-    #
-    # Engineering Order: Institutionalise CitationGuard Across lawapp.
-    # All generative work must pass through the governed orchestrator.
-    if req.use_model is False:
-        from backend.core.models import StubReasoningModel
-        from backend.core.pipeline import assess as _pipeline_assess
-
-        result = _pipeline_assess(
-            req.query,
-            req.facts,
-            model=StubReasoningModel(),
+    out = MotherController().process(
+        MotherInput(
+            query=req.query,
+            facts=req.facts or {},
             jurisdiction=req.jurisdiction,
+            use_model=req.use_model,
+            trace_id=trace_id,
+            locale=locale,
+            domain_code=domain_code,
         )
-        result["intent"] = _decision.intent
-        result["lane"] = _decision.lane
-        result["invokes_llm"] = False
-        result["result_type"] = "final_governed_assessment"
-        result.setdefault("trace_id", trace_id)
-        return _apply_deadline_mismatch(req, result)
-
-    from backend.core.brain import orchestrator as _orch
-    
-    result = _orchestrator_assess(req)
+    )
+    result = out.to_dict()
     result["intent"] = _decision.intent
     result["lane"] = _decision.lane
-    result["invokes_llm"] = True
+    result["invokes_llm"] = req.use_model and _decision.lane != FAST_DETERMINISTIC
     result["result_type"] = "final_governed_assessment"
     result.setdefault("trace_id", trace_id)
-
+    result.setdefault("locale", locale)
+    result.setdefault("domain_code", domain_code)
     return _apply_deadline_mismatch(req, result)
 
 def _orchestrator_assess(req: AssessRequest) -> dict:
-    from backend.core.brain import orchestrator
-    # The orchestrator handles the full 19-step pipeline with CitationGuard
-    return orchestrator.execute_generative_lane(
-        query=req.query,
-        context=req.facts,
-        case_id="", # case_id and user_id to be wired from auth/db context in Phase 3
-        user_id="",
-        jurisdiction=req.jurisdiction,
-        claim_type="unfair_dismissal"
+    from backend.core.control_plane.mother_controller import MotherController, MotherInput
+
+    controller = MotherController()
+    out = controller.process(
+        MotherInput(
+            query=req.query,
+            facts=req.facts or {},
+            jurisdiction=req.jurisdiction,
+            use_model=req.use_model,
+        )
     )
+    return out.to_dict()
 
 
 # ── Phase 3C: Document generation ────────────────────────────────────────────

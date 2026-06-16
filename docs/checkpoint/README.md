@@ -11,7 +11,16 @@ Session checkpoint documents capture **evidence-backed progress** and **ordered 
 
 | Checkpoint | Updated | Scope | Status |
 |------------|---------|-------|--------|
-| [INGESTION_LANGGRAPH_CHECKPOINT.md](./INGESTION_LANGGRAPH_CHECKPOINT.md) | 2026-06-16 | Dual-plane ingestion, LangGraph orchestrator, `POST /api/v1/legal/reason`, Case OS baseline | **OPEN** (11 owner questions pending) |
+| [INGESTION_LANGGRAPH_CHECKPOINT.md](./INGESTION_LANGGRAPH_CHECKPOINT.md) | 2026-06-16 | LangGraph STOP enforced; single Brain confirmed; ingestion dual-plane | **CLOSED** (LangGraph blocked per ADR-000) |
+
+---
+
+## Single-brain enforcement (2026-06-16)
+
+- **ADR:** `docs/adr/ADR-000-langgraph-gate.md`
+- **Test gate:** `tests/test_single_brain_architecture.py`
+- **Proof:** `reports/single_brain_enforcement_cursor.txt`
+- **Owner:** Agentic Foundation Q1 — Python Brain only; no second orchestration runtime
 
 ---
 
@@ -28,7 +37,7 @@ Session checkpoint documents capture **evidence-backed progress** and **ordered 
 
 ## When to add a checkpoint
 
-- Multi-step build (ingestion, LangGraph, control plane) interrupted before merge.
+- Multi-step build (ingestion, control plane) interrupted before merge.
 - Subagent dispatched but transcript shows no completion.
 - Owner must answer architecture questions before further implementation.
 
