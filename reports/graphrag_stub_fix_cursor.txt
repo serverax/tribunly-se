@@ -1,0 +1,47 @@
+GraphRAG crash-loop fix proof
+Date: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+Agent: cursor subagent
+
+## Import symbols found
+
+backend/services/lawapp-graph-rag-service/main.py:
+  from backend.core.rag.graphrag_traversal import (
+      build_legal_path,
+      find_deadlines_for_claim,
+      find_remedies_for_claim,
+      traverse_requirements,
+  )
+
+backend/chatbot/authority_builder.py:
+  from backend.core.rag.graphrag_traversal import build_legal_path
+
+No other Python imports of graphrag_traversal found.
+Symbols NOT imported anywhere: GraphRAGTraversal, graphrag_traversal (module alias),
+traverse, health, related_provisions, neighbours.
+
+## Files created
+
+- backend/core/rag/__init__.py
+- backend/core/rag/graphrag_traversal.py
+
+Restored from git history (3611c37) with em dashes replaced by hyphens/arrows.
+
+## Docker rebuild
+
+Command: docker compose up -d --build lawapp-graph-rag-service
+Result: Container recreated and started.
+
+## docker compose ps
+
+NAME                                STATUS
+lawapp-lawapp-graph-rag-service-1   Up (healthy)   0.0.0.0:8018->8018/tcp
+
+## Health check
+
+curl http://localhost:8018/health
+{"status":"ok","timestamp":"2026-06-16T16:31:09.716364"}
+
+## Prior failure (resolved)
+
+ModuleNotFoundError: No module named 'backend.core.rag.graphrag_traversal'
