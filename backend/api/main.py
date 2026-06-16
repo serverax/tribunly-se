@@ -682,19 +682,34 @@ def assess_endpoint(
     from backend.core.control_plane.mother_controller import MotherController, MotherInput
 
     from backend.language_engine.shared.detector import resolve_locale
-    from backend.domains.context import resolve_request_domain
+    from backend.domains.context import (
+        domain_unavailable_response,
+        require_operational_domain,
+        resolve_request_domain,
+    )
+    from backend.domains.shared.errors import DomainDisabledError, UnsupportedDomainError
 
     trace_id = getattr(request.state, "request_id", None) or str(_uuid.uuid4())
     _decision = _split(req.query, req.facts)
     facts = req.facts or {}
+    domain_code = resolve_request_domain(
+        domain_code=req.domain_code,
+        header_domain=x_lawapp_domain,
+        facts=facts,
+    )
+    try:
+        require_operational_domain(domain_code)
+    except (UnsupportedDomainError, DomainDisabledError) as exc:
+        blocked = domain_unavailable_response(domain_code, exc)
+        blocked["trace_id"] = trace_id
+        blocked["intent"] = _decision.intent
+        blocked["lane"] = _decision.lane
+        return blocked
+
     locale = resolve_locale(
         request,
         body_language=req.language or facts.get("language") or facts.get("locale"),
         sample_text=req.query,
-    )
-    domain_code = resolve_request_domain(
-        header_domain=x_lawapp_domain,
-        facts=facts,
     )
 
     out = MotherController().process(

@@ -5,14 +5,17 @@ Branch: release/lawapp-clean-snapshot
 Mode: Postgres (NEO4J_ENABLED=false default)
 
 ## Docker services
-docker compose up -d lawapp-graph-rag-service backend
+docker compose up -d --build lawapp-graph-rag-service backend
 - lawapp-graph-rag-service: healthy on :8018
 - backend: healthy on :8000
 - db, redis: healthy
 
+Optional Neo4j:
+docker compose --profile graph-neo4j up -d neo4j lawapp-graph-rag-service backend
+
 ## Health
 GET http://localhost:8018/health
-{"status":"ok","timestamp":"2026-06-16T20:45:16.893916","engine":"legal_nodes/legal_edges","mode":"postgres"}
+{"status":"ok","timestamp":"2026-06-16T21:20:52.884958","engine":"legal_nodes/legal_edges","mode":"postgres"}
 
 ## Graph search (hybrid merge query)
 POST http://localhost:8018/api/graph/search
@@ -28,12 +31,14 @@ Result summary:
 
 ## Unit tests
 python -m pytest tests/test_graph_rag_hybrid.py tests/test_graphrag_traversal.py -q
-13 passed
+14 passed
 
 ## Hybrid merge location
 - backend/core/retrieve.py: retrieve_hybrid(), retrieve_hybrid_context(), retrieve_graph_context()
 - backend/core/brain.py: Step 11 uses retrieve_hybrid()
 - backend/core/rag/graph_engine.py: dual-mode Neo4j/Postgres + Redis graph:chain:{hash}
+- backend/core/rag/graph_rag_chain.py: build_legal_chain(), format_chain(), score_path()
+- backend/core/rag/neo4j_traversal.py: Neo4j Cypher when NEO4J_ENABLED=true
 
 ## Neo4j (optional profile)
 docker compose --profile graph-neo4j up -d neo4j

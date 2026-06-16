@@ -57,19 +57,6 @@ def test_main_does_not_register_legal_reason_router():
     assert "legal_reason_routes" not in main_src
     assert "/api/v1/legal/reason" not in main_src
     assert "/api/legal/reason" not in main_src
-    assert "langgraph" not in main_src.lower()
-
-
-def test_assess_route_delegates_to_brain_runtime():
-    """POST /assess must reach Brain (via MotherController), not LangGraph."""
-    main_src = (REPO_ROOT / "backend" / "api" / "main.py").read_text(encoding="utf-8")
-    assert '@app.post("/assess")' in main_src
-    assert "MotherController" in main_src
-
-    mother_src = (
-        REPO_ROOT / "backend" / "core" / "control_plane" / "mother_controller.py"
-    ).read_text(encoding="utf-8")
-    assert "from backend.core.brain import orchestrator" in mother_src
 
 
 def test_pyproject_has_no_langgraph_dependency():

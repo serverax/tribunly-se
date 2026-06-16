@@ -12,6 +12,7 @@ import { GovernanceService } from './modules/governance/governance.service';
 import { MemoryService } from './modules/memory/memory.service';
 import { LearningService } from './modules/learning/learning.service';
 import { IngestionPipeline } from './modules/ingestion/ingestion.pipeline';
+import { GraphRagService } from './modules/graph-rag/graph-rag.service';
 
 @Module({
   imports: [],
@@ -28,6 +29,7 @@ import { IngestionPipeline } from './modules/ingestion/ingestion.pipeline';
     LearningService,
     IngestionPipeline,
     OrchestratorService,
+    GraphRagService,
   ],
 })
 export class AppModule {}
