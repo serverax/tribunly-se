@@ -1,0 +1,93 @@
+LawApp Multi-Language v1 Deploy Proof
+Generated: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+
+## Tests (local)
+Command:
+  pytest tests/test_language_engine_router.py tests/test_i18n_api.py tests/test_no_translation_invariant.py -q
+
+Result: 11 passed
+
+## Docker
+Command:
+  docker compose up -d backend
+
+Result: lawapp-backend-1 Running (rebuild recommended to pick up language_engine in image)
+
+Note: Live curl against localhost:8000 may fail while container health is starting or image is stale.
+Rebuild: docker compose build backend && docker compose up -d backend
+
+## Example EN response (MotherController FAST lane, use_model=false)
+
+{
+  "locale": "en",
+  "dir": "ltr",
+  "headline": "Unfair dismissal assessment",
+  "strength_label": "Strength uncertain",
+  "assessment_core": {
+    "status": "ok",
+    "claim_type": "unfair_dismissal",
+    "rule_keys": [
+      "unfair_dismissal.acas_code_adjustment_percent",
+      "unfair_dismissal.basic_award_formula",
+      "unfair_dismissal.time_limit_months"
+    ],
+    "citations": [{"rule_key": "unfair_dismissal.time_limit_months", "source": "rules_table"}]
+  }
+}
+
+## Example AR response (same neutral core, native Arabic presentation)
+
+{
+  "locale": "ar",
+  "dir": "rtl",
+  "headline": "تقييم الفصل غير العادل",
+  "strength_label": "القوة غير محددة بعد",
+  "assessment_core": {
+    "status": "ok",
+    "claim_type": "unfair_dismissal",
+    "rule_keys": [
+      "unfair_dismissal.acas_code_adjustment_percent",
+      "unfair_dismissal.basic_award_formula",
+      "unfair_dismissal.time_limit_months"
+    ]
+  },
+  "reasoning_summary": "استناداً إلى قاعدة القواعد القانونية..."
+}
+
+Invariant: assessment_core.rule_keys identical EN vs AR (no translation pipeline).
+
+## File tree (new/changed)
+
+backend/language_engine/
+  __init__.py
+  router.py
+  integration.py
+  shared/types.py
+  shared/detector.py
+  en/phrasing.py, en/prompts.py
+  ar/phrasing.py, ar/prompts.py
+backend/api/i18n_routes.py
+backend/core/control_plane/mother_controller.py  (language_render stage)
+backend/api/main.py  (locale on /assess)
+backend/api/legal_reason_routes.py
+client/public/js/i18n/
+  language-service.js, rtl-engine.js
+  locales/en.json, ar.json
+client/public/css/case-os.css  (RTL + switcher)
+client/public/js/app-shell.js  (EN|AR switcher)
+client/public/pages/analysis.html
+db/migrations/085_user_preferences_locale.sql
+docs/architecture/MULTI_LANGUAGE_V1.md
+docs/checkpoint/MULTI_LANGUAGE_CHECKPOINT.md
+tests/test_language_engine_router.py
+tests/test_i18n_api.py
+tests/test_no_translation_invariant.py
+
+## Phase gaps
+
+- ur, fr, hi plug-in modules not implemented
+- Next.js client parity pending
+- Migration 085 must be applied in target DB
+- Docker image rebuild required for containerized curl proof
+- Full LLM Arabic phrasing requires local Ollama in cluster

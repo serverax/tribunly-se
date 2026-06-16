@@ -4464,6 +4464,13 @@ def api_deadline_calculate(request: Request, req: DeadlineCalcRequest) -> dict:
         raise HTTPException(status_code=400, detail=str(exc))
 
 
+@app.post("/api/deadline/calc")
+@_limiter.limit("60/minute")
+def api_deadline_calc_alias(request: Request, req: DeadlineCalcRequest) -> dict:
+    """Alias for POST /api/deadline/calculate (Next.js frontend scaffold)."""
+    return api_deadline_calculate(request, req)
+
+
 def _process_stripe_webhook_event(event: dict, mode: str) -> None:
     """
     Process a verified Stripe webhook event.
