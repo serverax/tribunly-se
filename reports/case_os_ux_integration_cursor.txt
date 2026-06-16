@@ -1,0 +1,22 @@
+CASE OS UX INTEGRATION PROOF - 2026-06-16 19:05
+Branch: release/lawapp-clean-snapshot
+
+GET /pages/dashboard.html -> 200 len=4316
+GET /pages/case-intake.html -> 200 len=11245
+GET /pages/analysis.html -> 200 len=5348
+GET /pages/my-case.html -> 200 len=6814
+GET /pages/deadlines.html -> 200 len=4525
+GET /pages/evidence.html -> 200 len=4250
+GET /pages/documents.html -> 200 len=4289
+GET /pages/escalation.html -> 200 len=4839
+GET /pages/advisor.html -> 200 len=3341
+GET /pages/settings.html -> 200 len=2376
+
+GET /health -> 200
+GET /api/features/knowledge/modules -> 200
+GET / -> 200
+
+GET /css/case-os.css -> 200
+GET /js/case-engine.js -> 200
+GET /js/app-shell.js -> 200
+GET /js/case-components.js -> 200
