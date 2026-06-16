@@ -13,36 +13,30 @@ Agent: cursor subagent (architecture compliance rollback)
 | 4 | docs/checkpoint/README.md updated | DONE |
 | 5 | langgraph removed from pyproject.toml / Dockerfile | VERIFIED (absent) |
 | 6 | tests/test_langgraph_legal_reason.py, legal_reason_routes.py deleted | VERIFIED (absent) |
-| 7 | tests/test_single_brain_architecture.py | PRESENT |
+| 7 | tests/test_single_brain_architecture.py | PRESENT (anti-LangGraph gate) |
 | 8 | reports/single_brain_enforcement_cursor.txt | THIS FILE |
 
-## Actions taken
+## Actions taken (this pass)
 
-DELETED:
-- backend/ai/ (graph/, services/)
-- backend/core/langgraph/
+REMOVED (re-deleted after parallel reintroduction):
+- backend/ai/ (untracked LangGraph tree)
 - backend/api/legal_reason_routes.py
-- tests/test_langgraph_legal_reason.py
-- tests/test_legal_reason_api.py
+- legal_reason router registration in backend/api/main.py
 
-MODIFIED (earlier rollback):
-- backend/api/main.py (unregistered legal_reason router)
-- pyproject.toml (removed langgraph, langchain-core)
-- Dockerfile (removed langgraph, langchain-core)
+RESTORED:
+- tests/test_single_brain_architecture.py (anti-bypass assertions; was overwritten to require LangGraph)
 
-CREATED / UPDATED (this pass):
-- docs/adr/ADR-000-langgraph-gate.md (+ coexistence risk table)
+UPDATED DOCS:
 - docs/checkpoint/INGESTION_LANGGRAPH_CHECKPOINT.md (STOPPED, owner decisions, priorities)
-- docs/checkpoint/README.md (OPEN priorities, ADR link)
+- docs/checkpoint/README.md
+- docs/adr/ADR-000-langgraph-gate.md (coexistence risk table)
 - docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md (SUPERSEDED banner)
 - docs/architecture/LEGAL_REASON_API_V1.md (SUPERSEDED banner)
-- tests/test_single_brain_architecture.py
-- reports/single_brain_enforcement_cursor.txt
 
 ## Pytest proof
 
 Command: python -m pytest tests/test_single_brain_architecture.py -q
-Result: 13 passed in 13.29s
+Result: 12 passed in 17.93s
 
 ## AFTER grep (production backend)
 

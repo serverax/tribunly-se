@@ -1,0 +1,177 @@
+...........                                                              [100%]
+============================== warnings summary ===============================
+tests/test_mother_controller.py: 31 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+tests/test_mother_controller.py::TestMotherController::test_out_of_scope_fail_closed
+  F:\lawapp\backend\core\models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+11 passed, 33 warnings in 84.93s (0:01:24)
+
+=== curl POST /assess (Docker backend :8000, pre-rebuild image) ===
+status ok
+trace_id present
+control_plane_stages: no (image rebuild required for v1 fields)
+governance_verdict: None (image rebuild required)
+
+Note: run `docker compose up -d --build backend` to deploy control plane code into container.
+Local pytest + TestClient prove MotherController wiring with new code.
+ Image lawapp-backend Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 475B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile:
+#2 transferring dockerfile: 3.20kB 3.9s done
+#2 DONE 13.7s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 3.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context:
+#4 transferring context: 184B 0.3s done
+#4 DONE 13.6s
+
+#5 [1/8] FROM docker.io/library/python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9
+#5 resolve docker.io/library/python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9 7.2s done
+#5 DONE 8.5s
+
+#6 [2/8] WORKDIR /app
+#6 CACHED
+
+#7 [ 3/20] RUN apt-get update     && apt-get install -y --no-install-recommends        build-essential curl libpq-dev postgresql-client libxml2-dev libxslt1-dev     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [internal] load build context
+#8 transferring context:
+#8 transferring context: 504.53kB 5.2s
+#8 transferring context: 688.47kB 10.3s
+#8 transferring context: 1.72MB 15.4s
+#8 transferring context: 3.60MB 20.5s
+#8 transferring context: 4.85MB 28.1s
+#8 transferring context: 5.45MB 33.4s
+#8 transferring context: 5.95MB 38.5s
+#8 transferring context: 7.86MB 43.6s
+#8 transferring context: 9.76MB 48.7s
+#8 transferring context: 10.69MB 53.7s
+#8 transferring context: 11.36MB 59.2s
+#8 transferring context: 11.79MB 64.5s
+#8 transferring context: 11.98MB 69.7s
+#8 transferring context: 12.20MB 75.2s
+#8 transferring context: 12.56MB 82.0s
+#8 transferring context: 12.75MB 90.7s
+#8 transferring context: 13.03MB 96.1s
+#8 transferring context: 13.22MB 98.4s done
+#8 CANCELED
+failed to solve: Canceled: context canceled
+
+
+
+View build details: docker-desktop://dashboard/build/default/default/hltfzyw7wpcm48j19intus6c0
+
+ Image lawapp-backend Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 475B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile:
+#2 transferring dockerfile: 3.14kB 1.9s done
+#2 DONE 4.7s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 ...
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 49.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context:
+#5 transferring context: 184B 1.3s done
+#5 DONE 3.3s
+
+#6 [1/8] FROM docker.io/library/python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9
+#6 resolve docker.io/library/python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9 7.2s done
+#6 DONE 8.5s
+
+#7 [2/8] WORKDIR /app
+#7 CACHED
+
+#8 [ 3/20] RUN apt-get update     && apt-get install -y --no-install-recommends        build-essential curl libpq-dev postgresql-client libxml2-dev libxslt1-dev     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [internal] load build context
+#9 transferring context:
+#9 transferring context: 113.79kB 6.7s
+#9 transferring context: 124.58kB 14.2s
+#9 transferring context: 421.67kB 19.3s
+#9 transferring context: 779.07kB 24.5s
+#9 transferring context: 1.09MB 30.2s
+#9 transferring context: 1.34MB 35.4s
+#9 transferring context: 2.51MB 46.4s
+#9 transferring context: 3.38MB 51.6s
+#9 transferring context: 4.22MB 56.7s
+#9 transferring context: 4.61MB 61.9s
+#9 transferring context: 5.38MB 67.0s
+#9 transferring context: 6.04MB 82.4s
+#9 transferring context: 7.04MB 87.6s
+#9 transferring context: 8.83MB 92.8s
+#9 transferring context: 10.48MB 98.0s
+#9 transferring context: 11.84MB 107.6s
+#9 transferring context: 13.56MB 112.9s
+#9 transferring context: 14.17MB 118.4s
+#9 transferring context: 14.47MB 123.9s
+#9 transferring context: 14.94MB 139.2s
+#9 transferring context: 16.07MB 144.6s
+#9 transferring context: 17.30MB 149.8s
+#9 transferring context: 18.53MB 155.1s
+#9 transferring context: 19.18MB 160.4s
+#9 transferring context: 21.31MB 165.6s
+#9 transferring context: 22.36MB 170.7s
+#9 transferring context: 24.79MB 175.7s
+#9 transferring context: 25.73MB 182.8s
+#9 transferring context: 26.95MB 187.9s
+#9 transferring context: 28.29MB 192.9s
+#9 transferring context: 28.78MB 198.7s
+#9 transferring context: 30.28MB 203.8s
+#9 transferring context: 31.51MB 213.8s
+#9 transferring context: 31.98MB 219.0s
+#9 transferring context: 32.43MB 224.0s
+#9 transferring context: 33.24MB 229.1s
+#9 transferring context: 33.92MB 234.1s
+#9 transferring context: 34.10MB 239.4s
+#9 transferring context: 34.96MB 244.6s
+#9 transferring context: 35.03MB 256.0s
+#9 transferring context: 35.32MB 262.8s
+#9 transferring context: 37.31MB 268.3s
+#9 transferring context: 38.75MB 274.8s
+#9 transferring context: 38.95MB 283.4s
+#9 transferring context: 39.77MB 290.4s
+#9 transferring context: 40.00MB 297.3s
+#9 transferring context: 40.33MB 304.9s
+#9 transferring context: 40.33MB 312.9s
+#9 transferring context: 40.74MB 318.0s
+#9 transferring context: 40.75MB 323.4s done
+#9 CANCELED
+failed to solve: Canceled: context canceled
+
+
+
+View build details: docker-desktop://dashboard/build/default/default/mll6hmfwrewo5fszr1rypmkc9
+
+status ok
+trace_id f91c6e9b-8c44-4de8-9167-c8cde11fc979
+control_plane_stages no
+governance_verdict None
