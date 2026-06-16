@@ -347,9 +347,8 @@
       };
       
       try {
-        const resp = await fetch('/cases', {
+        const resp = await LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases`, {
           method: 'POST',
-          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
@@ -1073,9 +1072,8 @@
         stripePayBtn.disabled = true;
         stripePayBtn.textContent = 'Redirecting to checkout...';
         try {
-            const resp = await fetch(`${API_BASE}/api/payments/create-session`, {
+            const resp = await LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/api/payments/create-session`, {
                 method: 'POST',
-                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ case_id: caseId, package_id: "full_documents" })
             });
@@ -1113,12 +1111,9 @@
     document.getElementById('btn-sol').disabled = true;
 
     try {
-      const resp = await fetch(`${API_BASE}/api/documents/generate`, {
+      const resp = await LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/api/documents/generate`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...LAWAPP_AUTH.getAuthHeaders()
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           case_id: caseId,
           document_type: docType,
@@ -1175,12 +1170,9 @@
 
       document.getElementById('hf-submit').disabled = true;
       try {
-        const resp = await fetch(`${API_BASE}/handoff/leads`, {
+        const resp = await LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/handoff/leads`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...LAWAPP_AUTH.getAuthHeaders()
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             trigger_reason: triggerReason, name, email,
             phone: phone || undefined,

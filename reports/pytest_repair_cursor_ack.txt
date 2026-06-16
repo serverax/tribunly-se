@@ -1,0 +1,34 @@
+.....F....                                                               [100%]
+================================== FAILURES ===================================
+___________ TestRateLimiterWired.test_health_endpoint_no_rate_limit ___________
+tests\rate_limiting\test_rate_limiting.py:51: in test_health_endpoint_no_rate_limit
+    assert r.status_code == 200
+E   assert 503 == 200
+E    +  where 503 = <Response [503 Service Unavailable]>.status_code
+------------------------------ Captured log call ------------------------------
+2026-06-16 10:31:09,417 WARNING [request_id=52eaa485-6693-4e85-b38d-7e449344b03e] ingestion.db DB pool init failed (connection to server at "localhost" (::1), port 5435 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5435 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+) ù using direct connects
+============================== warnings summary ===============================
+tests/test_assessment_auth_wiring.py: 21 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+tests/rate_limiting/test_rate_limiting.py::TestRateLimiterWired::test_assess_endpoint_has_rate_limit
+  F:\lawapp\backend\core\models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: cache could not write path F:\lawapp\.pytest_cache\v\cache\nodeids: [Errno 13] Permission denied: 'F:\\lawapp\\.pytest_cache\\v\\cache\\nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\lastfailed: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/rate_limiting/test_rate_limiting.py::TestRateLimiterWired::test_health_endpoint_no_rate_limit
+1 failed, 9 passed, 24 warnings in 20.61s

@@ -22,6 +22,8 @@ export const options = {
 };
 
 const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8000";
+// Backend must run with LAWAPP_LOAD_TEST_MODE=1 (or LAWAPP_ASSESS_RATE_LIMIT) so
+// POST /assess is not capped at 30/min per client IP — otherwise 50 VUs hit 429.
 const EXPECTED_AUTH_STATUSES = [401, 402, 403];
 const EXPECTED_REJECT_STATUSES = [400, 401, 402, 403, 404, 422];
 

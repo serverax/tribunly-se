@@ -64,6 +64,23 @@ if _redis_uri:
 else:
     _limiter = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
 
+
+def _resolve_assess_rate_limit() -> str:
+    """Assess POST rate limit — relaxed when LAWAPP_LOAD_TEST_MODE=1 for k6 runs."""
+    explicit = _os_rate.getenv("LAWAPP_ASSESS_RATE_LIMIT", "").strip()
+    if explicit:
+        return explicit
+    if _os_rate.getenv("LAWAPP_LOAD_TEST_MODE", "").lower() in ("1", "true", "yes"):
+        return "6000/minute"
+    return "30/minute"
+
+
+_ASSESS_RATE_LIMIT = _resolve_assess_rate_limit()
+if _ASSESS_RATE_LIMIT != "30/minute":
+    logging.getLogger(__name__).info(
+        "Assess rate limit override active: %s", _ASSESS_RATE_LIMIT
+    )
+
 # ── Phase 6: Admin API key authentication ────────────────────────────────────
 
 def _require_admin_key(x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")) -> str:
@@ -605,7 +622,7 @@ def _assess_factual(req: "AssessRequest", decision) -> dict:
 
 
 @app.post("/assess")
-@_limiter.limit("30/minute")
+@_limiter.limit(_ASSESS_RATE_LIMIT)
 def assess_endpoint(request: Request, req: AssessRequest) -> dict:
     """
     Run the full assessment pipeline.

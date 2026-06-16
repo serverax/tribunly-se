@@ -1,0 +1,12 @@
+P0-005 Frontend auth wiring proof
+Date: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+
+Command: python -m pytest tests/test_assessment_auth_wiring.py -q
+Result: 2 passed
+
+assessment.html mutating routes use LAWAPP_AUTH.fetchWithAuth for:
+- POST cases
+- POST api/payments/create-session
+- POST api/documents/generate
+- POST handoff/leads

@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import logging
+import re
 
 import httpx
 from rich.console import Console
@@ -56,7 +57,34 @@ EMPLOYMENT_GUIDANCE_PATHS = [
     "/taking-sick-leave",
     "/continuous-employment-what-it-is",
     "/dismissal",
+    # Phase 1 repair — additional licensed GOV.UK paths (verified 2026-06-16)
+    "/statutory-sick-pay",
+    "/paternity-pay-leave",
+    "/adoption-pay-leave",
+    "/overtime-your-rights",
 ]
+
+
+GOVUK_CHUNK_CHARS = 2000
+GOVUK_OVERLAP_CHARS = 150
+
+
+def _chunk_text(text: str, max_chars: int, overlap: int) -> list[str]:
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    chunks: list[str] = []
+    current: list[str] = []
+    current_len = 0
+    for sentence in sentences:
+        if current_len + len(sentence) > max_chars and current:
+            chunks.append(" ".join(current))
+            last = current[-1] if current else ""
+            current = [last] if last else []
+            current_len = len(last)
+        current.append(sentence)
+        current_len += len(sentence)
+    if current:
+        chunks.append(" ".join(current))
+    return chunks or [text]
 
 
 def _content_hash(text: str) -> str:
@@ -109,22 +137,22 @@ def ingest_path(path: str, conn=None) -> bool:
     doc_type     = content.get("document_type", "guidance")
     content_type = content.get("schema_name", "guidance")
     pub_date     = content.get("public_updated_at", "")
-    chash        = _content_hash(body)
+    chunks = _chunk_text(body, GOVUK_CHUNK_CHARS, GOVUK_OVERLAP_CHARS)
 
     sql = """
         INSERT INTO official_guidance
             (source_name, source_url, title, description, body_text,
              document_type, jurisdiction, metadata, content_hash,
-             is_current, last_verified_at,
+             is_current, last_verified_at, chunk_index,
              country_code, domain, source_type, licence_status,
              parser_type, parent_source_id)
         VALUES
             ('govuk', %(url)s, %(title)s, %(desc)s, %(body)s,
              %(doc_type)s, 'EW', %(meta)s::jsonb, %(hash)s,
-             true, now(),
+             true, now(), %(chunk_index)s,
              'GB', 'employment_uk', 'official_guidance', 'GRANTED',
              'html', 'govuk')
-        ON CONFLICT (source_url) DO UPDATE SET
+        ON CONFLICT (source_url, chunk_index) DO UPDATE SET
             title            = EXCLUDED.title,
             description      = EXCLUDED.description,
             body_text        = EXCLUDED.body_text,
@@ -139,24 +167,31 @@ def ingest_path(path: str, conn=None) -> bool:
         WHERE official_guidance.content_hash != EXCLUDED.content_hash
     """
     import json
-    params = {
-        "url":      public_url,
-        "title":    title,
-        "desc":     description,
-        "body":     body,
-        "doc_type": doc_type,
-        "meta":     json.dumps({"schema_name": content_type, "public_updated_at": pub_date}),
-        "hash":     chash,
-    }
+    meta = json.dumps({"schema_name": content_type, "public_updated_at": pub_date})
+
+    def _exec(cur) -> None:
+        cur.execute("DELETE FROM official_guidance WHERE source_url = %s", (public_url,))
+        for idx, chunk in enumerate(chunks):
+            params = {
+                "url": public_url,
+                "title": title if idx == 0 else f"{title} (part {idx + 1})",
+                "desc": description,
+                "body": chunk,
+                "doc_type": doc_type,
+                "meta": meta,
+                "hash": _content_hash(chunk),
+                "chunk_index": idx,
+            }
+            cur.execute(sql, params)
 
     if conn:
         with conn.cursor() as cur:
-            cur.execute(sql, params)
+            _exec(cur)
     else:
         with transaction() as cur:
-            cur.execute(sql, params)
+            _exec(cur)
 
-    console.print(f"  [green]✓[/green] {path} — {len(body)} chars")
+    console.print(f"  [green]✓[/green] {path} — {len(body)} chars, {len(chunks)} chunk(s)")
     return True
 
 

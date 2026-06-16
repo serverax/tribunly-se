@@ -1,77 +1,109 @@
 # LawApp — Project Status
 
-**Updated:** 2026-06-15  
+**Updated:** 2026-06-16  
 **Branch:** `release/lawapp-clean-snapshot`  
-**HEAD:** `f38c22f` fix(go-live): wire RAG corpus, bootstrap, and beta QA gates
-**QA input:** [docs/qa/CURSOR_REPAIR_BACKLOG.md](../docs/qa/CURSOR_REPAIR_BACKLOG.md), [docs/qa/CURSOR_COMPLETION_DECISION.md](../docs/qa/CURSOR_COMPLETION_DECISION.md)  
-**Overall verdict:** 🟡 **NOT READY FOR GO-LIVE** — P0 RAG wiring repaired; P0 module gate fail-closed in API; full 24-module + test suite still open
+**HEAD:** `12f835f` (pre–Phase 1 repair commits; refresh after repair push)  
+**QA input:** [docs/qa/CURSOR_REPAIR_NOW_LIST.md](../docs/qa/CURSOR_REPAIR_NOW_LIST.md), [docs/qa/CURSOR_CHECKIN_REPORT.md](../docs/qa/CURSOR_CHECKIN_REPORT.md)  
+**Overall verdict:** 🟡 **GO WITH RISK (controlled beta)** — Track A+B complete; Phase 1 P0 repairs in progress; public production **NO-GO**
 
+---
 
-## Post-approval workflow (2026-06-15)
+## Track A — Beta Finish (complete)
 
-| Check | Result |
+| Task | Result | Evidence |
+|------|--------|----------|
+| A1–A9 | **PASS*** | `reports/TRACK_A_BETA_FINISH_COMPLETION.md` |
+| Host pytest | **1704 passed**, 153 skipped, 0 failed | `reports/pytest_full_postfix_cursor.txt` |
+| Docker collect | **1858 collected**, 0 import errors | `reports/docker_pytest_collect_fixed_cursor.txt` |
+| Auth / phase5 / phase6 | Repaired | `reports/pytest_auth_*`, `reports/pytest_phase5a_phase6_cursor.txt` |
+
+\*A7 waiver: `test_stream_chat_real_tokens_from_qwen` skipped when local Ollama unreachable — see `docs/ops/OLLAMA_LOCAL.md` and P0-002.
+
+---
+
+## Track B — Production prerequisites (mostly complete)
+
+| Task | Result | Evidence |
+|------|--------|----------|
+| B1 RAG corpus | **889 chunks** (881 embedded) — stretch >>1000 open | `reports/track_b_rag_expansion_cursor.txt` |
+| B2 Scope-cut modules | **13 partial** fenced in API/UI | `reports/track_b_module_tests_cursor.txt` |
+| B3 k6 load | **FAIL** assess @ 50 VU (rate limit) — P0-001 repair | `reports/k6_100k_readiness_cursor.txt` |
+| B4 OTEL trace | **PASS** trace_id ↔ brain_traces | `reports/track_b_otel_cursor.txt` |
+| B5 DB beta gate | **PASS** | `reports/proof_database_integrity_beta_cursor.txt` |
+| B6 a11y | **PASS*** (4 findings A1–A4 deferred) | `reports/track_b_a11y_cursor.txt` |
+
+---
+
+## Fresh runtime (2026-06-16 check-in)
+
+| Check | Status |
 |-------|--------|
-| Commit | `f38c22f6806353f1110127d9b43a910d6f242875` — fix(go-live): wire RAG corpus, bootstrap, and beta QA gates |
-| Push | `origin/release/lawapp-clean-snapshot` (20650a0..f38c22f) |
-| Docker build | backend, db-bootstrap, ingestion — **OK**; backend + lawapp-rag-service recreated |
-| pytest --collect-only | **1833** tests collected (2 import errors: test_rules_engine_scale, test_service_tracing_integration) |
-| RAG `/api/rag/search` | **HTTP 200**, vector hits (ACAS + ERA) |
-| prove_database_integrity.sh (GO_LIVE_MODE=beta) | **PASS** |
-| prove_lawapp_full_workflows.sh | **PASS** |
+| Docker | **12/12 healthy** |
+| Backend `/health` | `status: ok`, `db: connected`, `auth_mode: jwt` |
+| Rules | **125** |
+| Corpus | **889** chunks / **881** embedded |
+| Modules | **11 production** + **13 partial** (scope-cut in product) |
+| Migrations | **74** |
 
 ---
 
-## Recovery session (2026-06-14)
+## Phase 1 P0 repair status (this session)
 
-| Item | Before | After | Status |
-|------|--------|-------|--------|
-| QA-001 RAG search | 0 hits (wrong table `legal_corpus`) | 5 hits for "unfair dismissal" (ACAS + ERA s.98/111) | 🟡 **PARTIAL** |
-| QA-001 corpus size | 28 chunks | 323 chunks, 315 embedded | 🟡 below >>1000 target |
-| QA-002 partial modules | 13/24 partial | 13/24 partial; API fail-closed for non-production | 🟡 **PARTIAL** (scope-cut UX) |
-| Docker health | 12/12 | 12/12 | ✅ |
-| Rules in DB | 125 | 125 | ✅ |
+| ID | Item | Status |
+|----|------|--------|
+| P0-001 | k6 assess rate limit profile | **IN PROGRESS** — `LAWAPP_LOAD_TEST_MODE` + k6 re-run |
+| P0-002 | Ollama local dev override | **IN PROGRESS** — compose + `docs/ops/OLLAMA_LOCAL.md` |
+| P0-003 | Live vs stub legal accuracy | **IN PROGRESS** — `run_legal_accuracy.py --live` |
+| P0-004 | RAG corpus ≥1000 | **IN PROGRESS** — ACAS URL fixes + gov.uk ingest |
+| P0-005 | assessment.html `fetchWithAuth` | **IN PROGRESS** |
+| P0-006 | This document refresh | **IN PROGRESS** |
+| P0-007 | Gatekeeper Track A+B verdict | **IN PROGRESS** |
 
 ---
 
-## P0 blockers
+## Go-live matrix
+
+| Scope | Verdict |
+|-------|---------|
+| Local Docker dev/demo | **GO** |
+| Controlled beta (11 topics) | **GO WITH RISK** |
+| Public production | **NO-GO** — k6, prod DB gate, K8s/secrets/Stripe live |
+
+---
+
+## P0 blockers (honest)
 
 | ID | Blocker | Owner | Status |
 |----|---------|-------|--------|
-| QA-001 | RAG corpus + search | db-rag-ingestion-agent | 🟡 Search **FIXED**; corpus 323 (needs more ingest for >>1000) |
-| QA-002 | 13 partial employment modules | legal-rule-engine-agent | 🟡 Fail-closed in `/api/workflow/diagnosis` + registry; DB go-live gate still fails |
-
----
-
-## P1 (unchanged)
-
-QA-003 container pytest parity · QA-004 59 test failures · QA-005 k6 load · QA-006 K8s deploy · QA-015 prod secrets
+| P0-001 | k6 assess rate limit under load | platform | OPEN → repair |
+| P0-002/003/008 | Ollama / live legal accuracy / streaming waiver | local-llm | OPEN → repair |
+| P0-004 | Corpus 889 vs 1000 stretch | legal-data | OPEN → repair |
+| P0-005 | assessment.html raw `fetch` on mutations | frontend | OPEN → repair |
 
 ---
 
 ## Legal-data pipeline (binding)
 
-Delegation sequence unchanged:
-
 `uk-employment-law-scraper-agent → legal-data-engineer-agent → db-rag-ingestion-agent → ai-brain-citationguard-agent → qa-release-gatekeeper`
 
-Bootstrap run 2026-06-14: legislation + ACAS ingested, 288 embeddings, corpus sync **295 rows added** after `jurisdiction` NOT NULL fix.
+No FCL bulk without licence. No fake rows for missing sources.
 
 ---
 
-## Next (ordered)
+## Track C — owner only (not agent-executed)
 
-1. Rebuild `db-bootstrap` image so `ingestion.sync_corpus_chunks` is included (bootstrap exited 1 on missing module in image).
-2. Expand corpus toward >>1000 chunks (full domain pack ingest + case law where licensed).
-3. QA-002: either promote next modules via migrations 062–068 + legal review, or enforce UI hide for partial modules in intake picker.
-4. QA-004: auth fixtures on integration tests.
-5. Owner: G2 leaked PAT rotation (not agent-performed).
+Secrets rotation (G2), prod deploy, Stripe live, backup drill — see `reports/TRACK_C_OWNER_HANDOFF.md`.
 
 ---
 
-## Task ledger
+## Next (Phase 2 engineering)
 
-| Task | State |
-|------|-------|
-| QA-001 RAG wiring + bootstrap | 🟡 in progress — search proven, corpus partial |
-| QA-002 module fail-closed | 🟡 API proven; full promotion backlog |
-| 007a–007d legal-data provenance | 📋 backlog |
+1. P1-002 — assess → brain_traces on all paths  
+2. P1-003 + P1-009 — a11y A1–A4 + scope-cut static pages  
+3. P1-001 — production DB gate policy (promote vs gate rule)  
+4. P1-004/005/008 — compose sidecars, bootstrap cold start, docker full pytest  
+5. P1-007 — tiered rate limits for production scale  
+
+---
+
+*Honest status: controlled beta remains GO WITH RISK with documented waivers until Phase 1 P0 items close and gatekeeper re-issues ACCEPT.*

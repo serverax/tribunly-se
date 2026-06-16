@@ -1,0 +1,32 @@
+REPAIR APPROVAL ACK - Cursor subagent
+=====================================
+Date: 2026-06-16
+User directive: all approved (engineering repairs, no main/prod, no secret rotation)
+Branch: release/lawapp-clean-snapshot
+Prior agent session: 3eb36e78 (work was uncommitted at check)
+
+VERDICT: partial
+Beta: GO WITH RISK (documented waivers remain)
+
+ADDRESSED IN THIS COMMIT (code + docs):
+- P0-001: LAWAPP_LOAD_TEST_MODE / LAWAPP_ASSESS_RATE_LIMIT for k6 (k6 re-run blocked: Docker daemon offline)
+- P0-002: compose Ollama profile + host.docker.internal default; docs/ops/OLLAMA_LOCAL.md
+- P0-003: run_legal_accuracy.py --live flag (Ollama proof not run: no local daemon in session)
+- P0-005: assessment.html fetchWithAuth + tests/test_assessment_auth_wiring.py
+- P0-006: tasks/PROJECT_STATUS.md refreshed toward HEAD 12f835f+ 
+- P1-010 partial: CURSOR_REPAIR_NOW_LIST.md tracked; backlog reconcile deferred
+
+PROOF RE-RUN (host, no Docker):
+- tests/test_assessment_auth_wiring.py: PASS (2)
+- tests/rate_limiting/test_rate_limiting.py: 9/10 PASS (health 503 without Postgres)
+- scripts/run_legal_accuracy.py (stub): PASS -> reports/legal_accuracy_stub_post_repair.txt
+
+NOT RUN (infra):
+- k6 assess thresholds (Docker/k6)
+- docker compose full pytest
+- Ollama streaming + --live legal accuracy
+- Corpus 1000 / ACAS 404 remediation / production DB gate / a11y / gatekeeper ACCEPT
+
+OPEN ITEMS: see reports/REPAIR_PROGRAM_SUMMARY.md (engineering + owner Track C)
+
+Ship policy: NO merge to main; push release/lawapp-clean-snapshot only.

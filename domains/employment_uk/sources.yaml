@@ -15,7 +15,7 @@ legislation:
     licence_type: open_government_licence
     sections:
       # core unfair dismissal + remedies + week's pay
-      ["94","95","97","98","108","111","119","120","122","123","124","126","207B","227",
+      ["94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","119","120","122","123","124","126","207B","227",
       # written statement / wages / deductions
        "1","13","23",
       # whistleblowing / protected disclosure (s.43A-s.43L) + detriment

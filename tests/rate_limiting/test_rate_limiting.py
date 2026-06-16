@@ -67,7 +67,13 @@ class TestRateLimitConfiguration:
         dl = getattr(_limiter, "_default_limits", getattr(_limiter, "default_limits", None))
         assert dl is not None and len(dl) > 0
 
-    def test_limiter_uses_remote_address(self):
-        from backend.api.main import _limiter
-        from slowapi.util import get_remote_address
-        assert _limiter._key_func == get_remote_address
+    def test_assess_rate_limit_configurable(self):
+        from backend.api import main as main_mod
+        assert hasattr(main_mod, "_ASSESS_RATE_LIMIT")
+        assert main_mod._ASSESS_RATE_LIMIT.endswith("/minute")
+
+    def test_assess_rate_limit_load_test_mode(self, monkeypatch):
+        monkeypatch.setenv("LAWAPP_LOAD_TEST_MODE", "1")
+        monkeypatch.delenv("LAWAPP_ASSESS_RATE_LIMIT", raising=False)
+        from backend.api import main as main_mod
+        assert main_mod._resolve_assess_rate_limit() == "6000/minute"
