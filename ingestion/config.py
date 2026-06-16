@@ -35,10 +35,10 @@ class Settings(BaseSettings):
             f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
         )
 
-    # ── Embedding (OpenAI) ───────────────────────────────────────────────────
+    # ── Embedding (local Ollama only) ────────────────────────────────────────
     openai_api_key: str = "placeholder"
-    embedding_model: str = "text-embedding-3-small"
-    embedding_dim: int = 1536
+    embedding_model: str = "bge-large-en-v1.5"
+    embedding_dim: int = 1024
 
     # ── Reasoning model (Anthropic) ──────────────────────────────────────────
     anthropic_api_key: str = "placeholder"

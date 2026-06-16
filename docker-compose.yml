@@ -129,8 +129,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-lawapp}
       POSTGRES_USER: ${POSTGRES_USER:-lawapp}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
-      EMBEDDING_DIM: ${EMBEDDING_DIM:-1536}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-bge-large-en-v1.5}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-1024}
     command: >
       bash -c "
         echo 'Starting lawapp legal data bootstrap...' &&
@@ -167,8 +167,8 @@ services:
       LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
       LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
-      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
-      EMBEDDING_DIM: ${EMBEDDING_DIM:-1536}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-bge-large-en-v1.5}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-1024}
       LEGISLATION_REQUESTS_PER_SECOND: ${LEGISLATION_REQUESTS_PER_SECOND:-1}
       FCL_REQUESTS_PER_SECOND: ${FCL_REQUESTS_PER_SECOND:-1}
       FCL_BULK_LICENCE_GRANTED: ${FCL_BULK_LICENCE_GRANTED:-false}

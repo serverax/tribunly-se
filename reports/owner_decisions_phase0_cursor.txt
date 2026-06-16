@@ -1,0 +1,68 @@
+# Owner decisions Phase 0 proof
+Date: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+
+## Decision doc
+docs/decisions/OWNER_DECISIONS_2026-06-16.md (31 answers verbatim)
+
+## Plan docs updated (RESOLVED pointers)
+- docs/deployment/UK_EMPLOYMENT_LAW_DEPLOYMENT_PLAN.md §6
+- docs/features/FEATURE_SPEC_INTEGRATION_PLAN.md §5
+- docs/architecture/AGENTIC_FOUNDATION_QUESTIONS.md
+
+## Migrations applied (Docker db)
+- 078_knowledge_schema_stubs.sql: knowledge.* schema, 16 modules, mapping, governance stubs
+- 079_teaser_funnel_partner.sql: funnel_signals, partner_registry, referral FK
+- 080_embedding_1024_prep.sql: corpus_chunks vector(1024), embedding_dim column
+
+## Graph-RAG 8018 (Postgres, fail-closed)
+curl http://localhost:8018/health
+{"status":"ok","timestamp":"2026-06-16T17:22:22.342122"}
+
+curl http://localhost:8018/ready
+{"status":"ready","database_connected":true}
+
+Implementation: backend/core/rag/graphrag_traversal.py (recursive CTE + GraphRAGTraversal class)
+
+## Tests
+python -m pytest tests/test_graphrag_traversal.py tests/test_login_gate.py -q
+14 passed
+
+## Embedding cleanup
+- docker-compose.yml defaults: bge-large-en-v1.5 / 1024
+- .env.example updated
+- ingestion/config.py defaults updated
+- infra/k8s/lawapp-configmaps.yaml updated
+- scripts/reembed_corpus_1024.py (stub; requires Ollama pull)
+
+## K8s deprecation
+- k8s/DEPRECATED.md
+- docs/deployment/K8S_MANIFEST_MIGRATION.md
+- docs/deployment/MATTER_CASES_ALIAS_PLAN.md
+
+## Partner registry
+- partner_registry table (migration 079)
+- POST /api/notifications/partner-referral stub (notification 8009)
+
+## Teaser / GDPR
+- login_gate.py: funnel_signals only, no anonymous special-category persist
+
+## Owner actions (documented, not faked)
+- FCL Computational Analysis Licence grant status
+- Partner org selection/signing
+- Companies House API key
+- ACAS/EHRC/HSE licence per legal_source row
+- Staging separate cluster
+- Track C remains independent
+
+## Deferred Phase 0/1
+- Full corpus backfill into knowledge.provision
+- Re-embed ~889 chunks (run scripts/reembed_corpus_1024.py when Ollama available)
+- Time-boxed dual-write cutover to provision authoritative
+- Delete k8s/ subtree after manifest port
+- Admin gate UI in lawapp-admin-service (8007)
+- ERA 2025 scheduled job + human sign-off workflow
+
+## Blockers
+- None for Phase 0 scaffold; re-embed blocked until Ollama model pulled locally
+- FCL bulk / ET outcomes remain sample-only until owner grant
