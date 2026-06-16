@@ -1,0 +1,43 @@
+=== Feature Spec Integration Proof ===
+Timestamp: 2026-06-16T17:49:35.6460511+01:00
+Branch: release/lawapp-clean-snapshot
+
+--- GET /health ---
+{"status":"ok","service":"lawapp-backend","db":"connected","auth_mode":"jwt","payment_mode":"test","ai_provider":{"provider":"ollama","active":true,"backend":"ollama_local","base_url":"http://host.docker.internal:11434","model":"qwen2.5:3b-instruct-q6_K","note":"Local Ollama only  -  no external LLM. Last resort after RULES + GRAPHRAG."},"openrouter_configured":false}
+HTTP_CODE:200
+
+--- GET :8016/health ---
+{"status":"ok","service":"lawapp-rules-service","timestamp":"2026-06-16T16:49:35.728074"}
+HTTP_CODE:200
+
+--- GET :8017/health ---
+{"status":"ok","service":"lawapp-rag-service","timestamp":"2026-06-16T16:49:35.762916+00:00"}
+HTTP_CODE:200
+
+--- F1 GET /api/features/knowledge/modules ---
+module_count=24 production_count=11 HTTP_CODE:200
+
+--- F2 POST /api/tools/deadline-calculator ---
+{"deadline":"2026-04-14","days_remaining":-63,"jurisdiction":"England & Wales","claim_type":"unfair_dismissal","event_date":"2026-01-15","authority":"ERA 1996 s.111(2) (commencement 1996-08-22); ERA 1996 s.207B (in force 2014-04-06, inserted by ERRA 2013); Luton Borough Council v Haque UKEAT/0180/17/JOJ [2018] UKEAT 0180_17_1204 para 17 (ratio) and para 26 (no-op (3) case)","basis":"3-month-less-1-day rule: 3 months from EDT 2026-01-15 = anniversary 2026-04-15, deadline 2026-04-14.","ec_applied":false,"note":"Base limitation date only  -  the ACAS Early Conciliation stop-clock can extend this. Preview only  -  this is general information, not legal advice. Sign in for a full, saved assessment with citations.","preview":true}
+HTTP_CODE:200
+
+--- F4 POST /api/features/claim-assessment ---
+{"has_claim":true,"confidence":0.45,"explanation":"Your description shows signals of a possible unfair dismissal issue. This is worth a full assessment to check qualifying conditions, time limits, and evidence. Preview only  -  this is general information, not legal advice. Sign in for a full, saved assessment with citations.","signals":["unfair_dismissal"],"preview":true,"strength_score":0.45,"verification_badge":"preview","matched_module_keys":["unfair_dismissal"],"disclaimer":"Information only, not legal advice. Sign in to save results to your case."}
+HTTP_CODE:200
+
+--- F3 POST /api/features/document-decode ---
+persisted=false sections>=1 HTTP_CODE:200
+
+--- pytest tests/test_feature_spec_integration.py ---
+....                                                                     [100%]
+============================== warnings summary ===============================
+C:\Python314\Lib\site-packages\slowapi\extension.py:717: 31 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 32 warnings in 1.65s

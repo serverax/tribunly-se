@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Know your rights  -  lawapp</title>
+  <meta name="description" content="Browse UK employment law topics with citation-backed excerpts from the lawapp corpus.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/a11y.js"></script>
+</head>
+<body>
+<div class="legal-notice" role="note">
+  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+</div>
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <div class="nav-links" id="navlinks">
+    <a href="/">Home</a>
+    <a href="/pages/claim-checker.html">Check my situation</a>
+  </div>
+</nav>
+<main class="page" id="main">
+  <div class="tool-head">
+    <span class="eyebrow">Free · Knowledge base</span>
+    <h1>Know your rights</h1>
+    <p id="scope-note">Loading module catalogue…</p>
+  </div>
+  <div id="module-list" class="feature-grid" aria-live="polite"></div>
+  <section id="detail" class="assessment-wrap" hidden>
+    <h2 id="detail-title"></h2>
+    <ul id="provision-list" class="citation-list"></ul>
+  </section>
+</main>
+<script>
+(function () {
+  var list = document.getElementById("module-list");
+  var note = document.getElementById("scope-note");
+  var params = new URLSearchParams(window.location.search);
+  var selected = params.get("module");
+
+  function badge(status) {
+    var s = document.createElement("span");
+    s.className = "badge " + (status === "production" ? "badge-yes" : "badge-uncertain");
+    s.textContent = status;
+    return s;
+  }
+
+  fetch("/api/features/knowledge/modules")
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      note.textContent = data.beta_scope_note || "";
+      list.textContent = "";
+      (data.modules || []).forEach(function (m) {
+        var card = document.createElement("article");
+        card.className = "feature-card tool-card";
+        var h = document.createElement("h3");
+        h.textContent = m.label;
+        card.appendChild(h);
+        card.appendChild(badge(m.status));
+        var p = document.createElement("p");
+        p.textContent = (m.chunk_count || 0) + " corpus excerpts";
+        card.appendChild(p);
+        var a = document.createElement("a");
+        a.href = "?module=" + encodeURIComponent(m.module_key);
+        a.textContent = "Browse";
+        card.appendChild(a);
+        list.appendChild(card);
+        if (selected === m.module_key) loadDetail(m.module_key, m.label);
+      });
+    })
+    .catch(function () { note.textContent = "Could not load modules."; });
+
+  function loadDetail(key, label) {
+    fetch("/api/features/knowledge/modules/" + encodeURIComponent(key))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var detail = document.getElementById("detail");
+        document.getElementById("detail-title").textContent = label + " (as at " + data.as_at_date + ")";
+        var ul = document.getElementById("provision-list");
+        ul.textContent = "";
+        (data.provisions || []).forEach(function (p) {
+          var li = document.createElement("li");
+          li.textContent = (p.citation || p.title || "Source") + ": " + (p.excerpt || "");
+          ul.appendChild(li);
+        });
+        detail.hidden = false;
+      });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document decoder  -  lawapp</title>
+  <meta name="description" content="Paste employment letter text for a plain-English, citation-backed breakdown. Not saved when anonymous.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/a11y.js"></script>
+</head>
+<body>
+<div class="legal-notice" role="note">
+  <strong>We're a guide, not a law firm.</strong> Anonymous uploads are not stored.
+</div>
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <div class="nav-links" id="navlinks">
+    <a href="/">Home</a>
+    <a href="#tools">Free tools</a>
+  </div>
+</nav>
+<main class="page" id="main">
+  <div class="tool-head">
+    <span class="eyebrow">Free tool · Document decoder</span>
+    <h1>Understand your letter</h1>
+    <p>Paste text from a dismissal letter, contract clause, or settlement draft. We explain it in plain English with sources where available.</p>
+  </div>
+  <form id="decodeForm" class="form-section">
+    <div class="form-group">
+      <label for="doc_text">Document text</label>
+      <textarea id="doc_text" rows="8" required placeholder="Paste the letter or clause here…"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Decode</button>
+  </form>
+  <section id="result" class="assessment-wrap" hidden aria-live="polite">
+    <h2>Plain-English breakdown</h2>
+    <div id="sections"></div>
+    <h3>Sources</h3>
+    <ul id="citations" class="citation-list"></ul>
+    <p id="disclaimer" class="boundary"></p>
+  </section>
+</main>
+<script>
+(function () {
+  var form = document.getElementById("decodeForm");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var text = document.getElementById("doc_text").value.trim();
+    fetch("/api/features/document-decode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ text: text, doc_type: "letter" })
+    })
+      .then(function (r) { if (!r.ok) throw new Error("Decode failed"); return r.json(); })
+      .then(function (data) {
+        var sec = document.getElementById("sections");
+        sec.textContent = "";
+        (data.sections || []).forEach(function (s) {
+          var div = document.createElement("div");
+          div.className = "assessment-section";
+          var h = document.createElement("h3"); h.textContent = s.heading;
+          var p = document.createElement("p"); p.textContent = s.plain_english;
+          div.appendChild(h); div.appendChild(p);
+          sec.appendChild(div);
+        });
+        var ul = document.getElementById("citations");
+        ul.textContent = "";
+        (data.citations || []).forEach(function (c) {
+          var li = document.createElement("li");
+          li.textContent = (c.citation || "Source") + " [" + (c.verification_badge || "unverified") + "]";
+          ul.appendChild(li);
+        });
+        document.getElementById("disclaimer").textContent = data.disclaimer || "";
+        document.getElementById("result").hidden = false;
+      })
+      .catch(function () { alert("Could not decode. Try again."); });
+  });
+})();
+</script>
+</body>
+</html>
