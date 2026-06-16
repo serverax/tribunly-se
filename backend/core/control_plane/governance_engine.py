@@ -77,8 +77,8 @@ class GovernanceEngine:
         deadline = assessment.get("deadline_info") or {}
         if isinstance(deadline, dict) and deadline.get("urgency_level") in ("critical", "expired"):
             human_review = True
-            if verdict == "PASS":
-                verdict = "HUMAN_REVIEW"
+            verdict = "HUMAN_REVIEW"
+            escalate = False
 
         return GovernanceOutcome(
             verdict=verdict,

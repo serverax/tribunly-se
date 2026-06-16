@@ -104,15 +104,14 @@ class MemoryStore:
     def write_case_outcome_feedback(
         self,
         *,
+        user_id: str,
         case_id: str,
-        outcome_label: str,
-        claim_type: str,
-        jurisdiction: str,
-        strategy_snapshot: dict,
-        fact_pattern_tags: Optional[list[str]] = None,
-        law_refs: Optional[list[str]] = None,
+        actual_outcome: str,
+        predicted_outcome: Optional[str] = None,
+        reasoning_gaps: Optional[list] = None,
+        trace_id: Optional[str] = None,
     ) -> Optional[str]:
-        """Persist de-identified outcome to feedback_registry (case_outcome_feedback alias)."""
+        """Persist outcome feedback to case_outcome_feedback (082)."""
         fb_id = str(uuid.uuid4())
         try:
             from ingestion.db import get_connection
@@ -122,24 +121,22 @@ class MemoryStore:
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        INSERT INTO feedback_registry (
-                            id, case_ref_hash, outcome_label, claim_type,
-                            jurisdiction_code, strategy_snapshot, fact_pattern_tags,
-                            law_refs, pii_stripped, source
+                        INSERT INTO case_outcome_feedback (
+                            id, user_id, case_id, trace_id,
+                            predicted_outcome, actual_outcome, reasoning_gaps
                         ) VALUES (
-                            %s::uuid, %s, %s, %s, %s, %s::jsonb, %s, %s, true, 'agent_outcome'
+                            %s::uuid, %s::uuid, %s::uuid, %s, %s, %s, %s::jsonb
                         )
                         RETURNING id
                         """,
                         (
                             fb_id,
-                            _case_ref_hash(case_id),
-                            outcome_label,
-                            claim_type,
-                            jurisdiction,
-                            json.dumps(strategy_snapshot),
-                            fact_pattern_tags or [],
-                            law_refs or [],
+                            user_id,
+                            case_id,
+                            trace_id,
+                            predicted_outcome,
+                            actual_outcome,
+                            json.dumps(reasoning_gaps or []),
                         ),
                     )
                     row = cur.fetchone()
@@ -148,5 +145,32 @@ class MemoryStore:
             finally:
                 conn.close()
         except Exception as exc:
-            logger.debug("case outcome feedback skipped: %s", exc)
-            return None
+            logger.debug("case_outcome_feedback write skipped: %s", exc)
+            # Fallback: feedback_registry when case_outcome_feedback not migrated
+            try:
+                from ingestion.db import get_connection
+
+                conn = get_connection()
+                try:
+                    with conn.cursor() as cur:
+                        cur.execute(
+                            """
+                            INSERT INTO feedback_registry (
+                                id, case_ref_hash, outcome_label, strategy_snapshot, pii_stripped, source
+                            ) VALUES (%s::uuid, %s, %s, %s::jsonb, true, 'agent_outcome')
+                            RETURNING id
+                            """,
+                            (
+                                fb_id,
+                                _case_ref_hash(case_id),
+                                actual_outcome,
+                                json.dumps({"predicted": predicted_outcome, "gaps": reasoning_gaps or []}),
+                            ),
+                        )
+                        row = cur.fetchone()
+                    conn.commit()
+                    return str(row[0]) if row else None
+                finally:
+                    conn.close()
+            except Exception:
+                return None

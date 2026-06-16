@@ -5,7 +5,7 @@
   "use strict";
 
   var CASE_OS_PAGES = [
-    "dashboard", "case-intake", "analysis", "my-case", "timeline", "deadlines",
+    "dashboard", "case-intake", "analysis", "workspace", "timeline", "deadlines",
     "evidence", "documents", "escalation", "advisor", "settings"
   ];
 
@@ -13,8 +13,8 @@
     { page: "dashboard", href: "/pages/dashboard.html", label: "Dashboard", short: "Home" },
     { page: "case-intake", href: "/pages/case-intake.html", label: "Case builder", short: "Build" },
     { page: "analysis", href: "/pages/analysis.html", label: "AI analysis", short: "AI" },
-    { page: "my-case", href: "/pages/my-case.html", label: "My case", short: "Case" },
-    { page: "timeline", href: "/pages/timeline.html", label: "Timeline", short: "Timeline" },
+    { page: "workspace", href: "/pages/workspace.html", label: "My case", short: "Case" },
+    { page: "timeline", href: "/pages/workspace.html#timeline", label: "Timeline", short: "Timeline" },
     { page: "deadlines", href: "/pages/deadlines.html", label: "Deadlines", short: "Dates" },
     { page: "evidence", href: "/pages/evidence.html", label: "Evidence hub", short: "Evidence" },
     { page: "documents", href: "/pages/documents.html", label: "Document engine", short: "Docs" },
@@ -23,13 +23,13 @@
     { page: "settings", href: "/pages/settings.html", label: "Settings", short: "More" }
   ];
 
-  var BOTTOM_NAV = ["dashboard", "my-case", "timeline", "deadlines", "settings"];
+  var BOTTOM_NAV = ["dashboard", "workspace", "timeline", "deadlines", "settings"];
 
   var PAGE_TITLES = {
     dashboard: "Dashboard",
     "case-intake": "Case builder",
     analysis: "AI analysis",
-    "my-case": "My case",
+    workspace: "Case workspace",
     timeline: "Timeline",
     deadlines: "Deadlines",
     evidence: "Evidence hub",
@@ -99,12 +99,17 @@
       'aria-expanded="false" aria-label="Open case menu">' +
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
       '<path d="M4 7h16M4 12h16M4 17h16"/></svg></button>' +
-      '<h1 class="case-os-topbar-title">' + (title || "Case OS") + "</h1></header>" +
+      '<h1 class="case-os-topbar-title">' + (title || "Case OS") + "</h1>" +
+      '<div class="case-os-lang-switcher" role="group" aria-label="Language">' +
+      '<button type="button" class="case-os-lang-btn" data-set-locale="en">EN</button>' +
+      '<button type="button" class="case-os-lang-btn" data-set-locale="ar">AR</button>' +
+      "</div></header>" +
       '<main id="main" class="case-os-content"></main></div>' +
       '<nav class="case-os-bottom-nav" aria-label="Case quick navigation">' + bottomNav + "</nav>";
 
     shell.querySelector(".case-os-content").innerHTML = inner;
     mount.parentNode.replaceChild(shell, mount);
+    injectBoundaryFooter();
 
     if (!document.querySelector(".skip-link")) {
       var skip = document.createElement("a");
@@ -160,7 +165,8 @@
       if (
         href === "/pages/dashboard.html" ||
         href === "/pages/case-intake.html" ||
-        href === "/pages/analysis.html"
+        href === "/pages/analysis.html" ||
+        href.indexOf("#") !== -1
       ) return;
       a.setAttribute("href", href.split("?")[0] + q);
     });
@@ -186,11 +192,35 @@
     }
     if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
     if (overlay) overlay.addEventListener("click", closeSidebar);
+    document.querySelectorAll("[data-set-locale]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var loc = btn.getAttribute("data-set-locale");
+        if (window.LAWAPP_I18N && typeof LAWAPP_I18N.setLocale === "function") {
+          LAWAPP_I18N.setLocale(loc);
+        }
+        document.querySelectorAll(".case-os-lang-btn").forEach(function (b) {
+          b.classList.toggle("is-active", b.getAttribute("data-set-locale") === loc);
+        });
+      });
+    });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeSidebar();
     });
     highlightNav();
     propagateCaseId();
+  }
+
+  function injectBoundaryFooter() {
+    if (document.getElementById("case-os-boundary-footer")) return;
+    if (!document.body.classList.contains("case-os")) return;
+    var footer = document.createElement("footer");
+    footer.id = "case-os-boundary-footer";
+    footer.className = "case-os-boundary";
+    footer.setAttribute("role", "contentinfo");
+    footer.innerHTML =
+      "<p>lawapp is not a law firm and does not provide regulated legal advice. " +
+      "Outputs are information only. We do not file claims or represent you at tribunal.</p>";
+    document.body.appendChild(footer);
   }
 
   function boot() {
@@ -213,6 +243,15 @@
       if (!ok) return false;
       injectShell(title);
       wireShell();
+      injectBoundaryFooter();
+      if (window.LAWAPP_I18N) {
+        return LAWAPP_I18N.init().then(function (loc) {
+          document.querySelectorAll(".case-os-lang-btn").forEach(function (b) {
+            b.classList.toggle("is-active", b.getAttribute("data-set-locale") === loc);
+          });
+          return true;
+        });
+      }
       return true;
     });
   }

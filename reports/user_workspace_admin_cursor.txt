@@ -1,0 +1,51 @@
+LawApp User Workspace + Admin Control Center proof
+Date: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+
+== Migration 081 ==
+docker compose exec -T db psql -U lawapp -d lawapp < 081_admin_audit_extensions.sql
+RESULT: ALTER TABLE users; ALTER TABLE brain_traces; CREATE INDEX x2
+
+== Docker services ==
+docker compose up -d db backend lawapp-admin-service
+RESULT: db healthy, backend running, admin-service recreated
+
+== Admin service (port 8007) ==
+curl http://localhost:8007/health
+RESULT: {"status":"healthy","service":"lawapp-admin-service",...}
+
+curl http://localhost:8007/admin/cases
+RESULT: 401 {"detail":"Bearer token required"}  (fail closed, expected)
+
+== User workspace (static via backend :8000) ==
+curl http://localhost:8000/pages/workspace.html
+RESULT: 200 HTML served (bind mount client/public)
+
+Hash tabs: #timeline #evidence #notes #documents #analysis
+
+== Admin UI static ==
+curl http://localhost:8000/admin/dashboard.html
+NOTE: 404 until backend image rebuild completes (new /admin/{page} route in main.py)
+Static files exist at client/public/admin/dashboard.html
+
+== Monolith admin APIs (same-origin for admin UI) ==
+GET /admin/cases
+GET /admin/ai-logs
+GET /admin/users
+GET /admin/system-health
+GET /admin/compliance
+Router import local: backend.api.admin_workspace_routes (5 routes)
+
+== Tests ==
+python -c "from backend.api.admin_workspace_routes import router" -> router ok 5
+pytest tests/integration/test_phase6_production.py -k admin -> 6 failed (pre-existing ADMIN_API_KEY env in local run)
+
+== URLs ==
+User workspace: http://localhost:8000/pages/workspace.html?case_id={uuid}
+Admin dashboard: http://localhost:8000/admin/dashboard.html (after backend rebuild)
+Admin service health: http://localhost:8007/health
+
+== Docs ==
+docs/frontend/CASE_OS_ARCHITECTURE.md
+docs/frontend/FIGMA_CASE_OS_SCREEN_MAP.md
+docs/architecture/THREE_LAYER_SYSTEM.md

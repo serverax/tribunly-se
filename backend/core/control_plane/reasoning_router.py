@@ -2,6 +2,7 @@
 Reasoning router  -  selects RAG, graph, rules, or LLM lane.
 
 Routes to real retrieve/orchestrator logic; never returns fake retrieval.
+Domain-specific retrieval scoping is delegated to domain packs via domain_code.
 """
 
 from __future__ import annotations
@@ -10,19 +11,30 @@ import logging
 from datetime import date
 from typing import Any, Optional
 
+from backend.domains.constants import DOMAIN_DEFAULT
+from backend.domains.context import resolve_request_domain
+from backend.domains.registry import jurisdiction_supported_for_domain
+
 logger = logging.getLogger(__name__)
 
 
 class ReasoningRouter:
     """Route a classified matter to the correct reasoning backends."""
 
-    def assess_factual(self, query: str, facts: dict, jurisdiction: str = "EW") -> dict:
+    def assess_factual(
+        self,
+        query: str,
+        facts: dict,
+        jurisdiction: str = "EW",
+        *,
+        domain: Optional[str] = None,
+    ) -> dict:
         """FAST_DETERMINISTIC lane: rules-table only, fail-closed."""
-        from datetime import date
         from backend.core.classify import classify
         from backend.core.path_splitter import route as split_route
-        from backend.core.retrieve import jurisdiction_supported, retrieve_rules
+        from backend.core.retrieve import retrieve_rules
 
+        domain_code = resolve_request_domain(domain_code=domain, facts=facts) or DOMAIN_DEFAULT
         decision = split_route(query, facts)
         base = {
             "intent": decision.intent,
@@ -30,18 +42,21 @@ class ReasoningRouter:
             "invokes_llm": False,
             "result_type": "final_governed_assessment",
             "jurisdiction": jurisdiction,
+            "domain_code": domain_code,
         }
-        if not jurisdiction_supported(jurisdiction):
+        if not jurisdiction_supported_for_domain(domain_code, jurisdiction):
             return {
                 **base,
                 "status": "not_supported",
-                "message": f"{jurisdiction} employment law is not verified  -  fail closed.",
+                "message": (
+                    f"{jurisdiction} is not verified for domain {domain_code!r}  -  fail closed."
+                ),
             }
         c = classify(query, facts or {})
         if not getattr(c, "in_scope", True):
             return {**base, "status": "not_supported", "message": "Out of scope for this system  -  no guess."}
         claim = getattr(c, "matter_type", None) or "unfair_dismissal"
-        rules = retrieve_rules(claim, jurisdiction, date.today())
+        rules = retrieve_rules(claim, jurisdiction, date.today(), domain=domain_code)
         if not rules:
             return {
                 **base,
@@ -84,36 +99,46 @@ class ReasoningRouter:
         claim_type: str,
         jurisdiction: str,
         ref_date: Optional[date] = None,
+        *,
+        domain: Optional[str] = None,
     ) -> Any:
         from backend.core.retrieve import retrieve
 
         ref = ref_date or date.today()
-        return retrieve(query, claim_type, jurisdiction, ref)
+        domain_code = domain or DOMAIN_DEFAULT
+        return retrieve(query, claim_type, jurisdiction, ref, domain=domain_code)
 
     def retrieve_rules(
         self,
         claim_type: str,
         jurisdiction: str,
         ref_date: Optional[date] = None,
+        *,
+        domain: Optional[str] = None,
     ) -> list[dict]:
         from backend.core.retrieve import retrieve_rules
 
-        return retrieve_rules(claim_type, jurisdiction, ref_date or date.today())
+        domain_code = domain or DOMAIN_DEFAULT
+        return retrieve_rules(claim_type, jurisdiction, ref_date or date.today(), domain=domain_code)
 
     def route_and_retrieve(
         self,
         query: str,
         facts: dict,
         jurisdiction: str = "EW",
+        *,
+        domain: Optional[str] = None,
     ) -> dict:
         from backend.core.classify import classify
 
+        domain_code = resolve_request_domain(domain_code=domain, facts=facts) or DOMAIN_DEFAULT
         lane = self.classify_lane(query, facts)
         clf = classify(query, facts)
         claim_type = clf.matter_type if clf.in_scope else "out_of_scope"
 
         result: dict[str, Any] = {
             "lane": lane,
+            "domain_code": domain_code,
             "classification": {
                 "in_scope": clf.in_scope,
                 "matter_type": clf.matter_type,
@@ -137,7 +162,9 @@ class ReasoningRouter:
         except ValueError:
             ref_date = date.today()
 
-        bundle = self.retrieve(query, claim_type, jurisdiction, ref_date)
+        bundle = self.retrieve(
+            query, claim_type, jurisdiction, ref_date, domain=domain_code,
+        )
         graph_ctx = None
         try:
             from backend.core.control_plane.graph_controller import GraphController
@@ -160,13 +187,17 @@ class ReasoningRouter:
         jurisdiction: str = "EW",
         use_model: bool = True,
         model=None,
+        domain: Optional[str] = None,
     ) -> dict:
         """Full reasoning via pipeline.assess (real governed path)."""
         from backend.core.models import StubReasoningModel, select_model
         from backend.core.pipeline import assess as pipeline_assess
         from ingestion.config import settings
 
-        router_out = self.route_and_retrieve(query, facts, jurisdiction)
+        domain_code = resolve_request_domain(domain_code=domain, facts=facts) or DOMAIN_DEFAULT
+        router_out = self.route_and_retrieve(
+            query, facts, jurisdiction, domain=domain_code,
+        )
         if not router_out["classification"]["in_scope"]:
             from backend.core.govern import build_not_supported_response
 
@@ -184,7 +215,9 @@ class ReasoningRouter:
             model=_model,
             jurisdiction=jurisdiction,
             graph_context=router_out.get("graph_context"),
+            domain=domain_code,
         )
+        assessment["domain_code"] = domain_code
         assessment["control_plane"] = {
             "router": {
                 "lane": router_out["lane"],

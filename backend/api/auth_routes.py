@@ -325,7 +325,7 @@ def me(
             cur.execute(
                 """
                 SELECT id, email, created_at, subscription_status, display_name,
-                       email_verified, role, full_name
+                       email_verified, role, full_name, COALESCE(is_admin, false)
                   FROM users
                  WHERE id = %s::uuid
                 """,
@@ -349,6 +349,7 @@ def me(
             "email_verified": row[5],
             "role": row[6],
             "full_name": row[7],
+            "is_admin": bool(row[8]),
         },
         ctx,
     )

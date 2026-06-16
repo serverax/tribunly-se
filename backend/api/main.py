@@ -554,6 +554,7 @@ class AssessRequest(BaseModel):
     use_model: bool = True          # set False to use StubReasoningModel (tests/dev)
     client_deadline: Optional[str] = None  # YYYY-MM-DD supplied by client-side calc
     language: Optional[str] = None  # en | ar — multi-native rendering (not translation)
+    domain_code: Optional[str] = None
 
 
 def _backend_deadline_for_mismatch(req: AssessRequest, result: dict) -> Optional[str]:
@@ -680,7 +681,8 @@ def assess_endpoint(
     from backend.core.path_splitter import route as _split, FAST_DETERMINISTIC
     from backend.core.control_plane.mother_controller import MotherController, MotherInput
 
-    from backend.language_engine.shared.detector import normalize_locale, resolve_locale
+    from backend.language_engine.shared.detector import resolve_locale
+    from backend.domains.context import resolve_request_domain
 
     trace_id = getattr(request.state, "request_id", None) or str(_uuid.uuid4())
     _decision = _split(req.query, req.facts)
@@ -689,6 +691,10 @@ def assess_endpoint(
         request,
         body_language=req.language or facts.get("language") or facts.get("locale"),
         sample_text=req.query,
+    )
+    domain_code = resolve_request_domain(
+        header_domain=x_lawapp_domain,
+        facts=facts,
     )
 
     out = MotherController().process(
