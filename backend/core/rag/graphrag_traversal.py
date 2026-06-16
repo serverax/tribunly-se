@@ -75,12 +75,20 @@ def build_legal_path(
             "jurisdiction": jurisdiction,
         }
 
-    conn = get_connection()
+    conn = None
     try:
+        conn = get_connection()
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute(
-                "SELECT node_id, label, description FROM legal_nodes "
-                "WHERE node_type = 'claim_type' AND label ILIKE %s AND jurisdiction = %s",
+                """
+                SELECT node_id, label, description
+                  FROM legal_nodes
+                 WHERE node_type = 'claim_type'
+                   AND label ILIKE %s
+                   AND jurisdiction = %s
+                   AND is_active = true
+                 LIMIT 1
+                """,
                 (f"%{claim_type.replace('_', ' ')}%", jurisdiction),
             )
             root_node = cur.fetchone()
@@ -91,71 +99,97 @@ def build_legal_path(
                 claim_type,
                 jurisdiction,
             )
-            return {
-                "claim_type": claim_type,
-                "path": [],
-                "edges": [],
-                "confidence": 0.0,
-                "missing_prerequisites": ["No root node found in legal graph"],
-                "jurisdiction": jurisdiction,
-            }
+            return _empty_path(claim_type, jurisdiction, ["No root node found in legal graph"])
 
-        visited: set[str] = set()
-        path_nodes: list[dict] = []
-        path_edges: list[dict] = []
-        queue: list[tuple[str, int]] = [(root_node["node_id"], 0)]
-
-        while queue and len(visited) < 100:
-            current_node_id, depth = queue.pop(0)
-            if depth > max_depth or current_node_id in visited:
-                continue
-            visited.add(current_node_id)
-
-            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                cur.execute(
-                    "SELECT * FROM legal_nodes WHERE node_id = %s",
-                    (current_node_id,),
+        root_id = root_node["node_id"]
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """
+                WITH RECURSIVE graph_walk AS (
+                    SELECT
+                        ln.node_id,
+                        ln.node_type,
+                        ln.label,
+                        ln.description,
+                        ln.authority_level,
+                        ln.source_ref,
+                        ln.source_url,
+                        0 AS depth,
+                        ARRAY[ln.node_id]::text[] AS path_ids
+                    FROM legal_nodes ln
+                    WHERE ln.node_id = %s
+                      AND ln.is_active = true
+                    UNION ALL
+                    SELECT
+                        ln.node_id,
+                        ln.node_type,
+                        ln.label,
+                        ln.description,
+                        ln.authority_level,
+                        ln.source_ref,
+                        ln.source_url,
+                        gw.depth + 1,
+                        gw.path_ids || ln.node_id
+                    FROM graph_walk gw
+                    JOIN legal_edges le ON le.from_node_id = gw.node_id
+                    JOIN legal_nodes ln ON ln.node_id = le.to_node_id
+                    WHERE ln.is_active = true
+                      AND gw.depth < %s
+                      AND NOT (ln.node_id = ANY (gw.path_ids))
                 )
-                node = cur.fetchone()
+                SELECT DISTINCT ON (node_id)
+                    node_id, node_type, label, description,
+                    authority_level, source_ref, source_url, depth
+                FROM graph_walk
+                ORDER BY node_id, depth
+                """,
+                (root_id, max_depth),
+            )
+            path_nodes_raw = cur.fetchall()
 
-            if node:
-                path_nodes.append({
-                    "node_id": node["node_id"],
-                    "node_type": node["node_type"],
-                    "label": node["label"],
-                    "description": node["description"],
-                    "authority_level": node["authority_level"],
-                    "source_ref": node["source_ref"],
-                    "source_url": node["source_url"],
-                    "required": node["node_type"] in ("legal_test", "procedure"),
-                    "depth": depth,
-                })
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            node_ids = [n["node_id"] for n in path_nodes_raw]
+            if node_ids:
+                cur.execute(
+                    """
+                    SELECT le.from_node_id, le.to_node_id, le.relationship_type,
+                           le.weight, le.notes
+                      FROM legal_edges le
+                     WHERE le.from_node_id = ANY(%s)
+                       AND le.to_node_id = ANY(%s)
+                    """,
+                    (node_ids, node_ids),
+                )
+                edges_raw = cur.fetchall()
+            else:
+                edges_raw = []
 
-                with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                    cur.execute(
-                        """
-                        SELECT le.*, ln.node_type, ln.label AS to_label
-                        FROM legal_edges le
-                        JOIN legal_nodes ln ON le.to_node_id = ln.node_id
-                        WHERE le.from_node_id = %s AND ln.is_active = true
-                        """,
-                        (current_node_id,),
-                    )
-                    edges = cur.fetchall()
-
-                for edge in edges:
-                    path_edges.append({
-                        "from_node_id": edge["from_node_id"],
-                        "to_node_id": edge["to_node_id"],
-                        "from": edge["from_node_id"],
-                        "to": edge["to_node_id"],
-                        "relationship": edge["relationship_type"],
-                        "weight": edge["weight"],
-                        "notes": edge["notes"],
-                    })
-
-                    if edge["to_node_id"] not in visited:
-                        queue.append((edge["to_node_id"], depth + 1))
+        path_nodes = [
+            {
+                "node_id": n["node_id"],
+                "node_type": n["node_type"],
+                "label": n["label"],
+                "description": n["description"],
+                "authority_level": n["authority_level"],
+                "source_ref": n["source_ref"],
+                "source_url": n["source_url"],
+                "required": n["node_type"] in ("legal_test", "procedure"),
+                "depth": n["depth"],
+            }
+            for n in path_nodes_raw
+        ]
+        path_edges = [
+            {
+                "from_node_id": e["from_node_id"],
+                "to_node_id": e["to_node_id"],
+                "from": e["from_node_id"],
+                "to": e["to_node_id"],
+                "relationship": e["relationship_type"],
+                "weight": e["weight"],
+                "notes": e["notes"],
+            }
+            for e in edges_raw
+        ]
 
         if path_nodes:
             legal_test_count = sum(1 for n in path_nodes if n["node_type"] == "legal_test")
@@ -172,8 +206,12 @@ def build_legal_path(
 
         missing_prerequisites = _identify_missing_prerequisites(claim_type, path_nodes)
 
+    except Exception as exc:
+        logger.error("Graph traversal failed closed: %s", exc)
+        return _empty_path(claim_type, jurisdiction, [f"Graph traversal unavailable: {type(exc).__name__}"])
     finally:
-        conn.close()
+        if conn is not None:
+            conn.close()
 
     return {
         "claim_type": claim_type,
@@ -181,6 +219,17 @@ def build_legal_path(
         "edges": path_edges,
         "confidence": confidence,
         "missing_prerequisites": missing_prerequisites,
+        "jurisdiction": jurisdiction,
+    }
+
+
+def _empty_path(claim_type: str, jurisdiction: str, missing: list[str]) -> dict:
+    return {
+        "claim_type": claim_type,
+        "path": [],
+        "edges": [],
+        "confidence": 0.0,
+        "missing_prerequisites": missing,
         "jurisdiction": jurisdiction,
     }
 
@@ -339,3 +388,92 @@ def _identify_missing_prerequisites(claim_type: str, path_nodes: list[dict]) -> 
     found_ids = {n["node_id"] for n in path_nodes}
 
     return [p for p in expected if p not in found_ids]
+
+
+class GraphRAGTraversal:
+    """Postgres-backed graph traversal for lawapp-graph-rag-service (port 8018)."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        self._db_ok = self._check_database()
+
+    def _check_database(self) -> bool:
+        try:
+            conn = get_connection()
+            try:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT 1 FROM legal_nodes LIMIT 1")
+                return True
+            finally:
+                conn.close()
+        except Exception as exc:
+            logger.warning("GraphRAG database check failed: %s", exc)
+            return False
+
+    def traverse(self, claim_type: str, module: str = "", jurisdiction: str = "EW", **kwargs) -> list[dict]:
+        if not self._db_ok:
+            return []
+        result = build_legal_path(claim_type, module or claim_type, jurisdiction=jurisdiction)
+        return result.get("path", [])
+
+    def related_provisions(self, provision_id: str, **kwargs) -> list[dict]:
+        if not self._db_ok:
+            return []
+        try:
+            conn = get_connection()
+            try:
+                with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                    cur.execute(
+                        """
+                        SELECT ln.node_id, ln.label, ln.source_ref, le.relationship_type
+                          FROM legal_edges le
+                          JOIN legal_nodes ln ON ln.node_id = le.to_node_id
+                         WHERE le.from_node_id = %s AND ln.is_active = true
+                        """,
+                        (provision_id,),
+                    )
+                    return [dict(row) for row in cur.fetchall()]
+            finally:
+                conn.close()
+        except Exception as exc:
+            logger.error("related_provisions failed closed: %s", exc)
+            return []
+
+    def neighbours(self, node_id: str, **kwargs) -> list[dict]:
+        if not self._db_ok:
+            return []
+        try:
+            conn = get_connection()
+            try:
+                with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                    cur.execute(
+                        """
+                        SELECT ln.node_id, ln.node_type, ln.label, le.relationship_type
+                          FROM legal_edges le
+                          JOIN legal_nodes ln ON ln.node_id = le.to_node_id
+                         WHERE le.from_node_id = %s AND ln.is_active = true
+                        """,
+                        (node_id,),
+                    )
+                    return [dict(row) for row in cur.fetchall()]
+            finally:
+                conn.close()
+        except Exception as exc:
+            logger.error("neighbours failed closed: %s", exc)
+            return []
+
+    def health(self) -> dict[str, str]:
+        if self._db_ok:
+            return {"status": "ok", "mode": "postgres", "engine": "legal_nodes/legal_edges"}
+        return {"status": "degraded", "mode": "fail_closed", "engine": "postgres_unavailable"}
+
+
+def graphrag_traversal(claim_type: str, module: str = "", jurisdiction: str = "EW", **kwargs) -> list[dict]:
+    return GraphRAGTraversal().traverse(claim_type, module, jurisdiction, **kwargs)
+
+
+def traverse(claim_type: str, module: str = "", jurisdiction: str = "EW", **kwargs) -> list[dict]:
+    return graphrag_traversal(claim_type, module, jurisdiction, **kwargs)
+
+
+def health() -> dict[str, str]:
+    return GraphRAGTraversal().health()
