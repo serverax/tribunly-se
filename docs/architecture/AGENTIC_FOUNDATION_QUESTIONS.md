@@ -1,69 +1,63 @@
 # Agentic Foundation  -  Open Questions
 
-Documented defaults let Phase 1 proceed without blocking. Revisit before Phase 2+.
+**Status:** RESOLVED 16 June 2026. Owner endorsements: [`docs/decisions/OWNER_DECISIONS_2026-06-16.md`](../decisions/OWNER_DECISIONS_2026-06-16.md) (Agentic Foundation section).
+
+Documented defaults let Phase 1 proceed. Owner endorsed all six items on 2026-06-16.
 
 ## Architecture
 
-### Mastra (TypeScript) vs Python Brain
+### Mastra (TypeScript) vs Python Brain  -  RESOLVED
 
-**Question:** Mastra is TypeScript; LawApp is Python  -  extend existing Brain vs add Mastra sidecar?
+**Decision:** Extend existing Python `backend/core/brain.py` + `Orchestrator`. No Mastra sidecar unless a future ADR proves a hard requirement Python cannot meet.
 
-**Default (Phase 1):** Extend the existing Python `backend/core/brain.py` + `Orchestrator`. No Mastra sidecar unless a future ADR proves a hard requirement (e.g. Mastra-specific workflow UI).
-
-**Rationale:** Brain already enforces 19-step pipeline, CitationGuard, local Ollama routing, and `brain_traces` audit. A second orchestration runtime would duplicate guardrails and increase bypass risk.
+**Owner:** Endorse strongly. Second orchestration runtime increases CitationGuard bypass risk.
 
 ---
 
 ## Learning & Feedback
 
-### RLHF / fine-tuning policy
+### RLHF / fine-tuning policy  -  RESOLVED
 
-**Question:** Local-only fine-tune policy vs feedback queue only for now?
+**Decision:** Feedback queue only (`agent_feedback` + `feedback_registry`). No model weight updates. Phase 2 DSPy optimizer as read-only queue consumer through eval harness. Never RLHF the generator.
 
-**Default (Phase 1):** Feedback queue only  -  `agent_feedback` table + `feedback_registry` for post-outcome signals. No model weight updates, no external training APIs.
-
-**Rationale:** Standing orders require local Ollama default and fail-closed legal grounding. RLHF without provenance controls risks citation drift.
+**Owner:** Endorse.
 
 ---
 
 ## External integrations
 
-### Companies House API
+### Companies House API  -  RESOLVED (stub until owner key)
 
-**Question:** Is a Companies House API key available for production?
+**Decision:** Stub tool with `COMPANIES_HOUSE_API_KEY` env gate; honest unavailable when absent.
 
-**Default (Phase 1):** Stub tool registered with `COMPANIES_HOUSE_API_KEY` env gate; returns `experimental: true` + honest unavailable message when key absent. No fabricated company data.
-
-**Action needed:** Owner to provision key and confirm rate limits / licence terms before enabling live lookups.
+**Owner action:** Register free API key; confirm ~600 req/5min limits and terms. Cache in Redis. Public data, low privacy risk.
 
 ---
 
 ## Compliance
 
-### EU AI Act logging retention
+### EU AI Act logging retention  -  RESOLVED
 
-**Question:** What retention period applies to brain traces, audit logs, and agent feedback under EU AI Act / UK AI regulatory posture?
+**Decision:** No auto-purge Phase 1. Immutable traces store metadata, decisions, hashes only (never raw special-category content). Case data: limitation-driven erase/anonymise. PII-free audit/traces: 12+ months.
 
-**Default (Phase 1):** Persist immutable `brain_traces` + `audit_events` + new `agent_feedback` rows with existing retention migration (`012_phase6_encryption_retention.sql`) as baseline. No automatic purge in Phase 1.
-
-**Action needed:** Legal/compliance owner to set explicit retention windows (e.g. 7y employment records vs shorter telemetry) and map to `audit_events` / `brain_traces` policies.
+**Owner:** Endorse with UK GDPR storage-limitation correction.
 
 ---
 
 ## Domain expansion
 
-### Beyond employment_uk
+### Beyond employment_uk  -  RESOLVED
 
-**Question:** When to register immigration/housing domain plugins?
+**Decision:** `employment` only enabled domain in `backend/domains/registry.py`. New domains gated on corpus, verification, tests. Fail-closed on unsupported jurisdiction.
 
-**Default:** `employment` remains the only **enabled** domain in `backend/domains/registry.py`. `domains/employment_uk/` is the first domain plugin pack; others stay disabled until rules + corpus + tests exist.
+**Owner:** Endorse strongly.
 
 ---
 
 ## Tool calling
 
-### Orchestrator tool path vs preview tools
+### Orchestrator tool path vs preview tools  -  RESOLVED
 
-**Question:** Should public `/api/tools/*` preview endpoints share the agent tool registry?
+**Decision:** Separate surfaces; shared deterministic implementations. Public preview enforces no anonymous special-category persistence. Agent registry tools carry auth and audit.
 
-**Default (Phase 1):** Separate surfaces  -  preview tools stay in `backend/core/tools.py` (anonymous funnel). Agent tool registry (`backend/core/tool_registry/`) is for orchestrator/brain tool-calling only. Shared implementations (e.g. deadline) delegate to the same deterministic functions.
+**Owner:** Endorse.

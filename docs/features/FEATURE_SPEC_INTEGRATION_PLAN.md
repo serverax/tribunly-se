@@ -64,7 +64,7 @@ Priority waves:
 
 ## 3. Integration assumptions (documented, safe scaffolds)
 
-Until owner answers blocking questions (section 5):
+Owner decisions RESOLVED 16 June 2026 ([`OWNER_DECISIONS_2026-06-16.md`](../decisions/OWNER_DECISIONS_2026-06-16.md)). Integration assumptions updated:
 
 1. **`matter` bridges `cases`:** New `matter` table references `users(id)` with optional `case_id` FK to existing `cases`. Case Hub APIs continue to use `/cases/*`; feature routes expose `/api/features/matter/*` as the spec-facing layer.
 2. **`users` not `app_user`:** Spec DDL uses `app_user`; lawapp canonical table is `users` (migration 047).
@@ -119,23 +119,22 @@ Until owner answers blocking questions (section 5):
 
 ---
 
-## 5. Blocking questions for owner
+## 5. Blocking questions for owner  -  RESOLVED
 
-### Must answer before risky work
+All 10 questions answered 16 June 2026. Full verbatim record: [`docs/decisions/OWNER_DECISIONS_2026-06-16.md`](../decisions/OWNER_DECISIONS_2026-06-16.md).
 
-1. **Matter vs cases:** Replace `cases` with `matter` over time, or keep dual tables with sync forever?
-2. **Knowledge schema:** Adopt deployment-order `provision`/`module` (16 rows) or keep `corpus_chunks` + `employment_modules` (24 keys)?
-3. **Module taxonomy:** Map 24 `employment_modules` to spec 16 `module` codes, or expand product to 16-module marketing?
-4. **ET outcome dataset:** Is Find Case Law Computational Analysis Licence approved for F6 strength scoring?
-5. **Partner referrals:** Which regulated partners and webhook/email for F12 `referral` notifications?
-
-### Strongly affects sequencing
-
-6. **Payments:** Stripe subscription SKUs for F8/F9/F10 before or after Wave 2 hub?
-7. **Document decode storage:** After registration, store in `evidence_item` only, or also in `documents` legacy table?
-8. **Anonymous teaser persistence:** Spec says no special-category persist for anonymous tools; `teaser_sessions` encrypts answers today. Retain for funnel or drop for strict GDPR alignment?
-9. **Law-change detection:** Manual ops runbook vs scheduled legislation.gov.uk checksum job owner?
-10. **Bilingual:** Machine translation provider policy (on-device vs API) for F11?
+| # | Topic | Decision summary |
+|---|-------|----------------|
+| 1 | Matter vs cases | `matter` canonical; `/cases/*` aliases during transition; migrate then deprecate |
+| 2 | Knowledge schema | `provision`/`module` canonical; `corpus_chunks` = embedding layer |
+| 3 | Module taxonomy | Map 24 to 16 + tags; honest 11 production marketing |
+| 4 | ET outcomes | Rules + corpus only until FCL Computational Analysis Licence |
+| 5 | Partner referrals | `partner_registry` + notification (8009); owner selects partners |
+| 6 | Payments | After Wave 2 hub; Stripe SKUs at Wave 3 start |
+| 7 | Document storage | `evidence_item` only; migrate legacy `documents` |
+| 8 | Teaser persistence | Funnel signals only; no special-category anonymous persist |
+| 9 | Law-change | Scheduled checksum + human sign-off |
+| 10 | Bilingual | UI bundles any provider; case facts on-device/self-hosted only (Wave 4) |
 
 ---
 
@@ -192,4 +191,4 @@ Artifact: `reports/feature_spec_integration_cursor.txt`
 
 ---
 
-*Implementation on `release/lawapp-clean-snapshot` follows Phase 0 tasks above; owner answers section 5 before Phase 2+ risky schema or partner work.*
+*Owner decisions recorded 2026-06-16. Phase 0+ on `release/lawapp-clean-snapshot`; partner signing and FCL grant remain owner actions.*
