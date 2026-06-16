@@ -1,0 +1,7 @@
+2026-06-14 00:16:18,468 INFO [request_id=-] backend.core.otel telemetry configured (otel_sdk=True, otlp_endpoint=False)
+INFO:     Started server process [14840]
+INFO:     Waiting for application startup.
+2026-06-14 00:16:20,217 WARNING [request_id=-] backend.core.config_validation Missing production vars (OK in development mode): ['ENCRYPTION_KEY', 'APP_BASE_URL']
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+2026-06-14 00:16:27,334 INFO [request_id=57840d50-963d-4b72-a0fd-165e4c4b3720] ingestion.db DB pool initialised (min=1 max=16)

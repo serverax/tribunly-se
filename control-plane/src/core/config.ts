@@ -12,7 +12,12 @@ const boolFromEnv = z
 export const envSchema = z.object({
   NODE_ENV: z.string().default('development'),
   PORT: z.coerce.number().default(3001),
-  DATABASE_URL: z.string().min(1),
+  DATABASE_URL: z.string().optional(),
+  POSTGRES_HOST: z.string().default('db'),
+  POSTGRES_PORT: z.coerce.number().default(5432),
+  POSTGRES_DB: z.string().default('lawapp'),
+  POSTGRES_USER: z.string().default('lawapp'),
+  POSTGRES_PASSWORD: z.string().optional(),
   REDIS_URL: z.string().default('redis://redis:6379'),
   LAWAPP_API_URL: z.string().default('http://backend:8000'),
   GRAPH_RAG_SERVICE_URL: z.string().default('http://lawapp-graph-rag-service:8018'),
@@ -28,6 +33,16 @@ export const envSchema = z.object({
 });
 
 export type AppConfig = z.infer<typeof envSchema>;
+
+export function resolveDatabaseUrl(cfg: AppConfig): string {
+  if (cfg.DATABASE_URL) return cfg.DATABASE_URL;
+  if (!cfg.POSTGRES_PASSWORD) {
+    throw new Error('POSTGRES_PASSWORD or DATABASE_URL is required');
+  }
+  const user = encodeURIComponent(cfg.POSTGRES_USER);
+  const pass = encodeURIComponent(cfg.POSTGRES_PASSWORD);
+  return `postgresql://${user}:${pass}@${cfg.POSTGRES_HOST}:${cfg.POSTGRES_PORT}/${cfg.POSTGRES_DB}`;
+}
 
 export function loadConfig(): AppConfig {
   const parsed = envSchema.safeParse(process.env);

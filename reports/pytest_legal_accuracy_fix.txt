@@ -1,0 +1,16 @@
+.                                                                        [100%]
+============================== warnings summary ===============================
+C:\Python314\Lib\site-packages\slowapi\extension.py:717: 21 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+backend\core\models.py:662
+  F:\lawapp\backend\core\models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 23 warnings in 15.16s

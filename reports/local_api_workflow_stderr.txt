@@ -1,0 +1,8 @@
+2026-06-14 00:24:48,188 INFO [request_id=-] backend.core.otel telemetry configured (otel_sdk=True, otlp_endpoint=False)
+INFO:     Started server process [33112]
+INFO:     Waiting for application startup.
+2026-06-14 00:24:51,226 WARNING [request_id=-] backend.core.config_validation Missing production vars (OK in development mode): ['ENCRYPTION_KEY', 'APP_BASE_URL']
+INFO:     Application startup complete.
+ERROR:    [Errno 13] error while attempting to bind on address ('0.0.0.0', 8000): [winerror 10013] an attempt was made to access a socket in a way forbidden by its access permissions
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.

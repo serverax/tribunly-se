@@ -1,0 +1,35 @@
+ M .claude-flow/sessions/current.json
+ M .claude/settings.local.json
+ M backend/api/main.py
+?? .claude-flow/sessions/session-1780677549555.json
+?? .local/
+?? reports/openapi.json
+?? reports/qa_beta_blocker_tests_docker.txt
+?? reports/qa_route_repair_reprobe.txt
+?? reports/qa_security_live_tests.txt
+?? tasks/alaabeauty.md
+?? tests/test_legacy_route_parity.py
+---HEAD---
+62b9146f198ad55064c937dba5bd69939e6d952b
+---BRANCH---
+release/lawapp-clean-snapshot
+---DOCKER---
+NAME                                   IMAGE                                COMMAND                  SERVICE                       CREATED        STATUS                    PORTS
+lawapp-backend-1                       lawapp-backend                       "bash /app/scripts/b…"   backend                       12 hours ago   Up 54 minutes (healthy)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+lawapp-db-1                            pgvector/pgvector:pg16               "docker-entrypoint.s…"   db                            2 days ago     Up 54 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp, 0.0.0.0:5435->5432/tcp, [::]:5435->5432/tcp
+lawapp-lawapp-admin-service-1          lawapp-lawapp-admin-service          "uvicorn main:app --…"   lawapp-admin-service          2 days ago     Up 54 minutes (healthy)   0.0.0.0:8007->8007/tcp, [::]:8007->8007/tcp
+lawapp-lawapp-audit-service-1          lawapp-lawapp-audit-service          "python main.py"         lawapp-audit-service          2 days ago     Up 54 minutes (healthy)   0.0.0.0:8020->8020/tcp, [::]:8020->8020/tcp
+lawapp-lawapp-case-service-1           lawapp-lawapp-case-service           "uvicorn main:app --…"   lawapp-case-service           2 days ago     Up 54 minutes (healthy)   0.0.0.0:8008->8008/tcp, [::]:8008->8008/tcp
+lawapp-lawapp-graph-rag-service-1      lawapp-lawapp-graph-rag-service      "python -m uvicorn m…"   lawapp-graph-rag-service      2 days ago     Up 54 minutes (healthy)   0.0.0.0:8018->8018/tcp, [::]:8018->8018/tcp
+lawapp-lawapp-notification-service-1   lawapp-lawapp-notification-service   "uvicorn main:app --…"   lawapp-notification-service   2 days ago     Up 54 minutes (healthy)   0.0.0.0:8009->8009/tcp, [::]:8009->8009/tcp
+lawapp-lawapp-rag-service-1            lawapp-lawapp-rag-service            "python -m uvicorn m…"   lawapp-rag-service            2 days ago     Up 54 minutes (healthy)   0.0.0.0:8017->8017/tcp, [::]:8017->8017/tcp
+lawapp-lawapp-redaction-service-1      lawapp-lawapp-redaction-service      "python main.py"         lawapp-redaction-service      2 days ago     Up 54 minutes (healthy)   0.0.0.0:8019->8019/tcp, [::]:8019->8019/tcp
+lawapp-lawapp-rules-service-1          lawapp-lawapp-rules-service          "python main.py"         lawapp-rules-service          2 days ago     Up 54 minutes (healthy)   0.0.0.0:8016->8016/tcp, [::]:8016->8016/tcp
+lawapp-outbox-worker-1                 lawapp-outbox-worker                 "python -m backend.c…"   outbox-worker                 31 hours ago   Up 54 minutes (healthy)   8000/tcp
+lawapp-redis-1                         redis:7-alpine                       "docker-entrypoint.s…"   redis                         2 days ago     Up 54 minutes (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+---HEALTH---
+---READY---
+=== POST-REBUILD 2026-06-12T07:32:33Z ===
+{"status":"ok","service":"lawapp-backend","db":"connected","auth_mode":"jwt","payment_mode":"disabled","ai_provider":{"provider":"ollama","active":true,"backend":"ollama_local","base_url":"http://ollama-inference.lawapp-ai.svc.cluster.local:11434","model":"qwen2.5:3b-instruct-q6_K","note":"Local Ollama only  -  no external LLM. Last resort after RULES + GRAPHRAG."},"openrouter_configured":false}
+health: 200
+ready: 200

@@ -1,0 +1,60 @@
+F..                                                                      [100%]
+================================== FAILURES ===================================
+_____________________ test_legal_accuracy_ci_gate_passes ______________________
+tests\integration\test_phase5b_unpaid_wages.py:332: in test_legal_accuracy_ci_gate_passes
+    assert result.returncode == 0, \
+E   AssertionError: CI gate failed. Output:
+E     ======================================================================
+E     LAWAPP ÔÇö LEGAL ACCURACY REGRESSION SUITE
+E     ======================================================================
+E     Running deterministic fact-pattern checks (StubReasoningModel)...
+E     
+E     Loading embedding model: BAAI/bge-small-en-v1.5 (fastembed ONNX)
+E       Output dimension: 384
+E     Grounded case:
+E       status:              ok
+E       claim_type:          unfair_dismissal
+E       citations:           8
+E       grounding_score:     1.0
+E       confidence_score:    0.95
+E     
+E     2026-06-14 23:35:08,411 INFO backend.core.pipeline ù Retrieval: 10 rules, 10 authorities, insufficient_grounding=False
+E     2026-06-14 23:35:08,426 INFO backend.core.deidentify ù De-identification boundary: stripped=[], passed=8 fields, unknown_kept=['qualifying_period_met', 'service_days']
+E     2026-06-14 23:35:08,426 INFO backend.core.pipeline ù De-identification boundary: {'fields_stripped': [], 'fields_passed': ['edt', 'service_start_date', 'reason_for_dismissal', 'was_procedure_followed', 'weekly_pay', 'jurisdiction', 'qualifying_period_met', 'service_days'], 'unknown_fields_kept_for_review': ['qualifying_period_met', 'service_days'], 'pii_fields_in_output': []}
+E     2026-06-14 23:35:08,464 INFO backend.core.pipeline ù Legal relationship map injected into ART input: {'used': True, 'node_count': 10, 'edge_count': 18, 'root_node': 'ud_claim', 'node_ids': ['ud_claim', 'employee_status', 'qualifying_service', 'dismissal', 'limitation_date', 'acas_ec', 'basic_award', 'compensatory_award', 'fair_reason', 'contributory_fault'], 'source': 'legal_graph'}
+E     2026-06-14 23:35:08,467 INFO backend.core.models ù StubReasoningModel.reason called ù no external API call made
+E     2026-06-14 23:35:08,467 INFO backend.core.models ù StubReasoningModel.reason called ù no external API call made
+E     2026-06-14 23:35:08,468 INFO backend.core.pipeline ù Scores: grounding=1.00 confidence=0.95 insufficient=False
+E     2026-06-14 23:35:08,468 INFO backend.core.pipeline ù Governance: passes=True reason=
+E     Traceback (most recent call last):
+E       File "F:\lawapp\scripts\run_legal_accuracy.py", line 104, in <module>
+E         raise SystemExit(main())
+E                          ~~~~^^
+E       File "F:\lawapp\scripts\run_legal_accuracy.py", line 65, in main
+E         print(f"  deadline_info:       {json.dumps(deadline_info, ensure_ascii=True)}")
+E                                                    ^^^^^^^^^^^^^
+E     UnboundLocalError: cannot access local variable 'deadline_info' where it is not associated with a value
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['C:\\Python314\\python.exe', 'scripts/run_legal_accuracy.py'], returncode=1, stdout='==========...^^^^^^^^\nUnboundLocalError: cannot access local variable \'deadline_info\' where it is not associated with a value\n').returncode
+============================== warnings summary ===============================
+C:\Python314\Lib\site-packages\slowapi\extension.py:717: 21 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+backend\core\models.py:662
+  F:\lawapp\backend\core\models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\lastfailed: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/integration/test_phase5b_unpaid_wages.py::test_legal_accuracy_ci_gate_passes
+1 failed, 2 passed, 24 warnings in 16.94s

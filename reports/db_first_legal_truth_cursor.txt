@@ -35,7 +35,9 @@ Rule 3 Ingestion-only writes: ingestion_write_guard + tests scan brain/pipeline 
 
 === Pytest ===
 13 passed (test_legal_truth_validator.py + test_knowledge_proposals.py)
-Result: PASS.............                                                            [100%]
+Result: PASS
+
+Commit: 1fc6b9f on release/lawapp-clean-snapshot (pushed).............                                                            [100%]
 ============================== warnings summary ===============================
 tests/test_legal_truth_validator.py: 31 warnings
   C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead

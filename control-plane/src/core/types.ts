@@ -68,5 +68,7 @@ export type RetrievalBundle = {
     nodes: GraphNode[];
     edges: GraphEdge[];
     source: string;
+    context_text?: string;
+    engine?: string;
   };
 };

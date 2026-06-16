@@ -1,0 +1,73 @@
+---
+description: Auto-generate a LawApp handoff snapshot when the session is heavy, a milestone completes, or continuation/recovery/sync is requested
+alwaysApply: true
+---
+
+# LawApp Handoff Auto-Generator
+
+## When to trigger
+Generate a handoff snapshot when ANY of these is true. Err on the side of
+generating EARLY rather than missing it. Do not wait for an exact percentage,
+because a live context figure may not be available to this rule.
+
+- The user types any of: handoff, sync, recover, continue, checkpoint.
+- Context usage is at or above 90% if that figure is visible.
+- The session is long and has made major multi-step build progress.
+- A major milestone just completed: a task finished, a build phase closed,
+  a migration applied, or a service brought up.
+
+If unsure whether the session is heavy, generate the snapshot anyway. A spare
+snapshot costs nothing; a missed one loses the session.
+
+## Behaviour when triggered (mandatory)
+1. STOP current coding. Change no other code until the handoff is complete.
+2. Read REAL state first: run `git rev-parse --abbrev-ref HEAD`,
+   `git rev-parse --short HEAD`, `git status`, and check running services and
+   applied migrations. Never write state from memory.
+3. Generate all five files under `docs/handoff/`, overwriting the previous set.
+4. Make the five files consistent with each other.
+5. Continue only if the user asks.
+
+## Hard rules
+- No guessing. Unknown value = `UNKNOWN - requires verification`. Never fabricate
+  state, services, commits, or test results.
+- Deterministic. Every value reflects real repo, service, and database state now.
+- Fixed namespaces only: `lawapp-api`, `lawapp-rag`, `lawapp-ai`,
+  `lawapp-security`, `lawapp-monitoring`. Never invent a namespace.
+- Secrets: list names or status only, never values.
+- Style: clean Markdown, short bullets, engineering-focused, no fluff,
+  hyphens not em dashes.
+
+## Files to generate
+
+### docs/handoff/HANDOFF.md
+Metadata block first:
+```
+Generated: <timestamp>
+Repo: serverax/lawapp
+Branch: <current branch>
+Commit: <short hash>
+Phase: <current phase 1-6>
+```
+Then: completed (bullets); recently modified; currently running (services,
+pipelines, agents); broken or failing; build phase 01-06 and position in it;
+RAG status (retrieval, embeddings, rules DB); agent status (orchestration,
+reasoning, governance); legal compliance and guardrail status.
+
+### docs/handoff/ARCHITECTURE_STATE.md
+Frontend (UI, WASM); backend (API, orchestration); RAG (pgvector, embeddings,
+ingestion); Graph RAG (status); database (tables, migrations, rules table);
+security (encryption, GDPR, de-identification); Kubernetes / deployment.
+
+### docs/handoff/DEPLOYMENT_STATE.md
+Namespaces (fixed list only); services running; secrets configured (names only);
+ingress status; pod status; health checks (API, DB, RAG, worker); failing
+deployments or CrashLoopBackOffs.
+
+### docs/handoff/NEXT_TASKS.md
+Top 5 priority tasks (max 5); blocking issues; fixes required before next phase;
+phase alignment (1-6); immediate next steps (actionable commands or tasks).
+
+### docs/handoff/KNOWN_ISSUES.md
+Open bugs; technical debt; failing tests; missing integrations; data ingestion
+gaps; legal data verification issues; unstable pipeline components.

@@ -224,13 +224,11 @@
 
     formatClaimType: function (type) {
       if (!type) return "Employment claim";
-      var map = {
-        unfair_dismissal: "Unfair dismissal",
-        unpaid_wages: "Unpaid wages",
-        wrongful_dismissal: "Wrongful dismissal",
-        redundancy: "Redundancy",
-      };
-      return map[type] || String(type).replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+      if (window.LAWAPP_BETA_SCOPE && LAWAPP_BETA_SCOPE.modules) {
+        var hit = LAWAPP_BETA_SCOPE.modules.filter(function (m) { return m.key === type; })[0];
+        if (hit) return hit.label;
+      }
+      return String(type).replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
     },
 
     strengthPercent: function (strength) {

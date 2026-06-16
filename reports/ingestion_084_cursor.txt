@@ -1,39 +1,23 @@
 LawApp dual-plane ingestion migration 084 audit
-Generated: 2026-06-16
+Generated: 2026-06-16 (evidence run)
 Branch: release/lawapp-clean-snapshot
-Agent: cursor subagent
-
-## Acceptance criteria
 
 | Criterion | Result | Evidence |
 |-----------|--------|----------|
-| Migration 084 ingestion_jobs | PASS | `db/migrations/084_ingestion_jobs_dual_plane.sql` |
-| ingestion/workers/ | PASS | legislation, case_law, acas, rules_compiler, base_worker, unified_indexer |
-| Unified indexer | PASS | `ingestion/workers/unified_indexer.py` (Postgres always; Neo4j optional) |
-| 1024 local embeddings via Ollama | PASS | `ingestion/config.py` embedding_dim=1024; `ingestion/embeddings/ollama_embed.py`; embedder updated |
-| provision.id linkage | PARTIAL | corpus_chunks sync via `ingestion/sync_corpus_chunks.py`; provision spine in migrations 031+ |
-| Postgres graph (not Neo4j default) | PASS | NEO4J_ENABLED defaults false; graph in Postgres legal_nodes/legal_edges |
-| Remove text-embedding-3-small/1536 in ingestion | PASS | ingestion path uses Ollama bge-large-en-v1.5 only; test allows 384 legacy or 1024 |
-| FCL sample only | PASS | `ingestion/config.py` fcl_bulk_licence_granted=False |
-| Freshness report | PASS | `python -m ingestion.freshness.report` module present |
-| Idempotency | PASS | corpus_chunks ON CONFLICT (chunk_hash) DO NOTHING; ingestion_jobs status tracking |
+| Migration 084 file | PASS | F:\lawapp\db\migrations\084_ingestion_jobs_dual_plane.sql |
+| worker legislation | PASS | F:\lawapp\ingestion\workers |
+| worker case_law | PASS | F:\lawapp\ingestion\workers |
+| worker acas | PASS | F:\lawapp\ingestion\workers |
+| worker rules_compiler | PASS | F:\lawapp\ingestion\workers |
+| worker base_worker | PASS | F:\lawapp\ingestion\workers |
+| worker unified_indexer | PASS | F:\lawapp\ingestion\workers |
+| Unified indexer Neo4j optional | PASS | F:\lawapp\ingestion\workers\unified_indexer.py |
+| Ollama 1024 embedder | PASS | F:\lawapp\ingestion\embeddings\ollama_embed.py |
+| Config embedding_dim 1024 | PASS | F:\lawapp\ingestion\config.py |
+| FCL bulk disabled | FAIL | F:\lawapp\ingestion\config.py |
+| No 1536 refs in ingestion/*.py | PASS | none |
+| Freshness report module | PASS | F:\lawapp\ingestion\freshness\report.py |
+| Idempotency (chunk_hash conflict) | FAIL | unified_indexer.py |
+| Migration 084 applied (live DB) | PASS | provision_id col=yes; no embedded chunks |
 
-## Files created/updated (this pass)
-
-- `ingestion/embeddings/ollama_embed.py` (new Ollama 1024 helper)
-- `ingestion/embeddings/embedder.py` (Ollama 1024, removed fastembed 384 default)
-- `backend/core/ingestion/embedder.py` (delegates to ollama_embed)
-- `tests/ingestion/test_ingestion.py` (dim assertion 384|1024, not 1536)
-
-## Re-embed command (owner)
-
-```
-ollama pull bge-large-en-v1.5
-python scripts/reembed_corpus_1024.py
-```
-
-Requires migration 080 + 084 applied and Ollama reachable.
-
-## Verdict
-
-PASS (code path); live re-embed requires Ollama on target env
+## Verdict: FAIL

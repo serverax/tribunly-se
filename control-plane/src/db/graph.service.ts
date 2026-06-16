@@ -24,7 +24,7 @@ export class GraphService {
     claimType: string,
     jurisdiction = 'EW',
     maxDepth = 2,
-  ): Promise<{ nodes: GraphNode[]; edges: GraphEdge[]; source: string }> {
+  ): Promise<{ nodes: GraphNode[]; edges: GraphEdge[]; source: string; context_text?: string; engine?: string }> {
     if (this.cfg.NEO4J_ENABLED) {
       this.logger.warn(
         'NEO4J_ENABLED=true but Neo4j driver is not bundled; falling back to Postgres legal_nodes/legal_edges',
@@ -49,12 +49,11 @@ export class GraphService {
         SELECT e.to_node_id AS node_id, 1 AS depth
         FROM legal_edges e
         WHERE e.from_node_id = $1
-          AND e.is_active = true
         UNION
         SELECT e.to_node_id, w.depth + 1
         FROM legal_edges e
         JOIN walk w ON e.from_node_id = w.node_id
-        WHERE w.depth < $3 AND e.is_active = true
+        WHERE w.depth < $3
       )
       SELECT n.node_id, n.node_type, n.label, n.description,
              n.jurisdiction, n.authority_level
@@ -73,8 +72,7 @@ export class GraphService {
       `
       SELECT from_node_id, to_node_id, relationship_type
       FROM legal_edges
-      WHERE is_active = true
-        AND from_node_id = ANY($1::text[])
+      WHERE from_node_id = ANY($1::text[])
         AND to_node_id = ANY($1::text[])
       LIMIT 100
       `,

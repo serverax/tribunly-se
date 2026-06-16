@@ -1,0 +1,175 @@
+time="2026-06-14T23:15:38+01:00" level=warning msg="Found orphan containers ([lawapp-ollama-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container lawapp-db-1 Running 
+ Container lawapp-db-1 Waiting 
+ Container lawapp-db-1 Healthy 
+ Container lawapp-ingestion-run-34ccfec88ab1 Creating 
+ Container lawapp-ingestion-run-34ccfec88ab1 Created 
+Phase 1 ÔÇö Legislation ingestion starting
+Legislation targets loaded from domain pack: /app/domains/employment_uk
+
+Employment Rights Act 1996 (ukpga/1996/18)
+2026-06-14 22:15:43,427 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/id?title=Employment+Rights+Act+1996 "HTTP/1.1 301 Moved Permanently"
+2026-06-14 22:15:43,428 INFO ingestion.legislation.client ÔÇö Title 'Employment Rights Act 1996' resolved to /id/ukpga/1996/18
+  Chapter verified: /id/ukpga/1996/18 Ô£ô
+2026-06-14 22:15:44,263 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/94/data.xml "HTTP/1.1 200 OK"
+2026-06-14 22:15:44,300 INFO ingestion.db ÔÇö DB pool initialised (min=1 max=16)
+  s.94 2 chunk(s) stored
+2026-06-14 22:15:45,269 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/95/data.xml "HTTP/1.1 200 OK"
+  s.95 4 chunk(s) stored
+2026-06-14 22:15:46,286 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/97/data.xml "HTTP/1.1 200 OK"
+  s.97 5 chunk(s) stored
+2026-06-14 22:15:47,402 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/98/data.xml "HTTP/1.1 200 OK"
+  s.98 6 chunk(s) stored
+2026-06-14 22:15:48,260 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/108/data.xml "HTTP/1.1 200 OK"
+  s.108 12 chunk(s) stored
+2026-06-14 22:15:49,266 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/108/prospective/data.xml "HTTP/1.1 404 Not Found"
+  s.108  not found ÔÇö skipped
+2026-06-14 22:15:49,267 WARNING ingestion.legislation.client ÔÇö Section not found (404): https://www.legislation.gov.uk/ukpga/1996/18/section/108/prospective/data.xml
+2026-06-14 22:15:50,272 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/111/data.xml "HTTP/1.1 200 OK"
+  s.111 5 chunk(s) stored
+2026-06-14 22:15:51,281 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/111/prospective/data.xml "HTTP/1.1 404 Not Found"
+2026-06-14 22:15:51,282 WARNING ingestion.legislation.client ÔÇö Section not found (404): https://www.legislation.gov.uk/ukpga/1996/18/section/111/prospective/data.xml
+  s.111  not found ÔÇö skipped
+2026-06-14 22:15:52,267 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/119/data.xml "HTTP/1.1 200 OK"
+  s.119 4 chunk(s) stored
+2026-06-14 22:15:53,538 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/120/data.xml "HTTP/1.1 200 OK"
+  s.120 3 chunk(s) stored
+2026-06-14 22:15:54,278 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/122/data.xml "HTTP/1.1 200 OK"
+  s.122 5 chunk(s) stored
+2026-06-14 22:15:55,265 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/123/data.xml "HTTP/1.1 200 OK"
+  s.123 7 chunk(s) stored
+2026-06-14 22:15:56,266 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/124/data.xml "HTTP/1.1 200 OK"
+  s.124 5 chunk(s) stored
+2026-06-14 22:15:57,263 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/124/prospective/data.xml "HTTP/1.1 404 Not Found"
+2026-06-14 22:15:57,265 WARNING ingestion.legislation.client ÔÇö Section not found (404): https://www.legislation.gov.uk/ukpga/1996/18/section/124/prospective/data.xml
+  s.124  not found ÔÇö skipped
+2026-06-14 22:15:58,281 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/126/data.xml "HTTP/1.1 200 OK"
+  s.126 3 chunk(s) stored
+2026-06-14 22:15:59,464 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/207B/data.xml "HTTP/1.1 200 OK"
+  s.207B 2 chunk(s) stored
+2026-06-14 22:16:00,278 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/227/data.xml "HTTP/1.1 200 OK"
+  s.227 3 chunk(s) stored
+2026-06-14 22:16:01,263 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/1/data.xml "HTTP/1.1 200 OK"
+  s.1 10 chunk(s) stored
+2026-06-14 22:16:02,270 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/13/data.xml "HTTP/1.1 200 OK"
+  s.13 4 chunk(s) stored
+2026-06-14 22:16:03,263 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/23/data.xml "HTTP/1.1 200 OK"
+  s.23 6 chunk(s) stored
+2026-06-14 22:16:04,271 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43A/data.xml "HTTP/1.1 200 OK"
+  s.43A 1 chunk(s) stored
+2026-06-14 22:16:05,482 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43B/data.xml "HTTP/1.1 200 OK"
+  s.43B 3 chunk(s) stored
+2026-06-14 22:16:06,265 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43C/data.xml "HTTP/1.1 200 OK"
+  s.43C 1 chunk(s) stored
+2026-06-14 22:16:07,381 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43D/data.xml "HTTP/1.1 200 OK"
+  s.43D 1 chunk(s) stored
+2026-06-14 22:16:08,269 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43E/data.xml "HTTP/1.1 200 OK"
+  s.43E 1 chunk(s) stored
+2026-06-14 22:16:09,273 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43F/data.xml "HTTP/1.1 200 OK"
+  s.43F 1 chunk(s) stored
+2026-06-14 22:16:10,262 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43G/data.xml "HTTP/1.1 200 OK"
+  s.43G 4 chunk(s) stored
+2026-06-14 22:16:11,261 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43H/data.xml "HTTP/1.1 200 OK"
+  s.43H 1 chunk(s) stored
+2026-06-14 22:16:12,282 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43J/data.xml "HTTP/1.1 200 OK"
+  s.43J 1 chunk(s) stored
+2026-06-14 22:16:13,262 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43K/data.xml "HTTP/1.1 200 OK"
+  s.43K 8 chunk(s) stored
+2026-06-14 22:16:14,274 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/43L/data.xml "HTTP/1.1 200 OK"
+  s.43L 1 chunk(s) stored
+2026-06-14 22:16:15,279 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/47B/data.xml "HTTP/1.1 200 OK"
+  s.47B 3 chunk(s) stored
+2026-06-14 22:16:16,261 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/99/data.xml "HTTP/1.1 200 OK"
+  s.99 4 chunk(s) stored
+2026-06-14 22:16:17,360 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/100/data.xml "HTTP/1.1 200 OK"
+  s.100 6 chunk(s) stored
+2026-06-14 22:16:18,268 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/103A/data.xml "HTTP/1.1 200 OK"
+  s.103A 2 chunk(s) stored
+2026-06-14 22:16:19,262 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/104/data.xml "HTTP/1.1 200 OK"
+  s.104 5 chunk(s) stored
+2026-06-14 22:16:20,259 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/112/data.xml "HTTP/1.1 200 OK"
+  s.112 3 chunk(s) stored
+2026-06-14 22:16:21,265 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/113/data.xml "HTTP/1.1 200 OK"
+  s.113 2 chunk(s) stored
+2026-06-14 22:16:22,262 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/114/data.xml "HTTP/1.1 200 OK"
+  s.114 4 chunk(s) stored
+2026-06-14 22:16:23,291 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/115/data.xml "HTTP/1.1 200 OK"
+  s.115 4 chunk(s) stored
+2026-06-14 22:16:24,277 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/118/data.xml "HTTP/1.1 200 OK"
+  s.118 3 chunk(s) stored
+2026-06-14 22:16:25,281 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/221/data.xml "HTTP/1.1 200 OK"
+  s.221 3 chunk(s) stored
+2026-06-14 22:16:26,272 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/222/data.xml "HTTP/1.1 200 OK"
+  s.222 3 chunk(s) stored
+2026-06-14 22:16:27,285 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/223/data.xml "HTTP/1.1 200 OK"
+  s.223 3 chunk(s) stored
+2026-06-14 22:16:28,396 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/224/data.xml "HTTP/1.1 200 OK"
+  s.224 2 chunk(s) stored
+2026-06-14 22:16:29,279 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/225/data.xml "HTTP/1.1 200 OK"
+  s.225 6 chunk(s) stored
+2026-06-14 22:16:30,268 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/226/data.xml "HTTP/1.1 200 OK"
+  s.226 4 chunk(s) stored
+2026-06-14 22:16:31,264 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/228/data.xml "HTTP/1.1 200 OK"
+  s.228 3 chunk(s) stored
+2026-06-14 22:16:32,266 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/18/section/229/data.xml "HTTP/1.1 200 OK"
+  s.229 2 chunk(s) stored
+
+Employment Tribunals Act 1996 (ukpga/1996/17)
+2026-06-14 22:16:33,327 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/id?title=Employment+Tribunals+Act+1996 "HTTP/1.1 301 Moved Permanently"
+2026-06-14 22:16:33,328 INFO ingestion.legislation.client ÔÇö Title 'Employment Tribunals Act 1996' resolved to /id/ukpga/1996/17
+  Chapter verified: /id/ukpga/1996/17 Ô£ô
+2026-06-14 22:16:34,379 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1996/17/section/18A/data.xml "HTTP/1.1 200 OK"
+  s.18A 6 chunk(s) stored
+
+Trade Union and Labour Relations (Consolidation) Act 1992 (ukpga/1992/52)
+2026-06-14 22:16:35,339 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/id?title=Trade+Union+and+Labour+Relations+%28Consolidation%29+Act+1992 "HTTP/1.1 301 Moved Permanently"
+2026-06-14 22:16:35,340 INFO ingestion.legislation.client ÔÇö Title 'Trade Union and Labour Relations (Consolidation) Act 1992' resolved to /id/ukpga/1992/52
+  Chapter verified: /id/ukpga/1992/52 Ô£ô
+2026-06-14 22:16:36,270 INFO httpx ÔÇö HTTP Request: GET https://www.legislation.gov.uk/ukpga/1992/52/section/207A/data.xml "HTTP/1.1 200 OK"
+  s.207A 3 chunk(s) stored
+
+Done. Errors: 0
+Phase 1 ÔÇö ACAS Code ingestion
+Expected edition: March 2015 (verify at runtime)
+Full Code URL: 
+https://www.acas.org.uk/acas-code-of-practice-on-disciplinary-and-grievance-proc
+edures/html
+2026-06-14 22:16:38,251 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/acas-code-of-practice-on-disciplinary-and-grievance-procedures/html "HTTP/1.1 200 OK"
+  Extracted 20,874 chars of text
+  Chunked into 12 chunk(s)
+2026-06-14 22:16:38,290 INFO ingestion.db ÔÇö DB pool initialised (min=1 max=16)
+12 ACAS chunks stored.
+Note: verify ACAS Code edition each time ingest runs.
+Phase 1 ÔÇö ACAS guidance topics ingestion
+2026-06-14 22:16:38,588 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/disciplinary-procedure-step-by-step "HTTP/1.1 200 OK"
+  Ô£ô ACAS ÔÇö Disciplinary procedure: step by step: 3 chunk(s)
+2026-06-14 22:16:38,951 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/grievance-procedure-step-by-step "HTTP/1.1 200 OK"
+  Ô£ô ACAS ÔÇö Grievance procedure: step by step: 3 chunk(s)
+2026-06-14 22:16:39,298 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/dismissals "HTTP/1.1 200 OK"
+  Ô£ô ACAS ÔÇö Dismissals: 3 chunk(s)
+2026-06-14 22:16:39,629 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/notice-periods "HTTP/1.1 200 OK"
+  Ô£ô ACAS ÔÇö Notice periods: 1 chunk(s)
+2026-06-14 22:16:40,097 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/early-conciliation "HTTP/1.1 200 OK"
+  Ô£ô ACAS ÔÇö Early conciliation: 2 chunk(s)
+2026-06-14 22:16:40,559 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/settlement-agreements "HTTP/1.1 200 OK"
+  Ô£ô ACAS ÔÇö Settlement agreements: 4 chunk(s)
+2026-06-14 22:16:40,976 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/manage-staff-redundancies "HTTP/1.1 200 OK"
+  Ô£ô ACAS ÔÇö Managing staff redundancies: 3 chunk(s)
+2026-06-14 22:16:41,319 INFO httpx ÔÇö HTTP Request: GET https://www.acas.org.uk/dismissals/unfair-dismissal "HTTP/1.1 200 OK"
+  Ô£ô ACAS ÔÇö Unfair dismissal: 5 chunk(s)
+ACAS guidance topics stored: 8/8
+Embedding job ÔÇö model: BAAI/bge-small-en-v1.5 (384-dim, fastembed ONNX)
+2026-06-14 22:16:42,605 INFO ingestion.db ÔÇö DB pool initialised (min=1 max=16)
+  legislation: nothing to embed
+  legislation: 0 embedded
+  case_law_chunks: nothing to embed
+  case_law_chunks: 0 embedded
+  acas_guidance: nothing to embed
+  acas_guidance: 0 embedded
+  official_guidance: nothing to embed
+  official_guidance: 0 embedded
+
+Total chunks embedded: 0
+Syncing corpus_chunks from source tablesÔÇª
+2026-06-14 22:16:43,891 INFO DB pool initialised (min=1 max=16)
+  before=323 after=323 added=0 embedded=315

@@ -1,0 +1,23 @@
+---
+description: FastAPI backend conventions
+globs: "backend/**,**/*.py"
+alwaysApply: false
+---
+
+# Backend Conventions
+
+- FastAPI, async, type-hinted. Pydantic models for all request and response shapes.
+- JWT: short-lived access tokens, rotating refresh, asymmetric signing, validate
+  issuer and audience. No secrets in tokens.
+- Every endpoint enforces authentication and object-level authorisation. Default
+  deny.
+- Retrieval-first: query the corpus and vector store with module and as-at-date
+  filters before any generation. Never answer a legal question from model memory.
+- Every answer response includes its citation list and verified / unverified
+  status.
+- Deterministic legal values (deadlines, caps, thresholds) come from the rules
+  layer, never generated.
+- Disable or auth-protect `/docs` and `/openapi.json` outside dev.
+- Rate-limit anonymous tool endpoints (abuse and cost control).
+- Public `/api/tools/*` preview endpoints stay separate from the agent tool
+  registry, but both delegate to the same deterministic core functions.

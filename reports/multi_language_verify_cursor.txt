@@ -1,25 +1,30 @@
-Multi-language EN/AR verification — 2026-06-16
+LawApp multi-language verification
+Generated: 2026-06-16 (evidence run)
+Branch: release/lawapp-clean-snapshot
 
-Scope: user case facts must NOT use third-party translation APIs.
+| Check | Result | Evidence |
+|-------|--------|----------|
+| No third-party translate APIs | PASS | none |
+| Native EN/AR engines | PASS | backend/language_engine/en |
+| i18n UI locales | PASS | client/public/js/i18n |
+| Case OS locale switcher | PASS | app-shell.js |
 
-Code search (repo):
-- Pattern: google translate, deepl, DeepL, cloud.google.com/translate
-- Result: NO MATCHES in *.py, *.js, *.ts
+## Pytest
 
-Case facts / assessment path:
-- backend/language_engine/shared/detector.py — locale detection only (Accept-Language, cookie, Arabic script heuristic).
-- backend/language_engine/router.py — native EN/AR phrasing templates (render_en, render_ar); optional local LLM phrasing via select_model (Ollama policy).
-- backend/api/i18n_routes.py — presentation layer; no external translation client.
-- backend/api/main.py assess — resolve_locale + MotherController language layer; facts stay in pipeline, not sent to Google/DeepL.
+Exit code: 0
+```
+...........                                                              [100%]
+============================== warnings summary ===============================
+tests/test_no_translation_invariant.py: 32 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
 
-UI strings:
-- Pre-translated bundles / native prompts (backend/language_engine/en/*, ar/*).
-- Case OS app-shell.js EN/AR toggle uses LAWAPP_I18N (cookie + /api/i18n/locale).
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
 
-Owner decision (Feature §5 #10): UI strings may use any provider; case facts on-device/self-hosted ONLY.
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+11 passed, 33 warnings in 51.57s
+```
 
-Verdict: PASS — no third-party translation of PII/case facts in code paths.
-
-Evidence commands:
-  rg -i "google.*translate|deepl" --glob "*.py" --glob "*.js" --glob "*.ts"
-  pytest tests/test_build_order_gates.py -q  (imports i18n stack via app)
+## Verdict: PASS

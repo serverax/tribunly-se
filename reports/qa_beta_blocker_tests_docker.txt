@@ -1,0 +1,8 @@
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_beta_blockers.py::test_pregnancy_short_service_not_told_no_claim
+FAILED tests/test_beta_blockers.py::test_whistleblowing_short_service_not_told_no_claim
+FAILED tests/test_beta_blockers.py::test_plain_short_service_still_says_no - ...
+FAILED tests/test_beta_blockers.py::test_pricing_consistent_across_surfaces
+4 failed, 8 passed, 2 warnings in 99.63s (0:01:39)

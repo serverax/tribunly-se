@@ -1,0 +1,15 @@
+backend/chatbot/safety.py:6:    "guaranteed",
+backend/chatbot/safety.py:7:    "we will file your claim",
+backend/core/agentic/aia_validators.py:18:    "guaranteed win", "guarantee you will win", "you will win", "we will file",
+backend/core/agentic/aia_validators.py:19:    "we will represent you", "we represent you", "we act for you",
+backend/core/agentic/corpus_citation_guard.py:252:    if any(term in lower_text for term in ("definitely win", "you will win", "guaranteed", "certainly win")):
+backend/core/brain.py:148:    "we will file", "we will represent", "we will conduct",
+backend/core/bundle.py:17:  - "we will file", "we will submit", "we will represent", "guaranteed" are
+backend/core/context_compressor.py:50:          "citations":        list[str]  -  every cite reference (guaranteed complete),
+backend/core/documents.py:50:    r"\bguaranteed? (to win|outcome|result|success)\b",
+backend/core/documents.py:54:    r"\bwe represent you\b",
+backend/core/documents.py:433:   [Verify your weekly pay against payslips. Regular guaranteed overtime
+backend/core/evaluator.py:45:    "we will file",
+backend/core/govern.py:29:    "we will file", "we will represent", "we will act",
+backend/core/govern.py:37:    "guaranteed", "certain to", "definitely win", "you will receive",
+backend/tests/test_document_generation.py:372:    bad_doc = "You will definitely win your case. We guarantee a successful outcome."

@@ -1,0 +1,2 @@
+NAME              IMAGE                  COMMAND               SERVICE   CREATED          STATUS                    PORTS
+lawapp-ollama-1   ollama/ollama:latest   "/bin/ollama serve"   ollama    16 seconds ago   Up 15 seconds (healthy)   0.0.0.0:11434->11434/tcp, [::]:11434->11434/tcp

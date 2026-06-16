@@ -1,0 +1,33 @@
+LAWAPP FULL WORKFLOW PROOF
+Base URL: http://127.0.0.1:8000
+PASS: landing page opens
+PASS: health endpoint reachable
+PASS: assessment endpoint returns governed response with deadline field
+PASS: wrongful dismissal workflow diagnosis is DB-grounded
+PASS: redundancy workflow diagnosis is DB-grounded
+PASS: working time workflow diagnosis is DB-grounded
+PASS: holiday pay workflow diagnosis is DB-grounded
+PASS: flexible working workflow diagnosis is DB-grounded
+PASS: employment contracts workflow diagnosis is DB-grounded
+PASS: fixed-term worker workflow diagnosis is DB-grounded
+PASS: part-time worker workflow diagnosis is DB-grounded
+PASS: agency worker workflow diagnosis is DB-grounded
+PASS: out-of-scope query rejected
+PASS: anonymous document generation blocked
+PASS: anonymous case creation blocked
+PASS: User A registers and receives access token
+PASS: User A logs in
+PASS: User B registers
+PASS: User A saves case
+PASS: User A returns to dashboard and sees saved case
+PASS: User B cannot access User A case
+PASS: anonymous user receives 401 for case access
+PASS: unpaid user cannot generate full documents
+PASS: payment checkout session created
+PASS: invalid payment cannot unlock documents
+PASS: admin/reporting pages are protected without admin key
+PASS: test payment confirmation marked case paid
+PASS: paid user can generate particulars
+PASS: paid user can generate schedule_of_loss
+PASS: generated documents include legal boundary notice evidence
+PASS: full workflow proof completed

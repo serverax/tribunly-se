@@ -93,8 +93,10 @@
 <script src="/js/api-client.js"></script>
 <script src="/js/case-engine.js"></script>
 <script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
 <script>
 (function () {
+  CaseOSShell.init({ page: "case-intake", requireAuth: false });
   var step = 1;
   var total = 5;
   var state = { facts: {}, assessment: null, key_dates: {} };

@@ -1,0 +1,299 @@
+client/public/js/api-client.js:6:   - JWT tokens stored in httpOnly cookies (set by /api/auth/*)
+client/public/js/api-client.js:13:     - POST /api/auth/register, /api/auth/login, /api/auth/logout, /api/auth/refresh
+client/public/js/api-client.js:14:     - POST /api/auth/{google,microsoft,apple,linkedin}
+client/public/js/api-client.js:15:     - GET /api/auth/me
+client/public/js/api-client.js:16:     - POST /cases, GET /cases, GET /cases/{id}, PUT /cases/{id}
+client/public/js/api-client.js:17:     - POST /cases/{id}/uploads, GET /cases/{id}/uploads
+client/public/js/api-client.js:18:     - POST /cases/{id}/uploads/{id}/extract
+client/public/js/api-client.js:19:     - POST /cases/{id}/bundle/generate, GET /cases/{id}/bundle
+client/public/js/api-client.js:21:     - All endpoints backed by backend/api/main.py or backend/api/auth_routes.py
+client/public/js/api-client.js:56:      resp = await fetch(url, fetchOpts);
+client/public/js/api-client.js:132:     * POST /api/auth/register
+client/public/js/api-client.js:136:      return postJSON("/api/auth/register", {
+client/public/js/api-client.js:144:     * POST /api/auth/login
+client/public/js/api-client.js:148:      return postJSON("/api/auth/login", {
+client/public/js/api-client.js:155:     * POST /api/auth/logout
+client/public/js/api-client.js:159:      return postJSON("/api/auth/logout", { all_sessions: true });
+client/public/js/api-client.js:163:     * POST /api/auth/refresh
+client/public/js/api-client.js:167:      return postJSON("/api/auth/refresh", { refresh_token: refreshToken });
+client/public/js/api-client.js:171:     * GET /api/auth/me
+client/public/js/api-client.js:175:      return getJSON("/api/auth/me");
+client/public/js/api-client.js:179:     * POST /api/auth/google
+client/public/js/api-client.js:183:      return postJSON("/api/auth/google", { id_token: idToken });
+client/public/js/api-client.js:187:     * POST /api/auth/microsoft
+client/public/js/api-client.js:191:      return postJSON("/api/auth/microsoft", { id_token: idToken });
+client/public/js/api-client.js:195:     * POST /api/auth/apple
+client/public/js/api-client.js:199:      return postJSON("/api/auth/apple", { id_token: idToken });
+client/public/js/api-client.js:203:     * POST /api/auth/linkedin
+client/public/js/api-client.js:207:      return postJSON("/api/auth/linkedin", { id_token: idToken });
+client/public/js/api-client.js:211:     * POST /api/auth/magic-link
+client/public/js/api-client.js:215:      return postJSON("/api/auth/magic-link", { email: email }, { noAuthRedirect: true });
+client/public/js/api-client.js:219:      return postJSON("/api/auth/magic-link", { token: token });
+client/public/js/api-client.js:223:     * GET /api/auth/providers
+client/public/js/api-client.js:227:      return getJSON("/api/auth/providers");
+client/public/js/api-client.js:256:     * GET /cases
+client/public/js/api-client.js:260:      return getJSON("/cases");
+client/public/js/api-client.js:264:     * POST /cases
+client/public/js/api-client.js:268:      return postJSON("/cases", {
+client/public/js/api-client.js:276:     * GET /cases/{case_id}
+client/public/js/api-client.js:280:      return getJSON("/cases/" + caseId);
+client/public/js/api-client.js:284:     * PUT /cases/{case_id}
+client/public/js/api-client.js:288:      return putJSON("/cases/" + caseId, updates);
+client/public/js/api-client.js:310:     * GET /cases/{case_id}/deadline
+client/public/js/api-client.js:314:      return getJSON("/cases/" + caseId + "/deadline");
+client/public/js/api-client.js:328:     * POST /cases/{case_id}/bundle/preview
+client/public/js/api-client.js:332:      return postJSON("/cases/" + caseId + "/bundle/preview", {
+client/public/js/api-client.js:338:     * POST /cases/{case_id}/bundle/generate
+client/public/js/api-client.js:342:      return postJSON("/cases/" + caseId + "/bundle/generate", {
+client/public/js/api-client.js:348:     * GET /cases/{case_id}/bundle
+client/public/js/api-client.js:352:      return getJSON("/cases/" + caseId + "/bundle");
+client/public/js/api-client.js:356:     * GET /api/cases/{case_id}/documents
+client/public/js/api-client.js:360:      return getJSON("/api/cases/" + caseId + "/documents");
+client/public/js/api-client.js:366:     * POST /cases/{case_id}/uploads
+client/public/js/api-client.js:375:        resp = await fetch("/cases/" + caseId + "/uploads", {
+client/public/js/api-client.js:405:     * POST /cases/{case_id}/uploads/{upload_id}/extract
+client/public/js/api-client.js:409:      return postJSON("/cases/" + caseId + "/uploads/" + uploadId + "/extract", {});
+client/public/js/api-client.js:413:     * POST /cases/{case_id}/uploads/{upload_id}/apply-confirmed
+client/public/js/api-client.js:417:      return postJSON("/cases/" + caseId + "/uploads/" + uploadId + "/apply-confirmed", {
+client/public/js/api-client.js:423:     * GET /cases/{case_id}/uploads
+client/public/js/api-client.js:427:      return getJSON("/cases/" + caseId + "/uploads");
+client/public/js/api-client.js:434:     * POST /api/tools/claim-checker
+client/public/js/api-client.js:438:      return postJSON("/api/tools/claim-checker", { facts: facts });
+client/public/js/api-client.js:442:     * POST /api/tools/deadline-calculator
+client/public/js/api-client.js:446:      return postJSON("/api/tools/deadline-calculator", {
+client/public/js/api-client.js:454:     * POST /api/tools/compensation-estimate
+client/public/js/api-client.js:458:      return postJSON("/api/tools/compensation-estimate", {
+client/public/js/api-client.js:466:     * POST /api/tools/acas-prep
+client/public/js/api-client.js:470:      return postJSON("/api/tools/acas-prep", { case_summary: caseSummary });
+client/public/js/auth.js:8: * - Session check via /api/auth/me endpoint (backend source of truth)
+client/public/js/auth.js:16:     * Check if user is authenticated by calling the /api/auth/me endpoint.
+client/public/js/auth.js:31:        const resp = await fetch('/api/auth/me', {
+client/public/js/auth.js:54:     * Get current user profile from /api/auth/me.
+client/public/js/auth.js:59:        const resp = await fetch('/api/auth/me', {
+client/public/js/auth.js:104:        await fetch('/api/auth/logout', {
+client/public/js/auth.js:135:      const resp = await fetch(url, opts);
+client/public/js/deadline.js:166:    const resp = await fetch(`${apiBase}/rules/${claimType}`);
+client/public/pages/assessment.html:62:      LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}`)
+client/public/pages/assessment.html:291:    // Real checkout uses POST /api/payments/create-session.
+client/public/pages/assessment.html:350:        const resp = await fetch('/cases', {
+client/public/pages/assessment.html:528:  // .deadline.compute_limitation_date / /api/deadline/calculate); a field is shown
+client/public/pages/assessment.html:1076:            const resp = await fetch(`${API_BASE}/api/payments/create-session`, {
+client/public/pages/assessment.html:1116:      const resp = await fetch(`${API_BASE}/api/documents/generate`, {
+client/public/pages/assessment.html:1130:      const docUrl = `${API_BASE}${data.download_url || `/api/documents/${data.document_id}`}`;
+client/public/pages/assessment.html:1178:        const resp = await fetch(`${API_BASE}/handoff/leads`, {
+client/public/pages/case_detail.html:65:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}`).then(r => { if (!r.ok) throw new Error(`Case fetch failed: HTTP ${r.status}`); return r.json(); }),
+client/public/pages/case_detail.html:66:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/deadline`).then(r => r.ok ? r.json() : null),
+client/public/pages/case_detail.html:67:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/uploads`).then(r => r.ok ? r.json() : {uploads:[]}),
+client/public/pages/case_detail.html:68:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/bundle`).then(r => r.ok ? r.json() : {bundle_generated:false, bundle_components:[]}),
+client/public/pages/case_detail.html:69:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/timeline`).then(r => r.ok ? r.json() : null),
+client/public/pages/case_detail.html:70:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/escalation`).then(r => r.ok ? r.json() : null),
+client/public/pages/case_detail.html:175:    reopenA.href = '/pages/assessment.html';
+client/public/pages/case_detail.html:204:      const resp = await LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/documents/generate`, {
+client/public/pages/constructive_dismissal.html:126:        const resp = await fetch(`${API_BASE}/api/workflows/constructive-dismissal`, {
+client/public/pages/dashboard.html:98:      const casesResp = await LAWAPP_AUTH.fetchWithAuth('/cases');
+client/public/pages/dashboard.html:175:      reopenBtn.href = '/pages/assessment.html';
+client/public/pages/intake.html:470:      const resp = await fetch(`${API_BASE}/assess`, {
+client/public/pages/intake.html:497:      window.location.href = '/pages/assessment.html';
+client/public/pages/onboarding.html:181:  // Canonical role slugs  -  MUST match backend _ONBOARDING_ROLES in backend/api/main.py.
+client/public/pages/register.html:98:      // /api/auth/register returns a session bundle (access_token) and signs the
+client/public/pages/saved_case.html:60:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}`).then(r => { if (!r.ok) throw new Error(`Case fetch failed: HTTP ${r.status}`); return r.json(); }),
+client/public/pages/saved_case.html:61:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/deadline`).then(r => r.ok ? r.json() : null),
+client/public/pages/saved_case.html:62:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/uploads`).then(r => r.ok ? r.json() : {uploads:[]}),
+client/public/pages/saved_case.html:63:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/bundle`).then(r => r.ok ? r.json() : {bundle_generated:false, bundle_components:[]}),
+client/public/pages/saved_case.html:64:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/timeline`).then(r => r.ok ? r.json() : null),
+client/public/pages/saved_case.html:65:    LAWAPP_AUTH.fetchWithAuth(`${API_BASE}/cases/${caseId}/escalation`).then(r => r.ok ? r.json() : null),
+client/public/pages/saved_case.html:156:    reopenA.href = '/pages/assessment.html';
+client/public/wasm/lawapp_wasm.js:333:        module_or_path = fetch(module_or_path);
+backend/api/auth_routes.py:2:/api/auth/*  -  the lawapp authentication API.
+backend/api/auth_routes.py:12:  POST /api/auth/register        POST /api/auth/login         POST /api/auth/logout
+backend/api/auth_routes.py:13:  POST /api/auth/magic-link      GET  /api/auth/providers     POST /api/auth/refresh
+backend/api/auth_routes.py:14:  POST /api/auth/google          POST /api/auth/microsoft     POST /api/auth/apple
+backend/api/auth_routes.py:15:  POST /api/auth/linkedin        POST /api/auth/verify-email  POST /api/auth/password-reset
+backend/api/auth_routes.py:32:router = APIRouter(prefix="/api/auth", tags=["auth"])
+backend/api/auth_routes.py:225:         "login_path": "/api/auth/login"},
+backend/api/auth_routes.py:227:         "login_path": "/api/auth/magic-link"},
+backend/api/auth_routes.py:232:            "login_path": f"/api/auth/{p['name']}",
+backend/api/document_routes.py:5:- POST /api/documents/generate: Generate a document from assessment + confirmed facts.
+backend/api/document_routes.py:10:- GET /api/documents/{document_id}: Download a generated document.
+backend/api/document_routes.py:42:router = APIRouter(prefix="/api/documents", tags=["documents"])
+backend/api/document_routes.py:362:                    download_url=f"/api/documents/{document_id}",
+backend/api/document_routes.py:417:        download_url=f"/api/documents/{document_id}",
+backend/api/login_gate_routes.py:2:/api/free-tool/*  -  the free-tool login wall (acquisition funnel front door).
+backend/api/login_gate_routes.py:4:  POST /api/free-tool/teaser       PUBLIC   -  answer teaser questions, get a
+backend/api/login_gate_routes.py:7:  POST /api/free-tool/full-result  GATED    -  the full governed result. Anonymous
+backend/api/login_gate_routes.py:9:  POST /api/free-tool/resume       GATED    -  after login, claim the saved state
+backend/api/login_gate_routes.py:32:router = APIRouter(prefix="/api/free-tool", tags=["free-tool"])
+backend/api/main.py:111:# ── Case ownership dependency  -  used by all /cases/{case_id}/* sub-endpoints ──
+backend/api/main.py:183:# /api/v1/lawapp/ingest (reverse extraction) + /api/v1/lawapp/query (DB-first SSE
+backend/api/main.py:189:# Canonical routes: /api/payments/*.
+backend/api/main.py:194:# Canonical routes: /api/documents/*.
+backend/api/main.py:199:# Canonical routes: /api/uploads/*.
+backend/api/main.py:204:# Canonical routes: /api/auth/*.
+backend/api/main.py:221:@app.get("/api/cases")
+backend/api/main.py:678:@app.post("/api/diagnosis")
+backend/api/main.py:681:    POST /api/diagnosis  -  primary diagnosis endpoint for lawapp.
+backend/api/main.py:683:    Identical to POST /assess but on the canonical /api/diagnosis route.
+backend/api/main.py:710:@app.post("/documents/generate", deprecated=True)
+backend/api/main.py:714:    preview). Prefer canonical POST /api/documents/generate for full paid documents.
+backend/api/main.py:825:@app.post("/api/workflow/diagnosis")
+backend/api/main.py:971:@app.post("/api/workflow/payment/create")
+backend/api/main.py:1008:            "error": "Use /api/payments/create-session for real Stripe integration. Payment handler fallback not allowed.",
+backend/api/main.py:1009:            "next_action": "POST to /api/payments/create-session with case_id"
+backend/api/main.py:1023:@app.post("/api/workflow/payment/confirm")
+backend/api/main.py:1090:@app.post("/api/workflow/documents/generate")
+backend/api/main.py:1134:        # ownership/payment record to check here. Fail closed rather than using
+backend/api/main.py:1142:                "error": "Payment not confirmed. Use /api/workflow/payment/confirm first",
+backend/api/main.py:1227:@app.post("/cases", status_code=201)
+backend/api/main.py:1509:@app.get("/cases")
+backend/api/main.py:1553:@app.get("/cases/{case_id}")
+backend/api/main.py:1773:@app.get("/cases/{case_id}/deadline")
+backend/api/main.py:1838:@app.post("/cases/{case_id}/reminders", status_code=201)
+backend/api/main.py:1895:@app.get("/cases/{case_id}/reminders")
+backend/api/main.py:1967:@app.post("/cases/{case_id}/uploads", status_code=201)
+backend/api/main.py:2084:@app.get("/cases/{case_id}/uploads")
+backend/api/main.py:2125:@app.post("/cases/{case_id}/uploads/{upload_id}/extract")
+backend/api/main.py:2252:@app.patch("/cases/{case_id}/uploads/{upload_id}/facts")
+backend/api/main.py:2313:@app.post("/cases/{case_id}/uploads/{upload_id}/apply-confirmed")
+backend/api/main.py:2443:@app.post("/cases/{case_id}/bundle/preview")
+backend/api/main.py:2481:@app.post("/cases/{case_id}/bundle/generate")
+backend/api/main.py:2536:@app.get("/cases/{case_id}/bundle")
+backend/api/main.py:2629:@app.get("/cases/{case_id}/funnel")
+backend/api/main.py:2862:@app.get("/cases/{case_id}/timeline")
+backend/api/main.py:2898:@app.post("/cases/{case_id}/timeline/events", status_code=201)
+backend/api/main.py:2961:@app.patch("/cases/{case_id}/timeline/events/{event_id}")
+backend/api/main.py:3021:@app.get("/cases/{case_id}/escalation")
+backend/api/main.py:3099:@app.delete("/cases/{case_id}", status_code=200)
+backend/api/main.py:3103:    Sets deleted_at; case no longer returned by GET /cases/{id}.
+backend/api/main.py:3194:@app.post("/api/brain/trace")
+backend/api/main.py:3229:@app.post("/api/workflows/constructive-dismissal")
+backend/api/main.py:3246:@app.get("/api/agents")
+backend/api/main.py:3263:@app.post("/api/payment/create-session", deprecated=True)
+backend/api/main.py:3273:    POST /api/payments/create-session. Delegates to the canonical handler.
+backend/api/main.py:3287:    # Authenticate first  -  parity with canonical /api/payments/create-session,
+backend/api/main.py:3341:@app.get("/api/payment/status", deprecated=True)
+backend/api/main.py:3364:@app.post("/api/test/route-agent")
+backend/api/main.py:3386:@app.post("/api/test/hybrid-search")
+backend/api/main.py:3414:@app.post("/api/test/legal-graph")
+backend/api/main.py:3471:@app.post("/api/kg/entity")
+backend/api/main.py:3534:@app.post("/api/test/evaluate")
+backend/api/main.py:3558:@app.post("/api/test/router")
+backend/api/main.py:3572:@app.post("/api/test/cache")
+backend/api/main.py:3597:@app.post("/api/test/memory/save")
+backend/api/main.py:3618:@app.post("/api/test/memory/get")
+backend/api/main.py:3643:@app.post("/api/test/citation-verify")
+backend/api/main.py:3664:@app.post("/api/test/conflict-detect")
+backend/api/main.py:3676:@app.get("/api/debug/agents")
+backend/api/main.py:3683:@app.get("/api/debug/mcp-tools")
+backend/api/main.py:3708:@app.post("/api/test/mcp-call")
+backend/api/main.py:3761:@app.post("/api/context/compress")
+backend/api/main.py:3809:@app.get("/api/security/cross-user-test")
+backend/api/main.py:3826:        "cross_user_blocked_by": "_require_case_owner dependency on all /cases/{case_id}/* endpoints",
+backend/api/main.py:3868:# Maps to the same handlers as /api/test/* but at clean production paths.
+backend/api/main.py:3869:# Debug endpoints (/api/test/*, /api/debug/*) require admin key in production.
+backend/api/main.py:3870:# Canonical endpoints (/api/router/test etc.) are open unless noted.
+backend/api/main.py:3874:@app.post("/api/router/test")
+backend/api/main.py:3881:@app.post("/api/rag/hybrid-search")
+backend/api/main.py:3903:@app.post("/api/rag/graph")
+backend/api/main.py:3911:@app.post("/api/memory/save")
+backend/api/main.py:3926:@app.post("/api/memory/get")
+backend/api/main.py:3942:@app.post("/api/evaluate")
+backend/api/main.py:3960:@app.get("/api/mcp/tools")
+backend/api/main.py:3980:@app.post("/api/cache/test")
+backend/api/main.py:3998:# ── /api/documents/upload and /api/documents/facts ───────────────────────────
+backend/api/main.py:4005:@app.post("/api/documents/upload")
+backend/api/main.py:4074:            "Review via /api/documents/facts and confirm before use. "
+backend/api/main.py:4086:@app.post("/api/documents/facts")
+backend/api/main.py:4149:# ── /api/test/wasm-deadline ───────────────────────────────────────────────────
+backend/api/main.py:4158:@app.post("/api/test/wasm-deadline")
+backend/api/main.py:4228:@app.post("/api/test/ollama-smoke")
+backend/api/main.py:4233:    LLM. Queries LAWAPP_OLLAMA_BASE_URL /api/tags. If Ollama is unavailable, returns
+backend/api/main.py:4247:            resp = c.get(f"{base}/api/tags")
+backend/api/main.py:4265:# ── /api/* aliases and missing routes ────────────────────────────────────────
+backend/api/main.py:4266:# These expose the same logic under /api/ prefix for frontend consistency.
+backend/api/main.py:4269:@app.get("/api/sources/freshness")
+backend/api/main.py:4275:@app.get("/api/rules/{claim_type}")
+backend/api/main.py:4291:@app.post("/api/deadline/calculate")
+backend/api/main.py:4423:@app.post("/api/payment/webhook", deprecated=True)
+backend/api/main.py:4475:@app.get("/api/documents/{document_id}/download", deprecated=True)
+backend/api/main.py:4485:    prefer canonical GET /api/documents/{document_id}.
+backend/api/main.py:4527:    # Payment gate (parity with canonical GET /api/documents/{id}): no download on unpaid case.
+backend/api/main.py:4559:@app.get("/api/cases/{case_id}/documents")
+backend/api/payment_routes.py:5:- POST /api/payments/create-session: Backend creates Stripe checkout session.
+backend/api/payment_routes.py:10:- POST /api/payments/webhook: Receives Stripe webhook events.
+backend/api/payment_routes.py:15:- GET /api/payments/status/{case_id}: Returns payment status.
+backend/api/payment_routes.py:50:router = APIRouter(prefix="/api/payments", tags=["payments"])
+backend/api/sovereign_routes.py:3:  POST /api/v1/lawapp/ingest  -> reverse data flow: narrative -> employment vars
+backend/api/sovereign_routes.py:5:  POST /api/v1/lawapp/query   -> DB-first SSE: thinking-states + citation-guarded
+backend/api/sovereign_routes.py:36:@router.post("/api/v1/lawapp/ingest")
+backend/api/sovereign_routes.py:52:@router.post("/api/v1/lawapp/query")
+backend/api/tools_routes.py:2:/api/tools/*  -  free, no-login PREVIEW tools.
+backend/api/tools_routes.py:14:  POST /api/tools/claim-checker          {facts}
+backend/api/tools_routes.py:15:  POST /api/tools/deadline-calculator    {event_date, event_type}
+backend/api/tools_routes.py:16:  POST /api/tools/compensation-estimate  {weekly_pay, months_employed}
+backend/api/tools_routes.py:17:  POST /api/tools/acas-prep              {case_summary}
+backend/api/tools_routes.py:31:router = APIRouter(prefix="/api/tools", tags=["tools"])
+backend/api/upload_routes.py:5:- POST /api/uploads/upload: Accept file upload, validate, OCR, store encrypted.
+backend/api/upload_routes.py:10:- GET /api/uploads/{file_id}/status: Poll for extraction status.
+backend/api/upload_routes.py:39:router = APIRouter(prefix="/api/uploads", tags=["uploads"])
+backend/api/upload_routes.py:206:    Call GET /api/uploads/{file_id}/status to poll for extraction results.
+scripts/check-employment-law-corpus.sh:35:RAG=$(curl -s -X POST http://localhost:8000/api/rag/hybrid-search \
+scripts/ci/scan-direct-ollama.sh:3:hits="$(grep -R "OLLAMA_BASE_URL\|ollama-inference\|11434\|/api/generate\|/api/chat" . \
+scripts/deep_audit_report.py:57:| Backend API | Exists | Real | `backend/api/main.py` | `tests/integration/` | PASS | Bypasses removed. |
+scripts/deploy-talos.sh:229:echo "  curl -s -X POST http://localhost:8000/api/brain/trace -H 'Content-Type: application/json' -d '{\"message\":\"I was unfairly dismissed\",\"facts\":{\"edt\":\"2026-03-01\",\"service_start_date\":\"2022-01-01\",\"jurisdiction\":\"EW\"}}'"
+scripts/docker_proof.sh:38:check "GET /pages/assessment"    "200" "$BASE/pages/assessment.html"
+scripts/gate-real-ai.sh:47:    print('To test the full chain: POST /api/brain/trace with real facts.')
+scripts/gate-stripe.sh:68:  echo "  Verify:       curl http://localhost:8000/api/payment/status | jq ."
+scripts/lawapp/final-brain-workflow-gate.sh:16:# 3. /api/brain/trace runs the 19-step algorithm AND persists to brain_traces
+scripts/lawapp/final-brain-workflow-gate.sh:30:print(call('POST','/api/brain/trace',{'message':'Dismissed after 3 years, no warning. Unfair?','facts':{'years_service':3,'dismissed':True},'jurisdiction':'EW'},{'Authorization':'Bearer '+tok}))
+scripts/lawapp/final-end-to-end-product-gate.sh:22:print(call('POST','/api/brain/trace',{'message':'Was my dismissal unfair after 3 years?','facts':{'years_service':3,'dismissed':True},'jurisdiction':'EW'},{'Authorization':'Bearer '+tok}))
+scripts/lawapp/final-frontend-backend-wiring-gate.sh:9:MAIN=backend/api/main.py
+scripts/lawapp/final-frontend-backend-wiring-gate.sh:29:for r in '"/assess"' '"/api/brain/trace"' '"/auth/token"' '"/cases"' '"/rules/' '"/documents/generate"'; do
+scripts/lawapp/final-security-performance-gate.sh:22: urllib.request.urlopen('http://localhost:8000/cases',timeout=8);print(200)
+scripts/lawapp/final-security-performance-gate.sh:25:  if [ "$code" = "401" ] || [ "$code" = "403" ]; then pass "/cases requires auth (code=$code)"; else fail "/cases not auth-protected (code=$code)"; fi
+scripts/lawapp/prove-microservices-wiring.sh:9:#   2. backend /cases unauthenticated == 401
+scripts/lawapp/prove-microservices-wiring.sh:16:#   8. no CrashLoopBackOff among critical (lawapp-ai/api/rag/security) pods
+scripts/lawapp/prove-microservices-wiring.sh:39:hdr "2. backend /cases unauthenticated == 401"
+scripts/lawapp/prove-microservices-wiring.sh:40:CODE=$(kubectl exec -n "$NS_API" "$BPOD" -- curl -s -m 10 -o /dev/null -w '%{http_code}' http://localhost:8000/cases)
+scripts/lawapp/prove-microservices-wiring.sh:41:[ "$CODE" = "401" ] || fail "/cases unauth expected 401, got $CODE"
+scripts/lawapp/prove-microservices-wiring.sh:42:grn "backend /cases unauth = 401"
+scripts/lawapp/prove-microservices-wiring.sh:64:trace_call(){ kubectl exec -n "$NS_AI" "$RPOD" -- curl -s -m 60 -w '\n__HTTP:%{http_code}' -X POST http://localhost:8000/api/brain/trace \
+scripts/load/baseline_load.py:13:  python scripts/load/baseline_load.py --url http://localhost:8000/api/brain/trace --method POST \
+scripts/ops/deploy-sovereign-trinity-baseline.sh:156:              path: /api/tags
+scripts/ops/deploy-sovereign-trinity-baseline.sh:163:              path: /api/tags
+scripts/ops/_commit.sh:7:  backend/api/main.py \
+scripts/ops/_push.sh:15:  report local Ollama only; /api/test/ollama-smoke replaces real-model smoke
+scripts/prove_document_generation.sh:21:  curl -s -X POST "$BASE/documents/generate" -H "Content-Type: application/json" --data @.dg_doc.json
+scripts/prove_document_generation.sh:47:code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$BASE/documents/generate" -H "Content-Type: application/json" --data @.dg_bad.json)
+scripts/prove_employment_law_corpus.sh:42:RAG=$(curl -s -X POST http://localhost:8000/api/rag/hybrid-search -H "Content-Type: application/json" \
+scripts/prove_frontend_backend_wiring.sh:10:for p in /pages/intake.html /pages/assessment.html /pages/dashboard.html /pages/case_detail.html; do
+scripts/prove_frontend_backend_wiring.sh:15:echo "########## intake wired to backend /assess or /api/diagnosis ##########"
+scripts/prove_frontend_backend_wiring.sh:16:grep -qE "/assess|/api/diagnosis" client/public/pages/intake.html && ok "intake.html calls backend assess endpoint" || bad "intake.html not wired to backend"
+scripts/prove_frontend_backend_wiring.sh:20:  grep -qiE "$field" client/public/pages/assessment.html && ok "assessment.html renders '$field'" || bad "assessment.html missing '$field' rendering"
+scripts/prove_handoff_workflow.sh:27:grep -qiE "free|no charge|referral lead only|not a solicitor" backend/api/main.py && ok "handoff documented as free referral (not charged)" || echo "  NOTE: free-to-user guardrail is in code comments"
+scripts/prove_mvp_user_journey.sh:13:for p in /pages/intake.html /pages/assessment.html; do
+scripts/prove_mvp_user_journey.sh:39:PAY=$(curl -s -X POST "$BASE/api/payment/create-session" -H "Content-Type: application/json" -H "X-User-ID: mvp-proof-user" -d '{"document_type":"schedule_of_loss","case_id":null}')
+scripts/prove_mvp_user_journey.sh:52:  DOC=$(curl -s -X POST "$BASE/documents/generate" -H "Content-Type: application/json" --data @.mvp_doc.json)
+scripts/prove_mvp_user_journey.sh:71:code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$BASE/documents/generate" -H "Content-Type: application/json" --data @.mvp_bad.json)
+scripts/prove_uk_legal_dataset.sh:99:RAG=$(curl -s -X POST http://localhost:8000/api/rag/hybrid-search -H "Content-Type: application/json" \
+scripts/prove_workflow_abc.sh:33:step "3. CREATE CASE (POST /cases)"
+scripts/prove_workflow_abc.sh:34:CASE=$(curl -s -X POST "$BASE/cases" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" \
+scripts/prove_workflow_abc.sh:57:UPRESP=$(curl -s -X POST "$BASE/cases/$CASE_ID/uploads" -H "Authorization: Bearer $TOKEN" \
+scripts/prove_workflow_abc.sh:63:EX=$(curl -s -X POST "$BASE/cases/$CASE_ID/uploads/$UPLOAD_ID/extract" -H "Authorization: Bearer $TOKEN")
+scripts/prove_workflow_abc.sh:79:AC=$(curl -s -X POST "$BASE/cases/$CASE_ID/uploads/$UPLOAD_ID/apply-confirmed" -H "Authorization: Bearer $TOKEN")
+scripts/prove_workflow_abc.sh:90:UP2=$(curl -s -X POST "$BASE/cases/$CASE_ID/uploads" -H "Authorization: Bearer $TOKEN" -F "doc_type=other" -F "file=@.proof_empty.png;type=image/png")
+scripts/prove_workflow_abc.sh:92:EX2=$(curl -s -X POST "$BASE/cases/$CASE_ID/uploads/$UID2/extract" -H "Authorization: Bearer $TOKEN")
+scripts/prove_workflow_abc.sh:96:CD=$(curl -s -X POST "$BASE/api/workflows/constructive-dismissal" -H "Content-Type: application/json" \
+scripts/prove_workflow_abc.sh:101:RAG=$(curl -s -X POST "$BASE/api/rag/hybrid-search" -H "Content-Type: application/json" \
+scripts/security-regression.sh:94:    CASE_ID=$(curl -s -X POST "${BASE}/cases" -H "Content-Type: application/json" \
+scripts/security-regression.sh:105:        -H "Authorization: Bearer $TOKEN_B" "${BASE}/cases/${CASE_ID}" 2>/dev/null)
+scripts/smoke_local_journey.sh:81:DEADLINE=$(curl -s -X POST "${BASE}/api/deadline/calculate" \
+scripts/smoke_local_journey.sh:91:CASE=$(curl -s -X POST "${BASE}/cases" \
+scripts/smoke_local_journey.sh:100:OWN_STATUS=$(http_status -H "Authorization: Bearer ${TOKEN_A}" "${BASE}/cases/${CASE_ID}")
+scripts/smoke_local_journey.sh:113:ISO_STATUS=$(http_status -H "Authorization: Bearer ${TOKEN_B}" "${BASE}/cases/${CASE_ID}")
+scripts/smoke_local_journey.sh:118:PAY=$(curl -s -X POST "${BASE}/api/payment/create-session" \
+scripts/smoke_local_journey.sh:129:DOC=$(curl -s -X POST "${BASE}/documents/generate" \
+scripts/smoke_local_journey.sh:140:CASES_STATUS=$(http_status -H "Authorization: Bearer ${TOKEN_A}" "${BASE}/cases")
+scripts/smoke_local_journey.sh:141:[ "$CASES_STATUS" = "200" ] && ok "GET /cases → 200" || fail "Dashboard" "HTTP $CASES_STATUS"
+scripts/smoke_local_journey.sh:145:BRAIN=$(curl -s -X POST "${BASE}/api/brain/trace" \
+scripts/verify_llm_fabric_cluster.sh:73:  curl -s "${SVC_DNS}/api/tags" && sleep 5
+scripts/verify_llm_fabric_cluster.sh:84:  kubectl get --raw "/api/v1/nodes/${NODE}/proxy/configz" 2>/dev/null \

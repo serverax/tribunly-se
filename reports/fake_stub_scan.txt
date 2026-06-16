@@ -1,0 +1,323 @@
+services\_common.py:4:backend/core logic (no logic duplication, no fake responses). This factory
+backend\tests\test_upload_ocr_integration.py:9:5. OCR fail returns 501 (not fake extraction)
+backend\tests\test_upload_ocr_integration.py:18:from unittest.mock import Mock, patch, AsyncMock
+backend\tests\test_upload_ocr_integration.py:146:    with patch("backend.core.document_extractor.PyPDF2") as mock_pypdf:
+backend\tests\test_upload_ocr_integration.py:147:        mock_reader = Mock()
+backend\tests\test_upload_ocr_integration.py:148:        mock_page = Mock()
+backend\tests\test_upload_ocr_integration.py:149:        mock_page.extract_text.return_value = "Sample dismissal letter dated 2024-05-10"
+backend\tests\test_upload_ocr_integration.py:150:        mock_reader.pages = [mock_page]
+backend\tests\test_upload_ocr_integration.py:151:        mock_pypdf.PdfReader.return_value = mock_reader
+backend\tests\test_upload_ocr_integration.py:166:    with patch("backend.core.document_extractor.PyPDF2") as mock_pypdf:
+backend\tests\test_upload_ocr_integration.py:167:        mock_reader = Mock()
+backend\tests\test_upload_ocr_integration.py:168:        mock_page = Mock()
+backend\tests\test_upload_ocr_integration.py:169:        mock_page.extract_text.return_value = "Your employment is terminated effective 2024-05-10"
+backend\tests\test_upload_ocr_integration.py:170:        mock_reader.pages = [mock_page]
+backend\tests\test_upload_ocr_integration.py:171:        mock_pypdf.PdfReader.return_value = mock_reader
+backend\tests\test_upload_ocr_integration.py:208:# ── Test 5: OCR fail returns safe error (not fake extraction) ────────────────────
+backend\tests\test_upload_ocr_integration.py:211:    """If OCR fails, should return error not fake data."""
+backend\tests\test_upload_ocr_integration.py:214:    with patch("backend.core.document_extractor.PyPDF2") as mock_pypdf:
+backend\tests\test_upload_ocr_integration.py:215:        mock_pypdf.PdfReader.side_effect = Exception("PDF parsing failed")
+backend\tests\test_upload_ocr_integration.py:217:        # Should raise or return None, not fake data
+backend\tests\test_upload_ocr_integration.py:226:    # Create a mock upload file
+backend\tests\test_upload_ocr_integration.py:228:    mock_upload = AsyncMock(spec=UploadFile)
+backend\tests\test_upload_ocr_integration.py:229:    mock_upload.filename = "document.pdf"
+backend\tests\test_upload_ocr_integration.py:230:    mock_upload.content_type = "application/pdf"
+backend\tests\test_upload_ocr_integration.py:231:    mock_upload.read = AsyncMock(return_value=file_content)
+backend\tests\test_upload_ocr_integration.py:233:    with patch("backend.api.upload_routes.get_current_user") as mock_auth:
+backend\tests\test_upload_ocr_integration.py:234:        mock_auth.return_value = test_user_id
+backend\tests\test_upload_ocr_integration.py:237:            with patch("backend.api.upload_routes._scan_malware") as mock_scan:
+backend\tests\test_upload_ocr_integration.py:238:                mock_scan.return_value = True
+backend\tests\test_upload_ocr_integration.py:240:                with patch("backend.api.upload_routes.extract_text_from_document") as mock_ocr:
+backend\tests\test_upload_ocr_integration.py:241:                    mock_ocr.side_effect = Exception("OCR failed")
+backend\tests\test_upload_ocr_integration.py:297:    mock_file = AsyncMock(spec=UploadFile)
+backend\tests\test_upload_ocr_integration.py:299:    with patch("backend.api.upload_routes.get_current_user") as mock_auth:
+backend\tests\test_upload_ocr_integration.py:300:        mock_auth.return_value = None
+backend\tests\test_upload_ocr_integration.py:303:            asyncio.run(upload_document(case_id=str(uuid.uuid4()), file=mock_file))
+backend\tests\test_upload_ocr_integration.py:313:    mock_file = AsyncMock(spec=UploadFile)
+backend\tests\test_upload_ocr_integration.py:315:    with patch("backend.api.upload_routes.get_current_user") as mock_auth:
+backend\tests\test_upload_ocr_integration.py:316:        mock_auth.return_value = other_user
+backend\tests\test_upload_ocr_integration.py:318:        with patch("backend.api.upload_routes.check_case_ownership") as mock_check:
+backend\tests\test_upload_ocr_integration.py:319:            mock_check.side_effect = HTTPException(status_code=403)
+backend\tests\test_upload_ocr_integration.py:322:                asyncio.run(upload_document(case_id=test_case_id, file=mock_file))
+backend\tests\test_upload_ocr_integration.py:330:    fake_case_id = str(uuid.uuid4())
+backend\tests\test_upload_ocr_integration.py:332:    mock_file = AsyncMock(spec=UploadFile)
+backend\tests\test_upload_ocr_integration.py:334:    with patch("backend.api.upload_routes.get_current_user") as mock_auth:
+backend\tests\test_upload_ocr_integration.py:335:        mock_auth.return_value = test_user_id
+backend\tests\test_upload_ocr_integration.py:340:                asyncio.run(upload_document(case_id=fake_case_id, file=mock_file))
+backend\tests\test_upload_ocr_integration.py:376:    with patch("backend.api.upload_routes.get_current_user") as mock_auth:
+backend\tests\test_upload_ocr_integration.py:377:        mock_auth.return_value = test_user_id
+backend\tests\test_upload_ocr_integration.py:390:    fake_id = str(uuid.uuid4())
+backend\tests\test_upload_ocr_integration.py:392:    with patch("backend.api.upload_routes.get_current_user") as mock_auth:
+backend\tests\test_upload_ocr_integration.py:393:        mock_auth.return_value = str(uuid.uuid4())
+backend\tests\test_upload_ocr_integration.py:396:            get_upload_status(fake_id)
+scripts\run_hostile_audit.py:99:    patterns = ["TODO", "fake", "mock", "dummy", "test_simulator", "innerHTML"]
+backend\tests\test_security_complete.py:9:- Payment bypass prevention
+backend\tests\test_security_complete.py:19:from unittest.mock import Mock, patch, MagicMock
+backend\tests\test_security_complete.py:332:        with patch("backend.api.auth.db") as mock_db:
+backend\tests\test_security_complete.py:333:            mock_db.get_oauth_token.return_value = {
+backend\tests\test_security_complete.py:388:        with patch("backend.core.access.db") as mock_db:
+backend\tests\test_security_complete.py:389:            mock_db.get_case_owner.return_value = user_b_id
+backend\tests\test_security_complete.py:405:        with patch("backend.core.access.check_case_ownership") as mock_check:
+backend\tests\test_security_complete.py:406:            mock_check.return_value = False
+backend\tests\test_security_complete.py:421:        with patch("backend.core.access.db") as mock_db:
+backend\tests\test_security_complete.py:426:            mock_db.list_cases_by_user.return_value = [case_a]
+backend\tests\test_security_complete.py:442:        with patch("backend.core.access.check_case_ownership") as mock_check:
+backend\tests\test_security_complete.py:444:            mock_check.return_value = False
+backend\tests\test_security_complete.py:459:        with patch("backend.core.access.check_case_ownership") as mock_check:
+backend\tests\test_security_complete.py:460:            mock_check.return_value = False
+backend\tests\test_security_complete.py:482:        with patch("backend.core.user_auth.check_admin_role") as mock_check:
+backend\tests\test_security_complete.py:483:            mock_check.return_value = False
+backend\tests\test_security_complete.py:497:        with patch("backend.core.user_auth.check_admin_role") as mock_check:
+backend\tests\test_security_complete.py:498:            mock_check.return_value = False
+backend\tests\test_security_complete.py:513:        with patch("backend.core.user_auth.check_admin_role") as mock_check:
+backend\tests\test_security_complete.py:514:            mock_check.return_value = False
+backend\tests\test_security_complete.py:528:        with patch("backend.core.user_auth.check_admin_role") as mock_check:
+backend\tests\test_security_complete.py:529:            mock_check.return_value = False
+backend\tests\test_security_complete.py:543:    """Tests preventing payment bypass."""
+backend\tests\test_security_complete.py:553:        with patch("backend.core.payment.check_payment_status") as mock_payment:
+backend\tests\test_security_complete.py:554:            mock_payment.return_value = False  # Unpaid
+backend\tests\test_security_complete.py:562:    def test_no_frontend_token_bypass(self):
+backend\tests\test_security_complete.py:563:        """Frontend token alone cannot bypass payment check."""
+backend\tests\test_security_complete.py:570:        with patch("backend.core.payment.check_payment_status") as mock_payment:
+backend\tests\test_security_complete.py:571:            mock_payment.return_value = False
+backend\tests\test_security_complete.py:587:            with patch("stripe.Webhook.construct_event") as mock_construct:
+backend\tests\test_security_complete.py:588:                mock_construct.side_effect = ValueError("Signature verification failed")
+backend\tests\test_security_complete.py:603:        with patch("backend.core.payment.db") as mock_db:
+backend\tests\test_security_complete.py:604:            with patch("backend.core.payment.stripe") as mock_stripe:
+backend\tests\test_security_complete.py:605:                mock_stripe.PaymentIntent.retrieve.return_value = Mock(
+backend\tests\test_security_complete.py:613:                mock_db.update_case_payment_status.assert_called_once()
+backend\tests\test_security_complete.py:663:        """X-User-ID header must not be trusted as auth (only for mocking)."""
+backend\tests\test_payment_integration.py:17:from unittest.mock import Mock, patch, MagicMock
+backend\tests\test_payment_integration.py:78:    with patch("backend.api.payment_routes.stripe") as mock_stripe:
+backend\tests\test_payment_integration.py:79:        mock_session = Mock()
+backend\tests\test_payment_integration.py:80:        mock_session.id = "cs_test_123abc"
+backend\tests\test_payment_integration.py:81:        mock_session.url = "https://checkout.stripe.com/pay/cs_test_123abc"
+backend\tests\test_payment_integration.py:82:        mock_stripe.api_key = None
+backend\tests\test_payment_integration.py:83:        mock_stripe.checkout.Session.create.return_value = mock_session
+backend\tests\test_payment_integration.py:85:        with patch("backend.api.payment_routes.get_payment_mode") as mock_mode:
+backend\tests\test_payment_integration.py:86:            mock_mode.return_value = "stripe_test"
+backend\tests\test_payment_integration.py:88:            # Call endpoint with mock auth
+backend\tests\test_payment_integration.py:89:            with patch("backend.api.payment_routes.get_current_user") as mock_auth:
+backend\tests\test_payment_integration.py:90:                mock_auth.return_value = test_user_id
+backend\tests\test_payment_integration.py:112:    with patch("backend.api.payment_routes.get_payment_mode") as mock_mode:
+backend\tests\test_payment_integration.py:113:        mock_mode.return_value = "disabled"
+backend\tests\test_payment_integration.py:128:    with patch("backend.api.payment_routes.get_current_user") as mock_auth:
+backend\tests\test_payment_integration.py:129:        mock_auth.return_value = None
+backend\tests\test_payment_integration.py:155:    with patch("backend.api.payment_routes.get_payment_mode") as mock_mode:
+backend\tests\test_payment_integration.py:156:        mock_mode.return_value = "stripe_test"
+backend\tests\test_payment_integration.py:158:        with patch("backend.api.payment_routes.get_current_user") as mock_auth:
+backend\tests\test_payment_integration.py:159:            mock_auth.return_value = test_user_id
+backend\tests\test_payment_integration.py:179:    with patch("backend.core.payment.stripe") as mock_stripe:
+backend\tests\test_payment_integration.py:180:        mock_stripe.Webhook.construct_event.side_effect = Exception("Invalid signature")
+backend\tests\test_payment_integration.py:204:    with patch("backend.core.payment.stripe") as mock_stripe:
+backend\tests\test_payment_integration.py:205:        mock_intent = Mock()
+backend\tests\test_payment_integration.py:206:        mock_intent.status = "succeeded"
+backend\tests\test_payment_integration.py:207:        mock_stripe.PaymentIntent.retrieve.return_value = mock_intent
+backend\tests\test_payment_integration.py:208:        mock_stripe.api_key = None
+backend\tests\test_payment_integration.py:262:    with patch("backend.core.payment.get_payment_mode") as mock_mode:
+backend\tests\test_payment_integration.py:263:        mock_mode.return_value = "disabled"
+backend\tests\test_payment_integration.py:292:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_payment_integration.py:293:        mock_auth.return_value = test_user_id
+backend\tests\test_payment_integration.py:295:        with patch("backend.api.document_routes.is_case_paid") as mock_paid:
+backend\tests\test_payment_integration.py:296:            mock_paid.return_value = False
+backend\tests\test_payment_integration.py:322:    with patch("backend.api.payment_routes.get_payment_mode") as mock_mode:
+backend\tests\test_payment_integration.py:323:        mock_mode.return_value = "stripe_test"
+backend\tests\test_payment_integration.py:325:        with patch("backend.api.payment_routes.get_current_user") as mock_auth:
+backend\tests\test_payment_integration.py:326:            mock_auth.return_value = test_user_id
+backend\tests\test_payment_integration.py:341:    with patch("backend.api.payment_routes.get_current_user") as mock_auth:
+backend\tests\test_payment_integration.py:342:        mock_auth.return_value = None
+backend\tests\test_payment_integration.py:356:    with patch("backend.api.payment_routes.get_current_user") as mock_auth:
+backend\tests\test_payment_integration.py:357:        mock_auth.return_value = other_user
+backend\tests\test_payment_integration.py:359:        with patch("backend.api.payment_routes.check_case_ownership") as mock_check:
+backend\tests\test_payment_integration.py:360:            mock_check.side_effect = HTTPException(status_code=403)
+backend\tests\test_document_generation.py:16:from unittest.mock import Mock, patch
+backend\tests\test_document_generation.py:103:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_document_generation.py:104:        mock_auth.return_value = test_user_id
+backend\tests\test_document_generation.py:107:            with patch("backend.api.document_routes.is_case_paid") as mock_paid:
+backend\tests\test_document_generation.py:108:                mock_paid.return_value = True
+backend\tests\test_document_generation.py:110:                with patch("backend.api.document_routes.safety_check") as mock_safety:
+backend\tests\test_document_generation.py:111:                    mock_safety.return_value = {"passed": True, "violations": []}
+backend\tests\test_document_generation.py:131:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_document_generation.py:132:        mock_auth.return_value = test_user_id
+backend\tests\test_document_generation.py:135:            with patch("backend.api.document_routes.is_case_paid") as mock_paid:
+backend\tests\test_document_generation.py:136:                mock_paid.return_value = True
+backend\tests\test_document_generation.py:138:                with patch("backend.api.document_routes.safety_check") as mock_safety:
+backend\tests\test_document_generation.py:139:                    mock_safety.return_value = {"passed": True, "violations": []}
+backend\tests\test_document_generation.py:227:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_document_generation.py:228:        mock_auth.return_value = test_user_id
+backend\tests\test_document_generation.py:231:            with patch("backend.api.document_routes.is_case_paid") as mock_paid:
+backend\tests\test_document_generation.py:232:                mock_paid.return_value = False
+backend\tests\test_document_generation.py:251:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_document_generation.py:252:        mock_auth.return_value = test_user_id
+backend\tests\test_document_generation.py:255:            with patch("backend.api.document_routes.is_case_paid") as mock_paid:
+backend\tests\test_document_generation.py:256:                mock_paid.return_value = True
+backend\tests\test_document_generation.py:270:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_document_generation.py:271:        mock_auth.return_value = None
+backend\tests\test_document_generation.py:305:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_document_generation.py:306:        mock_auth.return_value = requesting_user
+backend\tests\test_document_generation.py:354:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_document_generation.py:355:        mock_auth.return_value = user_id
+backend\tests\test_document_generation.py:357:        with patch("backend.api.document_routes.is_case_paid") as mock_paid:
+backend\tests\test_document_generation.py:358:            mock_paid.return_value = False
+backend\tests\test_document_generation.py:407:    with patch("backend.api.document_routes.get_current_user") as mock_auth:
+backend\tests\test_document_generation.py:408:        mock_auth.return_value = test_user_id
+backend\tests\test_document_generation.py:411:            with patch("backend.api.document_routes.is_case_paid") as mock_paid:
+backend\tests\test_document_generation.py:412:                mock_paid.return_value = True
+scripts\ops\g10_guard.py:1:"""G10 proof: CitationGuard (real UUID passes, fake fails) + retrieve() returns grounded data."""
+scripts\ops\g10_guard.py:9:print("=== CitationGuard: real vs fake corpus UUID ===")
+scripts\ops\g10_guard.py:12:print(f"fake {FAKE} valid? {FAKE in valid}")
+scripts\ops\g10_guard.py:13:print(f"PASS_real_accepted={REAL in valid}  PASS_fake_rejected={FAKE not in valid}")
+backend\services\lawapp-redaction-service\main.py:222:        redacted_placeholder = f"[{pii_type}]"
+backend\services\lawapp-redaction-service\main.py:223:        redacted = redacted[:start] + redacted_placeholder + redacted[end:]
+backend\services\lawapp-redaction-service\main.py:226:        redaction_map[redacted_placeholder] = {
+scripts\deep_audit_report.py:31:* Highest risk security issue: None (Mock auth and payment bypasses successfully removed).
+scripts\deep_audit_report.py:43:* Commands run: pytest, npm run build, grep (secrets, mock auth, AI bypasses).
+scripts\deep_audit_report.py:49:| Backend Tests | `pytest tests/ -q` | 1 | FAIL | Fails due to residual test-environment mock patches, but underlying app logic is secure. |
+scripts\deep_audit_report.py:68:| None | - | - | Previous critical bypasses have been removed. | Codebase inspection | - | - | - |
+scripts\deep_audit_report.py:74:| B1 | `tests/test_case_ownership.py` | Tests still attempt to patch `LAWAPP_AUTH_MODE` to `mock` | Local test failures | Update tests to use JWT fixture | `pytest` |
+scripts\deep_audit_report.py:111:| `test_fake_uuid_fallback` | Fallback | Fallback | PASS | None |
+scripts\deep_audit_report.py:164:* (Completed) Removed `mock` auth and `test_simulator` payment bypasses.
+scripts\deep_audit_report.py:176:* (Completed) Verified frontend uses dynamic paths without hardcoded mock overrides.
+scripts\deep_audit_report.py:185:| T1 | `tests/*` | Remove `patch("os.environ", {{"LAWAPP_AUTH_MODE": "mock"}})` from test suite. | `pytest` passes cleanly | `pytest` |
+scripts\deep_audit_report.py:194:* What must be fixed before any launch? Test suite assertions need updating to accommodate the removal of the mock auth bypass.
+backend\services\lawapp-rag-service\main.py:145:        # Fallback: return mock results
+backend\services\lawapp-rag-service\main.py:191:    # TODO: Implement vector embeddings + pgvector search
+services\lawapp_rag_ingestion\app.py:5:graph / embed gates  -  uncited or critic-rejected rows are NOT stored. No fake
+services\lawapp_rag_ingestion\app.py:55:    # critic rejection is a real, non-fake outcome  -  surface as 422, not stored.
+client\public\design-preview.html:310:        <input type="text" placeholder="e.g. 2022-04-01">
+backend\services\lawapp-notification-service\main.py:254:    REAL QUEUE: Redis qlen will increase, no fakes.
+backend\services\lawapp-ingestion-worker\graph_update_worker.py:11:CRITICAL: Every update is logged with a REAL audit record. No fake state.
+backend\services\lawapp-ingestion-worker\graph_update_worker.py:287:    CRITICAL: Every step produces REAL database records. No fake state.
+client\public\pages\compensation.html:40:        <input type="number" id="weekly_pay" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 500" required>
+client\public\pages\compensation.html:45:        <input type="number" id="months_employed" min="0" step="1" inputmode="numeric" placeholder="e.g. 36" required>
+client\public\pages\claim-checker.html:40:        <textarea id="what_happened" rows="5" placeholder="For example: I was dismissed last month after raising concerns about safety. I'd worked there for three years…" required></textarea>
+client\public\pages\case_detail.html:422:    i1.type = 'text'; i1.id = 'hf2-name'; i1.required = true; i1.placeholder = 'Full name';
+client\public\pages\case_detail.html:434:    i2.type = 'email'; i2.id = 'hf2-email'; i2.required = true; i2.placeholder = 'you@example.com';
+client\public\pages\saved_case.html:321:    i1.type = 'text'; i1.id = 'hf2-name'; i1.required = true; i1.placeholder = 'Full name';
+client\public\pages\saved_case.html:333:    i2.type = 'email'; i2.id = 'hf2-email'; i2.required = true; i2.placeholder = 'you@example.com';
+backend\domains\employment\timeline.py:133:    user_corrected non-placeholder values (use get_confirmed_facts() from bundle.py).
+client\public\wasm\lawapp_wasm.js:155:    // TODO we could test for more things here, like `Set`s and `Map`s.
+client\public\pages\acas-prep.html:40:        <textarea id="case_summary" rows="5" placeholder="For example: I was dismissed after raising a grievance about unpaid wages. I want to challenge it but haven't contacted ACAS yet." required></textarea>
+backend\services\lawapp-citation-guard\main.py:127:            placeholders = ",".join(["%s"] * len(chunk_ids))
+backend\services\lawapp-citation-guard\main.py:128:            sql = f"SELECT id, corpus_source, authority_ref, corpus_text FROM legal_corpus WHERE id IN ({placeholders})"
+client\public\pages\constructive_dismissal.html:94:      eventInput.placeholder = 'e.g. unilateral pay cut'; eventInput.value = event;
+client\public\pages\intake.html:217:            <input type="number" id="weekly_pay" name="weekly_pay" placeholder="650" min="0" step="0.01">
+client\public\pages\intake.html:222:            <input type="number" id="annual_salary" name="annual_salary" placeholder="33800" min="0" step="0.01" oninput="calcWeeklyFromSalary()">
+client\public\pages\intake.html:240:            placeholder="Describe what happened in a few sentences. Do not include your full name or employer name."></textarea>
+scripts\check_beta_readiness.py:86:    if auth_mode not in ("jwt", "mock"):
+backend\domains\shared\types.py:43:        e.g. "backend.domains.employment.templates". Absent for placeholders.
+scripts\bench_local_inference.py:19:generation. The script reports the truth; it does not fake a pass.
+client\public\pages\onboarding.html:84:        <input type="text" id="full_name" autocomplete="name" placeholder="e.g. Alex Taylor">
+client\public\pages\onboarding.html:117:        <input type="text" id="employer_name" autocomplete="organization" placeholder="e.g. Acme Retail Ltd">
+backend\domains\registry.py:38:# scaffolded placeholders, disabled until they have real rules, corpus, templates
+backend\domains\registry.py:62:        "label": "Immigration (placeholder  -  not enabled)",
+backend\domains\registry.py:72:        "label": "Housing (placeholder  -  not enabled)",
+backend\domains\employment\assess_logic.py:143:    and used directly when the model is stubbed.
+backend\domains\immigration\__init__.py:17:     (CLAUDE.md §7: no placeholder/uncited legal rows).
+backend\api\document_routes.py:454:        from unittest.mock import Mock as _Mock
+backend\api\main.py:98:    In mock/jwt (production), require X-Admin-Key.
+backend\api\main.py:123:    Admin key bypasses the ownership check.
+backend\api\main.py:318:        return {"user_id": user_id, "message": "User registered successfully"}
+backend\api\main.py:381:    Transparency endpoint: always honest about stub/real configuration.
+backend\api\main.py:1206:    Phase 6A/6B: associates case with user_id from X-User-ID (mock) or Bearer token (jwt stub).
+backend\api\main.py:1541:    Admin key (X-Admin-Key) bypasses ownership check.
+backend\api\main.py:2480:    # cases.payment_status). No raw premium_token unlock, no mock/test_simulator.
+backend\api\main.py:2556:    "document_preview_generated", "mock_payment_completed",
+backend\api\main.py:3026:        # For as_of testing we need a different approach: pass a fake "today" to escalation.
+backend\api\main.py:3183:    GUARDRAIL: No direct LLM calls bypass this endpoint.
+backend\api\main.py:3338:        _os.getenv("STRIPE_SECRET_KEY") != "placeholder"
+backend\api\main.py:3705:    """MCP Gateway: test a tool call (no real action taken in this stub)."""
+backend\api\main.py:3730:                    (user_id, req.tool, req.action, allowed, req.consent_given, _json.dumps({"stub": True})),
+backend\api\main.py:3815:        "isolation_active": auth_mode in ("mock", "jwt"),
+backend\api\main.py:4439:        if not webhook_secret or webhook_secret in ("placeholder", "whsec_PLACEHOLDER", ""):
+backend\api\payment_routes.py:267:    controls the price and cannot be bypassable by token manipulation.
+backend\api\payment_routes.py:311:        blocked_keys = {"placeholder", "sk_" + "test_PLACEHOLDER", "sk_" + "live_PLACEHOLDER"}
+backend\api\payment_routes.py:430:    STRIPE_WEBHOOK_SECRET must be set. No fallback to mock.
+backend\api\payment_routes.py:486:        if not stripe_key or stripe_key in ("placeholder",):
+backend\api\login_gate_routes.py:14:table)  -  no fabricated legal content, no fake success.
+backend\api\upload_routes.py:15:GUARDRAIL: OCR failure returns 501, not fake extraction.
+backend\api\upload_routes.py:98:    key_env = os.getenv("ENCRYPTION_KEY", "placeholder-dev-key-replace-in-production")
+backend\api\upload_routes.py:99:    if key_env in ("placeholder-dev-key-replace-in-production", ""):
+backend\api\upload_routes.py:137:    # TODO: Integrate with ClamAV or virus scanning service
+backend\core\agents\corpus_ingestion_aia.py:59:    Fails closed on any placeholder/uncited/unsourced legal row."""
+backend\core\agents\corpus_ingestion_aia.py:279:        # 5) reuse row-hygiene gates (placeholder/uncited/FCL leakage)
+backend\core\agentic\critic.py:14:No mock, no bypass, no fabricated citations.
+backend\domains\housing\__init__.py:17:     (CLAUDE.md §7: no placeholder/uncited legal rows).
+backend\core\agentic\corpus_citation_guard.py:157:        Text with PII removed or masked with [TYPE] placeholders
+backend\core\agentic\corpus_citation_guard.py:240:                if any(marker in citation.lower() for marker in ("fake", "hallucinated", "made up")):
+backend\core\agentic\corpus_citation_guard.py:241:                    errors.append("fake citation detected")
+backend\core\agentic\optimizer.py:20:fabricate a "compiled" prompt or a fake metric.
+backend\core\agentic\litellm_adapter.py:41:    when False, the agentic LLM layer stays local/stub/fail-closed (no crash).
+backend\core\agentic\litellm_adapter.py:44:    return bool(key) and key.lower() not in {"dummy", "dummy_test_key", "changeme", "placeholder"}
+backend\core\agentic\litellm_adapter.py:49:    placeholder (founder mandate: no placeholders; app must not start blind).
+backend\core\agentic\pii.py:5:this redactor PRESERVES content while replacing PII tokens with placeholders,
+backend\core\agentic\pii.py:16:# (placeholder, pattern)  -  order matters (email before phone, etc.)
+backend\core\agentic\pii.py:47:    Our own placeholders are stripped before scanning to avoid false positives."""
+backend\core\config_validation.py:43:VALID_KMS_MODES     = frozenset({"env", "kms_stub", "disabled"})
+backend\core\config_validation.py:85:        # Production REQUIRES jwt. mock/none/invalid are blocked → fail-to-start.
+backend\core\config_validation.py:87:        # (mock is the only mode that trusts X-User-ID, and it is test/dev only).
+backend\core\config_validation.py:91:                "(mock/none/invalid auth modes are blocked: no X-User-ID trust in production)"
+backend\core\config_validation.py:104:                "Use kms_stub or real KMS (Phase 7)."
+backend\core\config_validation.py:110:        if kms_mode == "kms_stub" and not os.getenv("KMS_KEY_ID"):
+backend\core\config_validation.py:112:                "KMS_KEY_ID (required for KEY_MANAGEMENT_MODE=kms_stub in production)"
+backend\core\circuit_breaker.py:13:a fake monotonic clock).
+backend\core\classify.py:290:        if not api_key or api_key in ("placeholder", "sk-ant-placeholder"):
+backend\core\cache.py:120:    """Inject a fake client (or None) and re-arm init  -  TEST USE ONLY."""
+backend\core\bundle.py:76:      - value must not start with '[Extracted' (placeholder  -  skip)
+backend\core\bundle.py:86:                continue  # skip placeholder values
+backend\core\dp_report.py:136:                "handling": "Mock extraction only  -  placeholders returned, no real OCR",
+backend\core\documents.py:300:[Complete all placeholders above with your details before filing.]
+backend\core\documents.py:423:[Complete all placeholders above with your details before filing.]
+backend\core\citations\extract.py:7:returned, or returned as type=UNKNOWN  -  never coerced into a fake authority.
+backend\core\auth\providers.py:8:This is REAL verification, not a stub: the client obtains an OpenID-Connect
+backend\core\auth\providers.py:25:    fails closed with 503 (ProviderNotConfigured), never a fake success.
+backend\core\extraction.py:89:    # For now, we return empty results if no patterns match, NEVER fake facts.
+services\lawapp_document_service\app.py:6:generators surface unconfirmed facts as explicit placeholders. X-Trace-ID via the
+services\lawapp_document_service\app.py:67:    # NOT implemented here (no documents store wired). Controlled 501, never a fake
+backend\core\inference_policy.py:125:        return bool(v) and v.strip().lower() not in ("", "placeholder", "changeme", "dummy")
+backend\core\login_gate.py:249:                # production the row already exists; in mock-auth tests it may not.
+backend\core\llm_provider.py:44:    name = "stub"
+backend\core\llm_provider.py:53:            "reason": "stub_provider_no_reasoning",
+backend\core\llm_provider.py:54:            "note": "Local/stub provider: no external reasoning performed.",
+backend\core\llm_provider.py:135:    "stub": StubProvider,
+backend\core\injection_guard.py:51:        r"bypass\s+(the\s+)?(tool|connector|permission|allowlist)",
+backend\core\kms.py:8:  KmsStubProvider   -  represents a real KMS key reference; Phase 7B stub (no real API call)
+backend\core\kms.py:231:    """Phase 7B stub  -  no real KMS API call. Phase 7C/7D: use AwsKmsProvider."""
+backend\core\kms.py:236:        logger.warning("KmsStubProvider: using env key (stub  -  value not logged).")
+backend\core\kms.py:257:            "note": "Phase 7B stub: KMS_KEY_ID configured; no real API call. Use aws_kms mode.",
+backend\core\kms.py:449:    elif mode == "kms_stub":
+backend\core\legal_graph.py:92:                placeholders = ",".join(["%s"] * len(node_ids))
+backend\core\legal_graph.py:98:                    WHERE node_id IN ({placeholders})
+backend\core\payment.py:11:There is NO mock and NO test_simulator. Paid access is NEVER granted by a raw
+backend\core\payment.py:45:# Real-only modes. mock/test_simulator are deliberately ABSENT.
+backend\core\payment.py:111:    Arbitrary tokens (e.g. 'test', 'test_x', 'mock_paid') are NEVER accepted."""
+backend\core\payment.py:128:    if not stripe_key or stripe_key in ("placeholder", "sk_" + "test_PLACEHOLDER", "sk_" + "live_PLACEHOLDER"):
+backend\core\payment.py:155:    There is NO fake/test_simulator skip path.
+backend\core\payment.py:162:    if not webhook_secret or webhook_secret in ("placeholder", "whsec_PLACEHOLDER"):
+backend\core\payment.py:170:        if stripe_key and stripe_key not in ("placeholder",):
+backend\core\pipeline.py:168:    The pipeline is structured to demonstrate Phase 2 with the stub model
+backend\core\pipeline.py:326:    # This provides citations and structure even when the model is stubbed.
+backend\core\production_readiness.py:112:        "Live payment not configured (PAYMENT_ENABLED=false  -  mock mode only)",
+backend\core\production_readiness.py:129:        "note":             "PAYMENT_ENABLED=false  -  mock mode. Stripe integration required.",
+backend\core\production_readiness.py:272:            "mode":        os.getenv("PAYMENT_MODE", "mock"),
+backend\core\production_readiness.py:273:            "live_ready":  (os.getenv("PAYMENT_MODE", "mock") == "stripe_live"
+backend\core\production_readiness.py:276:            "note":        "mock mode for tests; stripe_live requires STRIPE_SECRET_KEY + Phase 7.",
+backend\core\production_readiness.py:356:            "KEY_MANAGEMENT_MODE=env is not production-grade  -  use kms_stub or real KMS (Phase 7)."
+backend\core\models.py:2:Reasoning model interface and stub.
+backend\core\models.py:58:        Returns None if no external call was made (e.g. stub).
+backend\core\models.py:65:    Pipeline-test stub. No model call. Returns honest insufficient_grounding.
+backend\core\models.py:126:        return None  # No external call made by stub
+backend\core\models.py:584:    return {"provider": "stub", "active": False,       # noqa: unreachable legacy
+backend\core\models.py:611:    # APIs: reasons on lawapp's own metal. Unreachable => fail soft to stub.
+backend\core\retrieve.py:10:    keyword-search substitute. Do not replace this stub with text search.
+backend\core\retrieve.py:415:    so retrieval can never silently serve an unsupported/placeholder domain.
+backend\core\retrieve.py:598:# ── Semantic search stubs ────────────────────────────────────────────────────
+backend\core\score.py:93:    For Phase 2 stub model: confidence is heuristic-only (no model-reported value).
+backend\core\user_auth.py:6:  mock:            X-User-ID header; any valid UUID accepted (dev/test only)
+backend\core\user_auth.py:37:  - JWKS cache never bypasses signature verification.
+backend\core\user_auth.py:345:            # RS256+JWKS with full config IS production-ready (no stub blocker)
+backend\core\user_auth.py:408:    if mode == "mock":
+backend\core\user_auth.py:410:        # mock auth (config_validation.validate_startup_config requires 'jwt'), so
+backend\core\user_auth.py:419:                                detail="X-User-ID must be a valid UUID (mock auth, dev/test only).")
+backend\core\user_auth.py:458:        # would let ANY caller read/modify ANY case by id  -  an RLS bypass and
+backend\core\user_auth.py:462:        # 'mock' and 'none' are dev/test-only modes (production startup REJECTS them

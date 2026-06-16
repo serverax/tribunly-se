@@ -1,0 +1,38 @@
+Dual-plane ingestion + corpus — 2026-06-16
+
+Migration 084:
+- File: db/migrations/084_ingestion_jobs_dual_plane.sql
+- Creates: ingestion_jobs, extends knowledge.ingestion_proposals
+- Local apply: UNKNOWN if not run in target env (run via project migration runner)
+
+Workers (repo):
+- ingestion/workers/legislation_worker.py
+- ingestion/workers/case_law_worker.py (sample-only; FCL bulk blocked)
+- ingestion/workers/acas_worker.py
+- ingestion/workers/rules_compiler_worker.py
+- ingestion/workers/unified_indexer.py — Postgres graph dual-write via GraphLinker (legal_nodes/legal_edges)
+
+Embeddings policy:
+- ingestion/config.py — bge-large-en-v1.5, 1024-dim default
+- scripts/reembed_corpus_1024.py — local Ollama only
+- tests/ingestion/test_ingestion.py — accepts 384|1024 (no 1536)
+
+Corpus counts (local DB, scripts/corpus_count_report.py):
+- corpus_chunks: 13
+- legislation_rows: 85
+- acas_guidance_rows: 2
+- legal_nodes_active: 15
+- legal_edges: 14
+- embedding_dim_sample: None (re-embed pending when Ollama available)
+
+Idempotency (scripts/test_ingestion_connector_idempotency.py):
+- PASS — after_first=1 after_second=1 (zero new versions on re-run)
+
+Freshness report:
+- python -m ingestion.freshness.report — BLOCKED locally: source_freshness view column mismatch (env/migration drift). Script exists at ingestion/freshness/report.py.
+
+Tests:
+- pytest tests/test_unified_indexer_dual_write.py -q — 3 passed
+- pytest tests/test_build_order_gates.py -q — LangGraph routes 404/405
+
+Verdict: PASS (repo + local idempotency + corpus documented). PARTIAL: migration 084 Docker proof + freshness view + full 1024 re-embed in live env.

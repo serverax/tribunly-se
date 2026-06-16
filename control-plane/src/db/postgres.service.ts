@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { Pool, QueryResultRow } from 'pg';
-import { loadConfig } from '../core/config';
+import { loadConfig, resolveDatabaseUrl } from '../core/config';
 
 @Injectable()
 export class PostgresService implements OnModuleDestroy {
@@ -8,7 +8,7 @@ export class PostgresService implements OnModuleDestroy {
 
   constructor() {
     const cfg = loadConfig();
-    this.pool = new Pool({ connectionString: cfg.DATABASE_URL });
+    this.pool = new Pool({ connectionString: resolveDatabaseUrl(cfg) });
   }
 
   async query<T extends QueryResultRow = QueryResultRow>(

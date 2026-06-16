@@ -66,7 +66,7 @@ class RulesCompilerWorker(BaseWorker):
 
         conn = get_connection()
         try:
-            with conn.cursor() as cur:
+            with conn.cursor(cursor_factory=__import__("psycopg2.extras", fromlist=["RealDictCursor"]).RealDictCursor) as cur:
                 cur.execute(
                     """
                     SELECT rule_key, claim_type, value_numeric, value_text, unit,

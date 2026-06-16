@@ -1,0 +1,93 @@
+LawApp Ingestion + LangGraph V1 Deploy Proof
+Generated: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+
+=== PART 1: Architecture docs ===
+[PASS] docs/architecture/INGESTION_DUAL_PLANE_V1.md
+[PASS] docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md
+[PASS] docs/architecture/LEGAL_REASON_API_V1.md
+[PASS] docs/architecture/K8S_INGESTION_SCALING_V1.md
+
+=== PART 2: Ingestion workers ===
+[PASS] ingestion/workers/base_worker.py (Redis queues)
+[PASS] ingestion/workers/legislation_worker.py (Worker A)
+[PASS] ingestion/workers/case_law_worker.py (Worker B sample-only)
+[PASS] ingestion/workers/acas_worker.py (Worker C)
+[PASS] ingestion/workers/rules_compiler_worker.py (Worker D proposals)
+[PASS] ingestion/workers/unified_indexer.py (dual-write coordinator)
+[PASS] ingestion/graph/relationship_extractor.py
+[PASS] ingestion/graph/neo4j_batch_writer.py
+[PASS] ingestion/prompts/graph_builder_system.txt
+[PASS] ingestion/prompts/graph_builder_user.txt
+[PASS] ingestion/worker_runner.py
+
+Queues: ingestion-legislation, ingestion-case-law, ingestion-acas, embedding-jobs, graph-build-jobs
+
+=== PART 3: LangGraph layer ===
+[PASS] backend/core/langgraph/legal_reason_graph.py
+[PASS] backend/core/langgraph/nodes.py
+[PASS] backend/api/legal_reason_routes.py wired in backend/api/main.py
+[PASS] langgraph added to pyproject.toml + Dockerfile
+
+Note: backend/ai/graph/ pre-exists; backend/core/langgraph/ is the spec-canonical adapter.
+
+=== PART 4: Docker ===
+[PASS] docker-compose.yml: ingestion-worker (profile ingestion)
+[PASS] docker-compose.yml: neo4j (profile graph-neo4j, optional)
+[PASS] db/migrations/084_ingestion_jobs_dual_plane.sql (ingestion_jobs + proposal column extensions)
+
+=== PART 5: Deploy proof ===
+[PASS] docker compose up -d db redis backend (backend healthy after migration unblock)
+[PASS] Migration 084 applied + ingestion_jobs table created
+[PASS] Migration 082_knowledge_proposals.sql marked applied (approval_status column added)
+[WARN] docker compose build backend in progress (image lacks new /api/v1/legal/reason route until rebuild completes)
+[WARN] curl POST /api/v1/legal/reason returned 404 on pre-rebuild image (expected until redeploy)
+[PENDING] docker compose --profile ingestion up -d ingestion-worker (image build in progress)
+
+Health (in-container):
+{"status":"ok","service":"lawapp-backend","db":"connected","auth_mode":"jwt","payment_mode":"test"}
+
+Example request (after backend rebuild):
+curl -X POST http://localhost:8000/api/v1/legal/reason \
+  -H "Content-Type: application/json" \
+  -d '{"claim_type":"unfair_dismissal","facts":{"edt":"2026-05-10","employment_length":18,"dismissal_type":"conduct"}}'
+
+Expected response shape:
+{
+  "claim_type": "unfair_dismissal",
+  "viability": "yes|no|uncertain",
+  "strength": "low|medium|high|uncertain",
+  "weaknesses": ["..."],
+  "citations": [{"cite":"...", "url":"..."}],
+  "confidence": 0.0,
+  "deadline": {"limitation_date":"...","source":"rules","authority":"...","is_prospective":false},
+  "trace_id": "...",
+  "governance": {"passed": true|false}
+}
+
+=== PART 6: Tests ===
+[PASS] tests/test_legal_reason_api.py (2 tests)
+[PASS] tests/test_relationship_extractor_schema.py (3 tests)
+[PASS] tests/test_unified_indexer_dual_write.py (2 tests)
+Total: 7 passed (local pytest)
+
+=== Conflict resolution (documented in arch docs) ===
+- Neo4j optional via NEO4J_ENABLED; Postgres always written
+- LangGraph adapter in backend/core/langgraph; CitationGuard not replaced
+- LLM extraction: local Ollama; proposals to knowledge.ingestion_proposals
+- FCL: sample-only unless FCL_BULK_LICENCE_GRANTED=true
+- External OpenRouter disabled unless ALLOW_EXTERNAL_LLM=true
+
+=== Gaps ===
+1. Backend image rebuild required for live /api/v1/legal/reason (route in repo, not yet in running container)
+2. ingestion-worker Docker build slow (large build context); use profile after build completes
+3. Duplicate 082_* migration files in repo need consolidation (pre-existing)
+4. backend/ai/graph vs backend/core/langgraph overlap: consolidate in follow-up
+5. Control-plane enqueue UI not wired
+6. neo4j pip package optional; install when NEO4J_ENABLED=true
+
+=== Services added ===
+- ingestion-worker (compose profile: ingestion)
+- neo4j (compose profile: graph-neo4j)
+
+VERDICT: IMPLEMENTED / PARTIAL DEPLOY (await backend image rebuild for live API proof)

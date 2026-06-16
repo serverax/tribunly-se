@@ -1,0 +1,10 @@
+# Fresh verification  -  host pytest collect-only
+# Generated: 2026-06-16
+
+Command: python -m pytest --collect-only -q
+Result: 1861 tests collected in 178.91s
+Exit code: 0
+
+Note: +3 vs Track A docker collect (1858)  -  likely new tests/test_assessment_auth_wiring.py (+2) and other deltas on branch.
+
+Docker collect re-run: NOT EXECUTED (Docker offline)

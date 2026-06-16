@@ -295,13 +295,20 @@
      * Run assessment on case facts
      * Returns: strength, deadline, remedies, citations
      */
-    runAssessment: function (query, facts, jurisdiction) {
-      return postJSON("/assess", {
+    runAssessment: function (query, facts, jurisdiction, domainCode) {
+      var payload = {
         query: query,
         facts: facts || {},
         jurisdiction: jurisdiction || "EW",
         use_model: true,
-      });
+      };
+      if (domainCode) payload.domain_code = domainCode;
+      return postJSON("/assess", payload);
+    },
+
+    /** GET /api/domains */
+    listDomains: function () {
+      return getJSON("/api/domains");
     },
 
     // ─── DEADLINE ENDPOINTS ──────────────────────────────────────────────

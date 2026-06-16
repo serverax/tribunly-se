@@ -1,0 +1,14 @@
+### PHASE 5 PAYMENT ###
+[POST /api/payments/create-session] -> 401 :: {"detail":"Not authenticated"}
+[POST /api/payment/create-session] -> 200 :: {"mode":"disabled","payment_required":true,"message":"Document generation is temporarily unavailable."}
+### PHASE 6 DOCUMENT GEN ###
+[POST /api/documents/generate] -> 401 :: {"detail":"Not authenticated"}
+[POST /documents/generate] -> 422 :: {"detail":[{"type":"missing","loc":["body","assessment"],"msg":"Field required","input":{"case_id":"00000000-0000-0000-0000-000000000000","document_type":"particulars_of_claim"}},{"type":"missing","loc":["body","facts"],"msg":"Field required","input":{"case_id":"00000000-0000-0000-0000-000000000000"
+### PHASE 7 DOCUMENT DOWNLOAD ###
+[GET /api/documents/00000000-0000-0000-0000-000000000000] -> 401 :: {"detail":"Not authenticated"}
+[GET /api/documents/00000000-0000-0000-0000-000000000000/download] -> 404 :: {"detail":"Document not found."}
+### PHASE 13 UNAUTH (no X-User-ID) ###
+[GET /api/documents/generate no-auth] -> 401 :: {"detail":"Not authenticated"}
+[GET /api/payments/create-session no-auth] -> 405 :: {"detail":"Method Not Allowed"}
+[GET /api/cases no-auth] -> 401 :: {"detail":"Authentication required"}
+[GET /cases no-auth] -> 401 :: {"detail":"Authentication required"}

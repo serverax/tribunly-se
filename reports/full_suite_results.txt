@@ -1,0 +1,266 @@
+........................................................................ [  4%]
+.......................................................................s [  8%]
+........................................................................ [ 12%]
+........................................FF.............................. [ 16%]
+..ssssssss.............................................................. [ 20%]
+..........FFFFFFFFFFFFFFFF.F........FFFFFFF.........F................... [ 25%]
+...............F.F...........sssss.sssss....F.........................F. [ 29%]
+........................F.............................................FF [ 33%]
+FFFF................................................................FFFF [ 37%]
+F........FF............................FF............................... [ 41%]
+................................F....ssssssssssssssssssssssss........... [ 45%]
+........................................................................ [ 50%]
+...............................................sss...................... [ 54%]
+........................................................................ [ 58%]
+..................................................................FFF... [ 62%]
+............................................................s........... [ 66%]
+........................................................................ [ 70%]
+........................................................................ [ 75%]
+.........................................................FFFF........... [ 79%]
+........................................................................ [ 83%]
+....................................................................F... [ 87%]
+........................................................................ [ 91%]
+.........................FF............................................. [ 96%]
+.............................................F.......................    [100%]
+=================================== FAILURES ===================================
+E   httpcore.ReadTimeout: timed out
+
+The above exception was the direct cause of the following exception:
+E   httpx.ReadTimeout: timed out
+/usr/local/lib/python3.12/site-packages/httpx/_transports/default.py:118: httpx.ReadTimeout: timed out
+E   httpcore.ReadTimeout: timed out
+
+The above exception was the direct cause of the following exception:
+E   httpx.ReadTimeout: timed out
+/usr/local/lib/python3.12/site-packages/httpx/_transports/default.py:118: httpx.ReadTimeout: timed out
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3c_documents.py:119: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3c_documents.py:133: assert 401 == 200
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:145: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:152: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:158: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:167: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:174: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:182: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:188: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:196: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:204: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:212: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:221: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:230: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:240: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase3c_documents.py:248: KeyError: 'content'
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3c_documents.py:276: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3d_paid_handoff.py:126: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3d_paid_handoff.py:134: assert 401 == 200
+E   KeyError: 'content'
+/app/tests/integration/test_phase3d_paid_handoff.py:144: KeyError: 'content'
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3d_paid_handoff.py:153: assert 401 == 200
+E   KeyError: 'content'
+/app/tests/integration/test_phase3d_paid_handoff.py:159: KeyError: 'content'
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3d_paid_handoff.py:167: assert 401 == 200
+E   KeyError: 'content'
+/app/tests/integration/test_phase3d_paid_handoff.py:177: KeyError: 'content'
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3d_paid_handoff.py:300: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3e_mvp_close.py:372: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase3e_mvp_close.py:457: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase4a_upload_ocr.py:419: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase4b_bundle.py:371: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase4c_timeline.py:426: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase5b_unpaid_wages.py:231: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase5b_unpaid_wages.py:239: assert 401 == 200
+E   KeyError: 'content'
+/app/tests/integration/test_phase5b_unpaid_wages.py:246: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase5b_unpaid_wages.py:254: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase5b_unpaid_wages.py:262: KeyError: 'content'
+E   KeyError: 'content'
+/app/tests/integration/test_phase5b_unpaid_wages.py:268: KeyError: 'content'
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase6a_deployment.py:244: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase6a_deployment.py:256: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase6a_deployment.py:272: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase6a_deployment.py:287: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase6a_deployment.py:302: assert 401 == 200
+E   FileNotFoundError: [Errno 2] No such file or directory: '.github/workflows/ci.yml'
+/usr/local/lib/python3.12/pathlib.py:1013: FileNotFoundError: [Errno 2] No such file or directory: '.github/workflows/ci.yml'
+E   FileNotFoundError: [Errno 2] No such file or directory: '.github/workflows/ci.yml'
+/usr/local/lib/python3.12/pathlib.py:1013: FileNotFoundError: [Errno 2] No such file or directory: '.github/workflows/ci.yml'
+E   FileNotFoundError: [Errno 2] No such file or directory: '.github/workflows/ci.yml'
+/usr/local/lib/python3.12/pathlib.py:1013: FileNotFoundError: [Errno 2] No such file or directory: '.github/workflows/ci.yml'
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/integration/test_phase6b_beta_readiness.py:393: assert 401 == 200
+E   FileNotFoundError: [Errno 2] No such file or directory: '/app/.github/workflows/ci.yml'
+/usr/local/lib/python3.12/pathlib.py:1013: FileNotFoundError: [Errno 2] No such file or directory: '/app/.github/workflows/ci.yml'
+E   assert 401 == 400
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/payment/test_payment.py:175: assert 401 == 400
+E   assert 401 in (200, 402, 422)
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/payment/test_payment.py:186: assert 401 in (200, 402, 422)
+E   assert 401 in (200, 402, 422)
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/payment/test_payment.py:200: assert 401 in (200, 402, 422)
+E   AssertionError: {"detail":"Not authenticated"}
+    assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/test_compensation.py:73: AssertionError: {"detail":"Not authenticated"}
+E   KeyError: 'payment_required'
+/app/tests/test_compensation.py:86: KeyError: 'payment_required'
+E   AssertionError: {"detail":"Not authenticated"}
+    assert 401 == 422
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/test_compensation.py:93: AssertionError: {"detail":"Not authenticated"}
+E   AssertionError: {"detail":"Not authenticated"}
+    assert 401 == 422
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/test_compensation.py:101: AssertionError: {"detail":"Not authenticated"}
+E   AssertionError: {"detail":"Not authenticated"}
+    assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+/app/tests/test_integration_tools.py:158: AssertionError: {"detail":"Not authenticated"}
+E   FileNotFoundError: [Errno 2] No such file or directory: '/app/.gitignore'
+/usr/local/lib/python3.12/pathlib.py:1013: FileNotFoundError: [Errno 2] No such file or directory: '/app/.gitignore'
+E   FileNotFoundError: [Errno 2] No such file or directory: '/app/.env.example'
+/usr/local/lib/python3.12/pathlib.py:1013: FileNotFoundError: [Errno 2] No such file or directory: '/app/.env.example'
+E   AssertionError: assert '[MODEL_UNAVAILABLE]' not in ['[MODEL_UNAVAILABLE]']
+------------------------------ Captured log call -------------------------------
+WARNING  backend.core.models:models.py:563 stream_chat unavailable: Client error '404 Not Found' for url 'http://host.docker.internal:11434/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+/app/tests/test_streaming_inference.py:45: AssertionError: assert '[MODEL_UNAVAILABLE]' not in ['[MODEL_UNAVAILABLE]']
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+backend/core/models.py:662
+  /app/backend/core/models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_blocks_wrong_user
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_allows_correct_user
+  /usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_blocks_wrong_user
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_allows_correct_user
+  /usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_api_smoke.py::test_assess_ud_deadline_is_rule_backed
+FAILED tests/integration/test_api_smoke.py::test_assess_ud_no_pii_in_boundary
+FAILED tests/integration/test_phase3c_documents.py::test_particulars_of_claim_endpoint_returns_200
+FAILED tests/integration/test_phase3c_documents.py::test_schedule_of_loss_endpoint_returns_200
+FAILED tests/integration/test_phase3c_documents.py::test_particulars_includes_edt
+FAILED tests/integration/test_phase3c_documents.py::test_particulars_includes_reason_for_dismissal
+FAILED tests/integration/test_phase3c_documents.py::test_particulars_includes_service_dates
+FAILED tests/integration/test_phase3c_documents.py::test_schedule_includes_value_range_figures
+FAILED tests/integration/test_phase3c_documents.py::test_schedule_includes_value_range_basis
+FAILED tests/integration/test_phase3c_documents.py::test_poc_includes_unfair_dismissal_claim_type
+FAILED tests/integration/test_phase3c_documents.py::test_sol_includes_unfair_dismissal_claim_type
+FAILED tests/integration/test_phase3c_documents.py::test_poc_includes_legal_boundary_notice
+FAILED tests/integration/test_phase3c_documents.py::test_sol_includes_legal_boundary_notice
+FAILED tests/integration/test_phase3c_documents.py::test_documents_include_self_help_draft_label
+FAILED tests/integration/test_phase3c_documents.py::test_poc_no_guarantee_language
+FAILED tests/integration/test_phase3c_documents.py::test_sol_no_guarantee_language
+FAILED tests/integration/test_phase3c_documents.py::test_poc_no_filing_language
+FAILED tests/integration/test_phase3c_documents.py::test_sol_no_representation_language
+FAILED tests/integration/test_phase3c_documents.py::test_empty_facts_does_not_crash
+FAILED tests/integration/test_phase3d_paid_handoff.py::test_unpaid_document_returns_payment_required_true
+FAILED tests/integration/test_phase3d_paid_handoff.py::test_unpaid_document_content_is_truncated
+FAILED tests/integration/test_phase3d_paid_handoff.py::test_unpaid_preview_contains_preview_notice
+FAILED tests/integration/test_phase3d_paid_handoff.py::test_paid_document_returns_payment_required_false
+FAILED tests/integration/test_phase3d_paid_handoff.py::test_paid_document_returns_full_content
+FAILED tests/integration/test_phase3d_paid_handoff.py::test_paid_sol_returns_full_content
+FAILED tests/integration/test_phase3d_paid_handoff.py::test_preview_contains_legal_boundary_notice
+FAILED tests/integration/test_phase3d_paid_handoff.py::test_phase3c_document_generation_still_works
+FAILED tests/integration/test_phase3e_mvp_close.py::test_full_mvp_journey - a...
+FAILED tests/integration/test_phase3e_mvp_close.py::test_phase3c_document_generation_regression
+FAILED tests/integration/test_phase4a_upload_ocr.py::test_phase3c_document_generation_regression
+FAILED tests/integration/test_phase4b_bundle.py::test_phase3c_document_generation_regression
+FAILED tests/integration/test_phase4c_timeline.py::test_phase3c_document_generation_regression
+FAILED tests/integration/test_phase5b_unpaid_wages.py::test_letter_before_action_generates
+FAILED tests/integration/test_phase5b_unpaid_wages.py::test_et1_support_notes_wages_generates
+FAILED tests/integration/test_phase5b_unpaid_wages.py::test_wages_documents_include_legal_boundary
+FAILED tests/integration/test_phase5b_unpaid_wages.py::test_wages_documents_no_prohibited_phrases
+FAILED tests/integration/test_phase5b_unpaid_wages.py::test_letter_before_action_includes_amount
+FAILED tests/integration/test_phase5b_unpaid_wages.py::test_et1_notes_wages_do_not_say_we_will_file
+FAILED tests/integration/test_phase6a_deployment.py::test_payment_mock_does_not_unlock_raw_token
+FAILED tests/integration/test_phase6a_deployment.py::test_payment_disabled_blocks_paid_output
+FAILED tests/integration/test_phase6a_deployment.py::test_payment_stripe_live_fails_safely_without_key
+FAILED tests/integration/test_phase6a_deployment.py::test_payment_stripe_test_fails_safely
+FAILED tests/integration/test_phase6a_deployment.py::test_document_gate_uses_db_paid_state
+FAILED tests/integration/test_phase6a_deployment.py::test_ci_yml_contains_legal_accuracy_gate
+FAILED tests/integration/test_phase6a_deployment.py::test_ci_yml_contains_rules_verification_gate
+FAILED tests/integration/test_phase6b_beta_readiness.py::test_ci_yml_has_production_readiness_job
+FAILED tests/integration/test_phase6b_beta_readiness.py::test_payment_gate_still_works
+FAILED tests/integration/test_phase6e_prelaunch.py::test_ci_yml_includes_beta_readiness_step
+FAILED tests/payment/test_payment.py::TestCreateSessionEndpoint::test_create_session_invalid_doc_type
+FAILED tests/payment/test_payment.py::TestDocumentPaymentGating::test_no_token_returns_preview
+FAILED tests/payment/test_payment.py::TestDocumentPaymentGating::test_raw_token_does_not_unlock_full_doc
+FAILED tests/test_compensation.py::TestCompensationEndpoint::test_grounded_assessment_generates_document
+FAILED tests/test_compensation.py::TestCompensationEndpoint::test_unpaid_case_returns_preview_and_payment_required
+FAILED tests/test_compensation.py::TestCompensationEndpoint::test_ungrounded_assessment_is_refused
+FAILED tests/test_compensation.py::TestCompensationEndpoint::test_unsupported_jurisdiction_is_refused
+FAILED tests/test_integration_tools.py::TestAllFourToolsEndToEnd::test_compensation
+FAILED tests/test_openrouter_config.py::test_env_is_gitignored - FileNotFound...
+FAILED tests/test_openrouter_config.py::test_env_example_has_blank_placeholder_only
+FAILED tests/test_streaming_inference.py::test_stream_chat_real_tokens_from_qwen
+59 failed, 1619 passed, 47 skipped, 6 warnings in 1774.76s (0:29:34)
+DONE_EXIT=1

@@ -1,0 +1,89 @@
+........................................................................ [  4%]
+.......................................................................s [  8%]
+........................................................................ [ 12%]
+......................................ssssss............................ [ 16%]
+..ssssssss.............................................................. [ 20%]
+........................................................................ [ 24%]
+.............................sssss.sssss................................ [ 28%]
+................................................FF.F.FF................. [ 32%]
+...........................................FFF.................F........ [ 36%]
+....................F....sss............................................ [ 40%]
+.....................................sssssssssssssssssssssssssssssssssss [ 44%]
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss [ 48%]
+sssssssssssss..................................sss...................... [ 53%]
+........................................................................ [ 57%]
+........................................................................ [ 61%]
+............................................................s........... [ 65%]
+........................................................................ [ 69%]
+........................EEEEEEEEEEEEEEEEEEEEFFFFF.F.FF.F................ [ 73%]
+........................................................................ [ 77%]
+..............................................F......................... [ 81%]
+........................................................................ [ 85%]
+...................................F.................................... [ 89%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+..............F.......................                                   [100%]
+============================== warnings summary ===============================
+C:\Python314\Lib\site-packages\slowapi\extension.py:717: 21 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+backend\core\models.py:662
+  F:\lawapp\backend\core\models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_blocks_wrong_user
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_allows_correct_user
+  C:\Python314\Lib\site-packages\jwt\api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_blocks_wrong_user
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_allows_correct_user
+  C:\Python314\Lib\site-packages\jwt\api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/integration/test_phase5a_hardening.py::test_funnel_event_can_be_recorded
+FAILED tests/integration/test_phase5a_hardening.py::test_funnel_events_listed_per_case
+FAILED tests/integration/test_phase5a_hardening.py::test_funnel_event_metadata_no_raw_facts
+FAILED tests/integration/test_phase5a_hardening.py::test_phase4c_timeline_regression
+FAILED tests/integration/test_phase5a_hardening.py::test_phase4b_bundle_regression
+FAILED tests/integration/test_phase6_production.py::test_upload_stores_encrypted_file
+FAILED tests/integration/test_phase6_production.py::test_case_can_be_soft_deleted
+FAILED tests/integration/test_phase6_production.py::test_soft_deleted_case_returns_404
+FAILED tests/integration/test_phase6a_deployment.py::test_auth_none_allows_access_without_user_id
+FAILED tests/integration/test_phase6b_beta_readiness.py::test_jwt_mode_parses_bearer_token
+FAILED tests/test_auth_flows.py::TestRefresh::test_valid_refresh_rotates_session
+FAILED tests/test_auth_flows.py::TestRefresh::test_replayed_rotated_token_is_rejected
+FAILED tests/test_auth_flows.py::TestRefresh::test_unknown_refresh_token_is_rejected
+FAILED tests/test_auth_flows.py::TestLogout::test_logout_with_refresh_token
+FAILED tests/test_auth_flows.py::TestLogout::test_logged_out_token_cannot_refresh
+FAILED tests/test_auth_flows.py::TestLogout::test_logout_all_sessions_with_bearer
+FAILED tests/test_auth_flows.py::TestVerifyEmail::test_registration_token_verifies_email
+FAILED tests/test_auth_flows.py::TestVerifyEmail::test_bogus_verify_token_is_rejected
+FAILED tests/test_auth_flows.py::TestPasswordReset::test_confirm_sets_a_new_password
+FAILED tests/test_domain_modularity.py::test_registry_baseline_employment_enabled
+FAILED tests/test_integrity_framework.py::test_every_fake_law_is_flagged_individually
+FAILED tests/test_streaming_inference.py::test_stream_chat_real_tokens_from_qwen
+ERROR tests/test_auth_db.py::test_required_entity_exists[users] - psycopg2.er...
+ERROR tests/test_auth_db.py::test_required_entity_exists[user_identities] - p...
+ERROR tests/test_auth_db.py::test_required_entity_exists[user_sessions] - psy...
+ERROR tests/test_auth_db.py::test_required_entity_exists[auth_events] - psyco...
+ERROR tests/test_auth_db.py::test_required_entity_exists[onboarding_profiles]
+ERROR tests/test_auth_db.py::test_required_entity_exists[conversion_events]
+ERROR tests/test_auth_db.py::test_session_and_identity_views_expose_canonical_columns
+ERROR tests/test_auth_db.py::test_views_are_backed_by_the_wired_base_tables
+ERROR tests/test_auth_db.py::test_required_indexes_exist - psycopg2.errors.Un...
+ERROR tests/test_auth_db.py::test_email_index_serves_lookup - psycopg2.errors...
+ERROR tests/test_auth_db.py::test_session_id_index_serves_lookup - psycopg2.e...
+ERROR tests/test_auth_db.py::test_provider_id_index_serves_lookup - psycopg2....
+ERROR tests/test_auth_db.py::test_duplicate_email_rejected_case_insensitive
+ERROR tests/test_auth_db.py::test_provider_merge_integrity - psycopg2.errors....
+ERROR tests/test_auth_db.py::test_account_linking_multiple_providers - psycop...
+ERROR tests/test_auth_db.py::test_user_sessions_view_reflects_auth_sessions
+ERROR tests/test_auth_db.py::test_onboarding_profiles_view_reflects_users - p...
+ERROR tests/test_auth_db.py::test_conversion_events_anonymous_then_linked - p...
+ERROR tests/test_auth_db.py::test_migration_050_idempotent - psycopg2.errors....
+ERROR tests/test_auth_db.py::test_migration_050_reversible - psycopg2.errors....
+22 failed, 1572 passed, 152 skipped, 26 warnings, 20 errors in 968.69s (0:16:08)

@@ -208,7 +208,24 @@
       'Tribunal deadlines are strict  -  verify dates with ACAS or a qualified adviser.'));
     document.body.insertBefore(bar, document.body.firstChild);
   }
+  function injectBoundaryFooter() {
+    if (document.getElementById('case-os-boundary-footer')) return;
+    if (document.querySelector('footer.case-os-boundary')) return;
+    if (document.querySelector('footer .case-os-boundary')) return;
+    var footer = document.createElement('footer');
+    footer.id = 'case-os-boundary-footer';
+    footer.className = 'case-os-boundary';
+    footer.setAttribute('role', 'contentinfo');
+    footer.innerHTML =
+      '<p>lawapp is not a law firm and does not provide regulated legal advice. ' +
+      'Outputs are information only. We do not file claims or represent you at tribunal.</p>';
+    document.body.appendChild(footer);
+  }
+  function bootSiteChrome() {
+    addBetaBanner();
+    injectBoundaryFooter();
+  }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', addBetaBanner);
-  } else { addBetaBanner(); }
+    document.addEventListener('DOMContentLoaded', bootSiteChrome);
+  } else { bootSiteChrome(); }
 })();

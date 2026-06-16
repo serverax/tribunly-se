@@ -1,0 +1,16 @@
+LAWAPP SCHEMA READINESS PROOF
+
+PASS: audit_events required columns present
+PASS: auth_sessions required columns present
+PASS: auth_tokens required columns present
+PASS: cases required columns present
+PASS: documents required columns present
+PASS: employment_modules required columns present
+PASS: payment_events required columns present
+PASS: payment_sessions required columns present
+PASS: rules required columns present
+PASS: users required columns present
+PASS: employment_modules has 24 rows
+INFO: _migrations rows: 62
+
+SCHEMA READINESS: PASS

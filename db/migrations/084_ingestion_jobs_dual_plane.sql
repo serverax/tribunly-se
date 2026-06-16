@@ -1,25 +1,13 @@
 -- 084_ingestion_jobs_dual_plane.sql
 -- Dual-plane ingestion job tracking (Postgres always; Neo4j optional via NEO4J_ENABLED).
--- Proposals queue for rule candidates (never direct rules write).
+-- Extends knowledge.ingestion_proposals (created by 082_*) for worker metadata.
 
 BEGIN;
 
-CREATE TABLE IF NOT EXISTS knowledge.ingestion_proposals (
-    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    proposal_type       TEXT NOT NULL CHECK (proposal_type IN ('rule_candidate','graph_edge','graph_entity')),
-    source_worker       TEXT NOT NULL,
-    document_id         TEXT,
-    chunk_id            TEXT,
-    payload             JSONB NOT NULL DEFAULT '{}',
-    status              TEXT NOT NULL DEFAULT 'pending'
-                        CHECK (status IN ('pending','approved','rejected','applied')),
-    reviewer_notes      TEXT,
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
-    reviewed_at         TIMESTAMPTZ
-);
-
-CREATE INDEX IF NOT EXISTS ingestion_proposals_status_idx
-    ON knowledge.ingestion_proposals (status, created_at DESC);
+ALTER TABLE knowledge.ingestion_proposals
+    ADD COLUMN IF NOT EXISTS source_worker TEXT,
+    ADD COLUMN IF NOT EXISTS document_id TEXT,
+    ADD COLUMN IF NOT EXISTS chunk_id TEXT;
 
 CREATE TABLE IF NOT EXISTS ingestion_jobs (
     id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),

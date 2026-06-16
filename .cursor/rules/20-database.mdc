@@ -1,0 +1,27 @@
+---
+description: Database and migration conventions
+globs: "**/migrations/**,**/*.sql,**/db/**"
+alwaysApply: false
+---
+
+# Database Conventions
+
+- Every migration has up and down; fully reversible. Migrations are additive
+  during transitions; never alter a column type in place. Add a new column,
+  backfill, drop the old one in a later migration.
+- UUID primary keys via `gen_random_uuid()`, `timestamptz`, snake_case.
+- Canonical domain tables are the normalized set (`provision`, `module`,
+  `legal_source`, `answer_candidate`, `curated_answer`, plus the operational
+  tables). `corpus_chunks` is the embedding layer referencing `provision.id`,
+  not a domain table.
+- Embeddings are 1024-dimension and local (bge-large-en-v1.5 or
+  mxbai-embed-large via Ollama). Do not introduce a 1536 or external
+  (text-embedding-3-small) embedding. Store model name and dimension per row.
+- Provisions carry `effective_from` / `effective_to` / `status`. Law-as-at-date:
+  `effective_from <= :d AND (effective_to IS NULL OR effective_to > :d)`.
+- `curated_answer.citation_ids` must be non-empty (CHECK). No citation, no
+  promotion.
+- Per-service least-privilege roles; the corpus read role is separate from the
+  app read-write role. Knowledge tables live in a `knowledge` schema.
+- Enable row-level security on `matter` and all matter-scoped tables.
+- Graph relationships use Postgres `legal_nodes` / `legal_edges`. Do not add Neo4j.

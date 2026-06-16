@@ -1,0 +1,71 @@
+LAWAPP PYTHON MIGRATION RUNNER
+Database URL source: ingestion.config.settings.database_url
+Database target: switchback.proxy.rlwy.net:32756/railway
+Migrations: F:\lawapp\db\migrations
+
+Connected: ('railway', 'postgres', '10.179.63.56', 5432)
+SKIP: 001_initial.sql
+SKIP: 002_case_law_split.sql
+SKIP: 003_phase2c_audit.sql
+SKIP: 004_phase3_tables.sql
+SKIP: 005_phase4_evidence.sql
+SKIP: 006_phase5_feedback.sql
+SKIP: 007_phase3d_paid_handoff.sql
+SKIP: 008_phase4a_uploads.sql
+SKIP: 009_phase4c_timeline.sql
+SKIP: 010_phase5a_funnel.sql
+SKIP: 011_phase5c_verification.sql
+SKIP: 012_phase6_encryption_retention.sql
+SKIP: 013_phase7d_envelope_encryption.sql
+SKIP: 014_legal_corpus_expansion.sql
+SKIP: 015_aia_workflow_tables.sql
+SKIP: 016_vector_dim_384.sql
+SKIP: 017_auth_columns.sql
+SKIP: 018_brain_architecture.sql
+SKIP: 019_brain_phase1_schema.sql
+SKIP: 019_phase1_brain_safety.sql
+SKIP: 020_seed_rules.sql
+SKIP: 021_payment_events.sql
+SKIP: 022_seed_legislation.sql
+SKIP: 023_seed_acas.sql
+SKIP: 024_advanced_tech_tables.sql
+SKIP: 025_outbox_worker_columns.sql
+SKIP: 026_corpus_content_hash.sql
+SKIP: 027_agentic_architecture.sql
+SKIP: 028_legal_sources_registry.sql
+SKIP: 029_legal_provenance_columns.sql
+SKIP: 030_acas_guidance_unique.sql
+SKIP: 031_legal_data_spine.sql
+SKIP: 032_corpus_chunks_and_audits.sql
+SKIP: 033_seed_required_rules.sql
+SKIP: 034_corpus_quality_views.sql
+SKIP: 035_legal_db_performance.sql
+SKIP: 036_verification_status_canonical.sql
+SKIP: 037_core_workspace_ingestion_errors.sql
+SKIP: 038_feedback_registry.sql
+SKIP: 039_corpus_chunks_ingestion_run_id.sql
+SKIP: 040_case_law_table.sql
+SKIP: 041_user_legal_profiles.sql
+SKIP: 042_temporal_graph.sql
+SKIP: 046_payment_and_upload_tables.sql
+SKIP: 047_auth_stack.sql
+SKIP: 048_onboarding.sql
+SKIP: 049_conversion_funnel.sql
+SKIP: 050_auth_canonical_views.sql
+SKIP: 051_login_gate.sql
+SKIP: 056_chatbot_conversation_events.sql
+SKIP: 057_rules_2024_caps_and_provenance.sql
+SKIP: 058_employment_module_catalog.sql
+SKIP: 059_workflow_schema_compat.sql
+SKIP: 060_redundancy_wrongful_dismissal_rules.sql
+SKIP: 061_working_time_holiday_nmw_flexible_rules.sql
+SKIP: 062_equality_whistleblowing_rules.sql
+SKIP: 063_family_leave_rules.sql
+SKIP: 064_remaining_employment_module_anchors.sql
+SKIP: 065_promote_redundancy_wrongful_workflows.sql
+SKIP: 066_redundancy_rule_source_metadata.sql
+SKIP: 067_promote_working_time_holiday_flexible_workflows.sql
+APPLY: 068_promote_worker_status_contract_modules.sql
+PASS: 068_promote_worker_status_contract_modules.sql
+
+MIGRATIONS COMPLETE: total=62 applied=1 skipped=61

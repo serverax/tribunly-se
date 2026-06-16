@@ -1,0 +1,71 @@
+........................................................................ [ 40%]
+...................sssss.sssss..............................F........... [ 80%]
+....................FF........s.....                                     [100%]
+================================== FAILURES ===================================
+E   AssertionError: CI gate failed. Output:
+      ======================================================================
+      LAWAPP ù LEGAL ACCURACY REGRESSION SUITE
+      ======================================================================
+      Running deterministic fact-pattern checks (StubReasoningModel)...
+      
+      Loading embedding model: BAAI/bge-small-en-v1.5 (fastembed ONNX)
+        Output dimension: 384
+      Grounded case:
+        status:              ok
+        claim_type:          unfair_dismissal
+        citations:           8
+        grounding_score:     1.0
+        confidence_score:    0.95
+      
+      2026-06-14 23:22:24,927 INFO backend.core.pipeline ù Retrieval: 10 rules, 10 authorities, insufficient_grounding=False
+      2026-06-14 23:22:24,931 INFO backend.core.deidentify ù De-identification boundary: stripped=[], passed=8 fields, unknown_kept=['qualifying_period_met', 'service_days']
+      2026-06-14 23:22:24,932 INFO backend.core.pipeline ù De-identification boundary: {'fields_stripped': [], 'fields_passed': ['edt', 'service_start_date', 'reason_for_dismissal', 'was_procedure_followed', 'weekly_pay', 'jurisdiction', 'qualifying_period_met', 'service_days'], 'unknown_fields_kept_for_review': ['qualifying_period_met', 'service_days'], 'pii_fields_in_output': []}
+      2026-06-14 23:22:24,965 INFO backend.core.pipeline ù Legal relationship map injected into ART input: {'used': True, 'node_count': 10, 'edge_count': 18, 'root_node': 'ud_claim', 'node_ids': ['ud_claim', 'employee_status', 'qualifying_service', 'dismissal', 'limitation_date', 'acas_ec', 'basic_award', 'compensatory_award', 'fair_reason', 'contributory_fault'], 'source': 'legal_graph'}
+      2026-06-14 23:22:24,967 INFO backend.core.models ù StubReasoningModel.reason called ù no external API call made
+      2026-06-14 23:22:24,967 INFO backend.core.models ù StubReasoningModel.reason called ù no external API call made
+      2026-06-14 23:22:24,967 INFO backend.core.pipeline ù Scores: grounding=1.00 confidence=0.95 insufficient=False
+      2026-06-14 23:22:24,967 INFO backend.core.pipeline ù Governance: passes=True reason=
+      Traceback (most recent call last):
+        File "F:\lawapp\scripts\run_legal_accuracy.py", line 97, in <module>
+          raise SystemExit(main())
+                           ~~~~^^
+        File "F:\lawapp\scripts\run_legal_accuracy.py", line 58, in main
+          print(f"  deadline_info:       {grounded.get('deadline_info')}")
+          ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "C:\Python314\Lib\encodings\cp1252.py", line 19, in encode
+          return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+                 ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      UnicodeEncodeError: 'charmap' codec can't encode character '\u26a0' in position 369: character maps to <undefined>
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['C:\\Python314\\python.exe', 'scripts/run_legal_accuracy.py'], returncode=1, stdout='==========...deEncodeError: \'charmap\' codec can\'t encode character \'\\u26a0\' in position 369: character maps to <undefined>\n').returncode
+F:\lawapp\tests\integration\test_phase5b_unpaid_wages.py:332: AssertionError: CI gate failed. Output:
+E   assert 401 in (200, 402, 422)
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+F:\lawapp\tests\payment\test_payment.py:197: assert 401 in (200, 402, 422)
+E   assert 401 in (200, 402, 422)
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+F:\lawapp\tests\payment\test_payment.py:211: assert 401 in (200, 402, 422)
+============================== warnings summary ===============================
+C:\Python314\Lib\site-packages\slowapi\extension.py:717: 21 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+backend\core\models.py:662
+  F:\lawapp\backend\core\models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\lastfailed: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/integration/test_phase5b_unpaid_wages.py::test_legal_accuracy_ci_gate_passes
+FAILED tests/payment/test_payment.py::TestDocumentPaymentGating::test_no_token_returns_preview
+FAILED tests/payment/test_payment.py::TestDocumentPaymentGating::test_raw_token_does_not_unlock_full_doc
+3 failed, 166 passed, 11 skipped, 24 warnings in 62.48s (0:01:02)

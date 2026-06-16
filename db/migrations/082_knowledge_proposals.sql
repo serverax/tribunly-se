@@ -25,6 +25,20 @@ CREATE TABLE IF NOT EXISTS knowledge.ingestion_proposals (
     updated_at                  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Older 082_* migrations may have created this table with `status` instead of `approval_status`.
+ALTER TABLE knowledge.ingestion_proposals
+    ADD COLUMN IF NOT EXISTS approval_status TEXT NOT NULL DEFAULT 'pending';
+ALTER TABLE knowledge.ingestion_proposals
+    ADD COLUMN IF NOT EXISTS proposed_by TEXT NOT NULL DEFAULT 'llm';
+ALTER TABLE knowledge.ingestion_proposals
+    ADD COLUMN IF NOT EXISTS source_verification_status TEXT NOT NULL DEFAULT 'unverified';
+ALTER TABLE knowledge.ingestion_proposals
+    ADD COLUMN IF NOT EXISTS trace_id TEXT;
+ALTER TABLE knowledge.ingestion_proposals
+    ADD COLUMN IF NOT EXISTS ingestion_job_id TEXT;
+ALTER TABLE knowledge.ingestion_proposals
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
+
 CREATE INDEX IF NOT EXISTS ingestion_proposals_status_idx
     ON knowledge.ingestion_proposals (approval_status, created_at DESC);
 

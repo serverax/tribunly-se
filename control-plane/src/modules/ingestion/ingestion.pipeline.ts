@@ -18,11 +18,19 @@ export class IngestionPipeline implements OnModuleDestroy {
 
   constructor(private readonly redis: RedisService) {}
 
+  private bullConnection(): { host: string; port: number; password?: string } {
+    const url = new URL(this.cfg.REDIS_URL);
+    return {
+      host: url.hostname,
+      port: Number(url.port || 6379),
+      password: url.password || undefined,
+    };
+  }
+
   private async getQueue(): Promise<Queue> {
     if (!this.queue) {
-      await this.redis.connect();
       this.queue = new Queue(this.cfg.INGESTION_QUEUE_NAME, {
-        connection: this.redis.getClient().duplicate(),
+        connection: this.bullConnection(),
       });
     }
     return this.queue;

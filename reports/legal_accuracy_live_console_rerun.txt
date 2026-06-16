@@ -1,0 +1,23 @@
+Local inference unavailable (timed out) ù returning MODEL_UNAVAILABLE
+Local inference unavailable (timed out) ù returning MODEL_UNAVAILABLE
+======================================================================
+LAWAPP ÔÇö LEGAL ACCURACY REGRESSION SUITE
+======================================================================
+Model profile: live Ollama
+
+Grounded case:
+  status:              ok
+  claim_type:          unfair_dismissal
+  citations:           8
+  grounding_score:     1.0
+  confidence_score:    0.95
+  deadline_info:       {"limitation_date": "2026-06-14", "source": "rules", "authority": "ERA 1996 s.111(2)", "ec_applied": false, "base_limit": "2026-06-14", "notes": "3-month-less-1-day rule: 3 months from EDT 2026-03-15 = anniversary 2026-06-15, deadline 2026-06-14.", "deadline_passed": true, "days_remaining": -2, "urgency_level": "expired", "deadline_warning": "\u26a0 This deadline appears to have PASSED (2 days ago, on 2026-06-14). Out-of-time claims are only accepted in limited circumstances \u2014 seek advice from ACAS or a solicitor IMMEDIATELY if you still wish to claim."}
+  recommended_next:    free_diagnosis_only
+
+Refusal case:
+  status:              not_supported
+  matter_type:         out_of_scope
+  message:             This service currently handles unfair dismissal claims in England and Wales only. Your query doesn't match that scope. Please seek advice appropriate to your situation.
+
+PASS: LIVE LEGAL ACCURACY GATE PASSED
+======================================================================

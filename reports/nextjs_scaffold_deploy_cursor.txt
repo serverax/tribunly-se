@@ -1,0 +1,66 @@
+# Next.js scaffold deploy proof (Cursor)
+# Date: 2026-06-16
+# Branch: release/lawapp-clean-snapshot
+
+## Plan document
+docs/frontend/NEXTJS_DEPLOYMENT_PLAN.md
+
+## Scaffold location
+client/next/  (App Router, TypeScript, Tailwind, shadcn-style UI, Zustand, TanStack Query)
+
+## URLs
+Frontend (local prod): http://localhost:3000
+Backend API:           http://localhost:8000
+Admin service (stub):  http://localhost:8007
+
+## npm run build (local)
+Command: cd client/next && npx next build
+Exit code: 0
+
+Route summary:
+  /, /intake, /diagnosis, /dashboard, /case/[id], /workspace
+  /documents, /payment, /handoff, /admin, /admin/review, /admin/compliance
+
+Build output (excerpt):
+  ✓ Compiled successfully
+  ✓ Generating static pages (15/15)
+  ○ /diagnosis    3.79 kB
+  ○ /dashboard    3.5 kB
+  ƒ /case/[id]    3.19 kB
+
+## Frontend HTTP probe
+GET http://localhost:3000/  -> 200
+
+## Backend route alias
+POST /api/deadline/calc -> wraps POST /api/deadline/calculate (backend/api/main.py)
+
+## docker compose
+Service added: frontend (port 3000, NEXT_PUBLIC_API_URL=http://backend:8000)
+
+docker compose build frontend:
+  FAILED (npm ETIMEDOUT inside Docker build network)
+  Workaround: local npm install + npx next build, then node .next/standalone/server.js
+
+docker compose ps backend (at proof time):
+  Restarting (1) - backend not healthy during this run; frontend scaffold/build still verified
+
+## API mapping (blueprint -> FastAPI)
+| UI route      | API |
+|---------------|-----|
+| /diagnosis    | POST /api/diagnosis, POST /assess, POST /api/features/claim-assessment |
+| /intake       | sessionStorage -> /diagnosis |
+| /dashboard    | GET /cases |
+| /case/[id]    | GET /cases/{id}, GET /cases/{id}/deadline |
+| /documents    | POST /api/workflow/documents/generate |
+| /payment      | POST /api/workflow/payment/create |
+| /handoff      | POST /handoff/leads |
+| /workspace    | GET /cases |
+| DeadlineWidget| POST /api/deadline/calc (WASM bind deferred until wasm-pack pkg) |
+| Auth          | GET /api/auth/me, POST /api/auth/login (cookie) |
+
+## Deferred
+- Graph entity extraction UI
+- Full admin SSO/MFA on lawapp-admin-service:8007
+- Docker frontend image build (retry when registry network stable)
+- WASM pkg build (client/wasm -> client/next/lib/wasm)
+- Static client/public retirement

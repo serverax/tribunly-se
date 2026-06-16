@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import { loadConfig } from '../core/config';
-import { GraphService } from '../db/graph.service';
-import { PostgresService } from '../db/postgres.service';
-import { RedisService } from '../db/redis.service';
-import { LlmRouter } from '../llm/llm.router';
+import { loadConfig } from './core/config';
+import { GraphService } from './db/graph.service';
+import { PostgresService } from './db/postgres.service';
+import { RedisService } from './db/redis.service';
+import { LlmRouter } from './llm/llm.router';
 
 @Controller('health')
 export class HealthController {

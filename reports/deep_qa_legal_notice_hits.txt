@@ -1,0 +1,131 @@
+client/public/design-preview.html:327:        <strong>Not a law firm. Not legal advice.</strong>
+client/public/design-preview.html:361:          <div class="label">ERA 1996 s.111(2)  -  ACAS Early Conciliation required first</div>
+client/public/design-preview.html:380:        <li>Employer will argue that a fair procedure was followed under the ACAS Code of Practice.</li>
+client/public/design-preview.html:401:          <div class="step-text">File ACAS Early Conciliation before your deadline</div>
+client/public/index.html:28:  <strong>Not a law firm. Not legal advice.</strong>
+client/public/index.html:146:        <p>Work out your exact tribunal time limit  -  including the ACAS early-conciliation pause.</p>
+client/public/index.html:163:        <h3>ACAS prep</h3>
+client/public/index.html:164:        <p>Understand ACAS early conciliation and what to do before you can make a tribunal claim.</p>
+client/public/index.html:165:        <span class="tool-card-cta"><a href="/pages/acas-prep.html">Prepare for ACAS</a></span>
+client/public/index.html:202:          <li>We're not a law firm and don't give regulated legal advice.</li>
+client/public/index.html:233:          <li>Your exact tribunal deadline</li>
+client/public/index.html:281:        <div class="faq-answer">No. We're a guide, not a law firm, and we don't provide regulated legal advice. We help you understand your rights and prepare self-help documents, grounded in real UK law. For advice on your specific case, you can speak to a qualified solicitor.</div>
+client/public/index.html:317:  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+client/public/pages/acas-prep.html:6:  <title>ACAS prep  -  lawapp</title>
+client/public/pages/acas-prep.html:7:  <meta name="description" content="Prepare for ACAS Early Conciliation  -  the mandatory step before most employment tribunal claims. Deterministic checklist grounded in real UK law.">
+client/public/pages/acas-prep.html:15:  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+client/public/pages/acas-prep.html:31:    <span class="eyebrow">Free tool · ACAS prep</span>
+client/public/pages/acas-prep.html:32:    <h1>Getting ready for ACAS</h1>
+client/public/pages/acas-prep.html:33:    <p>Before most employment tribunal claims, you must notify ACAS and go through Early Conciliation. Tell us about your situation and we'll give you a clear checklist of what to do and gather.</p>
+client/public/pages/acas-prep.html:37:    <form id="acasForm" class="form-section" novalidate>
+client/public/pages/acas-prep.html:40:        <textarea id="case_summary" rows="5" placeholder="For example: I was dismissed after raising a grievance about unpaid wages. I want to challenge it but haven't contacted ACAS yet." required></textarea>
+client/public/pages/acas-prep.html:55:          <h2>Your ACAS checklist</h2>
+client/public/pages/acas-prep.html:61:            <ol class="steps" id="acas-steps" style="max-width:none;"></ol>
+client/public/pages/acas-prep.html:66:            <ul class="employer-list" id="acas-docs"></ul>
+client/public/pages/acas-prep.html:72:              <div class="step-text">Check your tribunal deadline with the <a href="/pages/deadline.html">deadline calculator</a>  -  the ACAS pause changes the final date.</div>
+client/public/pages/acas-prep.html:78:            <ul class="citation-list"><li id="acas-authority"></li></ul>
+client/public/pages/acas-prep.html:85:          <strong>Save your progress and track your ACAS dates</strong>
+client/public/pages/acas-prep.html:95:  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+client/public/pages/acas-prep.html:103:  var form = document.getElementById("acasForm");
+client/public/pages/acas-prep.html:110:    var steps = document.getElementById("acas-steps");
+client/public/pages/acas-prep.html:122:    var docs = document.getElementById("acas-docs");
+client/public/pages/acas-prep.html:128:    document.getElementById("acas-authority").textContent =
+client/public/pages/acas-prep.html:129:      data.authority || "Employment Tribunals Act 1996 s.18A; ACAS Early Conciliation";
+client/public/pages/acas-prep.html:146:      var data = await LAWAPP_API.toolsAcasPrep(summary);
+client/public/pages/acas-prep.html:165:  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict  -  verify dates with ACAS or a qualified adviser before relying on them.</p>
+client/public/pages/assessment.html:14:  <strong>Not a law firm. Not legal advice.</strong>
+client/public/pages/assessment.html:44:  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+client/public/pages/assessment.html:276:    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. All legal points are cited to statutory or tribunal authority. Outputs are not guaranteed and should not be relied upon as a substitute for legal advice.';
+client/public/pages/assessment.html:476:    label.textContent = passed ? 'Tribunal deadline  -  PASSED' : 'Tribunal deadline';
+client/public/pages/assessment.html:520:    p.textContent = 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
+client/public/pages/assessment.html:536:    if (dl.base_limit) rows.push(['Base limit (before ACAS)', dl.base_limit]);
+client/public/pages/assessment.html:538:      if (dl.pause_days != null) rows.push(['ACAS EC stop-clock', `+${dl.pause_days} days`]);
+client/public/pages/assessment.html:542:      rows.push(['ACAS EC stop-clock', 'not applied (no EC dates supplied)']);
+client/public/pages/assessment.html:687:      'prepare_documents':   {label: 'Prepare your claim documents', desc: 'Your case appears viable. The next step is to start ACAS Early Conciliation and prepare your ET1 particulars.'},
+client/public/pages/assessment.html:721:    h3.textContent = 'Self-help draft documents';
+client/public/pages/assessment.html:727:    pIntro.textContent = 'Generate a draft Particulars of Claim or Schedule of Loss based on your assessment. These are self-help drafts  -  not legal advice. Review and verify before use. lawapp does not file or represent you.';
+client/public/pages/assessment.html:830:    strong.textContent = 'Self-help draft  -  NOT legal advice. ';
+client/public/pages/cancel.html:12:  <strong>Not a law firm. Not legal advice.</strong>
+client/public/pages/cancel.html:30:  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+client/public/pages/case_detail.html:12:  <strong>Not a law firm. Not legal advice.</strong>
+client/public/pages/case_detail.html:43:  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+client/public/pages/case_detail.html:196:    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. This saved case is information only. No outcome is guaranteed. lawapp does not file claims, submit forms, or represent you.';
+client/public/pages/case_detail.html:273:    label.textContent = 'Tribunal deadline';
+client/public/pages/case_detail.html:314:      : 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
+client/public/pages/case_detail.html:537:      employment_started: '🏢', dismissal: '⚖️', acas_day_a: '📋', acas_day_b: '✅',
+client/public/pages/case_detail.html:556:    p2.textContent = 'Not a law firm. Not legal advice. lawapp does not manage litigation.';
+client/public/pages/case_detail.html:639:    p1.textContent = 'Witness statement structure, chronology, evidence checklist, and ET1 support notes. lawapp does not file or submit documents on your behalf. Not legal advice.';
+client/public/pages/claim-checker.html:15:  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+client/public/pages/claim-checker.html:103:  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+client/public/pages/claim-checker.html:188:  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict  -  verify dates with ACAS or a qualified adviser before relying on them.</p>
+client/public/pages/compensation.html:15:  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+client/public/pages/compensation.html:99:  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+client/public/pages/compensation.html:183:  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict  -  verify dates with ACAS or a qualified adviser before relying on them.</p>
+client/public/pages/constructive_dismissal.html:28:    <p class="boundary">Self-help triage only. lawapp is not a solicitor and does not guarantee any outcome.</p>
+client/public/pages/dashboard.html:36:  <strong>Not a law firm. Not legal advice.</strong>
+client/public/pages/dashboard.html:75:  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+client/public/pages/deadline.html:15:  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+client/public/pages/deadline.html:32:    <h1>When is my tribunal deadline?</h1>
+client/public/pages/deadline.html:70:          <div class="label">Your base tribunal deadline</div>
+client/public/pages/deadline.html:96:          <span>Log in and we'll track it, apply the ACAS pause, and remind you before it runs out.</span>
+client/public/pages/deadline.html:106:  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+client/public/pages/deadline.html:156:    cal.appendChild(calRow(data.deadline, "Base tribunal deadline", "  -  claim must be submitted by this date", "is-deadline"));
+client/public/pages/deadline.html:169:    var p = document.createElement("p"); p.textContent = data.note || "This is the base limitation date. The ACAS Early Conciliation stop-clock can extend it  -  check before you rely on this date.";
+client/public/pages/deadline.html:217:  <p class="boundary" style="margin:24px auto;max-width:720px;font-size:13px;color:#555;">This tool provides legal information, not legal advice, and does not create a solicitor–client relationship. Tribunal deadlines are strict  -  verify dates with ACAS or a qualified adviser before relying on them.</p>
+client/public/pages/intake.html:26:    .acas-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+client/public/pages/intake.html:27:    .acas-section h4 { margin: 0 0 0.75rem; color: var(--primary); font-size: 0.95rem; }
+client/public/pages/intake.html:28:    .acas-toggle { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.9rem; }
+client/public/pages/intake.html:29:    .acas-dates { transition: opacity 0.2s; }
+client/public/pages/intake.html:30:    .acas-dates.hidden { opacity: 0.4; pointer-events: none; }
+client/public/pages/intake.html:44:  <strong>Not a law firm. Not legal advice.</strong> This tool provides information only.
+client/public/pages/intake.html:83:    <!-- ─── Step 2: Dates, ACAS, Reason ───────────────────────────────── -->
+client/public/pages/intake.html:113:        <!-- ACAS Early Conciliation section -->
+client/public/pages/intake.html:114:        <div class="acas-section">
+client/public/pages/intake.html:115:          <h4>ACAS Early Conciliation</h4>
+client/public/pages/intake.html:117:            ACAS Early Conciliation (EC) is <strong>mandatory</strong> before making an Employment Tribunal claim.
+client/public/pages/intake.html:118:            Contacting ACAS pauses your limitation period. You can still proceed even if you haven't started yet.
+client/public/pages/intake.html:121:          <div class="acas-toggle">
+client/public/pages/intake.html:122:            <input type="checkbox" id="acas_not_started" name="acas_not_started" onchange="toggleAcasDates()">
+client/public/pages/intake.html:123:            <label for="acas_not_started" style="font-weight:normal;margin-bottom:0;">I haven't contacted ACAS yet</label>
+client/public/pages/intake.html:126:          <div class="acas-dates" id="acas-dates-panel">
+client/public/pages/intake.html:129:                <label for="ec_day_a">ACAS Day A (contact date)</label>
+client/public/pages/intake.html:130:                <input type="date" id="ec_day_a" name="ec_day_a" aria-describedby="err-ec-a" oninput="validateAcasDates(); updateDeadlinePreview()">
+client/public/pages/intake.html:131:                <p class="field-hint">Date you first contacted ACAS / received your EC certificate reference.</p>
+client/public/pages/intake.html:135:                <label for="ec_day_b">ACAS Day B (certificate date)</label>
+client/public/pages/intake.html:136:                <input type="date" id="ec_day_b" name="ec_day_b" aria-describedby="err-ec-b" oninput="validateAcasDates(); updateDeadlinePreview()">
+client/public/pages/intake.html:137:                <p class="field-hint">Date on your ACAS Early Conciliation certificate. Leave blank if not yet received.</p>
+client/public/pages/intake.html:146:          <h4>⏱ Estimated tribunal deadline</h4>
+client/public/pages/intake.html:151:            Based on rules from ERA 1996 s.111(2). This is indicative only  -  verify with ACAS or a solicitor.
+client/public/pages/intake.html:166:        <p class="field-hint" style="margin-bottom:1rem;">Employers must follow a fair procedure (ACAS Code of Practice). These answers affect your assessment.</p>
+client/public/pages/intake.html:261:  <p>lawapp is not a law firm and does not provide legal advice. All assessments are for information only.</p>
+client/public/pages/intake.html:273:  const labels = ['Claim type', 'Dates & ACAS', 'Procedure', 'Pay'];
+client/public/pages/intake.html:303:  // ── ACAS dates toggle ────────────────────────────────────────────────────
+client/public/pages/intake.html:304:  function toggleAcasDates() {
+client/public/pages/intake.html:305:    const notStarted = document.getElementById('acas_not_started').checked;
+client/public/pages/intake.html:306:    const panel = document.getElementById('acas-dates-panel');
+client/public/pages/intake.html:315:  // ── ACAS date validation ─────────────────────────────────────────────────
+client/public/pages/intake.html:316:  function validateAcasDates() {
+client/public/pages/intake.html:364:    if (!validateAcasDates()) ok = false;
+client/public/pages/intake.html:374:    const notStarted = document.getElementById('acas_not_started').checked;
+client/public/pages/intake.html:400:      note = 'Deadline within one week. Contact ACAS immediately if you have not done so.';
+client/public/pages/intake.html:403:      note = 'You should contact ACAS early conciliation soon to protect your deadline.';
+client/public/pages/intake.html:407:        ? `ACAS pause applied: ${result.pause_days || 0} extra days added.${result.floor_applied ? ' EC floor rule applied.' : ''}`
+client/public/pages/intake.html:408:        : 'Contact ACAS before this date to start early conciliation.';
+client/public/pages/intake.html:437:    const notStarted = document.getElementById('acas_not_started').checked;
+client/public/pages/intake.html:451:      acas_not_started:       notStarted,
+client/public/pages/intake.html:454:    // Only include ACAS dates if not skipped
+client/public/pages/login.html:14:  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+client/public/pages/login.html:78:  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+client/public/pages/onboarding.html:47:  <strong>Not a law firm. Not legal advice.</strong>
+client/public/pages/onboarding.html:171:  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
+client/public/pages/register.html:14:  <strong>We're a guide, not a law firm.</strong> Information, not regulated legal advice.
+client/public/pages/register.html:68:  <p>lawapp is not a law firm and does not provide regulated legal advice. All documents are self-help drafts.</p>
+client/public/pages/saved_case.html:12:  <strong>Not a law firm. Not legal advice.</strong>
+client/public/pages/saved_case.html:177:    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. This saved case is information only. No outcome is guaranteed. lawapp does not file claims, submit forms, or represent you.';
+client/public/pages/saved_case.html:214:    label.textContent = 'Tribunal deadline';
+client/public/pages/saved_case.html:255:      : 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
+client/public/pages/saved_case.html:436:      employment_started: '🏢', dismissal: '⚖️', acas_day_a: '📋', acas_day_b: '✅',
+client/public/pages/saved_case.html:455:    p2.textContent = 'Not a law firm. Not legal advice. lawapp does not manage litigation.';
+client/public/pages/saved_case.html:538:    p1.textContent = 'Witness statement structure, chronology, evidence checklist, and ET1 support notes. lawapp does not file or submit documents on your behalf. Not legal advice.';
+client/public/pages/success.html:12:  <strong>Not a law firm. Not legal advice.</strong>
+client/public/pages/success.html:30:  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>

@@ -1,0 +1,59 @@
+
+=== 1. Health check ===
+  PASS /health → 200
+  PASS DB connected
+
+=== 2. Rules API ===
+  PASS /rules/unfair_dismissal → 200
+  PASS time_limit_months=3 from DB
+
+=== 3. Register User A ===
+  PASS User A registered (smoke_a_1781276687@lawapp-smoke.local)
+
+=== 4. Login User A ===
+  PASS User A JWT token received
+
+=== 5. Auth /me ===
+  PASS /auth/me → 200
+
+=== 6. Assessment (10 months  -  deterministic QP fail) ===
+  PASS Assessment status=ok
+  PASS has_viable_claim=no (QP fails  -  correct)
+  PASS Assessment has 8 citations
+
+=== 7. Deadline calculate ===
+  PASS Deadline calculated: 2026-05-31
+  PASS Deadline source=rules
+
+=== 8. Save case ===
+  PASS Case saved: 5c0825a1-b31e-49...
+
+=== 9. Case ownership ===
+  PASS User A reads own case → 200
+
+=== 10. User isolation ===
+  PASS User B blocked on User A case → 403
+
+=== 11. Payment session (legacy shim, payment-gated) ===
+  PASS Legacy session blocks: payment_required=true
+  PASS No raw unlock token issued (DB-backed paid access only)
+
+=== 12. Document generation (unpaid preview only) ===
+  PASS Unpaid generation preview-gated (payment_required=true)
+
+=== 13. Dashboard ===
+  PASS GET /cases → 200
+
+=== 14. Brain trace (>=19 steps) ===
+  PASS Brain trace: 23 steps (>=19 governed stages)
+  PASS Safety policy passed
+
+=== 15. Handoff/referral ===
+  PASS /handoff/leads → 201
+
+=== 16. Sources freshness ===
+  PASS /freshness → 200
+
+════════════════════════════════════════
+lawapp Smoke Journey: 23 PASS / 0 FAIL
+════════════════════════════════════════

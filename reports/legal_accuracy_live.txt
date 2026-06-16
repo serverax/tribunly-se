@@ -1,0 +1,28 @@
+GATE 2  -  Live legal accuracy (Ollama)  -  2026-06-16 @ c295e3c
+================================================================
+
+VERDICT: FAIL (live Ollama generative path not proven)
+
+Script exit code: 0 (run_legal_accuracy.py --live reports PASS)
+Model: qwen2.5:3b @ http://127.0.0.1:11434
+LAWAPP_OLLAMA_MODEL=qwen2.5:3b (corrected from default qwen2.5-3b-instruct which 404s)
+
+Evidence:
+- Ollama reachable: GET /api/tags → 200
+- POST /v1/chat/completions with qwen2.5:3b → 200 (smoke curl, ~13s)
+- Pipeline assess() with LocalInferenceReasoningModel:
+  * Local inference unavailable (timed out)  -  returning MODEL_UNAVAILABLE (x2)
+  * fallback_used=True, source=rules_table (deterministic/CitationGuard fallback)
+  * grounding_score=1.0, citations=8 (from rules retrieval, NOT live model output)
+
+Grounded case (deterministic fallback):
+  status=ok, claim_type=unfair_dismissal, citations=8
+  deadline source=rules, authority=ERA 1996 s.111(2)
+
+Refusal case:
+  status=not_supported (landlord deposit  -  correct scope refusal)
+
+Answers appear grounded (rules-backed) but NOT from live Ollama inference.
+P0-002, P0-003, P0-008 remain OPEN  -  CPU Ollama exceeds 60s timeout on full prompt.
+
+Console log: reports/legal_accuracy_live_console_rerun.txt

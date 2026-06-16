@@ -1,0 +1,8 @@
+=== legacy/canonical unauth probes (valid bodies) 2026-06-12T09:44:07Z ===
+GET /api/payment/status -> 401
+POST /api/payment/create-session -> 401
+POST /documents/generate -> 401
+GET /api/documents/x/download -> 401
+POST /api/payments/create-session -> 401
+POST /api/documents/generate -> 401
+POST /api/payment/webhook (unsigned) -> 503

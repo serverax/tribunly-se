@@ -138,3 +138,7 @@ pytest tests/test_graph_rag_hybrid.py -q
 ```
 
 Evidence report: `reports/graph_rag_layer_v1_cursor.txt`
+
+## Architecture invariant (non-negotiable)
+
+Graph RAG = retrieval only. Neo4j = optional read-only behind `retrieve_hybrid()`. `brain.py` is the sole reasoning runtime.

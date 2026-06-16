@@ -1,0 +1,36 @@
+---
+description: LawApp core context and architectural invariants
+alwaysApply: true
+---
+
+# LawApp - Core Context
+
+UK employment-law AI platform. The server databases are the first line of every
+answer. The LLM is a gated feeder that proposes content for verification before
+it reaches the authoritative store. Local Ollama is the default model; no
+external LLM on legal paths.
+
+Stack: FastAPI backend; Postgres (corpus + pgvector) and operational Postgres;
+Redis; service mesh on ports 8000 (monolith + UI), 8016 rules, 8017 RAG,
+8018 graph-RAG, 8019 redaction, 8020 audit, 8007 admin, 8008 case, 8009 notify.
+Graph layer is Postgres (`legal_nodes` / `legal_edges`), not Neo4j.
+
+Fixed Kubernetes namespaces, never invent new ones:
+`lawapp-api`, `lawapp-rag`, `lawapp-ai`, `lawapp-security`, `lawapp-monitoring`.
+
+Invariants, never violate:
+- The legal entity table is `matter`, not `case` (reserved word). `matter`
+  bridges and replaces the legacy `cases` over time; do not keep dual tables
+  synced forever.
+- Provisions are temporally versioned. Every legal query filters by an as-at date.
+- Every served answer or document carries a source citation and a
+  verified / unverified badge.
+- 16 canonical modules plus a subtopic / tag layer. Map the 24 `employment_modules`
+  keys onto them; do not destructively replace and do not add modules without
+  instruction.
+- Coverage shown to users is honest and human ("Ready to read" / "Coming soon"),
+  never internal states ("production" / "partial") and never "0 corpus excerpts".
+  Do not claim 16-module coverage while the beta is 11 topics.
+
+Authoritative specs live in `/docs`. Read them before large changes.
+Style: hyphens, not em dashes, everywhere.

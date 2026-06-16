@@ -1,0 +1,21 @@
+======================================================================
+LAWAPP ÔÇö LEGAL ACCURACY REGRESSION SUITE
+======================================================================
+Running deterministic fact-pattern checks (StubReasoningModel)...
+
+Grounded case:
+  status:              ok
+  claim_type:          unfair_dismissal
+  citations:           8
+  grounding_score:     1.0
+  confidence_score:    0.95
+  deadline_info:       {'limitation_date': '2026-06-14', 'source': 'rules', 'authority': 'ERA 1996 s.111(2)', 'ec_applied': False, 'base_limit': '2026-06-14', 'notes': '3-month-less-1-day rule: 3 months from EDT 2026-03-15 = anniversary 2026-06-15, deadline 2026-06-14.', 'deadline_passed': False, 'days_remaining': 0, 'urgency_level': 'critical', 'deadline_warning': 'ÔÜá URGENT: only 0 day(s) left until the deadline on 2026-06-14. You must notify ACAS (Early Conciliation) before a tribunal claim ÔÇö act now.'}
+  recommended_next:    free_diagnosis_only
+
+Refusal case:
+  status:              not_supported
+  matter_type:         out_of_scope
+  message:             This service currently handles unfair dismissal claims in England and Wales only. Your query doesn't match that scope. Please seek advice appropriate to your situation.
+
+PASS: LEGAL ACCURACY GATE PASSED
+======================================================================

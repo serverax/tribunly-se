@@ -1,0 +1,15 @@
+SSH config housekeeping — 2026-06-16
+
+File: C:/Users/kalsh/.ssh/config
+
+Changes:
+- Added `Host github.com` block with `IdentityFile ~/.ssh/id_ed25519_github` (tilde form).
+- Set `IdentitiesOnly yes` for GitHub host.
+- Existing deploy hosts (138.201.253.245, ordinox-master) unchanged.
+
+No private keys printed.
+
+Verification:
+  ssh -G github.com | findstr identityfile
+
+Expected: identityfile ~/.ssh/id_ed25519_github

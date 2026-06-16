@@ -1,0 +1,414 @@
+go_live_mode=beta
+
+## schema readiness
+LAWAPP SCHEMA READINESS PROOF
+
+PASS: audit_events required columns present
+PASS: auth_sessions required columns present
+PASS: auth_tokens required columns present
+PASS: cases required columns present
+PASS: documents required columns present
+PASS: employment_modules required columns present
+PASS: payment_events required columns present
+PASS: payment_sessions required columns present
+PASS: rules required columns present
+PASS: users required columns present
+PASS: employment_modules has 24 rows
+INFO: _migrations rows: 62
+
+SCHEMA READINESS: PASS
+NAME                                   IMAGE                                                                     COMMAND                  SERVICE                       CREATED         STATUS                   PORTS
+lawapp-backend-1                       lawapp-backend                                                            "bash /app/scripts/b…"   backend                       2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+lawapp-db-1                            pgvector/pgvector:pg16                                                    "docker-entrypoint.s…"   db                            5 days ago      Up 26 hours (healthy)    0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp, 0.0.0.0:5435->5432/tcp, [::]:5435->5432/tcp
+lawapp-lawapp-admin-service-1          lawapp-lawapp-admin-service                                               "uvicorn main:app --…"   lawapp-admin-service          5 days ago      Up 26 hours (healthy)    0.0.0.0:8007->8007/tcp, [::]:8007->8007/tcp
+lawapp-lawapp-audit-service-1          lawapp-lawapp-audit-service                                               "python main.py"         lawapp-audit-service          5 days ago      Up 26 hours (healthy)    0.0.0.0:8020->8020/tcp, [::]:8020->8020/tcp
+lawapp-lawapp-case-service-1           lawapp-lawapp-case-service                                                "uvicorn main:app --…"   lawapp-case-service           5 days ago      Up 26 hours (healthy)    0.0.0.0:8008->8008/tcp, [::]:8008->8008/tcp
+lawapp-lawapp-graph-rag-service-1      sha256:25759a492721575386dafc69f9ff047575729fb84f095da486381e55ec50b463   "python -m uvicorn m…"   lawapp-graph-rag-service      5 days ago      Up 26 hours (healthy)    0.0.0.0:8018->8018/tcp, [::]:8018->8018/tcp
+lawapp-lawapp-notification-service-1   lawapp-lawapp-notification-service                                        "uvicorn main:app --…"   lawapp-notification-service   5 days ago      Up 26 hours (healthy)    0.0.0.0:8009->8009/tcp, [::]:8009->8009/tcp
+lawapp-lawapp-rag-service-1            lawapp-lawapp-rag-service                                                 "python -m uvicorn m…"   lawapp-rag-service            2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8017->8017/tcp, [::]:8017->8017/tcp
+lawapp-lawapp-redaction-service-1      lawapp-lawapp-redaction-service                                           "python main.py"         lawapp-redaction-service      5 days ago      Up 26 hours (healthy)    0.0.0.0:8019->8019/tcp, [::]:8019->8019/tcp
+lawapp-lawapp-rules-service-1          lawapp-lawapp-rules-service                                               "python main.py"         lawapp-rules-service          5 days ago      Up 26 hours (healthy)    0.0.0.0:8016->8016/tcp, [::]:8016->8016/tcp
+lawapp-outbox-worker-1                 lawapp-outbox-worker                                                      "python -m backend.c…"   outbox-worker                 4 days ago      Up 26 hours (healthy)    8000/tcp
+lawapp-redis-1                         redis:7-alpine                                                            "docker-entrypoint.s…"   redis                         5 days ago      Up 26 hours (healthy)    0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+
+## tables
+                  List of relations
+ Schema |            Name            | Type  | Owner  
+--------+----------------------------+-------+--------
+ public | _migrations                | table | lawapp
+ public | acas_guidance              | table | lawapp
+ public | agent_artifacts            | table | lawapp
+ public | agent_escalations          | table | lawapp
+ public | agent_runs                 | table | lawapp
+ public | agent_validation_failures  | table | lawapp
+ public | api_route_registry         | table | lawapp
+ public | assessment_audit_logs      | table | lawapp
+ public | audit_events               | table | lawapp
+ public | auth_events                | table | lawapp
+ public | auth_sessions              | table | lawapp
+ public | auth_tokens                | table | lawapp
+ public | bills                      | table | lawapp
+ public | brain_traces               | table | lawapp
+ public | bundles                    | table | lawapp
+ public | case_law                   | table | lawapp
+ public | case_law_chunks            | table | lawapp
+ public | case_law_documents         | table | lawapp
+ public | case_timeline_events       | table | lawapp
+ public | cases                      | table | lawapp
+ public | citation_guard_results     | table | lawapp
+ public | context_compression_log    | table | lawapp
+ public | conversation_events        | table | lawapp
+ public | conversion_events          | table | lawapp
+ public | corpus_chunks              | table | lawapp
+ public | corpus_ingestion_errors    | table | lawapp
+ public | corpus_ingestion_runs      | table | lawapp
+ public | cost_governor_log          | table | lawapp
+ public | deadline_calculation_audit | table | lawapp
+ public | document_diff_jobs         | table | lawapp
+ public | document_diff_results      | table | lawapp
+ public | document_facts             | table | lawapp
+ public | document_generation_audit  | table | lawapp
+ public | document_readiness         | table | lawapp
+ public | document_versions          | table | lawapp
+ public | documents                  | table | lawapp
+ public | employment_modules         | table | lawapp
+ public | evaluation_results         | table | lawapp
+ public | evidence_items             | table | lawapp
+ public | feedback_registry          | table | lawapp
+ public | form_fields                | table | lawapp
+ public | form_submissions           | table | lawapp
+ public | forms                      | table | lawapp
+ public | funnel_events              | table | lawapp
+ public | graph_edges                | table | lawapp
+ public | graph_nodes                | table | lawapp
+ public | guardrail_events           | table | lawapp
+ public | handoff_leads              | table | lawapp
+ public | human_review_queue         | table | lawapp
+ public | ingestion_runs             | table | lawapp
+ public | injection_guard_log        | table | lawapp
+ public | legal_assessments          | table | lawapp
+ public | legal_change_watch         | table | lawapp
+ public | legal_chunk_labels         | table | lawapp
+ public | legal_edges                | table | lawapp
+ public | legal_jurisdictions        | table | lawapp
+ public | legal_memory               | table | lawapp
+ public | legal_nodes                | table | lawapp
+ public | legal_retrieval_audit      | table | lawapp
+ public | legal_sources              | table | lawapp
+ public | legal_taxonomy             | table | lawapp
+ public | legislation                | table | lawapp
+ public | mcp_tool_calls             | table | lawapp
+ public | model_call_audit           | table | lawapp
+ public | oauth_identities           | table | lawapp
+ public | official_guidance          | table | lawapp
+ public | outbox_events              | table | lawapp
+ public | payment_events             | table | lawapp
+ public | payment_sessions           | table | lawapp
+ public | payments                   | table | lawapp
+ public | prompt_versions            | table | lawapp
+ public | public_datasets_index      | table | lawapp
+ public | referrals                  | table | lawapp
+ public | reminder_events            | table | lawapp
+ public | retention_runs             | table | lawapp
+ public | retrieval_audit            | table | lawapp
+ public | routing_decisions          | table | lawapp
+ public | rules                      | table | lawapp
+ public | safety_boundary_checks     | table | lawapp
+ public | semantic_cache             | table | lawapp
+ public | solicitor_reviews          | table | lawapp
+ public | support_sessions           | table | lawapp
+ public | teaser_sessions            | table | lawapp
+ public | user_feedback              | table | lawapp
+ public | user_legal_profiles        | table | lawapp
+ public | users                      | table | lawapp
+ public | wasm_calculations          | table | lawapp
+ public | workflow_runs              | table | lawapp
+ public | workflow_steps             | table | lawapp
+ public | workspace_members          | table | lawapp
+ public | workspaces                 | table | lawapp
+(91 rows)
+
+
+## pgvector extension
+ extname | extversion 
+---------+------------
+ vector  | 0.8.2
+(1 row)
+
+
+## source freshness
+  source_name  | source_type | jurisdiction_code | rows_count | rows |      oldest_verified_at       |        oldest_verified        |      newest_verified_at       | stale_rows_count | last_ingestion_status | last_ingestion_finished_at 
+---------------+-------------+-------------------+------------+------+-------------------------------+-------------------------------+-------------------------------+------------------+-----------------------+----------------------------
+ rules         | rules       | GB                |        125 |  125 | 2026-06-10 01:59:10.778843+00 | 2026-06-10 01:59:10.778843+00 | 2026-06-14 23:00:39.730444+00 |                0 |                       | 
+ legislation   | legislation | GB                |        284 |  284 | 2026-06-08 17:12:08.048904+00 | 2026-06-08 17:12:08.048904+00 | 2026-06-14 22:16:36.274638+00 |                0 |                       | 
+ acas_guidance | acas        | GB                |         37 |   37 | 2026-06-09 14:06:48.356515+00 | 2026-06-09 14:06:48.356515+00 | 2026-06-14 22:16:41.334186+00 |                0 |                       | 
+(3 rows)
+
+
+## rules
+                         rule_key                          | value_numeric |                                                                                                                                                                                                        value_text                                                                                                                                                                                                         | effective_from | effective_to 
+-----------------------------------------------------------+---------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------+--------------
+ agency_workers.equal_treatment_after_qualifying_period    |               | equal_treatment_basic_working_and_employment_conditions_after_qualifying_period                                                                                                                                                                                                                                                                                                                                           | 2011-10-01     | 
+ agency_workers.qualifying_period_weeks                    |            12 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2011-10-01     | 
+ agency_workers.tribunal_complaint_route                   |               | employment_tribunal_complaint_route                                                                                                                                                                                                                                                                                                                                                                                       | 2011-10-01     | 
+ constructive_dismissal.dismissal_definition               |               | employee_terminates_in_response_to_employer_conduct                                                                                                                                                                                                                                                                                                                                                                       | 1996-08-22     | 
+ constructive_dismissal.time_limit_months                  |             3 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ constructive_dismissal.unfair_dismissal_right_anchor      |               | right_not_to_be_unfairly_dismissed                                                                                                                                                                                                                                                                                                                                                                                        | 1996-08-22     | 
+ discrimination.direct_discrimination                      |               | less_favourable_treatment_because_of_protected_characteristic                                                                                                                                                                                                                                                                                                                                                             | 2010-10-01     | 
+ discrimination.harassment                                 |               | unwanted_conduct_related_to_relevant_protected_characteristic_or_sexual_harassment                                                                                                                                                                                                                                                                                                                                        | 2010-10-01     | 
+ discrimination.indirect_discrimination                    |               | pcp_disadvantage_and_justification_test                                                                                                                                                                                                                                                                                                                                                                                   | 2010-10-01     | 
+ discrimination.protected_characteristics                  |               | age; disability; gender reassignment; marriage and civil partnership; pregnancy and maternity; race; religion or belief; sex; sexual orientation                                                                                                                                                                                                                                                                          | 2010-10-01     | 
+ discrimination.time_limit_months                          |             3 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2010-10-01     | 
+ discrimination.tribunal_jurisdiction                      |               | employment_tribunal_part_5_work_jurisdiction                                                                                                                                                                                                                                                                                                                                                                              | 2010-10-01     | 
+ discrimination.victimisation                              |               | detriment_because_of_protected_act                                                                                                                                                                                                                                                                                                                                                                                        | 2010-10-01     | 
+ discrimination.work_context                               |               | employees_and_applicants_work_context                                                                                                                                                                                                                                                                                                                                                                                     | 2010-10-01     | 
+ employment_contracts.day_one_particulars_anchor           |             0 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2020-04-06     | 
+ employment_contracts.section_38_award_anchor              |               | additional_award_possible_where_written_statement_missing_in_qualifying_proceedings                                                                                                                                                                                                                                                                                                                                       | 2004-10-01     | 
+ employment_contracts.tribunal_reference_route             |               | employment_tribunal_reference_route                                                                                                                                                                                                                                                                                                                                                                                       | 1996-08-22     | 
+ employment_contracts.written_particulars_right            |               | worker_right_to_written_statement_of_particulars                                                                                                                                                                                                                                                                                                                                                                          | 1996-08-22     | 
+ equal_pay.equal_work                                      |               | like_work_work_rated_as_equivalent_or_work_of_equal_value                                                                                                                                                                                                                                                                                                                                                                 | 2010-10-01     | 
+ equal_pay.material_factor_defence                         |               | material_factor_defence_anchor                                                                                                                                                                                                                                                                                                                                                                                            | 2010-10-01     | 
+ equal_pay.sex_equality_clause                             |               | sex_equality_clause_implied_into_contract                                                                                                                                                                                                                                                                                                                                                                                 | 2010-10-01     | 
+ equal_pay.time_limit_months                               |             6 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2010-10-01     | 
+ equal_pay.tribunal_jurisdiction                           |               | employment_tribunal_equal_pay_jurisdiction                                                                                                                                                                                                                                                                                                                                                                                | 2010-10-01     | 
+ fixed_term_workers.less_favourable_treatment_right        |               | right_not_to_be_treated_less_favourably_than_comparable_permanent_employee                                                                                                                                                                                                                                                                                                                                                | 2002-10-01     | 
+ fixed_term_workers.objective_justification_anchor         |               | objective_justification_possible                                                                                                                                                                                                                                                                                                                                                                                          | 2002-10-01     | 
+ fixed_term_workers.successive_contracts_years             |             4 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2002-10-01     | 
+ flexible_working.consultation_required_before_refusal     |               | consultation_required_before_refusal                                                                                                                                                                                                                                                                                                                                                                                      | 2024-04-06     | 
+ flexible_working.day_one_application_right                |             0 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2024-04-06     | 
+ flexible_working.decision_period_months                   |             2 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2024-04-06     | 
+ flexible_working.max_requests_per_12_months               |             2 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2024-04-06     | 
+ flexible_working.tribunal_complaint_route                 |               | employment_tribunal_complaint_available                                                                                                                                                                                                                                                                                                                                                                                   | 2024-04-06     | 
+ health_and_safety.automatic_unfair_dismissal              |               | dismissal_for_health_and_safety_reason_automatically_unfair                                                                                                                                                                                                                                                                                                                                                               | 1996-08-22     | 
+ health_and_safety.complaint_route                         |               | employment_tribunal_complaint_route_for_detriment                                                                                                                                                                                                                                                                                                                                                                         | 1996-08-22     | 
+ health_and_safety.detriment_protection                    |               | right_not_to_suffer_health_and_safety_detriment                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ holiday_pay.additional_leave_weeks                        |           1.6 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2007-10-01     | 
+ holiday_pay.annual_leave_weeks                            |             4 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1998-10-01     | 
+ holiday_pay.termination_payment_in_lieu                   |               | payment_due_for_untaken_leave_on_termination                                                                                                                                                                                                                                                                                                                                                                              | 1998-10-01     | 
+ holiday_pay.total_annual_leave_weeks                      |           5.6 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2009-04-01     | 
+ holiday_pay.tribunal_complaint_route                      |               | employment_tribunal_complaint_available                                                                                                                                                                                                                                                                                                                                                                                   | 1998-10-01     | 
+ maternity_rights.additional_maternity_leave_anchor        |               | additional_maternity_leave_right                                                                                                                                                                                                                                                                                                                                                                                          | 1996-08-22     | 
+ maternity_rights.additional_maternity_leave_weeks         |            26 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1999-12-15     | 
+ maternity_rights.ordinary_maternity_leave_anchor          |               | ordinary_maternity_leave_right                                                                                                                                                                                                                                                                                                                                                                                            | 1996-08-22     | 
+ maternity_rights.ordinary_maternity_leave_weeks           |            26 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1999-12-15     | 
+ maternity_rights.total_maternity_leave_weeks              |            52 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1999-12-15     | 
+ national_minimum_wage.arrears_anchor                      |               | arrears_and_remuneration_due_must_be_calculated_from_current_effective_rates                                                                                                                                                                                                                                                                                                                                              | 1999-04-01     | 
+ national_minimum_wage.enforcement_notice_anchor           |               | enforcement_notice_and_appeal_routes_exist                                                                                                                                                                                                                                                                                                                                                                                | 1999-04-01     | 
+ national_minimum_wage.records_right                       |               | worker_right_to_records_access                                                                                                                                                                                                                                                                                                                                                                                            | 1999-04-01     | 
+ national_minimum_wage.worker_definition                   |               | worker_status_required                                                                                                                                                                                                                                                                                                                                                                                                    | 1999-04-01     | 
+ national_minimum_wage.worker_entitlement                  |               | worker_qualifies_for_national_minimum_wage                                                                                                                                                                                                                                                                                                                                                                                | 1999-04-01     | 
+ parental_leave.complaint_route                            |               | employment_tribunal_complaint_route                                                                                                                                                                                                                                                                                                                                                                                       | 1999-12-15     | 
+ parental_leave.day_one_reform_anchor                      |               | employment_rights_act_2025_day_one_reform_anchor                                                                                                                                                                                                                                                                                                                                                                          | 2025-12-16     | 
+ parental_leave.entitlement_anchor                         |               | parental_leave_entitlement_through_regulations                                                                                                                                                                                                                                                                                                                                                                            | 1999-12-15     | 
+ parental_leave.rights_during_after_leave                  |               | rights_during_and_after_parental_leave                                                                                                                                                                                                                                                                                                                                                                                    | 1999-12-15     | 
+ part_time_workers.complaint_route                         |               | employment_tribunal_complaint_route                                                                                                                                                                                                                                                                                                                                                                                       | 2000-07-01     | 
+ part_time_workers.less_favourable_treatment_right         |               | right_not_to_be_treated_less_favourably_than_comparable_full_time_worker                                                                                                                                                                                                                                                                                                                                                  | 2000-07-01     | 
+ part_time_workers.objective_justification_anchor          |               | objective_justification_possible                                                                                                                                                                                                                                                                                                                                                                                          | 2000-07-01     | 
+ paternity_rights.bereavement_anchor                       |               | bereavement_related_paternity_leave_amendment_anchor                                                                                                                                                                                                                                                                                                                                                                      | 2024-05-24     | 
+ paternity_rights.paternity_leave_adoption_anchor          |               | paternity_leave_adoption_entitlement                                                                                                                                                                                                                                                                                                                                                                                      | 2002-12-08     | 
+ paternity_rights.paternity_leave_birth_anchor             |               | paternity_leave_birth_entitlement                                                                                                                                                                                                                                                                                                                                                                                         | 2002-12-08     | 
+ paternity_rights.rights_during_after_leave                |               | rights_during_and_after_paternity_leave                                                                                                                                                                                                                                                                                                                                                                                   | 2002-12-08     | 
+ pregnancy_maternity_discrimination.characteristic_anchor  |               | pregnancy_and_maternity_protected_characteristic                                                                                                                                                                                                                                                                                                                                                                          | 2010-10-01     | 
+ pregnancy_maternity_discrimination.time_limit_months      |             3 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2010-10-01     | 
+ pregnancy_maternity_discrimination.tribunal_jurisdiction  |               | employment_tribunal_part_5_work_jurisdiction                                                                                                                                                                                                                                                                                                                                                                              | 2010-10-01     | 
+ pregnancy_maternity_discrimination.unfavourable_treatment |               | unfavourable_treatment_because_of_pregnancy_maternity_leave_or_related_illness                                                                                                                                                                                                                                                                                                                                            | 2010-10-01     | 
+ pregnancy_maternity_discrimination.work_context           |               | employees_and_applicants_work_context                                                                                                                                                                                                                                                                                                                                                                                     | 2010-10-01     | 
+ redundancy.definition                                     |               | Redundancy covers closure of business/workplace or reduced requirements for employees to do work of a particular kind.                                                                                                                                                                                                                                                                                                    | 1996-08-22     | 
+ redundancy.max_years_counted                              |            20 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ redundancy.multiplier_22_to_40                            |             1 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ redundancy.multiplier_41_plus                             |           1.5 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ redundancy.multiplier_under_22                            |           0.5 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ redundancy.payment_formula                                |               | Statutory redundancy payment is calculated by complete years of service with age bands: 0.5 week under 22, 1 week aged 22-40, 1.5 weeks aged 41+, subject to statutory limits.                                                                                                                                                                                                                                            | 1996-08-22     | 
+ redundancy.payment_right                                  |               | An employer must pay a redundancy payment where the statutory conditions are met, including dismissal by reason of redundancy.                                                                                                                                                                                                                                                                                            | 1996-08-22     | 
+ redundancy.qualifying_period_years                        |             2 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ redundancy.time_limit_months                              |             6 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ redundancy.weeks_pay_cap_amount                           |           700 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2024-04-06     | 2025-04-05
+ redundancy.weeks_pay_cap_amount                           |           719 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2025-04-06     | 2026-04-05
+ redundancy.weeks_pay_cap_amount                           |           751 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2026-04-06     | 
+ shared_parental_leave.adoption_anchor                     |               | shared_parental_leave_adoption_entitlement                                                                                                                                                                                                                                                                                                                                                                                | 2014-12-01     | 
+ shared_parental_leave.birth_anchor                        |               | shared_parental_leave_birth_entitlement                                                                                                                                                                                                                                                                                                                                                                                   | 2014-12-01     | 
+ shared_parental_leave.regulation_power_anchor             |               | children_and_families_act_2014_shared_parental_leave_framework                                                                                                                                                                                                                                                                                                                                                            | 2014-03-13     | 
+ trade_union_rights.automatic_unfair_dismissal             |               | dismissal_for_trade_union_membership_or_activities_automatically_unfair                                                                                                                                                                                                                                                                                                                                                   | 1992-10-16     | 
+ trade_union_rights.detriment_protection                   |               | right_not_to_suffer_detriment_for_trade_union_membership_or_activities                                                                                                                                                                                                                                                                                                                                                    | 1992-10-16     | 
+ trade_union_rights.time_off_duties                        |               | reasonable_time_off_for_trade_union_duties                                                                                                                                                                                                                                                                                                                                                                                | 1992-10-16     | 
+ tupe.automatic_transfer_anchor                            |               | contracts_transfer_to_transferee                                                                                                                                                                                                                                                                                                                                                                                          | 2006-04-06     | 
+ tupe.dismissal_anchor                                     |               | dismissal_connected_to_transfer_anchor                                                                                                                                                                                                                                                                                                                                                                                    | 2006-04-06     | 
+ tupe.information_consultation_anchor                      |               | information_and_consultation_duties_anchor                                                                                                                                                                                                                                                                                                                                                                                | 2006-04-06     | 
+ tupe.relevant_transfer_anchor                             |               | relevant_transfer_scope_anchor                                                                                                                                                                                                                                                                                                                                                                                            | 2006-04-06     | 
+ unfair_dismissal.acas_code_adjustment_percent             |            25 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2009-04-06     | 
+ unfair_dismissal.basic_award_formula                      |               | Per complete year of service (max 20 years): 1.5 x week's pay for each year while aged 41+; 1.0 x week's pay for each year while aged 22-40; 0.5 x week's pay for each year while under 22. Week's pay capped at weeks_pay_cap_amount (s.227). Computed in application code. Do not hard-code the cap value. NOTE: s.227 cap applies to the basic award; it does NOT apply to the 52-week Limb B in the compensatory cap. | 1996-08-22     | 
+ unfair_dismissal.basic_award_min_automatic                |          9157 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2026-04-06     | 
+ unfair_dismissal.compensatory_cap_amount                  |        115115 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2024-04-06     | 2025-04-05
+ unfair_dismissal.compensatory_cap_amount                  |        118223 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2025-04-06     | 2026-04-05
+ unfair_dismissal.compensatory_cap_amount                  |        123543 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2026-04-06     | 
+ unfair_dismissal.compensatory_cap_amount                  |               | s124_omitted_by_era2025_s25                                                                                                                                                                                                                                                                                                                                                                                               | 2027-01-01     | 
+ unfair_dismissal.compensatory_cap_weeks_pay               |            52 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2013-07-29     | 
+ unfair_dismissal.early_conciliation_required              |               | true                                                                                                                                                                                                                                                                                                                                                                                                                      | 2014-04-06     | 
+ unfair_dismissal.ec_max_duration_weeks                    |            12 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2025-12-01     | 
+ unfair_dismissal.not_reasonably_practicable_extension     |               | The tribunal may consider a complaint presented after the primary time limit where it was not reasonably practicable to present it in time, and it was then presented within such further period as the tribunal considers reasonable.                                                                                                                                                                                    | 1996-08-22     | 
+ unfair_dismissal.qualifying_period                        |             2 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2012-04-06     | 
+ unfair_dismissal.qualifying_period                        |             6 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2027-01-01     | 
+ unfair_dismissal.time_limit_months                        |             3 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ unfair_dismissal.time_limit_months                        |             6 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2026-10-01     | 
+ unfair_dismissal.weeks_pay_cap_amount                     |           700 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2024-04-06     | 2025-04-05
+ unfair_dismissal.weeks_pay_cap_amount                     |           719 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2025-04-06     | 2026-04-05
+ unfair_dismissal.weeks_pay_cap_amount                     |           751 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 2026-04-06     | 
+ unlawful_deduction_wages.qualifying_period_years          |             0 | none  -  day-one right                                                                                                                                                                                                                                                                                                                                                                                                      | 1996-08-22     | 
+ unlawful_deduction_wages.remedy_basis                     |               | repayment_gross_amount_unlawfully_deducted                                                                                                                                                                                                                                                                                                                                                                                | 1996-08-22     | 
+ unlawful_deduction_wages.series_deductions_note           |               | time_runs_from_last_deduction_in_series                                                                                                                                                                                                                                                                                                                                                                                   | 2015-01-30     | 
+ unlawful_deduction_wages.time_limit_months                |             3 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ unlawful_deduction_wages.worker_status                    |               | worker                                                                                                                                                                                                                                                                                                                                                                                                                    | 1996-08-22     | 
+ whistleblowing.automatic_unfair_dismissal                 |               | dismissal_for_protected_disclosure_automatically_unfair                                                                                                                                                                                                                                                                                                                                                                   | 1999-07-02     | 
+ whistleblowing.complaint_route                            |               | employment_tribunal_complaint_route_for_detriment                                                                                                                                                                                                                                                                                                                                                                         | 1999-07-02     | 
+ whistleblowing.detriment_protection                       |               | worker_not_to_be_subject_to_detriment_for_protected_disclosure                                                                                                                                                                                                                                                                                                                                                            | 1999-07-02     | 
+ whistleblowing.protected_disclosure                       |               | protected_disclosure_made_under_statutory_channels                                                                                                                                                                                                                                                                                                                                                                        | 1999-07-02     | 
+ whistleblowing.qualifying_disclosure                      |               | qualifying_disclosure_of_information_public_interest_and_relevant_failure                                                                                                                                                                                                                                                                                                                                                 | 1999-07-02     | 
+ working_time.daily_rest_hours                             |            11 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1998-10-01     | 
+ working_time.max_weekly_hours                             |            48 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1998-10-01     | 
+ working_time.rest_break_minutes                           |            20 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1998-10-01     | 
+ working_time.rest_break_trigger_hours                     |             6 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1998-10-01     | 
+ working_time.weekly_rest_hours                            |            24 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1998-10-01     | 
+ wrongful_dismissal.et_contract_claim_scope                |               | Employment tribunal contractual jurisdiction is limited to qualifying breach-of-contract claims arising or outstanding on termination. County court limitation may differ.                                                                                                                                                                                                                                                | 1994-07-12     | 
+ wrongful_dismissal.et_time_limit_months                   |             3 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1994-07-12     | 
+ wrongful_dismissal.max_statutory_notice_weeks             |            12 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ wrongful_dismissal.notice_qualifying_period_months        |             1 |                                                                                                                                                                                                                                                                                                                                                                                                                           | 1996-08-22     | 
+ wrongful_dismissal.statutory_notice_formula               |               | At least one week after one month service; two weeks after two years; then one additional week for each further complete year, up to twelve weeks.                                                                                                                                                                                                                                                                        | 1996-08-22     | 
+(125 rows)
+
+
+## core tables
+     table_name     
+--------------------
+ acas_guidance
+ case_law_documents
+ cases
+ corpus_chunks
+ documents
+ legislation
+ payment_events
+ rules
+ users
+(9 rows)
+
+
+## missing rule provenance
+ rule_key 
+----------
+(0 rows)
+
+
+## employment module DB coverage
+             claim_type             | rule_count 
+------------------------------------+------------
+ agency_workers                     |          3
+ constructive_dismissal             |          3
+ discrimination                     |          8
+ employment_contracts               |          4
+ equal_pay                          |          5
+ fixed_term_workers                 |          3
+ flexible_working                   |          5
+ health_and_safety                  |          3
+ holiday_pay                        |          5
+ maternity_rights                   |          5
+ national_minimum_wage              |          5
+ parental_leave                     |          4
+ part_time_workers                  |          3
+ paternity_rights                   |          4
+ pregnancy_maternity_discrimination |          5
+ redundancy                         |         12
+ shared_parental_leave              |          3
+ trade_union_rights                 |          3
+ tupe                               |          4
+ unfair_dismissal                   |         18
+ unpaid_wages                       |          5
+ whistleblowing                     |          5
+ working_time                       |          5
+ wrongful_dismissal                 |          5
+(24 rows)
+
+
+## employment module catalogue
+             module_key             |   status   | db_backed_required 
+------------------------------------+------------+--------------------
+ agency_workers                     | production | t
+ constructive_dismissal             | partial    | t
+ discrimination                     | partial    | t
+ employment_contracts               | production | t
+ equal_pay                          | partial    | t
+ fixed_term_workers                 | production | t
+ flexible_working                   | production | t
+ health_and_safety                  | partial    | t
+ holiday_pay                        | production | t
+ maternity_rights                   | partial    | t
+ national_minimum_wage              | partial    | t
+ parental_leave                     | partial    | t
+ part_time_workers                  | production | t
+ paternity_rights                   | partial    | t
+ pregnancy_maternity_discrimination | partial    | t
+ redundancy                         | production | t
+ shared_parental_leave              | partial    | t
+ trade_union_rights                 | partial    | t
+ tupe                               | partial    | t
+ unfair_dismissal                   | production | t
+ unpaid_wages                       | production | t
+ whistleblowing                     | partial    | t
+ working_time                       | production | t
+ wrongful_dismissal                 | production | t
+(24 rows)
+
+
+## employment module readiness
+             module_key             |   status   | verified_rule_count 
+------------------------------------+------------+---------------------
+ agency_workers                     | production |                   3
+ constructive_dismissal             | partial    |                   3
+ discrimination                     | partial    |                   8
+ employment_contracts               | production |                   4
+ equal_pay                          | partial    |                   5
+ fixed_term_workers                 | production |                   3
+ flexible_working                   | production |                   5
+ health_and_safety                  | partial    |                   3
+ holiday_pay                        | production |                   5
+ maternity_rights                   | partial    |                   5
+ national_minimum_wage              | partial    |                   5
+ parental_leave                     | partial    |                   4
+ part_time_workers                  | production |                   3
+ paternity_rights                   | partial    |                   4
+ pregnancy_maternity_discrimination | partial    |                   5
+ redundancy                         | production |                  12
+ shared_parental_leave              | partial    |                   3
+ trade_union_rights                 | partial    |                   3
+ tupe                               | partial    |                   4
+ unfair_dismissal                   | production |                  15
+ unpaid_wages                       | production |                   5
+ whistleblowing                     | partial    |                   5
+ working_time                       | production |                   5
+ wrongful_dismissal                 | production |                   5
+(24 rows)
+
+
+## employment module count gate
+ module_count_gate | module_count 
+-------------------+--------------
+ PASS              |           24
+(1 row)
+
+
+## exactly 24 employment modules
+PASS: exactly 24 employment modules
+
+## all employment modules require DB backing
+PASS: all employment modules require DB backing
+
+## beta go-live: partial modules allowed with fail-closed product scope
+
+## beta: partial modules must have verified DB rules
+PASS: beta: partial modules must have verified DB rules
+
+## beta: production module count matches supported scope
+PASS: beta: production module count matches supported scope
+
+## production employment modules have verified DB rules
+PASS: production employment modules have verified DB rules
+
+PASS: database integrity proof completed

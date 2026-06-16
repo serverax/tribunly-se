@@ -95,3 +95,98 @@ def propose_ingestion(
     except Exception as exc:
         logger.warning("Proposal queue unavailable: %s", exc)
         return {"status": "rejected", "reason": [str(exc)], "offline_safe": True}
+
+
+def list_proposals(*, approval_status: str | None = None, limit: int = 50) -> list[dict]:
+    """List queued ingestion proposals for admin review."""
+    from ingestion.db import get_connection
+
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            if approval_status:
+                cur.execute(
+                    """
+                    SELECT id, proposed_by, proposal_type, payload, approval_status,
+                           source_verification_status, trace_id, created_at
+                    FROM knowledge.ingestion_proposals
+                    WHERE approval_status = %s
+                    ORDER BY created_at DESC
+                    LIMIT %s
+                    """,
+                    (approval_status, limit),
+                )
+            else:
+                cur.execute(
+                    """
+                    SELECT id, proposed_by, proposal_type, payload, approval_status,
+                           source_verification_status, trace_id, created_at
+                    FROM knowledge.ingestion_proposals
+                    ORDER BY created_at DESC
+                    LIMIT %s
+                    """,
+                    (limit,),
+                )
+            rows = cur.fetchall()
+        return [
+            {
+                "id": str(r[0]),
+                "proposed_by": r[1],
+                "proposal_type": r[2],
+                "payload": r[3],
+                "approval_status": r[4],
+                "source_verification_status": r[5],
+                "trace_id": r[6],
+                "created_at": r[7].isoformat() if r[7] else None,
+            }
+            for r in rows
+        ]
+    finally:
+        conn.close()
+
+
+def approve_proposal(proposal_id: str, *, reviewed_by: str = "admin") -> dict:
+    """Mark proposal approved and enqueue ingestion job metadata (no direct rules write)."""
+    from ingestion.db import get_connection
+
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE knowledge.ingestion_proposals
+                   SET approval_status = 'approved',
+                       reviewed_by = %s,
+                       reviewed_at = now(),
+                       updated_at = now()
+                 WHERE id = %s::uuid AND approval_status = 'pending'
+                 RETURNING id, proposal_type, payload
+                """,
+                (reviewed_by, proposal_id),
+            )
+            row = cur.fetchone()
+            if not row:
+                return {"ok": False, "error": "proposal_not_found_or_not_pending"}
+            job_id = str(uuid.uuid4())
+            cur.execute(
+                """
+                INSERT INTO ingestion_jobs (
+                    id, worker_type, queue_name, document_id, postgres_status, metadata
+                ) VALUES (
+                    %s::uuid, 'legislation', 'ingestion-legislation', %s, 'pending', %s::jsonb
+                )
+                """,
+                (
+                    job_id,
+                    proposal_id,
+                    json.dumps({"proposal_id": proposal_id, "proposal_type": row[1]}),
+                ),
+            )
+        conn.commit()
+        return {"ok": True, "proposal_id": proposal_id, "ingestion_job_id": job_id}
+    except Exception as exc:
+        conn.rollback()
+        logger.warning("approve_proposal failed: %s", exc)
+        return {"ok": False, "error": str(exc)}
+    finally:
+        conn.close()

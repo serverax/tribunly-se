@@ -1,0 +1,31 @@
+LawApp grounding verification (assess/brain path)
+Generated: 2026-06-16 (evidence run)
+Branch: release/lawapp-clean-snapshot
+
+## Static checks
+
+| Check | Result | Evidence |
+|-------|--------|----------|
+| Brain CitationGuard step | PASS | brain.py |
+| Pipeline corpus_citation_guard | PASS | pipeline.py |
+| No /api/v1/legal/reason | PASS | main.py |
+
+## Pytest
+
+Exit code: 0
+```
+.................                                                        [100%]
+============================== warnings summary ===============================
+tests/test_grounding_regression.py: 32 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+17 passed, 33 warnings in 25.96s
+```
+
+## Verdict: PASS

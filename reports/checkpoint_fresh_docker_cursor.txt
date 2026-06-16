@@ -1,0 +1,19 @@
+# Fresh verification  -  Docker / runtime
+# Generated: 2026-06-16
+
+docker compose ps
+FAIL: failed to connect to the docker API at npipe:////./pipe/docker_engine
+Reason: Docker daemon not running on this host (Windows)
+
+curl health endpoints: NOT RUN (Docker offline  -  no backend on :8000)
+
+DB counts: NOT RUN (requires docker compose exec db)
+
+Last known good (2026-06-15 check-in, 12/12 healthy):
+- rules: 125
+- corpus_chunks: 889 | embedded: 881
+- modules: 11 production + 13 partial
+- migrations: 74
+- backend /health: status ok, db connected, auth_mode jwt
+
+GAP: All runtime proofs stale until Docker restarted and re-verified.

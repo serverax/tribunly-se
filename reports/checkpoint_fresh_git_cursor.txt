@@ -1,0 +1,36 @@
+# Fresh verification  -  git state
+# Generated: 2026-06-16 (checkpoint detailed report)
+
+git log -8 --oneline
+c295e3c Land approved repair batch: auth wiring, load-test rate limits, Ollama dev path.
+12f835f Record Track B commit hashes in completion report.
+b03e55a Add Track B production prerequisite evidence and completion report.
+a30be0d Tune k6 readiness script for assess tags and scope-cut checks.
+6bd8bdd Formal scope-cut fencing for 13 partial employment modules.
+54ba433 Expand licensed RAG corpus via legislation.gov.uk and ACAS sources.
+f798e63 Document Track A beta finish completion status and GO WITH RISK verdict.
+cab0583 Add Track A beta finish proof artifacts for go-live gate.
+
+git branch -vv
+* release/lawapp-clean-snapshot c295e3c [origin/release/lawapp-clean-snapshot] Land approved repair batch...
+
+HEAD: c295e3c348129bceee7f14b994588be1f9d27914
+Remote sync: branch tracks origin/release/lawapp-clean-snapshot at c295e3c (in sync per branch -vv)
+
+git log 0c1b1a7..HEAD --oneline (14 commits since checkpoint)
+c295e3c Land approved repair batch: auth wiring, load-test rate limits, Ollama dev path.
+12f835f Record Track B commit hashes in completion report.
+b03e55a Add Track B production prerequisite evidence and completion report.
+a30be0d Tune k6 readiness script for assess tags and scope-cut checks.
+6bd8bdd Formal scope-cut fencing for 13 partial employment modules.
+54ba433 Expand licensed RAG corpus via legislation.gov.uk and ACAS sources.
+f798e63 Document Track A beta finish completion status and GO WITH RISK verdict.
+cab0583 Add Track A beta finish proof artifacts for go-live gate.
+0c8fe1f Ignore local uploads and WASM build artifacts from version control.
+b8f74c9 Repair Track A integration and regression tests for mock auth and infra skips.
+d1fe4b9 Allow anonymous case save in auth none mode and verify explicit section cites.
+98db44d Copy services tree into backend image for container pytest imports.
+5e3445b Fix auth migration guards and align host Postgres password default.
+8fb5459 Enforce beta UI scope to 11 production employment topics.
+
+Working tree: modified docs/qa/*, docker-compose.yml, assessment.html, etc. + large untracked reports/ and .agents/

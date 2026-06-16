@@ -39,30 +39,45 @@ class UnifiedIndexer:
             authority_ref=authority_ref,
             embedding=embedding,
         )
+        proposals = 0
+        postgres_graph_ok = False
         neo4j_ok = False
+        if graph_entities or graph_edges:
+            postgres_graph_ok = self._write_postgres_graph(
+                graph_entities=graph_entities or [],
+                graph_edges=graph_edges or [],
+                source_url=source_url,
+            )
+
         if self.neo4j_enabled and (graph_entities or graph_edges):
             from ingestion.graph.neo4j_batch_writer import Neo4jBatchWriter
             neo4j_ok = Neo4jBatchWriter().write_batch(graph_entities or [], graph_edges or [])
 
-        proposals = 0
         if rule_candidates:
-            proposals = self._queue_proposals(
-                document_id, chunk_id, rule_candidates, source_worker="unified_indexer"
-            )
+            try:
+                proposals = self._queue_proposals(
+                    document_id, chunk_id, rule_candidates, source_worker="unified_indexer"
+                )
+            except Exception as exc:
+                logger.debug("proposal queue skipped: %s", exc)
 
         if graph_entities or graph_edges:
-            from ingestion.workers.base_worker import RedisQueue, QUEUE_GRAPH
-            RedisQueue(QUEUE_GRAPH).enqueue({
-                "job_id": str(uuid.uuid4()),
-                "document_id": document_id,
-                "chunk_id": chunk_id,
-                "graph_entities": graph_entities or [],
-                "graph_edges": graph_edges or [],
-                "rule_candidates": rule_candidates or [],
-            })
+            try:
+                from ingestion.workers.base_worker import RedisQueue, QUEUE_GRAPH
+                RedisQueue(QUEUE_GRAPH).enqueue({
+                    "job_id": str(uuid.uuid4()),
+                    "document_id": document_id,
+                    "chunk_id": chunk_id,
+                    "graph_entities": graph_entities or [],
+                    "graph_edges": graph_edges or [],
+                    "rule_candidates": rule_candidates or [],
+                })
+            except Exception as exc:
+                logger.debug("graph queue enqueue skipped: %s", exc)
 
         return {
             "postgres_ok": postgres_ok,
+            "postgres_graph_ok": postgres_graph_ok,
             "neo4j_ok": neo4j_ok,
             "neo4j_enabled": self.neo4j_enabled,
             "graph_entities": graph_entities or [],
@@ -88,6 +103,50 @@ class UnifiedIndexer:
             return stats.get("after", 0) >= stats.get("before", 0)
         except Exception as exc:
             logger.warning("Postgres sync failed for %s: %s", chunk_id, exc)
+            return False
+
+    def _write_postgres_graph(
+        self,
+        *,
+        graph_entities: list[dict],
+        graph_edges: list[dict],
+        source_url: str,
+        jurisdiction: str = "EW",
+    ) -> bool:
+        """Primary graph plane: legal_nodes / legal_edges in Postgres (Neo4j optional only)."""
+        if not graph_entities and not graph_edges:
+            return True
+        try:
+            from backend.core.ingestion.graph_linker import GraphLinker
+
+            linker = GraphLinker()
+            conn = linker._get_conn()
+            try:
+                for ent in graph_entities:
+                    node_id = ent.get("id") or ent.get("node_id")
+                    if not node_id:
+                        continue
+                    linker.upsert_node(
+                        conn,
+                        node_id=str(node_id),
+                        node_type=str(ent.get("type") or "Section"),
+                        label=str(ent.get("label") or ent.get("authority_ref") or node_id),
+                        jurisdiction=str(ent.get("jurisdiction") or jurisdiction),
+                        source_url=source_url,
+                        description=str(ent.get("description") or ""),
+                    )
+                for edge in graph_edges:
+                    frm = edge.get("from") or edge.get("from_node_id")
+                    to = edge.get("to") or edge.get("to_node_id")
+                    rel = edge.get("rel") or edge.get("relationship_type") or "cites"
+                    if frm and to:
+                        linker.link(conn, str(frm), str(to), str(rel), jurisdiction, source_url)
+                conn.commit()
+            finally:
+                conn.close()
+            return True
+        except Exception as exc:
+            logger.warning("Postgres graph write failed: %s", exc)
             return False
 
     def _queue_proposals(
@@ -155,7 +214,7 @@ class UnifiedIndexer:
                     source_type="legislation",
                     source_url=row["source_url"],
                     authority_ref=row.get("section_ref") or "",
-                    graph_entities=entities if self.neo4j_enabled else None,
+                    graph_entities=entities,
                 )
                 indexed += 1
                 graph_entities.extend(entities)

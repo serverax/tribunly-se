@@ -33,7 +33,10 @@ export class RetrievalService {
     query?: string,
   ): Promise<HybridRetrievalContext> {
     const rules = await this.fetchRules(claimType);
-    let graphBundle = await this.graph.getClaimSubgraph(claimType, jurisdiction);
+    let graphBundle: RetrievalBundle['graph'] = await this.graph.getClaimSubgraph(
+      claimType,
+      jurisdiction,
+    );
 
     if (query && query.trim().length > 0) {
       const search = await this.graphRag.searchGraph(query, jurisdiction);

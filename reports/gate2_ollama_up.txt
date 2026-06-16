@@ -1,0 +1,6 @@
+ Volume lawapp_ollama_data Creating 
+ Volume lawapp_ollama_data Created 
+ Container lawapp-ollama-1 Recreate 
+ Container lawapp-ollama-1 Recreated 
+ Container lawapp-ollama-1 Starting 
+ Container lawapp-ollama-1 Started 

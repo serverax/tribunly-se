@@ -45,7 +45,7 @@ import uuid
 
 from typing import Any, Optional
 
-logger = logging.getLogger(__name__)
+from backend.domains.constants import DOMAIN_DEFAULT
 
 
 # ── Step definitions (immutable  -  used in trace output) ─────────────────────
@@ -364,7 +364,7 @@ class Orchestrator:
         return _orch.classify(message, facts, jurisdiction)
 
     @staticmethod
-    def route(claim_type: str, urgency: str = "safe", domain: str = "employment") -> dict:
+    def route(claim_type: str, urgency: str = "safe", domain: str = DOMAIN_DEFAULT) -> dict:
         from backend.core.orchestrator import orchestrator as _orch
         return _orch.route(claim_type, urgency, domain)
 
@@ -791,7 +791,7 @@ def run_brain(
         from backend.domains.registry import resolve_domain_for_matter
         from backend.core.orchestrator import orchestrator as _orch
 
-        _domain = resolve_domain_for_matter(claim_type) or "employment"
+        _domain = resolve_domain_for_matter(claim_type) or DOMAIN_DEFAULT
         orch = _orch.run_stages(
             message,
             facts,

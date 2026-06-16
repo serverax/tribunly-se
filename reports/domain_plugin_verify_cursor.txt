@@ -1,23 +1,24 @@
-Domain plugin verification — 2026-06-16
+Generated: 2026-06-16T23:35:35Z
+Task: F - domain plugin verification (employment_uk only enabled)
 
-Enabled production domain:
-- domains/employment/domain_config.json — enabled=true, status=production, retrieval_domain=employment_uk
+C:\Python314\python.exe -m pytest tests/test_domain_modularity.py tests/test_domain_plugin_system.py tests/test_domain_pack_loader.py -q --tb=line
+...........................                                              [100%]
+============================== warnings summary ===============================
+tests/test_domain_modularity.py: 32 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
 
-Disabled / fail-closed domains:
-- immigration — enabled=false, status=stub
-- housing — enabled=false
-- benefits — enabled=false
-- debt — enabled=false
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
 
-API:
-- GET /api/domains — lists packs; only employment enabled=true
-- POST /assess with X-Lawapp-Domain: immigration → status=domain_unavailable, invokes_llm=false (no fake answer)
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+27 passed, 33 warnings in 13.42s
 
-Tests:
-- tests/test_build_order_gates.py::test_assess_immigration_domain_fail_closed
-- tests/test_build_order_gates.py::test_domains_api_lists_employment_only_enabled
+Invariant checks:
+- Unknown/disabled domains fail closed
+- Domain switching routes through brain/control plane, not bypass
+- Only employment pack enabled for beta
 
-Verdict: PASS — non-employment domains cannot emit governed answers.
-
-Run:
-  pytest tests/test_build_order_gates.py -q
+exit_code: 0
+PASS

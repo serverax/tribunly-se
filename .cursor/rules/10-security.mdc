@@ -1,0 +1,32 @@
+---
+description: Non-negotiable security rules
+alwaysApply: true
+---
+
+# Security - Non-Negotiable
+
+LawApp processes special category data (UK GDPR Article 9). Treat every control
+as legally required (Article 32).
+
+Never:
+- Put secrets, credentials, keys, or tokens in code, compose files, or committed
+  env files. Use the secrets manager or env references only. Never print a secret
+  value, including in handoff or status output.
+- Persist special category data for anonymous (unauthenticated) users. Anonymous
+  tool runs are processed in memory and not stored.
+- Build SQL by string concatenation. Parameterised queries only.
+- Push to `main`, deploy to production Kubernetes, or rotate secrets.
+
+Always:
+- Enforce authentication and object-level authorisation on every endpoint. A user
+  can access only their own matter, document, and deadline.
+- Apply Postgres row-level security on tenant and matter.
+- Pass user input and uploads through the redaction service before logging or
+  embedding.
+- Keep immutable logs (audit, brain traces) free of raw special category content;
+  store metadata, decisions, and hashes so retention does not conflict with the
+  right to erasure.
+
+Flag for human review, do not auto-apply, any change touching: secrets, auth,
+the verification gate, row-level security, a production-bound migration, or
+network policy.
