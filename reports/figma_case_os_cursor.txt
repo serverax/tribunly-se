@@ -82,4 +82,11 @@ RESPONSIVE: Test at 375px, 768px, 1280px (case-os.css media queries)
 ================================================================================
 GIT
 ================================================================================
-Commit pending on release/lawapp-clean-snapshot (not main)
+Branch: release/lawapp-clean-snapshot (not main)
+Commits: Case OS screen map + wired pages; shell init injects full nav (timeline, escalation)
+
+================================================================================
+SHELL INIT
+================================================================================
+CaseOSShell.init() injects sidebar + bottom nav with all 11 routes including
+timeline.html and escalation.html. Pages with inline shell (timeline) use boot() only.
