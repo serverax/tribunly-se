@@ -1,0 +1,21 @@
+{
+  "app.brand": "lawapp",
+  "nav.dashboard": "Dashboard",
+  "nav.case_builder": "Case builder",
+  "nav.analysis": "AI analysis",
+  "nav.my_case": "My case",
+  "nav.timeline": "Timeline",
+  "nav.deadlines": "Deadlines",
+  "nav.evidence": "Evidence hub",
+  "nav.documents": "Document engine",
+  "nav.escalation": "Escalation",
+  "nav.advisor": "Advisor",
+  "nav.settings": "Settings",
+  "lang.switch": "Language",
+  "lang.en": "English",
+  "lang.ar": "Arabic",
+  "analysis.loading": "Running analysis…",
+  "analysis.your_situation": "Your situation",
+  "legal.notice": "Not a law firm. Not legal advice.",
+  "shell.workspace": "Case OS workspace"
+}

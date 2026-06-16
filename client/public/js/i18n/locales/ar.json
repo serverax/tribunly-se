@@ -1,0 +1,21 @@
+{
+  "app.brand": "lawapp",
+  "nav.dashboard": "لوحة التحكم",
+  "nav.case_builder": "منشئ القضية",
+  "nav.analysis": "تحليل الذكاء الاصطناعي",
+  "nav.my_case": "قضيتي",
+  "nav.timeline": "الجدول الزمني",
+  "nav.deadlines": "المواعيد النهائية",
+  "nav.evidence": "مركز الأدلة",
+  "nav.documents": "محرك المستندات",
+  "nav.escalation": "التصعيد",
+  "nav.advisor": "المستشار",
+  "nav.settings": "الإعدادات",
+  "lang.switch": "اللغة",
+  "lang.en": "English",
+  "lang.ar": "العربية",
+  "analysis.loading": "جارٍ تشغيل التحليل…",
+  "analysis.your_situation": "وضعك",
+  "legal.notice": "ليس مكتب محاماة. ليس استشارة قانونية.",
+  "shell.workspace": "مساحة عمل Case OS"
+}
