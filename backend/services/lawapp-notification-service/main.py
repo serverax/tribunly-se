@@ -482,6 +482,71 @@ async def mark_notification_read(
 
 
 # ────────────────────────────────────────────────────────────────────
+# PARTNER REFERRAL NOTIFY (F12 stub)
+# ────────────────────────────────────────────────────────────────────
+
+@app.post("/api/notifications/partner-referral")
+async def notify_partner_referral(
+    partner_slug: str,
+    referral_id: str,
+    matter_id: str,
+    x_trace_id: Optional[str] = Header(None),
+):
+    """Route F12 partner referral via partner_registry. No hardcoded partners."""
+    trace_id = x_trace_id or str(uuid4())
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cursor.execute(
+            """
+            SELECT id, name, webhook_url, notify_email, active
+              FROM partner_registry
+             WHERE slug = %s
+            """,
+            [partner_slug],
+        )
+        partner = cursor.fetchone()
+        cursor.close()
+        if not partner:
+            raise HTTPException(status_code=404, detail="Partner not registered")
+        if not partner["active"]:
+            raise HTTPException(status_code=503, detail="Partner not active (owner sign-off pending)")
+
+        queued = False
+        if partner.get("notify_email"):
+            redis_client = get_redis_client()
+            job = {
+                "type": "partner_referral",
+                "partner_slug": partner_slug,
+                "referral_id": referral_id,
+                "matter_id": matter_id,
+                "email": partner["notify_email"],
+                "trace_id": trace_id,
+            }
+            redis_client.rpush("lawapp:email_queue", json.dumps(job))
+            redis_client.close()
+            queued = True
+
+        return {
+            "status": "accepted",
+            "partner_slug": partner_slug,
+            "referral_id": referral_id,
+            "email_queued": queued,
+            "webhook_configured": bool(partner.get("webhook_url")),
+            "trace_id": trace_id,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Partner referral notify failed: %s", e)
+        raise HTTPException(status_code=500, detail="Partner notification failed")
+    finally:
+        if conn:
+            conn.close()
+
+
+# ────────────────────────────────────────────────────────────────────
 # DEBUG: CHECK EMAIL QUEUE
 # ────────────────────────────────────────────────────────────────────
 
