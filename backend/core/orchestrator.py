@@ -1,5 +1,9 @@
 """
-Governed orchestrator  -  classify → route → delegate → merge.
+Case Engine Controller  -  classify, route, delegate, merge.
+
+Governed orchestrator for domain-aware agent routing. This module is the
+Case Engine Controller referenced in the production architecture diagram:
+Brain step 11b calls orchestrator.run_stages() after RAG source selection.
 
 Single entry for domain-aware agent routing. Used by Brain step 11b and
 exposed as brain.Orchestrator for API callers.

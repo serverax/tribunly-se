@@ -25,6 +25,15 @@ class FeedbackRequest(BaseModel):
     trace_id: Optional[str] = None
 
 
+class OutcomeFeedbackRequest(BaseModel):
+    case_id: str = Field(..., min_length=1)
+    actual_outcome: str = Field(..., min_length=1, max_length=2000)
+    predicted_outcome: Optional[str] = Field(default=None, max_length=2000)
+    reasoning_gaps: list[str] = Field(default_factory=list)
+    trace_id: Optional[str] = None
+    linked_feedback_id: Optional[str] = None
+
+
 def _require_authenticated_user(
     x_user_id: Optional[str] = Header(None, alias="X-User-ID"),
     authorization: Optional[str] = Header(None, alias="Authorization"),
@@ -72,3 +81,52 @@ def submit_feedback(
         raise HTTPException(status_code=503, detail="Feedback storage unavailable")
 
     return result
+
+
+@router.post("/feedback/outcome", status_code=201)
+def submit_outcome_feedback(
+    body: OutcomeFeedbackRequest,
+    user_id: str = Depends(_require_authenticated_user),
+) -> dict:
+    """Record actual case outcome vs Brain prediction for the learning loop."""
+    import json
+
+    try:
+        from ingestion.db import get_connection
+
+        conn = get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO case_outcome_feedback (
+                        user_id, case_id, trace_id,
+                        predicted_outcome, actual_outcome,
+                        reasoning_gaps, linked_feedback_id
+                    ) VALUES (
+                        %s::uuid, %s::uuid, %s, %s, %s, %s::jsonb, %s::uuid
+                    )
+                    RETURNING id, created_at
+                    """,
+                    (
+                        user_id,
+                        body.case_id,
+                        body.trace_id,
+                        body.predicted_outcome,
+                        body.actual_outcome,
+                        json.dumps(body.reasoning_gaps),
+                        body.linked_feedback_id,
+                    ),
+                )
+                row = cur.fetchone()
+            conn.commit()
+        finally:
+            conn.close()
+        return {
+            "id": str(row[0]),
+            "case_id": body.case_id,
+            "trace_id": body.trace_id,
+            "created_at": row[1].isoformat() if row[1] else None,
+        }
+    except Exception:
+        raise HTTPException(status_code=503, detail="Outcome feedback storage unavailable")

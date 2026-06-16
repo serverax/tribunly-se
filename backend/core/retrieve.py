@@ -492,6 +492,8 @@ def retrieve(
     bundle = RetrievalBundle(
         exact_rules=rules,
         authorities=auth_payload,
+        rules=rules,
+        semantic={"authorities": auth_payload, "query": query},
         citations=citations,
         grounding_score=grounding_score,
         confidence_score=confidence_score,
@@ -502,6 +504,67 @@ def retrieve(
     _write_retrieval_audit(query, claim_type, jurisdiction, rules, auth_payload, insufficient, retrieval_tag)
 
     return bundle
+
+
+def retrieve_hybrid(
+    query: str,
+    claim_type: str,
+    jurisdiction: str,
+    edt: date,
+    domain: Optional[str] = None,
+    use_graph: bool = True,
+    max_graph_depth: int = 10,
+) -> RetrievalBundle:
+    """
+    Hybrid merge: semantic (pgvector + BM25) + graph (Neo4j or Postgres) + rules (SQL).
+
+    Returns a RetrievalBundle with graph, semantic, and rules populated for the
+    Mother Algorithm pipeline.
+    """
+    bundle = retrieve(query, claim_type, jurisdiction, edt, domain=domain)
+
+    graph_context: dict = {}
+    if use_graph and claim_type not in ("out_of_scope", ""):
+        try:
+            from backend.core.rag.graph_rag_chain import build_legal_chain, format_chain, score_path
+
+            chain = build_legal_chain(
+                claim_type=claim_type,
+                jurisdiction=jurisdiction,
+                max_depth=max_graph_depth,
+                query=query,
+            )
+            graph_context = {
+                "nodes": chain.get("path", []),
+                "edges": chain.get("edges", []),
+                "context_text": format_chain(chain),
+                "engine": chain.get("engine", "postgres"),
+                "confidence": score_path(chain),
+                "claim_type": claim_type,
+                "source": "graph_rag_layer_v1",
+            }
+        except Exception as exc:
+            logger.warning("Graph hybrid enrichment failed closed: %s", exc)
+            graph_context = {
+                "nodes": [],
+                "edges": [],
+                "context_text": "",
+                "engine": "unavailable",
+                "unavailable_reason": str(exc),
+                "source": "graph_rag_layer_v1",
+            }
+
+    return bundle.model_copy(
+        update={
+            "graph": graph_context,
+            "semantic": {
+                "authorities": bundle.authorities,
+                "query": query,
+                "grounding_score": bundle.grounding_score,
+            },
+            "rules": bundle.exact_rules,
+        }
+    )
 
 
 def _write_retrieval_audit(

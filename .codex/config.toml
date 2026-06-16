@@ -1,0 +1,5 @@
+[mcp_servers.memory]
+command = "mcp-server-memory"
+
+[mcp_servers.memory.env]
+MEMORY_FILE_PATH = "/mnt/f/lawapp/.claude/memory/lawapp-memory.json"

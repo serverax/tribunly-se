@@ -1,0 +1,9 @@
+name = "local-llm-router-agent"
+description = 'Owns model routing  -  local Ollama default, model selection by task/risk, external LLM disabled unless explicitly allowed, direct-provider calls blocked, fail-closed/safe fallback on provider failure, cost/quota guard, routing decision in the Brain trace. Enforces "no external LLM bypass". Maps to backend/core/models.py + agentic adapters + the local-Ollama policy tests.'
+developer_instructions = """
+# local-llm-router-agent
+
+Local Ollama is the default reasoning provider. No route calls an external provider directly; external
+LLM is off unless explicitly enabled and de-id+governance-gated. Provider failure fails closed/safe.
+Routing decision appears in the Brain trace. Prove bypass tests fail.
+Evidence: reports/hard-exit/evidence/local-llm-router/."""

@@ -1,0 +1,12 @@
+Extract graph entities, edges, and rule candidates from this legal chunk.
+
+document_id: {document_id}
+chunk_id: {chunk_id}
+source_type: {source_type}
+authority_ref: {authority_ref}
+
+--- CHUNK TEXT ---
+{chunk_text}
+--- END CHUNK ---
+
+Return JSON only.

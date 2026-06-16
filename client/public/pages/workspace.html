@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case workspace  -  lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+  <link rel="stylesheet" href="/css/workspace.css">
+</head>
+<body class="case-os" data-case-os-page="workspace">
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div class="case-os-shell">
+  <div id="case-os-overlay" class="case-os-overlay" hidden></div>
+  <aside id="case-os-sidebar" class="case-os-sidebar" aria-label="Case workspace navigation">
+    <div class="case-os-sidebar-head">
+      <a href="/" class="brand">lawapp</a>
+      <button type="button" class="case-os-sidebar-close" aria-label="Close case menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <nav class="case-os-nav" aria-label="Case sections">
+      <a href="/pages/dashboard.html" data-nav-page="dashboard"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Dashboard</span></a>
+      <a href="/pages/workspace.html" data-nav-page="workspace" data-ws-case-link="/pages/workspace.html"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">My case</span></a>
+      <a href="/pages/case-intake.html" data-nav-page="case-intake"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Story builder</span></a>
+      <a href="/pages/advisor.html" data-nav-page="advisor" data-ws-case-link="/pages/advisor.html"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Advisor</span></a>
+      <a href="/pages/settings.html" data-nav-page="settings"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Settings</span></a>
+    </nav>
+    <div class="case-os-sidebar-foot">Case OS workspace</div>
+  </aside>
+
+  <div class="case-os-main">
+    <header class="case-os-topbar">
+      <button type="button" class="case-os-menu-toggle" aria-controls="case-os-sidebar" aria-expanded="false" aria-label="Open case menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <h1 class="case-os-topbar-title" id="ws-claim-title">Case workspace</h1>
+    </header>
+
+    <main id="main" class="case-os-content">
+      <div id="ws-loading" style="text-align:center;padding:2rem 0;"><div class="spinner"></div><p class="cos-muted">Loading workspace...</p></div>
+      <div id="ws-error" class="cos-panel" style="display:none;border-color:var(--warn);"></div>
+
+      <div id="ws-workspace" class="workspace-layout" style="display:none;">
+        <section class="workspace-header" aria-label="Case status">
+          <div class="workspace-header-metrics">
+            <div class="workspace-metric"><div class="workspace-metric-label">Status</div><div class="workspace-metric-value" id="ws-status">-</div></div>
+            <div class="workspace-metric"><div class="workspace-metric-label">Deadline</div><div class="workspace-metric-value" id="ws-deadline">-</div></div>
+            <div class="workspace-metric">
+              <div class="workspace-metric-label">Strength</div>
+              <div class="strength-meter" style="margin-top:.35rem;">
+                <div class="strength-meter-label"><span id="ws-strength-label">-</span></div>
+                <div class="strength-meter-bars" id="ws-strength-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="workspace-body">
+          <div class="workspace-left">
+            <nav class="workspace-tabs" aria-label="Case sections">
+              <a href="#timeline" data-tab="timeline">Timeline</a>
+              <a href="#evidence" data-tab="evidence">Evidence</a>
+              <a href="#notes" data-tab="notes">Notes</a>
+              <a href="#documents" data-tab="documents">Documents</a>
+              <a href="#analysis" data-tab="analysis">Analysis</a>
+            </nav>
+
+            <div id="panel-timeline" class="workspace-tab-panel cos-panel">
+              <h2 class="cos-display" style="font-size:var(--cos-section);">Timeline</h2>
+              <ul id="ws-timeline-list" class="workspace-list"></ul>
+            </div>
+            <div id="panel-evidence" class="workspace-tab-panel cos-panel">
+              <h2 class="cos-display" style="font-size:var(--cos-section);">Evidence library</h2>
+              <div class="evidence-upload" style="margin:1rem 0;">
+                <p>Upload files for this case</p>
+                <input type="file" id="ws-evidence-file" multiple accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg">
+                <label for="ws-evidence-file">Choose files</label>
+              </div>
+              <p id="ws-upload-status" class="cos-muted" role="status"></p>
+              <ul id="ws-evidence-list" class="workspace-list"></ul>
+            </div>
+            <div id="panel-notes" class="workspace-tab-panel cos-panel">
+              <h2 class="cos-display" style="font-size:var(--cos-section);">Notes</h2>
+              <div class="workspace-note-form">
+                <input type="text" id="ws-note-title" placeholder="Title" style="width:100%;margin-bottom:.5rem;padding:.6rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);">
+                <textarea id="ws-note-body" placeholder="Add a case note..."></textarea>
+                <button type="button" class="btn btn-primary btn-sm" id="ws-note-save" style="margin-top:.75rem;">Save note</button>
+                <p id="ws-note-status" class="cos-muted" role="status"></p>
+              </div>
+              <ul id="ws-notes-list" class="workspace-list" style="margin-top:1rem;"></ul>
+            </div>
+            <div id="panel-documents" class="workspace-tab-panel cos-panel">
+              <h2 class="cos-display" style="font-size:var(--cos-section);">Document workspace</h2>
+              <p class="cos-muted">Drafts generated for this case.</p>
+              <ul id="ws-documents-list" class="workspace-list"></ul>
+            </div>
+            <div id="panel-analysis" class="workspace-tab-panel cos-panel">
+              <h2 class="cos-display" style="font-size:var(--cos-section);">Analysis focus</h2>
+              <p class="cos-muted">Use the AI panel for live assessment. Adjust your question below.</p>
+              <textarea id="ws-analysis-query" rows="3" style="width:100%;padding:.75rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);margin-top:.75rem;" placeholder="What should I focus on next?"></textarea>
+              <button type="button" class="btn btn-outline btn-sm" id="ws-analysis-refresh" style="margin-top:.75rem;">Run analysis</button>
+              <p id="ws-analysis-status" class="cos-muted" role="status" style="margin-top:.5rem;"></p>
+            </div>
+          </div>
+
+          <aside class="workspace-main workspace-ai-panel" aria-label="AI analysis">
+            <div class="cos-panel">
+              <h2 class="cos-display" style="font-size:var(--cos-section);">AI analysis</h2>
+              <p id="ws-trace-id" class="cos-muted"></p>
+            </div>
+            <div class="cos-panel">
+              <h3 style="font-size:1rem;margin:0 0 .5rem;">Legal reasoning</h3>
+              <p id="ws-reasoning" class="cos-muted">Loading...</p>
+            </div>
+            <div class="cos-panel">
+              <h3 style="font-size:1rem;margin:0 0 .5rem;">Risk score</h3>
+              <p id="ws-risk" class="cos-muted">-</p>
+            </div>
+            <div class="cos-panel">
+              <h3 style="font-size:1rem;margin:0 0 .5rem;">Next action</h3>
+              <p id="ws-next-action" class="cos-muted">-</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="case-os-bottom-nav" aria-label="Case quick navigation">
+    <a href="/pages/dashboard.html" data-nav-page="dashboard"><span aria-hidden="true">&#9679;</span><span>Home</span></a>
+    <a href="/pages/workspace.html" data-nav-page="workspace" data-ws-case-link="/pages/workspace.html"><span aria-hidden="true">&#9679;</span><span>Case</span></a>
+    <a href="/pages/workspace.html#timeline" data-ws-case-link="/pages/workspace.html#timeline"><span aria-hidden="true">&#9679;</span><span>Timeline</span></a>
+    <a href="/pages/workspace.html#analysis" data-ws-case-link="/pages/workspace.html#analysis"><span aria-hidden="true">&#9679;</span><span>AI</span></a>
+    <a href="/pages/settings.html" data-nav-page="settings"><span aria-hidden="true">&#9679;</span><span>More</span></a>
+  </nav>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/app-shell.js"></script>
+<script src="/js/workspace.js"></script>
+<script>
+(function () {
+  var overlay = document.getElementById("case-os-overlay");
+  var sidebar = document.getElementById("case-os-sidebar");
+  var toggle = document.querySelector(".case-os-menu-toggle");
+  var closeBtn = document.querySelector(".case-os-sidebar-close");
+  function openMenu() {
+    sidebar.classList.add("is-open");
+    overlay.hidden = false;
+    overlay.classList.add("is-visible");
+    if (toggle) toggle.setAttribute("aria-expanded", "true");
+  }
+  function closeMenu() {
+    sidebar.classList.remove("is-open");
+    overlay.classList.remove("is-visible");
+    overlay.hidden = true;
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+  }
+  if (toggle) toggle.addEventListener("click", openMenu);
+  if (closeBtn) closeBtn.addEventListener("click", closeMenu);
+  if (overlay) overlay.addEventListener("click", closeMenu);
+})();
+</script>
+</body>
+</html>

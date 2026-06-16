@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LawApp Architecture</title>
+  <link rel="stylesheet" href="/css/case-os.css" />
+  <style>
+    body { max-width: 52rem; margin: 0 auto; padding: 1.5rem; font-family: system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <h1>LawApp production architecture</h1>
+  <p>Information only. Not legal advice. See <code>docs/architecture/LAWAPP_PRODUCTION_GO_LIVE.md</code>.</p>
+
+  <pre id="diagram" aria-label="Architecture diagram"></pre>
+
+  <h2>Service health</h2>
+  <ul id="health-list"></ul>
+
+  <p><a href="/pages/dashboard.html">Dashboard</a> | <a href="http://localhost:3000/about-architecture">Next.js view</a></p>
+
+  <script>
+    document.getElementById("diagram").textContent = [
+      "Next.js :3000  -->  FastAPI :8000",
+      "Admin :8007  |  Case Engine (orchestrator + brain)",
+      "Rules :8016  RAG :8017  Graph :8018",
+      "Redaction :8019  Audit :8020",
+      "Postgres (public + knowledge.*)  Redis :6379"
+    ].join("\\n");
+
+    const endpoints = [
+      ["API", "/health"],
+      ["Admin", "http://localhost:8007/health"],
+      ["Rules", "http://localhost:8016/health"],
+      ["RAG", "http://localhost:8017/health"],
+      ["Graph", "http://localhost:8018/health"],
+      ["Redaction", "http://localhost:8019/health"],
+      ["Audit", "http://localhost:8020/health"]
+    ];
+
+    const list = document.getElementById("health-list");
+    endpoints.forEach(function (pair) {
+      const li = document.createElement("li");
+      li.textContent = pair[0] + ": checking...";
+      list.appendChild(li);
+      fetch(pair[1]).then(function (r) {
+        li.textContent = pair[0] + ": " + (r.ok ? "OK (" + r.status + ")" : "FAIL (" + r.status + ")");
+      }).catch(function () {
+        li.textContent = pair[0] + ": unreachable";
+      });
+    });
+  </script>
+</body>
+</html>

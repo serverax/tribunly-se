@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 _VALID_TYPES = {
     "legal_source_reindex", "assessment_complete", "payment_received",
     "account_delete_request", "evaluation_job", "audit_export", "human_review_created",
-    "evidence_parsed",
+    "evidence_parsed", "ingestion_proposal_approved",
 }
 
 

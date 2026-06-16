@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin dashboard  -  lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-shell">
+  <header class="admin-topbar">
+    <span class="brand">lawapp Admin</span>
+    <nav id="admin-nav" aria-label="Admin sections"></nav>
+  </header>
+  <div id="admin-denied" class="admin-denied" style="display:none;">
+    <h1>Access denied</h1>
+    <p class="cos-muted">Reviewer admin role required (SSO/MFA per owner policy).</p>
+    <a href="/pages/dashboard.html">Return to workspace</a>
+  </div>
+  <div id="admin-content" class="admin-content">
+    <h1>Control center overview</h1>
+    <p class="cos-muted">Live metrics from PostgreSQL. Port 8007 admin service for service-boundary deploys.</p>
+    <div id="admin-stats" class="admin-grid" style="margin-top:1.25rem;"></div>
+    <p id="admin-status" class="cos-muted" style="margin-top:1rem;"></p>
+  </div>
+  <script src="/js/auth.js"></script>
+  <script src="/js/admin-shell.js"></script>
+  <script>
+  (async function () {
+    if (!(await LAWAPP_ADMIN.init())) return;
+    var stats = document.getElementById("admin-stats");
+    var status = document.getElementById("admin-status");
+    status.textContent = "Loading...";
+    try {
+      var cases = await LAWAPP_ADMIN.fetch("/admin/cases");
+      var users = await LAWAPP_ADMIN.fetch("/admin/users");
+      var logs = await LAWAPP_ADMIN.fetch("/admin/ai-logs");
+      var compliance = await LAWAPP_ADMIN.fetch("/admin/compliance");
+      var health = await LAWAPP_ADMIN.fetch("/admin/system-health");
+      function card(label, value) {
+        var d = document.createElement("div");
+        d.className = "admin-stat";
+        d.innerHTML = "<span>" + label + "</span><strong>" + value + "</strong>";
+        return d;
+      }
+      stats.append(
+        card("Active cases", cases.total || 0),
+        card("Users", users.total || 0),
+        card("AI traces", logs.total || 0),
+        card("Weak grounding flags", compliance.weak_grounding_total || 0),
+        card("Database", (health.database && health.database.status) || "unknown")
+      );
+      status.textContent = "Updated " + new Date().toLocaleString("en-GB");
+    } catch (e) {
+      status.textContent = e.message || "Failed to load dashboard";
+    }
+  })();
+  </script>
+</body>
+</html>

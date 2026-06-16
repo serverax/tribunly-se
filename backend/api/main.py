@@ -173,6 +173,9 @@ app = FastAPI(
 app.state.limiter = _limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+from backend.api.admin_workspace_routes import router as _admin_workspace_router
+app.include_router(_admin_workspace_router)
+
 
 @app.middleware("http")
 async def _auth_cookie_to_bearer(request: Request, call_next):
@@ -233,6 +236,9 @@ app.include_router(_features_router)
 from backend.api.feedback_routes import router as _feedback_router
 app.include_router(_feedback_router)
 
+from backend.api.ingestion_proposal_routes import router as _ingestion_proposal_router
+app.include_router(_ingestion_proposal_router)
+
 # ── Free-tool login wall / resume-state routes ────────────────────────────────
 from backend.api.login_gate_routes import router as _login_gate_router
 app.include_router(_login_gate_router)
@@ -267,6 +273,13 @@ if _CLIENT_DIR.exists():
         target = _CLIENT_DIR / "pages" / page_name
         if not target.exists() or not page_name.endswith(".html"):
             raise HTTPException(status_code=404, detail="Page not found")
+        return FileResponse(str(target))
+
+    @app.get("/admin/{page_name}", include_in_schema=False)
+    def serve_admin_page(page_name: str):
+        target = _CLIENT_DIR / "admin" / page_name
+        if not target.exists() or not page_name.endswith(".html"):
+            raise HTTPException(status_code=404, detail="Admin page not found")
         return FileResponse(str(target))
 
 
@@ -382,7 +395,7 @@ def get_me(
     try:
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT id, email, created_at, subscription_status FROM users WHERE id = %s::uuid",
+                "SELECT id, email, created_at, subscription_status, COALESCE(is_admin, false) FROM users WHERE id = %s::uuid",
                 (_uid,),
             )
             row = cur.fetchone()
@@ -393,6 +406,7 @@ def get_me(
             "email":               row[1],
             "created_at":          row[2].isoformat(),
             "subscription_status": row[3],
+            "is_admin":            bool(row[4]) if len(row) > 4 else False,
         }
     finally:
         conn.close()

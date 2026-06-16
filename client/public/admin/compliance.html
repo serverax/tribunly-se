@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compliance  -  lawapp Admin</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-shell">
+  <header class="admin-topbar">
+    <span class="brand">lawapp Admin</span>
+    <nav id="admin-nav"></nav>
+  </header>
+  <div id="admin-denied" class="admin-denied" style="display:none;"><h1>Access denied</h1></div>
+  <div id="admin-content" class="admin-content">
+    <h1>CitationGuard compliance</h1>
+    <p class="cos-muted">Weak grounding and failed citation flags from brain_traces.</p>
+    <div class="admin-table-wrap" style="margin-top:1rem;">
+      <table class="admin-table" id="flags-table">
+        <thead><tr><th>Trace</th><th>Verdict</th><th>Failed cites</th><th>Status</th><th>Flag</th><th>When</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p id="admin-status" class="cos-muted" style="margin-top:1rem;"></p>
+  </div>
+  <script src="/js/auth.js"></script>
+  <script src="/js/admin-shell.js"></script>
+  <script>
+  (async function () {
+    if (!(await LAWAPP_ADMIN.init())) return;
+    var tbody = document.querySelector("#flags-table tbody");
+    try {
+      var data = await LAWAPP_ADMIN.fetch("/admin/compliance");
+      (data.flags || []).forEach(function (f) {
+        var tr = document.createElement("tr");
+        var badge = f.weak_grounding
+          ? "<span class='admin-badge admin-badge--warn'>weak</span>"
+          : "<span class='admin-badge admin-badge--ok'>ok</span>";
+        tr.innerHTML = "<td>" + (f.trace_id || "") + "</td><td>" + (f.compliance_verdict || "-") +
+          "</td><td>" + (f.citations_failed || 0) + "</td><td>" + (f.final_status || "") +
+          "</td><td>" + badge + "</td><td>" + (f.created_at || "") + "</td>";
+        tbody.appendChild(tr);
+      });
+      document.getElementById("admin-status").textContent =
+        (data.weak_grounding_total || 0) + " weak grounding rows total";
+    } catch (e) {
+      document.getElementById("admin-status").textContent = e.message;
+    }
+  })();
+  </script>
+</body>
+</html>

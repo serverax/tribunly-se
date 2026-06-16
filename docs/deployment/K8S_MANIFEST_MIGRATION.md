@@ -25,6 +25,8 @@
 4. Staging apply uses `infra/k8s/` only (separate staging cluster per Q12).
 5. Remove `k8s/` after owner staging smoke.
 
+See also [`../../infra/k8s/K8S_DEPLOYMENT_MAP.md`](../../infra/k8s/K8S_DEPLOYMENT_MAP.md) for manifest-to-workload mapping.
+
 ## Embedding env (Q5)
 
 ConfigMaps under `infra/k8s/` must use:

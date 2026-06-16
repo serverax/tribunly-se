@@ -1,0 +1,126 @@
+Cursor Rule — LawApp Handoff Auto-Generator
+Trigger Condition
+
+When context usage reaches 97% or higher, Cursor must automatically generate a handoff snapshot.
+
+If exact context metrics are not directly available, simulate trigger when:
+
+long session + major multi-step build progress
+or user requests continuation / recovery / sync
+Action to Execute (MANDATORY)
+
+Generate the following files under:
+
+docs/handoff/
+Required Files
+HANDOFF.md
+ARCHITECTURE_STATE.md
+DEPLOYMENT_STATE.md
+NEXT_TASKS.md
+KNOWN_ISSUES.md
+File Content Rules
+1. HANDOFF.md (FULL STATE SNAPSHOT)
+
+Must include:
+
+What was completed (bullet list)
+What was modified recently
+What is currently running (services, pipelines, agents)
+What is broken / failing
+Git branch name
+Last commit hash
+Current build phase (from 01–06)
+RAG status (retrieval, embeddings, rules DB)
+Agent status (orchestration + reasoning + governance)
+Notes on legal compliance / guardrails status
+2. ARCHITECTURE_STATE.md
+
+Must include:
+
+Frontend state (Next.js / UI / WASM status)
+Backend state (API, orchestration layer)
+RAG state (pgvector, embeddings, ingestion)
+Graph RAG state (if implemented or partial)
+Database state (tables + migrations + rules table status)
+Security state (encryption, GDPR, de-identification)
+Kubernetes / deployment state (if applicable)
+3. DEPLOYMENT_STATE.md
+
+Must include:
+
+Namespaces (lawapp-api, lawapp-rag, etc.)
+Services running
+Secrets configured
+Ingress status
+Pods status
+Health checks (API, DB, RAG, worker)
+Any failing deployments or CrashLoopBackOffs
+4. NEXT_TASKS.md
+
+Must include:
+
+Highest priority tasks (top 5 max)
+Blocking issues
+Required fixes before next phase
+Phase alignment (Phase 1–6 mapping)
+Immediate next execution steps (actionable commands/tasks)
+5. KNOWN_ISSUES.md
+
+Must include:
+
+Open bugs
+Technical debt
+Failing tests
+Missing integrations
+Data ingestion gaps
+Legal data verification issues
+Any unstable components in pipeline
+GLOBAL RULES
+1. No guessing
+
+If state is unknown:
+
+write: UNKNOWN - requires verification
+do not fabricate
+2. Must be deterministic
+
+All outputs must reflect:
+
+real repo state
+real services
+real database status
+3. Must align with LawApp architecture
+
+Use only:
+
+lawapp-api
+lawapp-rag
+lawapp-ai
+lawapp-security
+lawapp-monitoring
+
+Do NOT introduce new namespaces.
+
+4. File Style
+Use clean Markdown
+No fluff
+Short bullet points
+Engineering-focused
+Production-level clarity
+5. Always include snapshot metadata in HANDOFF.md
+
+Example:
+
+Generated: <timestamp>
+Repo: serverax/lawapp
+Branch: <current branch>
+Commit: <hash>
+Phase: <current phase>
+BEHAVIOR RULE
+
+When triggered:
+
+STOP current execution
+Generate all 5 files
+Ensure consistency across all states
+Do not continue coding until handoff is complete

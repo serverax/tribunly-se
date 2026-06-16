@@ -345,10 +345,23 @@ services:
       - "${GRAPH_RAG_SERVICE_PORT:-8018}:8018"
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       PORT: "8018"
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      NEO4J_ENABLED: ${NEO4J_ENABLED:-false}
+      NEO4J_URI: ${NEO4J_URI:-bolt://neo4j:7687}
+      NEO4J_USER: ${NEO4J_USER:-neo4j}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:-lawapp_dev_only}
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8018/health', timeout=5)"]
@@ -356,6 +369,25 @@ services:
       timeout: 5s
       retries: 6
       start_period: 5s
+
+  neo4j:
+    image: neo4j:5
+    profiles: [graph-neo4j]
+    restart: unless-stopped
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      # Dev credentials only. Do not use in production.
+      NEO4J_AUTH: neo4j/lawapp_dev_only
+    volumes:
+      - neo4jdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # ────────────────────────────────────────────────────────────────
   # APPLICATION SERVICES (case, admin, notifications)
@@ -428,6 +460,68 @@ services:
       retries: 6
       start_period: 5s
 
+  # NestJS control-plane sidecar (orchestration on :3001).
+  # Proxies legal reasoning to backend:8000/assess; does not bypass CitationGuard.
+  control-plane:
+    build:
+      context: ./control-plane
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${CONTROL_PLANE_PORT:-3001}:3001"
+    environment:
+      PORT: "3001"
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-lawapp}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-lawapp}"
+      REDIS_URL: "redis://redis:6379"
+      LAWAPP_API_URL: ${LAWAPP_API_URL:-http://backend:8000}
+      GRAPH_RAG_SERVICE_URL: ${GRAPH_RAG_SERVICE_URL:-http://lawapp-graph-rag-service:8018}
+      OLLAMA_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
+      ALLOW_EXTERNAL_LLM: ${ALLOW_EXTERNAL_LLM:-false}
+      NEO4J_ENABLED: ${NEO4J_ENABLED:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3001/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  # Next.js frontend (production target UI on port 3000).
+  # Static HTML remains on backend :8000 until full cutover.
+  frontend-next:
+    build:
+      context: ./client/next
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 6
+      start_period: 30s
+
   # Optional local Ollama for dev  -  enable with: docker compose --profile ollama up -d ollama
   # Then set LAWAPP_OLLAMA_BASE_URL=http://ollama:11434 on backend (or use host.docker.internal).
   ollama:
@@ -449,3 +543,4 @@ services:
 volumes:
   pgdata:
   ollama_data:
+  neo4jdata:

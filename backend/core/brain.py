@@ -18,7 +18,9 @@ or document generator may answer directly without Brain authorisation.
   11. Retrieve cited legal evidence (hybrid search)
   12. Verify citations
   13. Compress context while preserving citations
-  14. Generate structured draft assessment
+  14. Generate structured draft assessment (includes CitationGuard)
+  14b. Legal Truth Validator (DB cross-check, after CitationGuard)
+  14c. Knowledge proposal queue (if gap detected, no direct DB write)
   15. Evaluate draft
   16. Apply legal boundary and safety policy
   17. Save case memory (only if user authenticated and consented)
@@ -27,7 +29,10 @@ or document generator may answer directly without Brain authorisation.
 
 GUARDRAIL: The Brain is the ONLY authorised entry point to the reasoning layer.
            All downstream modules are called BY the Brain, never directly.
-GUARDRAIL: No answer leaves the Brain without passing steps 15 and 16.
+GUARDRAIL: Pipeline order (DB-first Legal Truth):
+           Ingestion (external) -> Local DB -> RAG+Graph retrieve -> Rules engine (SQL)
+           -> LLM explain only -> CitationGuard -> Legal Truth Validator -> Response.
+           Controlled gaps -> knowledge.ingestion_proposals only (never direct rules INSERT).
 GUARDRAIL: No case memory is saved without user_id, case_id, and consent.
 """
 
@@ -753,12 +758,17 @@ def run_brain(
     bundle = None
     graph_context: dict = {}
     try:
-        from backend.core.retrieve import retrieve
-        bundle = retrieve(message, claim_type, j, edt)
+        from backend.core.retrieve import retrieve_hybrid
+        bundle = retrieve_hybrid(
+            message,
+            claim_type,
+            j,
+            edt,
+            use_graph=rag_selection["use_graph"],
+        )
         trace.sources_count = len(getattr(bundle, "authorities", []))
-
-        # Enrich with legal graph if selected
-        if rag_selection["use_graph"]:
+        graph_context = getattr(bundle, "graph", None) or {}
+        if not graph_context and rag_selection["use_graph"]:
             from backend.core.legal_graph import get_claim_subgraph
             graph_context = get_claim_subgraph(claim_type, j, max_depth=2)
     except Exception as exc:
@@ -767,6 +777,7 @@ def run_brain(
         "sources_count":        trace.sources_count,
         "insufficient_grounding": getattr(bundle, "insufficient_grounding", True),
         "graph_nodes":          len(graph_context.get("nodes", [])),
+        "graph_engine":         graph_context.get("engine"),
     })
 
     # ── Step 11b: Orchestrate agents (classify → route → delegate → merge) ─────
@@ -884,6 +895,54 @@ def run_brain(
                       assessment.get("status", "error"),
                       {"status": assessment.get("status")})
 
+    # ── Legal Truth Validator (after CitationGuard inside pipeline) ───────────
+    lt_result = None
+    proposal_row = None
+    try:
+        from backend.core.legal_truth_validator import (
+            validate_legal_truth,
+            apply_validation_to_assessment,
+        )
+        lt_result = validate_legal_truth(
+            assessment,
+            bundle=bundle,
+            rules=rules_list,
+            trace_id=trace_id,
+        )
+        trace.record_step(
+            "legal_truth_validation",
+            "pass" if lt_result.passed else lt_result.status,
+            lt_result.to_dict(),
+        )
+        if not lt_result.passed:
+            assessment = apply_validation_to_assessment(assessment, lt_result)
+        if lt_result.gaps_detected:
+            from backend.core.knowledge_proposer import propose_knowledge_gap
+            gap_type = "missing_rule"
+            if any(g.startswith("missing_rule:") for g in lt_result.gaps_detected):
+                gap_type = "missing_rule"
+            elif "missing_citations" in lt_result.gaps_detected:
+                gap_type = "missing_provision"
+            proposal_row = propose_knowledge_gap(
+                gap_type,
+                {
+                    "gaps": lt_result.gaps_detected,
+                    "mismatches": lt_result.mismatches,
+                    "claim_type": claim_type,
+                    "trace_id": trace_id,
+                },
+                proposed_by="llm",
+                trace_id=trace_id,
+            )
+            trace.record_step(
+                "knowledge_proposal_created",
+                "ok" if proposal_row else "skipped",
+                {"proposal_id": (proposal_row or {}).get("id"), "gaps": lt_result.gaps_detected},
+            )
+    except Exception as exc:
+        logger.warning("Legal truth validation skipped: %s", exc)
+        trace.record_step("legal_truth_validation", "skipped", {"reason": str(exc)})
+
     # ── Step 15: Evaluate draft ────────────────────────────────────────────────
     eval_passed = None
     eval_reason = ""
@@ -999,6 +1058,15 @@ def run_brain(
     # ── Step 18: Store decision trace and audit log ───────────────────────────
     audit_id = None
     try:
+        _strength_map = {"high": 0.85, "medium": 0.55, "low": 0.3, "uncertain": 0.45}
+        _assess_strength = (assessment.get("strength") or "").lower()
+        _confidence = _strength_map.get(_assess_strength)
+        try:
+            from backend.core.inference_policy import get_ollama_model as _model_name
+            _model_ver = _model_name()
+        except Exception:
+            _model_ver = None
+        _input_summary = (message or "")[:500] if message else None
         audit_id = _write_brain_audit(
             trace_id           = trace_id,
             user_id            = user_id,
@@ -1018,6 +1086,11 @@ def run_brain(
             compliance_verdict = trace.compliance_verdict,
             reasoning_chain_summary = trace.reasoning_chain_summary,
             orchestration_stages = trace.orchestration_stages,
+            input_summary        = _input_summary,
+            retrieved_sources    = rag_selection.get("sources") or trace.rag_sources,
+            reasoning_trace      = trace.steps,
+            confidence           = _confidence,
+            model_version        = _model_ver,
         )
     except Exception as exc:
         logger.debug("Brain audit write skipped: %s", exc)
@@ -1099,6 +1172,11 @@ def _write_brain_audit(
     compliance_verdict: Optional[str] = None,
     reasoning_chain_summary: Optional[dict] = None,
     orchestration_stages: Optional[list] = None,
+    input_summary: Optional[str] = None,
+    retrieved_sources: Optional[list] = None,
+    reasoning_trace: Optional[list] = None,
+    confidence: Optional[float] = None,
+    model_version: Optional[str] = None,
 ) -> Optional[str]:
     """
     Write brain trace to brain_traces table. Returns trace_id on success.
@@ -1117,14 +1195,18 @@ def _write_brain_audit(
                     citations_verified, citations_failed,
                     evidence_gaps, evaluation_passed, final_status,
                     missing_facts, rag_sources, safety_passed, memory_saved,
-                    compliance_verdict, reasoning_chain_summary, orchestration_stages
+                    compliance_verdict, reasoning_chain_summary, orchestration_stages,
+                    input_summary, retrieved_sources, reasoning_trace,
+                    confidence, model_version
                 ) VALUES (
                     %s, %s::uuid, %s::uuid, %s,
                     %s::jsonb, %s, %s,
                     %s, %s,
                     %s::jsonb, %s, %s,
                     %s::jsonb, %s::jsonb, %s, %s,
-                    %s, %s::jsonb, %s::jsonb
+                    %s, %s::jsonb, %s::jsonb,
+                    %s, %s::jsonb, %s::jsonb,
+                    %s, %s
                 )
                 ON CONFLICT (trace_id) DO NOTHING
                 RETURNING trace_id
@@ -1149,6 +1231,11 @@ def _write_brain_audit(
                     compliance_verdict,
                     json.dumps(reasoning_chain_summary or {}),
                     json.dumps(orchestration_stages or []),
+                    input_summary,
+                    json.dumps(retrieved_sources if retrieved_sources is not None else rag_sources),
+                    json.dumps(reasoning_trace or orchestration_stages or []),
+                    confidence,
+                    model_version,
                 ),
             )
             conn.commit()

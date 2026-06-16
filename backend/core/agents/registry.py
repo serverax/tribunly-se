@@ -404,6 +404,13 @@ class AgentRegistry:
             DocumentDraftingAgent(),
         ]:
             self._agents[agent.name] = agent
+        try:
+            from backend.core.agents.swarm_agents import SWARM_AGENTS
+
+            for agent in SWARM_AGENTS:
+                self._agents[agent.name] = agent
+        except Exception as exc:
+            logger.warning("Swarm agent registration skipped: %s", exc)
 
     def get(self, name: str) -> Optional[LegalAgent]:
         return self._agents.get(name)

@@ -1,0 +1,136 @@
+/* Workspace split layout: left nav + content, right AI panel */
+
+.workspace-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.workspace-header {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+  margin-bottom: 0.5rem;
+}
+
+.workspace-header-metrics {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+}
+
+.workspace-metric {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+}
+
+.workspace-metric-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.workspace-metric-value {
+  font-family: var(--cos-font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 0.25rem;
+}
+
+.workspace-body {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.workspace-left {
+  min-width: 0;
+}
+
+.workspace-main {
+  min-width: 0;
+}
+
+.workspace-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.workspace-tabs a,
+.workspace-tabs button {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--cos-touch);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.workspace-tabs a[aria-current="true"],
+.workspace-tabs button[aria-current="true"] {
+  background: var(--teal-tint);
+  border-color: var(--teal-300);
+  color: var(--teal-700);
+}
+
+.workspace-tab-panel {
+  display: none;
+}
+
+.workspace-tab-panel.is-active {
+  display: block;
+}
+
+.workspace-ai-panel .cos-panel + .cos-panel {
+  margin-top: 0.75rem;
+}
+
+.workspace-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.workspace-list li {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.workspace-list li:last-child {
+  border-bottom: none;
+}
+
+.workspace-note-form textarea {
+  width: 100%;
+  min-height: 5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+@media (min-width: 1025px) {
+  .workspace-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+
+  .workspace-body {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+}

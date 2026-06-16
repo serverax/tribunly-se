@@ -448,6 +448,40 @@ async def get_module_coverage(x_trace_id: Optional[str] = Header(None)):
             conn.close()
 
 
+# ────────────────────────────────────────────────────────────────────
+# INGESTION PROPOSALS (controlled write-back queue)
+# ────────────────────────────────────────────────────────────────────
+
+def _check_admin_key(x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")) -> str:
+    configured = os.getenv("ADMIN_API_KEY", "")
+    if configured and x_admin_key != configured:
+        raise HTTPException(status_code=403, detail="Invalid or missing X-Admin-Key")
+    return x_admin_key or "dev-open"
+
+
+@app.get("/api/admin/ingestion-proposals")
+async def admin_list_ingestion_proposals(
+    approval_status: Optional[str] = None,
+    limit: int = 50,
+    _admin: str = Depends(_check_admin_key),
+):
+    from backend.core.knowledge_proposer import list_proposals
+    items = list_proposals(approval_status=approval_status, limit=limit)
+    return {"items": items, "count": len(items)}
+
+
+@app.post("/api/admin/ingestion-proposals/{proposal_id}/approve")
+async def admin_approve_ingestion_proposal(
+    proposal_id: str,
+    _admin: str = Depends(_check_admin_key),
+):
+    from backend.core.knowledge_proposer import approve_proposal
+    result = approve_proposal(proposal_id, reviewed_by="admin_service")
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail=result.get("error", "approve_failed"))
+    return result
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8007)

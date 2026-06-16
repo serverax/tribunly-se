@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI logs  -  lawapp Admin</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-shell">
+  <header class="admin-topbar">
+    <span class="brand">lawapp Admin</span>
+    <nav id="admin-nav"></nav>
+  </header>
+  <div id="admin-denied" class="admin-denied" style="display:none;"><h1>Access denied</h1></div>
+  <div id="admin-content" class="admin-content">
+    <h1>AI decision logs</h1>
+    <p class="cos-muted">brain_traces with sources, confidence, and CitationGuard outcomes.</p>
+    <div class="admin-table-wrap" style="margin-top:1rem;">
+      <table class="admin-table" id="logs-table">
+        <thead><tr><th>Trace</th><th>Case</th><th>Model</th><th>Confidence</th><th>Citations</th><th>Status</th><th>When</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p id="admin-status" class="cos-muted" style="margin-top:1rem;"></p>
+  </div>
+  <script src="/js/auth.js"></script>
+  <script src="/js/admin-shell.js"></script>
+  <script>
+  (async function () {
+    if (!(await LAWAPP_ADMIN.init())) return;
+    var tbody = document.querySelector("#logs-table tbody");
+    try {
+      var data = await LAWAPP_ADMIN.fetch("/admin/ai-logs");
+      (data.logs || []).forEach(function (l) {
+        var tr = document.createElement("tr");
+        var cites = (l.citations_verified || 0) + " ok / " + (l.citations_failed || 0) + " fail";
+        tr.innerHTML = "<td>" + (l.trace_id || "") + "</td><td>" + (l.case_id || "-") +
+          "</td><td>" + (l.model_version || "-") + "</td><td>" + (l.confidence != null ? l.confidence : "-") +
+          "</td><td>" + cites + "</td><td>" + (l.final_status || "") +
+          "</td><td>" + (l.created_at || "") + "</td>";
+        tbody.appendChild(tr);
+      });
+      document.getElementById("admin-status").textContent =
+        "Showing " + (data.count || 0) + " traces";
+    } catch (e) {
+      document.getElementById("admin-status").textContent = e.message;
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -29,8 +29,11 @@ import uvicorn
 
 from backend.core.rag.graphrag_traversal import (
     build_legal_path,
+    build_legal_path_cached,
     find_deadlines_for_claim,
     find_remedies_for_claim,
+    graph_engine_mode,
+    search_legal_graph_cached,
     traverse_requirements,
 )
 from ingestion.db import get_connection
@@ -140,16 +143,24 @@ async def add_trace_id(request, call_next):
 async def health_check():
     """Liveness probe."""
     from datetime import datetime
+    from backend.core.rag.graphrag_traversal import health as graph_health
+
+    gh = graph_health()
     return {
-        "status": "ok",
+        "status": gh.get("status", "ok"),
         "timestamp": datetime.utcnow().isoformat(),
+        "engine": gh.get("engine"),
+        "mode": gh.get("mode"),
     }
 
 
 @app.get("/ready", response_model=ReadinessResponse)
 async def readiness_check():
-    """Readiness probe. Returns 503 if database unavailable."""
+    """Readiness probe. Postgres always required; Neo4j optional when enabled."""
+    from backend.core.rag.neo4j_traversal import neo4j_enabled
+
     db_ok = False
+    engine = graph_engine_mode()
 
     try:
         conn = get_connection()
@@ -164,8 +175,10 @@ async def readiness_check():
         raise HTTPException(status_code=503, detail="Database unavailable")
 
     return {
-        "status": "ready" if db_ok else "not_ready",
+        "status": "ready",
         "database_connected": db_ok,
+        "engine": engine,
+        "neo4j_enabled": neo4j_enabled(),
     }
 
 
@@ -182,10 +195,11 @@ async def graphrag_traverse(
     Returns path nodes with confidence score and missing prerequisites.
     """
     try:
-        path_result = build_legal_path(
+        path_result = build_legal_path_cached(
             claim_type=request.claim_type,
             module=request.module,
             jurisdiction=request.jurisdiction,
+            query=request.claim_type,
         )
 
         # Convert path nodes to Pydantic models
@@ -232,6 +246,73 @@ async def graphrag_traverse(
     except Exception as e:
         logger.error(f"GraphRAG traversal failed: {e}\n{traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"GraphRAG traversal failed: {str(e)}")
+
+
+@app.post("/api/graph/search", response_model=GraphSearchResponse)
+async def graph_search(
+    request: GraphSearchRequest,
+    x_trace_id: Optional[str] = Header(None),
+):
+    """Natural-language graph search (hybrid Neo4j or Postgres)."""
+    try:
+        result = search_legal_graph_cached(
+            query=request.query,
+            jurisdiction=request.jurisdiction,
+            limit=request.limit,
+        )
+        path_nodes = [
+            LegalNode(
+                node_id=n["node_id"],
+                node_type=n["node_type"],
+                label=n["label"],
+                description=n.get("description"),
+                authority_level=n.get("authority_level", 2),
+                source_ref=n.get("source_ref"),
+                source_url=n.get("source_url"),
+                required=n.get("required", False),
+                depth=n.get("depth", 0),
+            )
+            for n in result.get("path", [])
+        ]
+        match_nodes = [
+            LegalNode(
+                node_id=n["node_id"],
+                node_type=n["node_type"],
+                label=n["label"],
+                description=n.get("description"),
+                authority_level=n.get("authority_level", 2),
+                source_ref=n.get("source_ref"),
+                source_url=n.get("source_url"),
+                required=n.get("required", False),
+                depth=n.get("depth", 0),
+            )
+            for n in result.get("matches", [])
+        ]
+        edges = [
+            LegalEdge(
+                from_node_id=e["from"],
+                to_node_id=e["to"],
+                relationship=e["relationship"],
+                weight=e.get("weight", 1.0),
+                notes=e.get("notes"),
+            )
+            for e in result.get("edges", [])
+        ]
+        return GraphSearchResponse(
+            query=request.query,
+            claim_type=result.get("claim_type", ""),
+            path=path_nodes,
+            edges=edges,
+            matches=match_nodes,
+            confidence=result.get("confidence", 0.0),
+            jurisdiction=request.jurisdiction,
+            engine=result.get("engine", graph_engine_mode()),
+            cache_hit=bool(result.get("cache_hit")),
+            trace_id=x_trace_id,
+        )
+    except Exception as e:
+        logger.error(f"Graph search failed: {e}\n{traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Graph search failed: {str(e)}")
 
 
 # ── Requirements Endpoint ──────────────────────────────────────────────

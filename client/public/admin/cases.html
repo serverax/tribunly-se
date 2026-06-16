@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin cases  -  lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-shell">
+  <header class="admin-topbar">
+    <span class="brand">lawapp Admin</span>
+    <nav id="admin-nav" aria-label="Admin sections"></nav>
+  </header>
+  <div id="admin-denied" class="admin-denied" style="display:none;">
+    <h1>Access denied</h1>
+    <p>Admin role required.</p>
+  </div>
+  <div id="admin-content" class="admin-content">
+    <h1>Active cases</h1>
+    <div class="admin-table-wrap" style="margin-top:1rem;">
+      <table class="admin-table" id="cases-table">
+        <thead><tr><th>Case</th><th>User</th><th>Type</th><th>Status</th><th>Strength</th><th>Deadline</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p id="admin-status" class="cos-muted" style="margin-top:1rem;"></p>
+  </div>
+  <script src="/js/auth.js"></script>
+  <script src="/js/admin-shell.js"></script>
+  <script>
+  (async function () {
+    if (!(await LAWAPP_ADMIN.init())) return;
+    var tbody = document.querySelector("#cases-table tbody");
+    var status = document.getElementById("admin-status");
+    try {
+      var data = await LAWAPP_ADMIN.fetch("/admin/cases");
+      (data.cases || []).forEach(function (c) {
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + (c.case_id || "") + "</td><td>" + (c.user_email || c.user_id || "") +
+          "</td><td>" + (c.claim_type || "") + "</td><td>" + (c.status || "") +
+          "</td><td>" + (c.strength || "-") + "</td><td>" + (c.deadline || "-") + "</td>";
+        tbody.appendChild(tr);
+      });
+      status.textContent = "Showing " + (data.count || 0) + " of " + (data.total || 0);
+    } catch (e) {
+      status.textContent = e.message;
+    }
+  })();
+  </script>
+</body>
+</html>

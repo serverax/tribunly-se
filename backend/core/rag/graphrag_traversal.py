@@ -476,4 +476,67 @@ def traverse(claim_type: str, module: str = "", jurisdiction: str = "EW", **kwar
 
 
 def health() -> dict[str, str]:
+    from backend.core.rag.neo4j_traversal import health as neo4j_health, neo4j_enabled
+
+    if neo4j_enabled():
+        neo = neo4j_health()
+        if neo.get("status") == "ok":
+            return neo
     return GraphRAGTraversal().health()
+
+
+def graph_engine_mode() -> str:
+    from backend.core.rag.neo4j_traversal import neo4j_enabled, health as neo4j_health
+
+    if neo4j_enabled():
+        neo = neo4j_health()
+        if neo.get("status") == "ok":
+            return "neo4j"
+        return "postgres_fallback"
+    return "postgres"
+
+
+def build_legal_path_cached(
+    claim_type: str,
+    module: str,
+    jurisdiction: str = "EW",
+    max_depth: int = 10,
+    query: str = "",
+) -> dict:
+    """Dual-mode legal path with Redis cache (graph:chain:{hash})."""
+    from backend.core.rag.graph_cache import get_cached_chain, set_cached_chain
+    from backend.core.rag.neo4j_traversal import build_legal_chain, neo4j_enabled
+
+    mode = graph_engine_mode()
+    cache_query = query or claim_type
+    cached = get_cached_chain(cache_query, claim_type, jurisdiction, mode)
+    if cached:
+        cached["cache_hit"] = True
+        return cached
+
+    if neo4j_enabled():
+        result = build_legal_chain(claim_type, module, jurisdiction, max_depth)
+    else:
+        result = build_legal_path(claim_type, module, jurisdiction, max_depth)
+        result["engine"] = "postgres"
+
+    result["cache_hit"] = False
+    set_cached_chain(result, cache_query, claim_type, jurisdiction, mode)
+    return result
+
+
+def search_legal_graph_cached(query: str, jurisdiction: str = "EW", limit: int = 10) -> dict:
+    """Natural-language graph search with Redis cache."""
+    from backend.core.rag.graph_cache import get_cached_chain, set_cached_chain
+    from backend.core.rag.neo4j_traversal import search_legal_graph
+
+    mode = graph_engine_mode()
+    cached = get_cached_chain(query, "", jurisdiction, f"search_{mode}")
+    if cached:
+        cached["cache_hit"] = True
+        return cached
+
+    result = search_legal_graph(query, jurisdiction, limit)
+    result["cache_hit"] = False
+    set_cached_chain(result, query, "", jurisdiction, f"search_{mode}")
+    return result

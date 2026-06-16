@@ -84,3 +84,11 @@ class RetrievalBundle(BaseModel):
     exact_rules: list[dict]          # rows from the rules table
     authorities: list[dict]          # cited legislation/case_law/acas chunks
     insufficient_grounding: bool = False
+    citations: list[dict] = Field(default_factory=list)
+    grounding_score: float = 0.0
+    confidence_score: float = 0.0
+    graph: dict = Field(default_factory=dict)
+    semantic: dict = Field(default_factory=dict)
+    rules: list[dict] = Field(default_factory=list)
+
+    model_config = {"extra": "allow"}
