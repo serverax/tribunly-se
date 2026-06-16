@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deadline tracker - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="deadlines">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1>Deadline Tracker</h1>
+    <p>ACAS early conciliation and tribunal limits from the rules engine</p>
+  </div>
+  <div id="dl-loading" class="cos-loading">Calculating deadlines…</div>
+  <div id="dl-error" class="cos-error" style="display:none;"></div>
+  <div id="dl-content" style="display:none;">
+    <div id="deadline-widget"></div>
+    <div class="cos-card" style="margin-top:1.5rem;">
+      <h3>Calculate or update</h3>
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label for="event_date">Dismissal or relevant event date</label>
+        <input type="date" id="event_date" style="width:100%;padding:0.5rem;">
+      </div>
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label for="acas_start">ACAS EC start (optional)</label>
+        <input type="date" id="acas_start" style="width:100%;padding:0.5rem;">
+      </div>
+      <button type="button" class="btn btn-primary" id="btn-recalc">Recalculate</button>
+      <p id="dl-note" style="font-size:0.82rem;color:var(--muted);margin-top:1rem;"></p>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function () {
+  var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
+
+  CaseOSShell.init({ page: "deadlines" }).then(function (ok) {
+    if (!ok) return;
+    var widget = document.getElementById("deadline-widget");
+    var loading = document.getElementById("dl-loading");
+    var content = document.getElementById("dl-content");
+    var errEl = document.getElementById("dl-error");
+
+    function showDeadline(data) {
+      loading.style.display = "none";
+      content.style.display = "block";
+      widget.textContent = "";
+      LAWAPP_COMPONENTS.DeadlineWidget(widget, data);
+      document.getElementById("dl-note").textContent =
+        data.method ? ("Source: " + data.method) : "Calculated via /api/tools/deadline-calculator and case rules.";
+    }
+
+    function loadFromCase() {
+      if (!caseId) {
+        loading.style.display = "none";
+        content.style.display = "block";
+        document.getElementById("dl-note").textContent = "Enter a date below or select a case from dashboard.";
+        return;
+      }
+      CaseEngine.loadCase(caseId).then(function (b) {
+        var dl = b.deadline || {};
+        var kd = b.case.key_dates || {};
+        if (kd.edt) document.getElementById("event_date").value = kd.edt;
+        if (dl.deadline_date || kd.deadline_date) {
+          showDeadline(Object.assign({}, dl, { deadline_date: dl.deadline_date || kd.deadline_date }));
+        } else if (kd.edt) {
+          recalc(kd.edt);
+        } else {
+          loading.style.display = "none";
+          content.style.display = "block";
+        }
+      }).catch(function (e) {
+        loading.style.display = "none";
+        errEl.style.display = "block";
+        errEl.textContent = e.message;
+      });
+    }
+
+    function recalc(dateStr) {
+      loading.style.display = "block";
+      content.style.display = "none";
+      var acas = document.getElementById("acas_start").value;
+      var params = { event_date: dateStr, event_type: "dismissal", jurisdiction: "EW" };
+      if (acas) {
+        params.acas_start = acas;
+      }
+      CaseEngine.calculateDeadline(params).then(showDeadline).catch(function (e) {
+        loading.style.display = "none";
+        errEl.style.display = "block";
+        errEl.textContent = e.message;
+      });
+    }
+
+    document.getElementById("btn-recalc").addEventListener("click", function () {
+      var d = document.getElementById("event_date").value;
+      if (!d) {
+        errEl.style.display = "block";
+        errEl.textContent = "Enter an event date.";
+        return;
+      }
+      errEl.style.display = "none";
+      recalc(d);
+    });
+
+    loadFromCase();
+  });
+})();
+</script>
+</body>
+</html>

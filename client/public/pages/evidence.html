@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evidence - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="evidence">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1>Evidence board</h1>
+    <p>Upload and tag documents for your case</p>
+  </div>
+  <div id="ev-error" class="cos-error" style="display:none;"></div>
+  <div id="ev-loading" class="cos-loading">Loading evidence…</div>
+  <div id="ev-content" style="display:none;">
+    <div class="cos-upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Upload evidence file">
+      <p><strong>Drop files here</strong> or click to upload</p>
+      <p style="font-size:0.85rem;color:var(--muted);">Contracts, letters, payslips (max per server limits)</p>
+      <input type="file" id="file-input" style="display:none;" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg">
+    </div>
+    <div class="form-group" style="margin:1rem 0;">
+      <label for="doc_tag">Tag (optional)</label>
+      <select id="doc_tag">
+        <option value="contract">Contract</option>
+        <option value="dismissal_letter">Dismissal letter</option>
+        <option value="payslip">Payslip</option>
+        <option value="grievance">Grievance</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div id="evidence-board" style="margin-top:1.5rem;"></div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function () {
+  var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
+
+  CaseOSShell.init({ page: "evidence" }).then(function (ok) {
+    if (!ok) return;
+    if (!caseId) {
+      document.getElementById("ev-loading").style.display = "none";
+      document.getElementById("ev-error").style.display = "block";
+      document.getElementById("ev-error").textContent = "Select a case from the dashboard first.";
+      return;
+    }
+
+    var board = document.getElementById("evidence-board");
+    var errEl = document.getElementById("ev-error");
+
+    function refresh() {
+      return LAWAPP_API.getUploads(caseId).then(function (data) {
+        board.textContent = "";
+        LAWAPP_COMPONENTS.EvidenceBoard(board, data);
+      });
+    }
+
+    CaseEngine.loadCase(caseId).then(function () {
+      document.getElementById("ev-loading").style.display = "none";
+      document.getElementById("ev-content").style.display = "block";
+      return refresh();
+    }).catch(function (e) {
+      document.getElementById("ev-loading").style.display = "none";
+      errEl.style.display = "block";
+      errEl.textContent = e.message;
+    });
+
+    var zone = document.getElementById("upload-zone");
+    var input = document.getElementById("file-input");
+    zone.addEventListener("click", function () { input.click(); });
+    zone.addEventListener("dragover", function (e) { e.preventDefault(); zone.classList.add("dragover"); });
+    zone.addEventListener("dragleave", function () { zone.classList.remove("dragover"); });
+    zone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      zone.classList.remove("dragover");
+      if (e.dataTransfer.files.length) upload(e.dataTransfer.files[0]);
+    });
+    input.addEventListener("change", function () {
+      if (input.files.length) upload(input.files[0]);
+    });
+
+    function upload(file) {
+      errEl.style.display = "none";
+      zone.style.opacity = "0.6";
+      LAWAPP_API.uploadFile(caseId, file).then(function () {
+        zone.style.opacity = "1";
+        input.value = "";
+        return refresh();
+      }).catch(function (e) {
+        zone.style.opacity = "1";
+        errEl.style.display = "block";
+        errEl.textContent = e.message || "Upload failed";
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

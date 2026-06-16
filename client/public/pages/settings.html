@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="settings">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1>Settings</h1>
+    <p>Account and preferences (stub)</p>
+  </div>
+  <div class="cos-card">
+    <h3>Account</h3>
+    <p id="settings-email" style="color:var(--muted);">Loading…</p>
+    <button type="button" class="btn btn-outline" id="btn-logout" style="margin-top:1rem;">Log out</button>
+  </div>
+  <div class="cos-card" style="margin-top:1rem;">
+    <h3>Notifications</h3>
+    <p style="font-size:0.9rem;color:var(--muted);">Deadline reminders via notification service (Wave 2). Configure here in a future release.</p>
+    <label><input type="checkbox" disabled> Email deadline reminders</label>
+  </div>
+  <div class="cos-card" style="margin-top:1rem;">
+    <h3>Beta scope</h3>
+    <p style="font-size:0.9rem;">Controlled beta: 11 employment topics. Module status from API: production, partial, unavailable.</p>
+    <div id="module-status" style="margin-top:0.75rem;"></div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function () {
+  CaseOSShell.init({ page: "settings" }).then(function (ok) {
+    if (!ok) return;
+    LAWAPP_AUTH.getCurrentUser().then(function (u) {
+      document.getElementById("settings-email").textContent = u ? ("Signed in as " + u.email) : "Not signed in";
+    });
+    document.getElementById("btn-logout").addEventListener("click", function () {
+      LAWAPP_AUTH.logout();
+    });
+    LAWAPP_API.featuresKnowledgeModules().then(function (data) {
+      var mods = data.modules || data.items || [];
+      if (window.LAWAPP_COMPONENTS) {
+        LAWAPP_COMPONENTS.ModuleStatusBadge(document.getElementById("module-status"), mods.slice(0, 8));
+      }
+    }).catch(function () {});
+  });
+})();
+</script>
+</body>
+</html>

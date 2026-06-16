@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escalation - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="escalation">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1>Escalation</h1>
+    <p>Solicitor pack and partner referral when you need regulated advice</p>
+  </div>
+  <div id="esc-loading" class="cos-loading">Loading escalation state…</div>
+  <div id="esc-error" class="cos-error" style="display:none;"></div>
+  <div id="esc-content" style="display:none;">
+    <div class="cos-card" id="esc-state-card"></div>
+    <div class="cos-card" style="margin-top:1.5rem;">
+      <h3>Request solicitor referral</h3>
+      <p style="font-size:0.9rem;color:var(--muted);">We refer leads to partner firms. No success fee. SRA-style disclosure applies.</p>
+      <form id="referral-form">
+        <div class="form-group" style="margin:0.75rem 0;"><label>Name <input type="text" id="ref_name" required style="width:100%;padding:0.5rem;"></label></div>
+        <div class="form-group" style="margin:0.75rem 0;"><label>Email <input type="email" id="ref_email" required style="width:100%;padding:0.5rem;"></label></div>
+        <div class="form-group" style="margin:0.75rem 0;"><label>Phone <input type="tel" id="ref_phone" style="width:100%;padding:0.5rem;"></label></div>
+        <label><input type="checkbox" id="ref_consent" required> I consent to sharing my details for a referral (not legal advice from lawapp)</label>
+        <button type="submit" class="btn btn-primary" style="margin-top:1rem;">Submit referral</button>
+      </form>
+      <p id="ref-status" style="margin-top:1rem;font-size:0.9rem;"></p>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function () {
+  var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
+
+  CaseOSShell.init({ page: "escalation" }).then(function (ok) {
+    if (!ok) return;
+
+    var card = document.getElementById("esc-state-card");
+    var loading = document.getElementById("esc-loading");
+    var content = document.getElementById("esc-content");
+
+    function renderEsc(esc) {
+      card.textContent = "";
+      var h = document.createElement("h3");
+      h.textContent = "Current state";
+      card.appendChild(h);
+      var state = esc.state || esc.escalation_state || "none";
+      var pill = document.createElement("span");
+      pill.className = "cos-pill " + (state === "urgent_deadline" ? "cos-pill-red" : "cos-pill-neutral");
+      pill.textContent = state;
+      card.appendChild(pill);
+      if (esc.next_action || esc.recommended_action) {
+        var p = document.createElement("p");
+        p.style.marginTop = "0.75rem";
+        p.textContent = esc.next_action || esc.recommended_action;
+        card.appendChild(p);
+      }
+    }
+
+    if (caseId) {
+      CaseEngine.loadCase(caseId).then(function (b) {
+        loading.style.display = "none";
+        content.style.display = "block";
+        renderEsc(b.escalation || {});
+      }).catch(function (e) {
+        loading.style.display = "none";
+        document.getElementById("esc-error").style.display = "block";
+        document.getElementById("esc-error").textContent = e.message;
+      });
+    } else {
+      loading.style.display = "none";
+      content.style.display = "block";
+      renderEsc({ state: "none", next_action: "Complete intake or select a case." });
+    }
+
+    document.getElementById("referral-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var status = document.getElementById("ref-status");
+      status.textContent = "Submitting…";
+      var payload = {
+        case_id: caseId,
+        name: document.getElementById("ref_name").value.trim(),
+        email: document.getElementById("ref_email").value.trim(),
+        phone: document.getElementById("ref_phone").value.trim() || null,
+        trigger_reason: "seek_solicitor",
+        consent_given: document.getElementById("ref_consent").checked,
+      };
+      CaseEngine.submitReferral(payload).then(function (res) {
+        status.textContent = "Referral captured. Reference: " + (res.lead_id || res.id || "pending");
+        status.style.color = "var(--ok)";
+      }).catch(function (err) {
+        status.textContent = err.message || "Referral failed";
+        status.style.color = "var(--warn)";
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

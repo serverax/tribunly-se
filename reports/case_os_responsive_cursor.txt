@@ -1,0 +1,64 @@
+Case OS responsive proof  -  cursor session
+Branch: release/lawapp-clean-snapshot
+Date: 2026-06-16
+
+Manual test viewports: 375px (mobile), 768px (tablet), 1280px (desktop)
+
+## Core assets
+[x] client/public/css/case-os.css  -  mobile-first breakpoints documented in file header
+[x] client/public/js/app-shell.js  -  sidebar toggle, aria-expanded, focus trap, Escape close
+[x] Fraunces + Inter via Google Fonts with display=swap
+[x] Fluid typography via clamp() on --cos-title, --cos-section, --cos-body
+
+## Breakpoint rules applied
+Mobile (max-width 767px):
+[x] Off-canvas sidebar with overlay
+[x] Hamburger toggle min 44px (.case-os-menu-toggle)
+[x] Bottom nav fixed (5 quick links)
+[x] Full-width panels (.case-os-content, .cos-panel)
+[x] overflow-x hidden on .case-os
+[x] Story steps horizontal scroll (scroll-snap)
+[x] analysis-split single column
+[x] doc-builder-split single column
+[x] wizard-nav stacks (inherits styles.css @768)
+
+Tablet (768px to 1024px):
+[x] Icon rail sidebar (labels visually hidden, icons centered)
+[x] Bottom nav hidden
+[x] analysis-split stacked
+[x] cos-grid--2 single column until desktop
+
+Desktop (min-width 1025px):
+[x] Full text sidebar (15.5rem)
+[x] analysis-split two columns (1.15fr / 0.85fr)
+[x] doc-builder-split two columns
+[x] cos-grid--2 two columns
+[x] story-steps wrap (no forced horizontal scroll)
+
+## Pages checklist (viewport meta on all)
+[x] client/public/index.html  -  Case OS CTA, trust bar, case-os.css linked
+[x] client/public/pages/dashboard.html
+[x] client/public/pages/case-intake.html  -  story builder wizard
+[x] client/public/pages/analysis.html  -  split panels
+[x] client/public/pages/my-case.html
+[x] client/public/pages/deadlines.html  -  deadline progress bar
+[x] client/public/pages/evidence.html  -  evidence upload dropzone
+[x] client/public/pages/documents.html  -  doc builder split
+[x] client/public/pages/escalation.html
+[x] client/public/pages/advisor.html  -  analysis split Q/A
+[x] client/public/pages/settings.html
+
+## Component scaling
+[x] .deadline-progress-track height clamp()
+[x] .strength-meter-bars gap/height clamp()
+[x] .evidence-upload padding clamp()
+[x] Touch targets: nav links, buttons, bottom nav min 44px
+
+## Wiring unchanged
+API calls remain on existing routes (/cases, /assess, uploads, bundle, escalation).
+Layout/CSS/JS shell only.
+
+## Suggested manual checks
+1. 375px: open dashboard, toggle menu, verify no horizontal scroll
+2. 768px: sidebar shows icon rail only
+3. 1280px: analysis.html shows two columns side by side

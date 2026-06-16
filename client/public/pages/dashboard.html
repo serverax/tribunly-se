@@ -3,214 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard  -  lawapp</title>
+  <title>Dashboard - lawapp Case OS</title>
   <link rel="stylesheet" href="/css/styles.css">
-  <style>
-    .case-list { margin-top: 1.5rem; }
-    .case-item {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-      transition: box-shadow 0.2s;
-    }
-    .case-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .case-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.75rem;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .case-title { font-weight: 700; color: var(--primary); margin: 0; }
-    .case-meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
-    .case-summary { font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem; }
-    .case-footer { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
-  </style>
+  <link rel="stylesheet" href="/css/case-os.css">
 </head>
-<body>
+<body class="case-os" data-case-os-page="dashboard">
 
-<div class="legal-notice" role="alert">
-  <strong>Not a law firm. Not legal advice.</strong>
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1>Dashboard</h1>
+    <p id="dash-subtitle">Your employment cases at a glance</p>
+  </div>
+  <div id="dash-error" class="cos-error" style="display:none;"></div>
+  <div id="dash-loading" class="cos-loading">Loading cases…</div>
+  <div id="dash-content" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+      <p id="user-email" style="margin:0;color:var(--muted);font-size:0.9rem;"></p>
+      <a href="/pages/case-intake.html" class="btn btn-primary">Start new case</a>
+    </div>
+    <div id="case-grid" class="cos-grid cos-grid-2"></div>
+    <div id="no-cases" class="cos-empty" style="display:none;">
+      <p>No saved cases yet.</p>
+      <a href="/pages/case-intake.html" class="btn btn-outline">Build your first case</a>
+    </div>
+  </div>
 </div>
 
-<nav>
-  <a href="/" class="brand">lawapp</a>
-  <div class="nav-links">
-    <!-- Updated by auth.js -->
-  </div>
-</nav>
-
-<main class="page">
-  <div id="loading-state" style="padding: 3rem 0; text-align: center;">
-    <div class="spinner"></div>
-    <p style="margin-top:1rem; color:var(--muted);">Loading your dashboard...</p>
-  </div>
-
-  <div id="dashboard-content" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1rem;">
-      <div>
-        <h1 style="color:var(--primary); margin:0;">Dashboard</h1>
-        <p id="user-email" style="color:var(--muted); margin:0.25rem 0 0;"></p>
-      </div>
-      <a href="/pages/intake.html" class="btn btn-primary">Start new diagnosis</a>
-    </div>
-
-    <section>
-      <h2 style="font-size:1.25rem; margin-bottom:1rem;">Your saved cases</h2>
-      <div id="case-list" class="case-list">
-        <!-- Cases populated here -->
-      </div>
-      <div id="no-cases" style="display:none; text-align:center; padding:3rem; background:#f9f9f9; border-radius:8px; border:2px dashed var(--border);">
-        <p style="color:var(--muted); margin-bottom:1rem;">You don't have any saved cases yet.</p>
-        <a href="/pages/intake.html" class="btn btn-outline">Get your first diagnosis</a>
-      </div>
-    </section>
-  </div>
-</main>
-
-<footer>
-  <p>lawapp is not a law firm and does not provide legal advice. All documents are self-help drafts.</p>
-  <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
-</footer>
-
 <script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
 <script>
-(function() {
-  if (!LAWAPP_AUTH.ensureLoggedIn()) return;
-  LAWAPP_AUTH.updateNav();
+(function () {
+  CaseOSShell.init({ page: "dashboard" }).then(function (ok) {
+    if (!ok) return;
+    var grid = document.getElementById("case-grid");
+    var loading = document.getElementById("dash-loading");
+    var content = document.getElementById("dash-content");
+    var noCases = document.getElementById("no-cases");
+    var errEl = document.getElementById("dash-error");
 
-  const loadingEl = document.getElementById('loading-state');
-  const contentEl = document.getElementById('dashboard-content');
-  const userEmailEl = document.getElementById('user-email');
-  const caseListEl = document.getElementById('case-list');
-  const noCasesEl = document.getElementById('no-cases');
-
-  async function init() {
-    try {
-      const userResp = await LAWAPP_AUTH.fetchWithAuth('/auth/me');
-      if (!userResp.ok) throw new Error('Failed to fetch profile');
-      const user = await userResp.json();
-      userEmailEl.textContent = user.email;
-
-      const casesResp = await LAWAPP_AUTH.fetchWithAuth('/cases');
-      if (!casesResp.ok) throw new Error('Failed to fetch cases');
-      const data = await casesResp.json();
-
-      renderCases(data.cases);
-
-      loadingEl.style.display = 'none';
-      contentEl.style.display = 'block';
-    } catch (err) {
-      console.error(err);
-      loadingEl.textContent = 'Error loading dashboard: ' + err.message;
-    }
-  }
-
-  function renderCases(cases) {
-    caseListEl.textContent = '';
-    if (!cases || cases.length === 0) {
-      noCasesEl.style.display = 'block';
-      return;
-    }
-    
-    noCasesEl.style.display = 'none';
-    cases.forEach(c => {
-      const item = document.createElement('div');
-      item.className = 'case-item';
-      
-      const header = document.createElement('div');
-      header.className = 'case-header';
-      
-      const title = document.createElement('h3');
-      title.className = 'case-title';
-      title.textContent = formatClaimType(c.claim_type);
-      
-      const badgeRow = document.createElement('div');
-      badgeRow.style.display = 'flex';
-      badgeRow.style.gap = '.5rem';
-      
-      const vBadge = document.createElement('span');
-      vBadge.className = 'badge ' + (c.assessment?.has_viable_claim || 'uncertain');
-      vBadge.textContent = getViabilityLabel(c.assessment?.has_viable_claim);
-      
-      const sBadge = document.createElement('span');
-      sBadge.className = 'badge';
-      sBadge.style.background = '#e2e8f0';
-      sBadge.style.color = '#4a5568';
-      sBadge.textContent = (c.status || 'diagnosis').toUpperCase();
-      
-      badgeRow.append(vBadge, sBadge);
-      header.append(title, badgeRow);
-      
-      const meta = document.createElement('div');
-      meta.className = 'case-meta';
-      meta.textContent = 'Saved ' + new Date(c.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-      
-      const summary = document.createElement('p');
-      summary.className = 'case-summary';
-      summary.textContent = c.assessment?.reasoning_summary || 'No summary available.';
-      
-      const footer = document.createElement('div');
-      footer.className = 'case-footer';
-      
-      const deadline = c.key_dates?.deadline_date || c.key_dates?.limitation_date;
-      if (deadline) {
-        const dlSpan = document.createElement('span');
-        dlSpan.style.fontSize = '0.85rem';
-        dlSpan.style.marginRight = 'auto';
-        dlSpan.textContent = 'Deadline: ' + formatDate(deadline);
-        footer.appendChild(dlSpan);
-      }
-      
-      const viewBtn = document.createElement('a');
-      viewBtn.href = '/pages/saved_case.html?case_id=' + c.case_id;
-      viewBtn.className = 'btn btn-outline';
-      viewBtn.style.fontSize = '0.85rem';
-      viewBtn.textContent = 'View details';
-      
-      const reopenBtn = document.createElement('a');
-      reopenBtn.href = '/pages/assessment.html';
-      reopenBtn.className = 'btn btn-primary';
-      reopenBtn.style.fontSize = '0.85rem';
-      reopenBtn.textContent = 'Reopen assessment';
-      reopenBtn.onclick = () => {
-        sessionStorage.setItem('assessment_result', JSON.stringify(c.assessment));
-        return true;
-      };
-      
-      footer.append(viewBtn, reopenBtn);
-      
-      item.append(header, meta, summary, footer);
-      caseListEl.appendChild(item);
+    LAWAPP_AUTH.getCurrentUser().then(function (u) {
+      if (u && u.email) document.getElementById("user-email").textContent = u.email;
     });
-  }
 
-  function formatClaimType(type) {
-    if (type === 'unfair_dismissal') return 'Unfair Dismissal';
-    if (type === 'unpaid_wages') return 'Unpaid Wages';
-    return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  }
+    CaseEngine.listCases().then(function (cases) {
+      loading.style.display = "none";
+      content.style.display = "block";
+      if (!cases.length) {
+        noCases.style.display = "block";
+        return;
+      }
+      cases.forEach(function (c) {
+        var card = document.createElement("article");
+        card.className = "cos-card cos-case-card";
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+        var id = c.case_id || c.id;
+        var strength = (c.assessment && c.assessment.strength) || "uncertain";
+        var pillCls = strength === "high" ? "cos-pill-green" : strength === "low" ? "cos-pill-red" : "cos-pill-amber";
 
-  function getViabilityLabel(v) {
-    if (v === 'yes') return 'Viable';
-    if (v === 'no') return 'Unlikely';
-    return 'Uncertain';
-  }
-
-  function formatDate(s) {
-    if (!s) return ' - ';
-    try {
-      const dt = new Date(s.length === 10 ? s + 'T00:00:00' : s);
-      return dt.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-    } catch { return String(s); }
-  }
-
-  init();
+        var h3 = document.createElement("h3");
+        h3.textContent = CaseEngine.formatClaimType(c.claim_type);
+        var meta = document.createElement("div");
+        meta.className = "cos-case-meta";
+        meta.textContent = "Status: " + (c.status || "diagnosis");
+        var pill = document.createElement("span");
+        pill.className = "cos-pill " + pillCls;
+        pill.textContent = strength + " strength";
+        var next = document.createElement("p");
+        next.style.fontSize = "0.88rem";
+        next.style.color = "var(--muted)";
+        next.textContent = (c.assessment && c.assessment.reasoning_summary) || "Open case for analysis and next steps.";
+        var dl = c.key_dates && (c.key_dates.deadline_date || c.key_dates.limitation_date);
+        if (dl) {
+          var dlP = document.createElement("p");
+          dlP.style.fontSize = "0.82rem";
+          dlP.style.marginTop = "0.5rem";
+          dlP.textContent = "Deadline: " + dl;
+          card.appendChild(dlP);
+        }
+        card.append(h3, meta, pill, next);
+        card.addEventListener("click", function () {
+          CaseEngine.setActiveCaseId(id);
+          window.location.href = "/pages/my-case.html?case_id=" + encodeURIComponent(id);
+        });
+        grid.appendChild(card);
+      });
+    }).catch(function (e) {
+      loading.style.display = "none";
+      errEl.style.display = "block";
+      errEl.textContent = e.message || "Failed to load cases";
+    });
+  });
 })();
 </script>
-
 </body>
 </html>

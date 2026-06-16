@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case analysis - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="analysis">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1>Case Analysis Engine</h1>
+    <p>Three reasoning layers: rules, corpus, and citation guard</p>
+  </div>
+  <div id="analysis-loading" class="cos-loading">Running analysis…</div>
+  <div id="analysis-error" class="cos-error" style="display:none;"></div>
+  <div id="analysis-content" style="display:none;">
+    <div class="cos-split">
+      <div>
+        <div class="cos-card">
+          <h3>Your situation</h3>
+          <p id="analysis-summary"></p>
+          <div id="strength-slot"></div>
+        </div>
+        <div class="cos-layer rules">
+          <h4>Layer 1: Rules engine</h4>
+          <p id="layer-rules" style="font-size:0.9rem;color:var(--muted);"></p>
+        </div>
+        <div class="cos-layer corpus">
+          <h4>Layer 2: Corpus retrieval</h4>
+          <p id="layer-corpus" style="font-size:0.9rem;color:var(--muted);"></p>
+        </div>
+        <div class="cos-layer guard">
+          <h4>Layer 3: Citation guard</h4>
+          <p id="layer-guard" style="font-size:0.9rem;color:var(--muted);"></p>
+        </div>
+      </div>
+      <div>
+        <div id="legal-basis-slot"></div>
+        <div id="risk-slot" style="margin-top:1rem;"></div>
+        <div style="margin-top:1.5rem;">
+          <a href="/pages/my-case.html" id="goto-case" class="btn btn-primary">Open case hub</a>
+          <a href="/pages/deadlines.html" class="btn btn-outline" style="margin-left:0.5rem;">Deadlines</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function () {
+  var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
+
+  CaseOSShell.init({ page: "analysis", requireAuth: false }).then(function () {
+    var loading = document.getElementById("analysis-loading");
+    var content = document.getElementById("analysis-content");
+    var errEl = document.getElementById("analysis-error");
+
+    function render(a) {
+      loading.style.display = "none";
+      content.style.display = "block";
+      document.getElementById("analysis-summary").textContent =
+        a.reasoning_summary || a.summary || "Assessment complete.";
+      LAWAPP_COMPONENTS.StrengthMeter(document.getElementById("strength-slot"), {
+        strength: a.strength || "uncertain",
+        note: "Preview uses rules and corpus. ET outcome data not included in beta.",
+      });
+      document.getElementById("layer-rules").textContent =
+        a.rules_applied ? ("Rules: " + (Array.isArray(a.rules_applied) ? a.rules_applied.join(", ") : a.rules_applied)) : "Statutory rules evaluated for your claim type.";
+      document.getElementById("layer-corpus").textContent =
+        (a.citations && a.citations.length) ? (a.citations.length + " corpus sources retrieved.") : "Corpus retrieval ran with grounded chunks.";
+      document.getElementById("layer-guard").textContent =
+        a.citation_guard === "fail" ? "Citations could not be verified. Output withheld." : "Citations checked against indexed sources.";
+      LAWAPP_COMPONENTS.LegalBasis(document.getElementById("legal-basis-slot"), a.citations || a.sources || []);
+      LAWAPP_COMPONENTS.RiskPanel(document.getElementById("risk-slot"), a.risks || a.caveats || []);
+      if (caseId) {
+        document.getElementById("goto-case").href = "/pages/my-case.html?case_id=" + encodeURIComponent(caseId);
+        CaseEngine.setActiveCaseId(caseId);
+      }
+    }
+
+    var raw = sessionStorage.getItem("assessment_result");
+    if (raw) {
+      try { render(JSON.parse(raw)); return; } catch (_) {}
+    }
+
+    if (caseId) {
+      LAWAPP_AUTH.isLoggedIn().then(function (ok) {
+        if (!ok) {
+          errEl.style.display = "block";
+          errEl.textContent = "Log in to load saved analysis, or complete intake first.";
+          loading.style.display = "none";
+          return;
+        }
+        CaseEngine.loadCase(caseId).then(function (bundle) {
+          render(bundle.case.assessment || {});
+        }).catch(function (e) {
+          loading.style.display = "none";
+          errEl.style.display = "block";
+          errEl.textContent = e.message;
+        });
+      });
+      return;
+    }
+
+    var factsRaw = sessionStorage.getItem("assessment_facts");
+    if (factsRaw) {
+      CaseEngine.runClaimAssessment(JSON.parse(factsRaw)).then(render).catch(function (e) {
+        loading.style.display = "none";
+        errEl.style.display = "block";
+        errEl.textContent = e.message;
+      });
+      return;
+    }
+
+    loading.style.display = "none";
+    errEl.style.display = "block";
+    errEl.textContent = "No assessment data. Start from case intake.";
+  });
+})();
+</script>
+</body>
+</html>

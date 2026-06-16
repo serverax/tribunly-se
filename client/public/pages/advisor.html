@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Advisor - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="advisor">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1>AI Advisor</h1>
+    <p>Controlled chat grounded in rules and corpus. Citations shown when verified.</p>
+  </div>
+  <div class="cos-chat">
+    <div class="cos-chat-messages" id="chat-messages" aria-live="polite">
+      <div class="cos-chat-msg assistant">Ask a question about your employment situation. Answers use the controlled chatbot pipeline.</div>
+    </div>
+    <form class="cos-chat-input" id="chat-form">
+      <textarea id="chat-input" rows="2" placeholder="e.g. What is ACAS early conciliation?" required></textarea>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+  <p id="chat-citations" style="font-size:0.82rem;color:var(--muted);margin-top:0.75rem;"></p>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function () {
+  var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
+  var conversationId = sessionStorage.getItem("chat_conversation_id") || null;
+
+  CaseOSShell.init({ page: "advisor" }).then(function (ok) {
+    if (!ok) return;
+
+    var messages = document.getElementById("chat-messages");
+    var citations = document.getElementById("chat-citations");
+
+    function addMsg(text, role) {
+      var div = document.createElement("div");
+      div.className = "cos-chat-msg " + role;
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    document.getElementById("chat-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var input = document.getElementById("chat-input");
+      var text = input.value.trim();
+      if (!text) return;
+      addMsg(text, "user");
+      input.value = "";
+      input.disabled = true;
+
+      LAWAPP_API.chatMessage(text, conversationId, caseId).then(function (res) {
+        input.disabled = false;
+        if (res.conversation_id) {
+          conversationId = res.conversation_id;
+          sessionStorage.setItem("chat_conversation_id", conversationId);
+        }
+        addMsg(res.answer || res.message || res.content || JSON.stringify(res), "assistant");
+        if (res.citations && res.citations.length) {
+          citations.textContent = "Sources: " + res.citations.map(function (c) {
+            return typeof c === "string" ? c : (c.title || c.source || "");
+          }).filter(Boolean).join(" · ");
+        } else {
+          citations.textContent = res.grounding_status ? ("Grounding: " + res.grounding_status) : "";
+        }
+      }).catch(function (err) {
+        input.disabled = false;
+        addMsg("Error: " + (err.message || "Chat unavailable"), "assistant");
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case intake - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+  <style>
+    .intake-step { display: none; }
+    .intake-step.active { display: block; }
+    .intake-progress { height: 8px; background: var(--surface-2); border-radius: 99px; margin-bottom: 1.5rem; overflow: hidden; }
+    .intake-progress-bar { height: 100%; background: var(--cos-gold); transition: width 0.3s; }
+    .intake-nav { display: flex; justify-content: space-between; margin-top: 2rem; gap: 1rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.35rem; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.65rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; }
+  </style>
+</head>
+<body class="case-os" data-case-os-page="case-intake">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<nav>
+  <a href="/" class="brand">lawapp</a>
+  <div class="nav-links"><a href="/">Home</a><a href="/pages/login.html">Log in</a></div>
+</nav>
+
+<main class="page-narrow" style="padding:1.5rem 1rem 3rem;max-width:640px;margin:0 auto;">
+  <h1 class="cos-display" style="color:var(--cos-navy);">Story Builder</h1>
+  <p style="color:var(--muted);">Five steps to build your case. Save when you log in.</p>
+  <p id="beta-note" style="font-size:0.85rem;color:var(--muted);"></p>
+
+  <div class="intake-progress" aria-hidden="true"><div class="intake-progress-bar" id="prog-bar" style="width:20%;"></div></div>
+  <p id="step-label" style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;">Step 1 of 5</p>
+
+  <form id="intake-form" novalidate>
+    <div class="intake-step active" data-step="1">
+      <div class="cos-card">
+        <h3>What happened?</h3>
+        <div class="form-group"><label for="claim_type">Claim type</label><select id="claim_type" name="claim_type"></select></div>
+        <div class="form-group"><label for="story">Your story (plain English)</label><textarea id="story" rows="5" placeholder="Describe what happened at work…"></textarea></div>
+      </div>
+    </div>
+    <div class="intake-step" data-step="2">
+      <div class="cos-card">
+        <h3>Key dates</h3>
+        <div class="form-group"><label for="edt">Dismissal or last day</label><input type="date" id="edt" name="edt"></div>
+        <div class="form-group"><label for="service_start">Employment start</label><input type="date" id="service_start" name="service_start"></div>
+      </div>
+    </div>
+    <div class="intake-step" data-step="3">
+      <div class="cos-card">
+        <h3>ACAS early conciliation</h3>
+        <div class="form-group"><label><input type="checkbox" id="acas_started"> I have started ACAS EC</label></div>
+        <div class="form-group"><label for="acas_start">ACAS start date</label><input type="date" id="acas_start"></div>
+        <div class="form-group"><label for="acas_end">ACAS certificate date</label><input type="date" id="acas_end"></div>
+      </div>
+    </div>
+    <div class="intake-step" data-step="4">
+      <div class="cos-card">
+        <h3>Evidence checklist</h3>
+        <p style="font-size:0.9rem;color:var(--muted);">Tick what you have. Live analysis preview updates from your story and dates.</p>
+        <label><input type="checkbox" name="ev" value="contract"> Contract</label><br>
+        <label><input type="checkbox" name="ev" value="dismissal_letter"> Dismissal letter</label><br>
+        <label><input type="checkbox" name="ev" value="payslips"> Payslips</label><br>
+        <label><input type="checkbox" name="ev" value="grievance"> Grievance correspondence</label>
+      </div>
+      <div class="live-analysis-panel" id="live-analysis" style="margin-top:1rem;" aria-live="polite">
+        <div class="live-status" id="live-status">Complete steps 1-3 for a live preview.</div>
+        <p class="live-strength" id="live-strength">Strength: -</p>
+        <p id="live-summary" class="cos-muted" style="font-size:0.9rem;"></p>
+        <ul id="live-cites" class="citation-list"></ul>
+      </div>
+    </div>
+    <div class="intake-step" data-step="5">
+      <div class="cos-card">
+        <h3>Review and analyse</h3>
+        <div id="review-summary" style="font-size:0.9rem;"></div>
+        <div id="intake-deadline" style="margin-top:1rem;"></div>
+        <div id="intake-error" class="cos-error" style="display:none;margin-top:1rem;"></div>
+      </div>
+    </div>
+    <div class="intake-nav">
+      <button type="button" class="btn btn-outline" id="btn-back" style="visibility:hidden;">Back</button>
+      <button type="button" class="btn btn-primary" id="btn-next">Continue</button>
+    </div>
+  </form>
+</main>
+
+<script src="/js/beta-scope.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script>
+(function () {
+  var step = 1;
+  var total = 5;
+  var state = { facts: {}, assessment: null, key_dates: {} };
+
+  document.getElementById("beta-note").textContent = window.LAWAPP_BETA_SCOPE ? LAWAPP_BETA_SCOPE.betaNotice : "";
+  LAWAPP_BETA_SCOPE.populateSelect(document.getElementById("claim_type"));
+
+  function showStep(n) {
+    step = n;
+    document.querySelectorAll(".intake-step").forEach(function (el) {
+      el.classList.toggle("active", Number(el.dataset.step) === n);
+    });
+    document.getElementById("prog-bar").style.width = (n / total * 100) + "%";
+    document.getElementById("step-label").textContent = "Step " + n + " of " + total;
+    document.getElementById("btn-back").style.visibility = n > 1 ? "visible" : "hidden";
+    document.getElementById("btn-next").textContent = n === total ? "Run analysis" : "Continue";
+    if (n === total) buildReview();
+    if (n === 4) triggerLive();
+  }
+
+  function buildReview() {
+    var ct = document.getElementById("claim_type").value;
+    var story = document.getElementById("story").value.trim();
+    document.getElementById("review-summary").textContent =
+      CaseEngine.formatClaimType(ct) + " · " + (story.slice(0, 120) || "(no story)") + (story.length > 120 ? "…" : "");
+    var edt = document.getElementById("edt").value;
+    if (edt) {
+      CaseEngine.calculateDeadline({ event_date: edt, event_type: "dismissal" }).then(function (dl) {
+        LAWAPP_COMPONENTS.DeadlineWidget(document.getElementById("intake-deadline"), dl);
+        state.key_dates = { edt: edt, deadline_date: dl.deadline_date };
+      }).catch(function () {});
+    }
+  }
+
+  function collectFacts() {
+    return {
+      claim_type: document.getElementById("claim_type").value,
+      story: document.getElementById("story").value.trim(),
+      brief_facts: document.getElementById("story").value.trim(),
+      edt: document.getElementById("edt").value,
+      service_start: document.getElementById("service_start").value,
+      service_start_date: document.getElementById("service_start").value,
+      acas_started: document.getElementById("acas_started").checked,
+      acas_start: document.getElementById("acas_start").value,
+      acas_end: document.getElementById("acas_end").value,
+      ec_day_a: document.getElementById("acas_start").value || undefined,
+      ec_day_b: document.getElementById("acas_end").value || undefined,
+      jurisdiction: "EW",
+    };
+  }
+
+  function renderLive(data) {
+    var panel = document.getElementById("live-analysis");
+    if (!panel) return;
+    panel.classList.remove("is-loading");
+    document.getElementById("live-status").textContent = "Live preview via /assess (not saved)";
+    var labels = { high: "Strong", medium: "Moderate", low: "Weak", uncertain: "Uncertain" };
+    document.getElementById("live-strength").textContent = "Strength: " + (labels[data.strength] || "Uncertain");
+    document.getElementById("live-summary").textContent = data.reasoning_summary || data.message || "";
+    var cites = document.getElementById("live-cites");
+    cites.textContent = "";
+    (data.citations || []).slice(0, 4).forEach(function (c) {
+      var li = document.createElement("li");
+      li.textContent = typeof c === "string" ? c : (c.title || c.source || "Source");
+      cites.appendChild(li);
+    });
+  }
+
+  function triggerLive() {
+    var facts = collectFacts();
+    if (!facts.brief_facts || facts.brief_facts.length < 15) {
+      document.getElementById("live-status").textContent = "Add your story on step 1 for live analysis.";
+      return;
+    }
+    var panel = document.getElementById("live-analysis");
+    if (panel) panel.classList.add("is-loading");
+    document.getElementById("live-status").textContent = "Analysing…";
+    CaseEngine.liveAssess(facts, { delayMs: 850 }).then(renderLive).catch(function (e) {
+      if (panel) panel.classList.remove("is-loading");
+      document.getElementById("live-status").textContent = e.message || "Preview unavailable.";
+    });
+  }
+
+  async function finish() {
+    var err = document.getElementById("intake-error");
+    err.style.display = "none";
+    var btn = document.getElementById("btn-next");
+    btn.disabled = true;
+    btn.textContent = "Analysing…";
+    var facts = collectFacts();
+    try {
+      var assessment = await CaseEngine.runAssessment(facts.story || "employment claim", facts, "EW");
+      state.assessment = assessment;
+      sessionStorage.setItem("assessment_result", JSON.stringify(assessment));
+      sessionStorage.setItem("assessment_facts", JSON.stringify(facts));
+
+      var loggedIn = await LAWAPP_AUTH.isLoggedIn();
+      if (loggedIn) {
+        var created = await CaseEngine.createCase({
+          claim_type: facts.claim_type,
+          jurisdiction: "EW",
+          assessment: assessment,
+          key_dates: state.key_dates,
+          facts: facts,
+        });
+        CaseEngine.setActiveCaseId(created.case_id);
+        if (facts.edt) {
+          try {
+            await CaseEngine.addTimelineEvent(created.case_id, {
+              event_type: "dismissal",
+              event_date: facts.edt,
+              title: "Dismissal",
+              description: "Recorded from intake",
+            });
+          } catch (_) {}
+        }
+        window.location.href = "/pages/analysis.html?case_id=" + encodeURIComponent(created.case_id);
+      } else {
+        window.location.href = "/pages/analysis.html";
+      }
+    } catch (e) {
+      err.style.display = "block";
+      err.textContent = e.message || "Analysis failed";
+      btn.disabled = false;
+      btn.textContent = "Run analysis";
+    }
+  }
+
+  document.getElementById("btn-next").addEventListener("click", function () {
+    if (step < total) showStep(step + 1);
+    else finish();
+  });
+  document.getElementById("btn-back").addEventListener("click", function () {
+    if (step > 1) showStep(step - 1);
+  });
+  ["story", "edt", "service_start"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener("input", function () { if (step === 4) triggerLive(); });
+  });
+  showStep(1);
+})();
+</script>
+</body>
+</html>

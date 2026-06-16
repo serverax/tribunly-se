@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documents - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="documents">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1>Document builder</h1>
+    <p>Preview and generate tribunal documents from your case</p>
+  </div>
+  <div id="doc-error" class="cos-error" style="display:none;"></div>
+  <div id="doc-loading" class="cos-loading">Loading documents…</div>
+  <div id="doc-content" style="display:none;">
+    <div id="doc-builder"></div>
+    <div class="cos-card" style="margin-top:1.5rem;">
+      <h3>Generate pack</h3>
+      <label><input type="checkbox" name="doctype" value="et1" checked> ET1 claim form</label><br>
+      <label><input type="checkbox" name="doctype" value="particulars" checked> Particulars of claim</label><br>
+      <label><input type="checkbox" name="doctype" value="schedule_of_loss"> Schedule of loss</label>
+      <div style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline" id="btn-preview">Preview</button>
+        <button type="button" class="btn btn-primary" id="btn-generate">Generate</button>
+      </div>
+      <pre id="doc-preview" style="display:none;margin-top:1rem;padding:1rem;background:var(--surface-2);border-radius:var(--radius-sm);font-size:0.8rem;overflow:auto;max-height:320px;"></pre>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function () {
+  var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
+
+  CaseOSShell.init({ page: "documents" }).then(function (ok) {
+    if (!ok) return;
+    if (!caseId) {
+      document.getElementById("doc-loading").style.display = "none";
+      document.getElementById("doc-error").style.display = "block";
+      document.getElementById("doc-error").textContent = "Select a case first.";
+      return;
+    }
+
+    var errEl = document.getElementById("doc-error");
+    var builder = document.getElementById("doc-builder");
+
+    function selectedTypes() {
+      return Array.prototype.slice.call(document.querySelectorAll('input[name="doctype"]:checked')).map(function (c) { return c.value; });
+    }
+
+    CaseEngine.loadCase(caseId).then(function (b) {
+      document.getElementById("doc-loading").style.display = "none";
+      document.getElementById("doc-content").style.display = "block";
+      LAWAPP_COMPONENTS.DocumentBuilder(builder, b.bundle);
+    }).catch(function (e) {
+      document.getElementById("doc-loading").style.display = "none";
+      errEl.style.display = "block";
+      errEl.textContent = e.message;
+    });
+
+    document.getElementById("btn-preview").addEventListener("click", function () {
+      errEl.style.display = "none";
+      LAWAPP_API.previewBundle(caseId, selectedTypes()).then(function (data) {
+        var pre = document.getElementById("doc-preview");
+        pre.style.display = "block";
+        pre.textContent = JSON.stringify(data, null, 2);
+      }).catch(function (e) {
+        errEl.style.display = "block";
+        errEl.textContent = e.message;
+      });
+    });
+
+    document.getElementById("btn-generate").addEventListener("click", function () {
+      errEl.style.display = "none";
+      var btn = document.getElementById("btn-generate");
+      btn.disabled = true;
+      LAWAPP_API.generateBundle(caseId, selectedTypes()).then(function () {
+        btn.disabled = false;
+        return CaseEngine.loadCase(caseId);
+      }).then(function (b) {
+        builder.textContent = "";
+        LAWAPP_COMPONENTS.DocumentBuilder(builder, b.bundle);
+      }).catch(function (e) {
+        btn.disabled = false;
+        errEl.style.display = "block";
+        errEl.textContent = e.message;
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

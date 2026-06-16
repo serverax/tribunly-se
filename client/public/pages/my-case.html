@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My case - lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="my-case">
+
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div id="case-os-main">
+  <div class="cos-page-header">
+    <h1 id="case-title">My case</h1>
+    <p id="case-subtitle">Overview, evidence, timeline, and risk</p>
+  </div>
+  <div id="case-loading" class="cos-loading">Loading case…</div>
+  <div id="case-error" class="cos-error" style="display:none;"></div>
+  <div id="case-content" style="display:none;">
+    <div class="cos-tabs" role="tablist">
+      <button type="button" class="cos-tab active" data-tab="overview">Overview</button>
+      <button type="button" class="cos-tab" data-tab="evidence">Evidence</button>
+      <button type="button" class="cos-tab" data-tab="timeline">Timeline</button>
+      <button type="button" class="cos-tab" data-tab="analysis">AI Analysis</button>
+      <button type="button" class="cos-tab" data-tab="documents">Documents</button>
+      <button type="button" class="cos-tab" data-tab="risk">Risk</button>
+    </div>
+    <div id="panel-overview" class="tab-panel"></div>
+    <div id="panel-evidence" class="tab-panel" style="display:none;"></div>
+    <div id="panel-timeline" class="tab-panel" style="display:none;"></div>
+    <div id="panel-analysis" class="tab-panel" style="display:none;"></div>
+    <div id="panel-documents" class="tab-panel" style="display:none;"></div>
+    <div id="panel-risk" class="tab-panel" style="display:none;"></div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/fetchWithAuth.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function () {
+  var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
+  var bundle = null;
+
+  CaseOSShell.init({ page: "my-case" }).then(function (ok) {
+    if (!ok) return;
+    if (!caseId) {
+      document.getElementById("case-loading").style.display = "none";
+      var err = document.getElementById("case-error");
+      err.style.display = "block";
+      err.textContent = "No case selected. Open dashboard or complete intake.";
+      return;
+    }
+    CaseEngine.setActiveCaseId(caseId);
+
+    var tabParam = new URLSearchParams(location.search).get("tab");
+    document.querySelectorAll(".cos-tab").forEach(function (btn) {
+      btn.addEventListener("click", function () { showTab(btn.dataset.tab); });
+    });
+    if (tabParam) showTab(tabParam);
+
+    CaseEngine.loadCase(caseId).then(function (data) {
+      bundle = data;
+      document.getElementById("case-loading").style.display = "none";
+      document.getElementById("case-content").style.display = "block";
+      document.getElementById("case-title").textContent = CaseEngine.formatClaimType(data.case.claim_type);
+      renderAll();
+    }).catch(function (e) {
+      document.getElementById("case-loading").style.display = "none";
+      document.getElementById("case-error").style.display = "block";
+      document.getElementById("case-error").textContent = e.message;
+    });
+  });
+
+  function showTab(name) {
+    document.querySelectorAll(".cos-tab").forEach(function (b) {
+      b.classList.toggle("active", b.dataset.tab === name);
+    });
+    document.querySelectorAll(".tab-panel").forEach(function (p) { p.style.display = "none"; });
+    var panel = document.getElementById("panel-" + name);
+    if (panel) panel.style.display = "block";
+  }
+
+  function renderAll() {
+    if (!bundle) return;
+    var a = bundle.case.assessment || {};
+    var ov = document.getElementById("panel-overview");
+    ov.textContent = "";
+    var card = document.createElement("div");
+    card.className = "cos-card";
+    var p = document.createElement("p");
+    p.textContent = a.reasoning_summary || "No summary yet.";
+    card.appendChild(p);
+    var sm = document.createElement("div");
+    LAWAPP_COMPONENTS.StrengthMeter(sm, { strength: a.strength });
+    card.appendChild(sm);
+    var dl = document.createElement("div");
+    LAWAPP_COMPONENTS.DeadlineWidget(dl, bundle.deadline || bundle.case.key_dates);
+    ov.append(card, dl);
+
+    var ev = document.getElementById("panel-evidence");
+    ev.textContent = "";
+    var evLink = document.createElement("p");
+    evLink.innerHTML = '<a href="/pages/evidence.html?case_id=' + encodeURIComponent(caseId) + '">Upload more evidence</a>';
+    ev.appendChild(evLink);
+    var evBoard = document.createElement("div");
+    LAWAPP_COMPONENTS.EvidenceBoard(evBoard, bundle.uploads);
+    ev.appendChild(evBoard);
+
+    var tl = document.getElementById("panel-timeline");
+    tl.textContent = "";
+    var events = (bundle.timeline && bundle.timeline.events) ? bundle.timeline.events : [];
+    LAWAPP_COMPONENTS.Timeline(tl, events);
+
+    var an = document.getElementById("panel-analysis");
+    an.textContent = "";
+    var anCard = document.createElement("div");
+    anCard.className = "cos-card";
+    anCard.appendChild(document.createElement("p")).textContent = a.reasoning_summary || "";
+    var lb = document.createElement("div");
+    LAWAPP_COMPONENTS.LegalBasis(lb, a.citations || []);
+    an.append(anCard, lb);
+    var anBtn = document.createElement("a");
+    anBtn.href = "/pages/analysis.html?case_id=" + encodeURIComponent(caseId);
+    anBtn.className = "btn btn-outline";
+    anBtn.textContent = "Full analysis view";
+    anBtn.style.marginTop = "1rem";
+    an.appendChild(anBtn);
+
+    var doc = document.getElementById("panel-documents");
+    doc.textContent = "";
+    LAWAPP_COMPONENTS.DocumentBuilder(doc, bundle.bundle);
+    var docBtn = document.createElement("a");
+    docBtn.href = "/pages/documents.html?case_id=" + encodeURIComponent(caseId);
+    docBtn.className = "btn btn-primary";
+    docBtn.style.marginTop = "1rem";
+    docBtn.textContent = "Open document builder";
+    doc.appendChild(docBtn);
+
+    var risk = document.getElementById("panel-risk");
+    risk.textContent = "";
+    LAWAPP_COMPONENTS.RiskPanel(risk, a.caveats || a.risks || []);
+    if (bundle.escalation) {
+      var esc = document.createElement("div");
+      esc.className = "cos-card";
+      esc.style.marginTop = "1rem";
+      esc.appendChild(document.createElement("h3")).textContent = "Escalation state";
+      esc.appendChild(document.createElement("p")).textContent =
+        "State: " + (bundle.escalation.state || bundle.escalation.escalation_state || "none");
+      risk.appendChild(esc);
+    }
+  }
+})();
+</script>
+</body>
+</html>
