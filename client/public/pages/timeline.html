@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline  -  Case OS  -  lawapp</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/case-os.css">
+</head>
+<body class="case-os" data-case-os-page="timeline">
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div class="legal-notice" role="note"><strong>Not a law firm. Not legal advice.</strong></div>
+
+<div class="case-os-shell">
+  <div id="case-os-overlay" class="case-os-overlay" hidden></div>
+  <aside id="case-os-sidebar" class="case-os-sidebar" aria-label="Case workspace navigation">
+    <div class="case-os-sidebar-head">
+      <a href="/" class="brand">lawapp</a>
+      <button type="button" class="case-os-sidebar-close" aria-label="Close case menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <nav class="case-os-nav" aria-label="Case sections">
+      <a href="/pages/dashboard.html" data-nav-page="dashboard"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Dashboard</span></a>
+      <a href="/pages/case-intake.html" data-nav-page="case-intake"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Case builder</span></a>
+      <a href="/pages/analysis.html" data-nav-page="analysis"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">AI analysis</span></a>
+      <a href="/pages/my-case.html" data-nav-page="my-case"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">My case</span></a>
+      <a href="/pages/timeline.html" data-nav-page="timeline"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Timeline</span></a>
+      <a href="/pages/deadlines.html" data-nav-page="deadlines"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Deadlines</span></a>
+      <a href="/pages/evidence.html" data-nav-page="evidence"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Evidence hub</span></a>
+      <a href="/pages/documents.html" data-nav-page="documents"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Document engine</span></a>
+      <a href="/pages/escalation.html" data-nav-page="escalation"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Escalation</span></a>
+      <a href="/pages/advisor.html" data-nav-page="advisor"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Advisor</span></a>
+      <a href="/pages/settings.html" data-nav-page="settings"><span class="cos-nav-icon" aria-hidden="true">&#9679;</span><span class="cos-nav-label">Settings</span></a>
+    </nav>
+    <div class="case-os-sidebar-foot">Case OS workspace</div>
+  </aside>
+
+  <div class="case-os-main">
+    <header class="case-os-topbar">
+      <button type="button" class="case-os-menu-toggle" aria-controls="case-os-sidebar" aria-expanded="false" aria-label="Open case menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <h1 class="case-os-topbar-title">Timeline</h1>
+    </header>
+
+    <main id="main" class="case-os-content">
+      <div id="tl-loading" style="text-align:center;padding:2rem 0;"><div class="spinner"></div></div>
+      <div id="tl-content" class="cos-panel" style="display:none;">
+        <h2 class="cos-display" style="font-size:var(--cos-section);margin-bottom:.75rem;">Case chronology</h2>
+        <p id="tl-note" class="cos-muted" style="margin-bottom:1rem;"></p>
+        <div id="tl-mount"></div>
+      </div>
+      <p id="tl-error" class="form-error" style="display:none;"></p>
+    </main>
+  </div>
+
+  <nav class="case-os-bottom-nav" aria-label="Case quick navigation">
+    <a href="/pages/dashboard.html" data-nav-page="dashboard"><span aria-hidden="true">&#9679;</span><span>Home</span></a>
+    <a href="/pages/my-case.html" data-nav-page="my-case"><span aria-hidden="true">&#9679;</span><span>Case</span></a>
+    <a href="/pages/timeline.html" data-nav-page="timeline"><span aria-hidden="true">&#9679;</span><span>Timeline</span></a>
+    <a href="/pages/deadlines.html" data-nav-page="deadlines"><span aria-hidden="true">&#9679;</span><span>Dates</span></a>
+    <a href="/pages/settings.html" data-nav-page="settings"><span aria-hidden="true">&#9679;</span><span>More</span></a>
+  </nav>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/api-client.js"></script>
+<script src="/js/case-engine.js"></script>
+<script src="/js/case-components.js"></script>
+<script src="/js/app-shell.js"></script>
+<script>
+(function() {
+  if (!LAWAPP_AUTH.ensureLoggedIn()) return;
+  var caseId = new URLSearchParams(location.search).get('case_id');
+
+  async function resolveCaseId() {
+    if (caseId) return caseId;
+    var cases = await CaseEngine.listCases();
+    return cases[0] && cases[0].case_id;
+  }
+
+  async function init() {
+    try {
+      caseId = await resolveCaseId();
+      if (!caseId) throw new Error('Save a case to view its timeline.');
+      CaseEngine.setActiveCaseId(caseId);
+      var data = await CaseEngine.getTimeline(caseId);
+      document.getElementById('tl-loading').style.display = 'none';
+      document.getElementById('tl-content').style.display = 'block';
+      document.getElementById('tl-note').textContent = data.timeline_note || 'Informational chronology from your saved key dates and events.';
+      var events = data.events || data.timeline || [];
+      LAWAPP_COMPONENTS.Timeline(document.getElementById('tl-mount'), events);
+    } catch (e) {
+      document.getElementById('tl-loading').style.display = 'none';
+      var err = document.getElementById('tl-error');
+      err.style.display = 'block';
+      err.textContent = e.message || 'Could not load timeline.';
+    }
+  }
+  init();
+})();
+</script>
+</body>
+</html>

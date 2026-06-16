@@ -352,6 +352,25 @@
       return getJSON("/cases/" + caseId + "/bundle");
     },
 
+    getTimeline: function (caseId) {
+      return getJSON("/cases/" + caseId + "/timeline");
+    },
+
+    getEscalation: function (caseId) {
+      return getJSON("/cases/" + caseId + "/escalation");
+    },
+
+    submitHandoffLead: function (payload) {
+      return postJSON("/handoff/leads", payload);
+    },
+
+    featuresClaimAssessment: function (facts, matterId) {
+      return postJSON("/api/features/claim-assessment", {
+        facts: facts,
+        matter_id: matterId || null,
+      });
+    },
+
     /**
      * GET /api/cases/{case_id}/documents
      * Get list of documents for a case
@@ -486,6 +505,60 @@
      */
     getFreshness: function () {
       return getJSON("/freshness");
+    },
+
+    // ─── CASE OS EXTENSIONS ─────────────────────────────────────────────
+
+    createCaseFromAssessment: function (body) {
+      return postJSON("/cases", body);
+    },
+
+    getTimeline: function (caseId) {
+      return getJSON("/cases/" + caseId + "/timeline");
+    },
+
+    addTimelineEvent: function (caseId, event) {
+      return postJSON("/cases/" + caseId + "/timeline/events", event);
+    },
+
+    getEscalation: function (caseId) {
+      return getJSON("/cases/" + caseId + "/escalation");
+    },
+
+    submitHandoffLead: function (payload) {
+      return postJSON("/handoff/leads", payload);
+    },
+
+    featuresClaimAssessment: function (facts) {
+      return postJSON("/api/features/claim-assessment", { facts: facts });
+    },
+
+    featuresStrength: function (facts) {
+      return postJSON("/api/features/strength", { facts: facts });
+    },
+
+    featuresKnowledgeModules: function () {
+      return getJSON("/api/features/knowledge/modules");
+    },
+
+    featuresDocumentDecode: function (text, docType) {
+      return postJSON("/api/features/document-decode", {
+        text: text,
+        doc_type: docType || "letter",
+      });
+    },
+
+    chatMessage: async function (message, conversationId, caseId) {
+      var user = await getJSON("/api/auth/me").catch(function () { return null; });
+      var userId = (user && (user.id || user.user_id || user.sub)) || "anonymous";
+      return postJSON("/api/chat/message", {
+        message: message,
+        conversation_id: conversationId || null,
+        case_id: caseId || null,
+        user_id: String(userId),
+        jurisdiction: "EW",
+        mode: "chat",
+      });
     },
   };
 

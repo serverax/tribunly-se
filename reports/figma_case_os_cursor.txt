@@ -1,0 +1,85 @@
+LawApp Case OS - Figma + Frontend Proof
+Generated: 2026-06-16
+Branch: release/lawapp-clean-snapshot
+Agent: frontend-uiux-designer-agent
+
+================================================================================
+PART A - DOCUMENTATION
+================================================================================
+CREATED:
+  docs/frontend/FIGMA_CASE_OS_SCREEN_MAP.md
+  docs/frontend/CASE_OS_ARCHITECTURE.md
+
+================================================================================
+PART B - CODE ALIGNMENT
+================================================================================
+DESIGN TOKENS (case-os.css):
+  --cos-navy: #0f1729
+  --cos-gold: #c9a227
+  Fonts: Fraunces (display), Inter (UI)
+  Breakpoints: mobile default, 768px tablet rail, 1025px desktop split
+
+CASE OS PAGES (client/public/pages/):
+  dashboard.html          GET /cases, /auth/me
+  case-intake.html        POST /assess (live step 4), POST /cases
+  analysis.html           session + GET /cases/{id}
+  my-case.html            GET /cases/{id}
+  timeline.html           GET /cases/{id}/timeline          [NEW]
+  deadlines.html          GET /cases/{id}/deadline
+  evidence.html           GET/POST /cases/{id}/uploads
+  documents.html          GET/POST /cases/{id}/bundle
+  escalation.html         GET /cases/{id}/escalation, POST /handoff/leads [NEW]
+  advisor.html            POST /assess                       [NEW]
+  settings.html           GET /auth/me, logout               [NEW]
+
+PUBLIC / AUTH:
+  index.html              landing
+  login.html, register.html
+  intake.html             legacy free wizard POST /assess
+
+JS MODULES:
+  client/public/js/app-shell.js      mobile nav + aria-current [REWRITTEN]
+  client/public/js/case-engine.js    liveAssess debounce, getTimeline, getEscalation
+  client/public/js/case-components.js
+  client/public/js/api-client.js     getTimeline, getEscalation, featuresClaimAssessment
+
+LIVE ANALYSIS (case-intake step 4):
+  CaseEngine.liveAssess() -> POST /assess (850ms debounce, AbortController cancel)
+  UI: #live-analysis panel with strength, summary, citations
+
+================================================================================
+PART C - FIGMA MCP
+================================================================================
+STATUS: NOT AVAILABLE
+  plugin-figma-figma MCP server STATUS.md reports server errored
+  use_figma tool not present in tool list
+  Figma file URL: NONE (skipped)
+
+RECOMMENDATION:
+  Re-enable Figma MCP in Cursor Settings, then run:
+  1. figma-create-new-file "LawApp Case OS"
+  2. figma-generate-library for tokens
+  3. figma-generate-design for 7 core frames + mobile variants
+
+================================================================================
+PART D - LOCAL TEST URLS (backend on port 8000)
+================================================================================
+http://localhost:8000/
+http://localhost:8000/pages/login.html
+http://localhost:8000/pages/dashboard.html
+http://localhost:8000/pages/case-intake.html
+http://localhost:8000/pages/analysis.html
+http://localhost:8000/pages/timeline.html
+http://localhost:8000/pages/evidence.html
+http://localhost:8000/pages/documents.html
+http://localhost:8000/pages/deadlines.html
+http://localhost:8000/pages/escalation.html
+http://localhost:8000/pages/advisor.html
+http://localhost:8000/pages/settings.html
+
+RESPONSIVE: Test at 375px, 768px, 1280px (case-os.css media queries)
+
+================================================================================
+GIT
+================================================================================
+Commit pending on release/lawapp-clean-snapshot (not main)
