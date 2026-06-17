@@ -1,5 +1,5 @@
 LawApp grounding verification (assess/brain path)
-Generated: 2026-06-16 (evidence run)
+Generated: 2026-06-17T01:24:23Z
 Branch: release/lawapp-clean-snapshot
 
 ## Static checks
@@ -12,9 +12,9 @@ Branch: release/lawapp-clean-snapshot
 
 ## Pytest
 
-Exit code: 0
+Exit code: 1
 ```
-.................                                                        [100%]
+............F...........                                                 [100%]
 ============================== warnings summary ===============================
 tests/test_grounding_regression.py: 32 warnings
   C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
@@ -24,8 +24,14 @@ C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovi
   C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
     config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
 
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\lastfailed: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-17 passed, 33 warnings in 18.51s
+=========================== short test summary info ===========================
+FAILED tests/test_single_brain_architecture.py::test_langgraph_artifacts_absent[forbidden_path0]
+1 failed, 23 passed, 34 warnings in 29.89s
 ```
 
-## Verdict: PASS
+## Verdict: FAIL

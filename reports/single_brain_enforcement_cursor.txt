@@ -1,30 +1,8 @@
-......FF.....FF....                                                      [100%]
+....F...........                                                         [100%]
 ================================== FAILURES ===================================
-______________ test_langgraph_artifacts_absent[forbidden_path2] _______________
+______________ test_langgraph_artifacts_absent[forbidden_path0] _______________
 
-forbidden_path = WindowsPath('F:/lawapp/backend/api/legal_reason_routes.py')
-
-    @pytest.mark.parametrize(
-        "forbidden_path",
-        [
-            REPO_ROOT / "backend" / "ai",
-            REPO_ROOT / "backend" / "core" / "langgraph",
-            REPO_ROOT / "backend" / "api" / "legal_reason_routes.py",
-            REPO_ROOT / "tests" / "test_langgraph_legal_reason.py",
-            REPO_ROOT / "tests" / "test_legal_reason_api.py",
-        ],
-    )
-    def test_langgraph_artifacts_absent(forbidden_path: Path):
->       assert not forbidden_path.exists(), f"Forbidden LangGraph artifact present: {forbidden_path}"
-E       AssertionError: Forbidden LangGraph artifact present: F:\lawapp\backend\api\legal_reason_routes.py
-E       assert not True
-E        +  where True = exists()
-E        +    where exists = WindowsPath('F:/lawapp/backend/api/legal_reason_routes.py').exists
-
-tests\test_single_brain_architecture.py:52: AssertionError
-______________ test_langgraph_artifacts_absent[forbidden_path3] _______________
-
-forbidden_path = WindowsPath('F:/lawapp/tests/test_langgraph_legal_reason.py')
+forbidden_path = WindowsPath('F:/lawapp/backend/ai')
 
     @pytest.mark.parametrize(
         "forbidden_path",
@@ -38,40 +16,12 @@ forbidden_path = WindowsPath('F:/lawapp/tests/test_langgraph_legal_reason.py')
     )
     def test_langgraph_artifacts_absent(forbidden_path: Path):
 >       assert not forbidden_path.exists(), f"Forbidden LangGraph artifact present: {forbidden_path}"
-E       AssertionError: Forbidden LangGraph artifact present: F:\lawapp\tests\test_langgraph_legal_reason.py
+E       AssertionError: Forbidden LangGraph artifact present: F:\lawapp\backend\ai
 E       assert not True
 E        +  where True = exists()
-E        +    where exists = WindowsPath('F:/lawapp/tests/test_langgraph_legal_reason.py').exists
+E        +    where exists = WindowsPath('F:/lawapp/backend/ai').exists
 
 tests\test_single_brain_architecture.py:52: AssertionError
-____________________ test_no_langgraph_imports_in_backend _____________________
-
-    def test_no_langgraph_imports_in_backend():
-        backend_root = REPO_ROOT / "backend"
-        offenders: list[str] = []
-        for path in backend_root.rglob("*.py"):
-            text = path.read_text(encoding="utf-8", errors="replace")
-            if "langgraph" in text.lower() or "backend.ai.graph" in text or "backend.core.langgraph" in text:
-                offenders.append(str(path.relative_to(REPO_ROOT)))
->       assert not offenders, f"LangGraph references in backend: {offenders}"
-E       AssertionError: LangGraph references in backend: ['backend\\api\\legal_reason_routes.py']
-E       assert not ['backend\\api\\legal_reason_routes.py']
-
-tests\test_single_brain_architecture.py:94: AssertionError
-______________ test_no_legal_reason_route_strings_in_backend_api ______________
-
-    def test_no_legal_reason_route_strings_in_backend_api():
-        api_root = REPO_ROOT / "backend" / "api"
-        hits: list[str] = []
-        for path in api_root.rglob("*.py"):
-            text = path.read_text(encoding="utf-8", errors="replace")
-            if "legal/reason" in text or "legal_reason_routes" in text:
-                hits.append(str(path.relative_to(REPO_ROOT)))
->       assert not hits, f"legal/reason route references in backend/api: {hits}"
-E       AssertionError: legal/reason route references in backend/api: ['backend\\api\\legal_reason_routes.py']
-E       assert not ['backend\\api\\legal_reason_routes.py']
-
-tests\test_single_brain_architecture.py:104: AssertionError
 ============================== warnings summary ===============================
 C:\Python314\Lib\site-packages\slowapi\extension.py:717: 32 warnings
   C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
@@ -87,9 +37,6 @@ C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovi
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ===========================
-FAILED tests/test_single_brain_architecture.py::test_langgraph_artifacts_absent[forbidden_path2]
-FAILED tests/test_single_brain_architecture.py::test_langgraph_artifacts_absent[forbidden_path3]
-FAILED tests/test_single_brain_architecture.py::test_no_langgraph_imports_in_backend
-FAILED tests/test_single_brain_architecture.py::test_no_legal_reason_route_strings_in_backend_api
-4 failed, 15 passed, 34 warnings in 50.58s
+FAILED tests/test_single_brain_architecture.py::test_langgraph_artifacts_absent[forbidden_path0]
+1 failed, 15 passed, 34 warnings in 13.40s
 EXIT:1

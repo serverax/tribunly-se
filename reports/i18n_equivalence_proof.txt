@@ -1,0 +1,12 @@
+i18n assessment_core equivalence proof
+Generated: 2026-06-17T01:27:09Z
+Branch: release/lawapp-clean-snapshot
+
+Input: same query+facts, locale=en vs locale=ar, use_model=False
+assessment_core identical: True
+locale en=en ar=ar
+rendered differs (expected): True
+
+DIFF: (empty)
+
+VERDICT: PASS
