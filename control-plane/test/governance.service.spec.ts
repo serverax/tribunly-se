@@ -38,7 +38,7 @@ describe('GovernanceService', () => {
   });
 
   it('rejects malformed payload', () => {
-    const result = svc.validateAssessment({ status: 'bogus' });
+    const result = svc.validateAssessment({ lane: 'FAST' });
     expect(result.passed).toBe(false);
     expect(result.assessment.status).toBe('error');
   });

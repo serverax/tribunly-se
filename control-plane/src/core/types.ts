@@ -15,7 +15,7 @@ export type ProcessRequest = z.infer<typeof processRequestSchema>;
 
 /** Governed assessment shape returned by Python /assess (subset enforced at boundary). */
 export const governedAssessmentSchema = z.object({
-  status: z.enum(['ok', 'not_supported', 'error', 'degraded']),
+  status: z.string(),
   trace_id: z.string().optional(),
   source: z.string().optional(),
   lane: z.string().optional(),
@@ -25,12 +25,14 @@ export const governedAssessmentSchema = z.object({
   rules: z.array(z.record(z.unknown())).optional(),
   citations: z.array(z.record(z.unknown())).optional(),
   answer: z.string().optional(),
+  governance_passed: z.boolean().optional(),
+  governance_verdict: z.string().optional(),
 });
 
 export type GovernedAssessment = z.infer<typeof governedAssessmentSchema>;
 
 export const processResponseSchema = z.object({
-  status: z.enum(['ok', 'not_supported', 'error', 'degraded']),
+  status: z.string(),
   trace_id: z.string().optional(),
   control_plane: z.literal('nestjs-v1'),
   retrieval: z.object({

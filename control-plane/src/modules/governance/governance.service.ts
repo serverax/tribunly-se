@@ -50,8 +50,20 @@ export class GovernanceService {
         };
       }
       checks.push('grounding_ok');
+    } else if (assessment.status === 'not_supported') {
+      checks.push('fail_closed_not_supported');
+    } else if (assessment.status === 'error') {
+      checks.push('brain_error');
     } else {
-      checks.push(`status_${assessment.status}`);
+      checks.push(`brain_status_${assessment.status}`);
+    }
+
+    const brainGovernanceOk =
+      assessment.governance_passed !== false &&
+      assessment.governance_verdict !== 'FAIL';
+    if (!brainGovernanceOk && assessment.status === 'ok') {
+      checks.push('brain_governance_failed');
+      return { passed: false, checks, assessment };
     }
 
     return { passed: true, checks, assessment };

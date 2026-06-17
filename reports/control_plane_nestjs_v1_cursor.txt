@@ -1,0 +1,79 @@
+LawApp NestJS Control Plane v1 - Deploy Proof
+Generated: 2026-06-17 (Cursor agent)
+Branch: release/lawapp-clean-snapshot
+
+=== Conflict resolution (see docs/architecture/CONTROL_PLANE_NESTJS_V1.md) ===
+Neo4j: DISABLED default (NEO4J_ENABLED=false). Graph via Postgres legal_nodes/legal_edges + optional HTTP :8018.
+External LLM: DISABLED default (ALLOW_EXTERNAL_LLM=false). Legal answers proxy POST backend:8000/assess.
+Brain bypass: PREVENTED. ReasoningService never calls OpenAI/OpenRouter; GovernanceService validates Brain JSON.
+
+=== Build ===
+cd control-plane && npm install && npm run build && npm test
+Result: 4/4 governance unit tests PASS (after schema fix)
+
+docker compose build control-plane
+Result: Image lawapp-control-plane Built (sha256:84ddfb4e7cb1...)
+
+=== Compose wiring ===
+Service: control-plane
+Port: ${CONTROL_PLANE_PORT:-3001}:3001
+Env: POSTGRES_*, REDIS_URL, LAWAPP_API_URL, OLLAMA_URL, ALLOW_EXTERNAL_LLM=false, NEO4J_ENABLED=false
+
+NOTE: Host port 3001 was occupied by beauty-frontend-1 on this machine.
+Proof used CONTROL_PLANE_PORT=3011 mapped to container 3001.
+
+NOTE: POSTGRES_PASSWORD in shell .env must match the password used when the db volume was
+initialized. Mismatch causes control-plane postgres=false. Align with backend container env
+before recreate.
+
+=== Deploy ===
+docker compose up -d control-plane backend db redis
+(control-plane recreated with POSTGRES_PASSWORD synced from running backend container)
+
+=== Proof commands ===
+curl http://localhost:3011/api/health
+
+Response:
+{
+  "status": "ok",
+  "service": "lawapp-control-plane",
+  "version": "nestjs-v1",
+  "checks": {
+    "postgres": true,
+    "redis": true,
+    "ollama": true,
+    "neo4j_enabled": false,
+    "graph_adapter": "postgres",
+    "external_llm_allowed": false,
+    "lawapp_api_url": "http://backend:8000"
+  }
+}
+
+curl -X POST http://localhost:3011/api/process \
+  -H "Content-Type: application/json" \
+  -d '{"claim_type":"unfair_dismissal","facts":"dismissed after 2 years","use_model":false}'
+
+Response (summary):
+{
+  "status": "missing_edt",
+  "control_plane": "nestjs-v1",
+  "retrieval": { "rules_count": 25, "graph_nodes": 10, "source": "postgres_legal_graph" },
+  "governance": { "passed": true, "checks": ["schema_ok", "brain_status_missing_edt"] },
+  "assessment": { "status": "missing_edt", "message": "Effective date of termination is required..." }
+}
+
+Interpretation: Brain fail-closed for missing EDT (expected). Control plane retrieved rules+graph,
+proxied /assess, validated schema, returned governed envelope without bypassing CitationGuard.
+
+=== URLs ===
+Control plane: http://localhost:3001/api (3011 used in this proof due to port conflict)
+Backend Brain: http://localhost:8000/assess
+Next.js: http://localhost:3000 (frontend-next service)
+
+=== Postgres vs Neo4j ===
+Rules: Postgres rules table (RetrievalService SQL)
+Graph: Postgres legal_nodes/legal_edges CTE (GraphService) + GraphRagService HTTP :8018 fallback
+Neo4j: not deployed; NEO4J_ENABLED=false per owner decision Q2
+
+=== Tests ===
+control-plane/test/governance.service.spec.ts - PASS (4 tests)
