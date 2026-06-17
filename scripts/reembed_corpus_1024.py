@@ -30,19 +30,28 @@ BATCH_SIZE = int(os.getenv("REEMBED_BATCH_SIZE", "16"))
 
 
 def _ollama_embed(text: str) -> list[float]:
-    payload = json.dumps({"model": EMBEDDING_MODEL, "prompt": text}).encode("utf-8")
-    req = urllib.request.Request(
-        f"{OLLAMA_BASE.rstrip('/')}/api/embeddings",
-        data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        body = json.loads(resp.read().decode("utf-8"))
-    vec = body.get("embedding")
-    if not vec or len(vec) != EMBEDDING_DIM:
-        raise RuntimeError(f"Unexpected embedding dim: {len(vec) if vec else 0} (expected {EMBEDDING_DIM})")
-    return vec
+    """Embed with adaptive truncation for Ollama 512-token batch limit."""
+    limits = (2000, 1500, 1000, 500)
+    last_exc: Exception | None = None
+    for limit in limits:
+        payload = json.dumps({"model": EMBEDDING_MODEL, "prompt": text[:limit]}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{OLLAMA_BASE.rstrip('/')}/api/embeddings",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                body = json.loads(resp.read().decode("utf-8"))
+        except (urllib.error.HTTPError, urllib.error.URLError) as exc:
+            last_exc = exc
+            continue
+        vec = body.get("embedding")
+        if not vec or len(vec) != EMBEDDING_DIM:
+            raise RuntimeError(f"Unexpected embedding dim: {len(vec) if vec else 0} (expected {EMBEDDING_DIM})")
+        return vec
+    raise RuntimeError(f"Ollama embed failed after truncation retries: {last_exc}") from last_exc
 
 
 def main() -> int:
@@ -63,14 +72,16 @@ def main() -> int:
                 """
                 SELECT id, body_text FROM corpus_chunks
                 WHERE body_text IS NOT NULL
+                  AND (embedding IS NULL OR embedding_dim IS DISTINCT FROM %s)
                 ORDER BY id
-                """
+                """,
+                (EMBEDDING_DIM,),
             )
             rows = cur.fetchall()
         logger.info("Re-embedding %d chunks with %s (%d-dim)", len(rows), EMBEDDING_MODEL, EMBEDDING_DIM)
 
         for chunk_id, body_text in rows:
-            vec = _ollama_embed(body_text[:8000])
+            vec = _ollama_embed(body_text)
             with conn.cursor() as cur:
                 cur.execute(
                     """

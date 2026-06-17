@@ -56,6 +56,12 @@ def check_files() -> list[tuple[str, str, str]]:
 
 
 def check_db() -> tuple[str, str]:
+    """Live DB checks for migration 084 and corpus embedding state.
+
+  Local verify defaults: POSTGRES_HOST=localhost, POSTGRES_PORT=5435,
+  POSTGRES_PASSWORD=lawapp (matches docker-compose.override.yml service ``db``).
+  Override via env; do not commit real secrets.
+    """
     try:
         import psycopg2
     except ImportError:
@@ -66,6 +72,7 @@ def check_db() -> tuple[str, str]:
             port=int(os.environ.get("POSTGRES_PORT", "5435")),
             dbname=os.environ.get("POSTGRES_DB", "lawapp"),
             user=os.environ.get("POSTGRES_USER", "lawapp"),
+            # Default lawapp: local pgdata volume + docker-compose.override.yml
             password=os.environ.get("POSTGRES_PASSWORD", "lawapp"),
             connect_timeout=3,
         )

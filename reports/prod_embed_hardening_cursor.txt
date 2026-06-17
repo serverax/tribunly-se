@@ -1,0 +1,134 @@
+LawApp production embed hardening — cursor evidence run
+========================================================
+Generated: 2026-06-17T22:45:00Z
+Branch: release/lawapp-clean-snapshot
+Base HEAD (locked): 1e10075
+Runner: production hardening subagent @ F:/lawapp
+
+## 1. Env / DB password mismatch
+
+| Source | POSTGRES_PASSWORD | POSTGRES_PORT | POSTGRES_HOST |
+|--------|-------------------|---------------|---------------|
+| `.env` (gitignored, live) | change_this_password | 5432 | db |
+| `docker-compose.override.yml` | lawapp (all services) | 5435 host map | db |
+| `.env.local.example` | lawapp | 5435 | localhost |
+| `verify_ingestion_084.py` default | lawapp | 5435 | localhost |
+| `conftest.py` default | lawapp | 5435 | localhost |
+
+**Root cause:** pgdata volume was initialised with password `lawapp`; override aligns running containers. Host `.env` still has `change_this_password`, so scripts using `ingestion.config` (loads `.env`) without `DATABASE_URL` override hit wrong host/password.
+
+**Connectivity proof:**
+- `POSTGRES_PASSWORD=lawapp` on localhost:5435 → CONNECT_OK
+- `POSTGRES_PASSWORD=change_this_password` → `FATAL: password authentication failed for user "lawapp"`
+
+**Safe fix applied (no secrets committed):**
+- `.env.example` + `.env.docker.example` comments documenting override + pgdata behaviour
+- `docs/qa/LAWAPP_DOCKER_TEST_ENV.md` password note
+- `scripts/proof/verify_ingestion_084.py` docstring + default `lawapp` for local verify
+
+**Operator fix:** For host-side scripts use:
+```
+DATABASE_URL=postgresql://lawapp:lawapp@localhost:5435/lawapp
+```
+or align `.env` POSTGRES_PASSWORD to `lawapp` locally (never commit).
+
+---
+
+## 2. 1024-dim re-embed plan and execution
+
+**Config (ingestion):**
+- `ingestion/embeddings/ollama_embed.py` — Ollama `/api/embeddings`, expects `EMBEDDING_DIM=1024`
+- `ingestion/config.py` — default `embedding_model=bge-large-en-v1.5`, `embedding_dim=1024`
+- `scripts/reembed_corpus_1024.py` — updates `corpus_chunks` (vector 1024 per migration 080)
+- `ingestion/sync_corpus_chunks.py` — idempotent `ON CONFLICT (chunk_hash) DO NOTHING`
+
+**Schema note:** Source tables (`legislation`, `acas_guidance`, …) remain `vector(384)`. Migration 080 widened only `corpus_chunks`. Full `ingestion.embeddings.embedder` on source tables fails with `expected 384 dimensions, not 1024` until a follow-up migration.
+
+**Execution (Docker available):**
+```powershell
+docker compose --profile ollama up -d db ollama   # lawapp-db-1 :5435, lawapp-ollama-1 :11434
+docker exec lawapp-ollama-1 ollama list          # bge-large-en-v1.5 + mxbai-embed-large present
+$env:DATABASE_URL="postgresql://lawapp:lawapp@localhost:5435/lawapp"
+$env:LAWAPP_OLLAMA_BASE_URL="http://localhost:11434"
+$env:EMBEDDING_MODEL="bge-large-en-v1.5"
+$env:EMBEDDING_DIM="1024"
+python scripts/reembed_corpus_1024.py            # 972 updated (6 prior partial), ~155 min
+python -m ingestion.sync_corpus_chunks             # before=978 after=978 added=0 embedded=978
+```
+
+**Script hardening (reembed):** Adaptive truncation retries (2000→1500→1000→500 chars) for Ollama 512-token batch limit; skip rows already at 1024-dim; require `DATABASE_URL` override when `.env` has stale password.
+
+---
+
+## 3. Row counts and dimension proof
+
+| Metric | Value |
+|--------|-------|
+| corpus_chunks total | 978 |
+| corpus_chunks embedded | 978 |
+| legislation path embedded (primary_legislation + secondary_legislation + statutory_instrument) | 885 |
+| embedding dimension distribution | 1024 → 978 rows |
+| embedding_model | bge-large-en-v1.5 → 978 rows |
+| legislation table embedded (source, vector 384) | 0 |
+
+**Sample dimension SQL:**
+```sql
+SELECT vector_dims(embedding), count(*) FROM corpus_chunks
+ WHERE embedding IS NOT NULL GROUP BY 1;
+-- (1024, 978)
+```
+
+---
+
+## 4. Ollama model path (production-supported)
+
+| Approach | Command | Status this run |
+|----------|---------|-----------------|
+| Direct pull | `docker compose exec ollama ollama pull bge-large-en-v1.5` | Manifest 404 in prior runs (per unified bundle) |
+| Alias copy (prod workaround) | `ollama pull mxbai-embed-large` then `ollama cp mxbai-embed-large bge-large-en-v1.5` | **Used** — both tags present, same ID `468836162de7` |
+
+`ingestion/config.py` already defaults `bge-large-en-v1.5` / 1024 — no architecture change.
+
+---
+
+## 5. Retrieval sync proof (1024-dim corpus_chunks)
+
+**Direct pgvector (query embed via Ollama 1024, corpus 1024):**
+```
+('official_guidance', 'ACAS — Unfair dismissal', 1024, 0.2093)
+('primary_legislation', 'National Minimum Wage Act 1998', 1024, 0.2151)
+('official_guidance', 'ACAS — Unfair dismissal', 1024, 0.2276)
+```
+
+**retrieve_hybrid (brain path):** 5 authorities, grounding_score=1.0, insufficient=False (semantic leg still BM25 because `legislation.embedding` all NULL — checks source table not corpus_chunks).
+
+**RAG service** `POST /api/rag/search`: `total_found=0` — service still embeds queries with fastembed `bge-small-en-v1.5` (384-dim) against 1024 corpus (dimension mismatch). Owner action: align RAG service query embedder to Ollama 1024.
+
+---
+
+## 6. ADR-000 clean check
+
+```
+python -m pytest tests/test_single_brain_architecture.py tests/test_build_order_gates.py -q
+→ 16 passed
+```
+
+- `backend/ai/` tree: **absent** (Test-Path False)
+- `rg -i "langgraph|legal/reason" backend/` → **0 matches**
+
+---
+
+## 7. Single-brain tests (append)
+
+Same suite as §6: **16 passed, 0 failed** (2026-06-17 post-embed).
+
+`scripts/proof/verify_ingestion_084.py` with live DB: **exit 0, verdict PASS** (embedded=978, dim=1024).
+
+---
+
+## Blockers / owner actions
+
+1. Align host `.env` POSTGRES_PASSWORD to `lawapp` or always export `DATABASE_URL` for host scripts.
+2. Migrate source tables (`legislation`, `acas_guidance`, …) to `vector(1024)` OR teach `retrieve_semantic` to query `corpus_chunks`.
+3. Update `lawapp-rag-service` query embedding from fastembed 384 → Ollama 1024 (match corpus).
+4. Re-run `ollama cp mxbai-embed-large bge-large-en-v1.5` on fresh Ollama volumes if direct pull still 404.

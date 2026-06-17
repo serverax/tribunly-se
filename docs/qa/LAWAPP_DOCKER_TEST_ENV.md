@@ -52,7 +52,7 @@ docker compose down
   - or API endpoints `/auth/register` then `/auth/token`.
 - Local DB test credentials in the override are:
   - user: `lawapp`
-  - password: `lawapp`
+  - password: `lawapp` (override aligns services; `.env` may still say `change_this_password` — use `lawapp` for host scripts on :5435)
   - db: `lawapp`
   - host port: `5435` (container internal 5432)
 
