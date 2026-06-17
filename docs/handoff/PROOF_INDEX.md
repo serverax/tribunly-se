@@ -1,7 +1,7 @@
 # Proof Index
 
-Generated: 2026-06-17  
-Commands run this session unless marked historical.
+Generated: 2026-06-18
+HEAD: `4209216` on `release/lawapp-clean-snapshot` (0 ahead / 0 behind origin)
 
 ## Git verification
 
@@ -10,28 +10,28 @@ cd F:\lawapp
 git status --short
 git branch --show-current
 git rev-parse HEAD
-git log --oneline -5
-git fetch origin
-git rev-parse origin/release/lawapp-clean-snapshot
-git rev-parse origin/feat/seo-command
-git log -1 --oneline origin/release/lawapp-clean-snapshot
-git log -1 --oneline origin/feat/seo-command
+git status -sb
+git rev-list --left-right --count origin/release/lawapp-clean-snapshot...HEAD
+# 0 0
 ```
 
 ## Path checks (release checkout)
 
 | Path | Exists on release | Exists on feat/seo-command |
 |------|-------------------|----------------------------|
-| `docs/08_SEO_COMMAND_HANDOFF.md` | Created this session | No (was local 160015a only) |
+| `docs/08_SEO_COMMAND_HANDOFF.md` | Yes | No (was local 160015a only) |
 | `reports/seo_track_a_proof.txt` | No | Yes |
+| `reports/rag_1024_retrieval_repair.txt` | Yes (local file) | No |
 | `backend/seo/agents/` | No | No (AGENTS_ABSENT_OK) |
 | `backend/ai` | No | No |
+| `backend/services/lawapp-rag-service/ollama_embed.py` | Yes (tracked @ 4209216) | — |
+| `tests/test_rag_1024_retrieval_repair.py` | Yes (tracked @ 4209216) | — |
 
 ```powershell
-Test-Path backend/ai                    # False
-Test-Path backend/seo/agents            # False (release)
-Test-Path docs/08_SEO_COMMAND_HANDOFF.md  # True after this commit
-Test-Path reports/seo_track_a_proof.txt     # False on release
+Test-Path backend/ai                              # False
+Test-Path backend/seo/agents                      # False (release)
+Test-Path reports/rag_1024_retrieval_repair.txt   # True
+Test-Path reports/seo_track_a_proof.txt           # False on release
 ```
 
 ## Grep (release committed tree)
@@ -50,11 +50,11 @@ rg "legal/reason|/api/v1/legal/reason" --glob "*.py"
 
 ## Pytest
 
-**Release @ 804a232:**
+**Release @ 4209216 (historical from repair proof; re-run required):**
 
 ```powershell
-python -m pytest tests/test_single_brain_architecture.py tests/test_build_order_gates.py -q
-# 16 passed, 33 warnings in 15.11s
+python -m pytest tests/test_rag_1024_retrieval_repair.py tests/test_single_brain_architecture.py tests/test_build_order_gates.py -q
+# 21 passed (reports/rag_1024_retrieval_repair.txt)
 ```
 
 **feat/seo-command @ 263baa3 (worktree):**
@@ -67,7 +67,7 @@ python -m pytest tests/test_seo_command_track_a.py -q
 # 15 passed
 ```
 
-## DB corpus (live verified)
+## DB corpus (live verified historical)
 
 ```powershell
 # Port 5435 reachable: True
@@ -78,23 +78,25 @@ psql -h localhost -p 5435 -U lawapp -d lawapp -t -c "SELECT COUNT(*), COUNT(embe
 
 ## Evidence files (by topic)
 
-| Topic | Pathology |
-|-------|-----------|
-| Embed hardening | `reports/prod_embed_hardening_cursor.txt` |
-| Beta gate bundle | `reports/beta_gate_evidence_unified.txt` |
-| Beta promotion review | `reports/BETA_PROMOTION_REVIEW.md` |
-| Ingestion 084 | `reports/ingestion_084_cursor.txt` |
-| SEO Track A | `reports/seo_track_a_proof.txt` (feat branch) |
-| ADR-000 | `docs/adr/ADR-000-langgraph-gate.md` |
-| SEO spec | `docs/SEO_COMMAND_SPEC.md` (feat branch) |
-| Session handoff | `docs/handoff/*.md`, `docs/08_SEO_COMMAND_HANDOFF.md` |
+| Topic | Path | Status |
+|-------|------|--------|
+| Embed hardening | `reports/prod_embed_hardening_cursor.txt` | On origin |
+| RAG 1024 retrieval repair | `reports/rag_1024_retrieval_repair.txt` | **Exists** (historical PASS @ repair); **re-run pending** before beta promotion |
+| `/api/rag/search` API proof | inside `reports/rag_1024_retrieval_repair.txt` | **Refresh required** after `4209216` on current environment |
+| Beta gate bundle | `reports/beta_gate_evidence_unified.txt` | Historical @ 97a405b |
+| Beta promotion review | `reports/BETA_PROMOTION_REVIEW.md` | Stale; refresh after verification |
+| Ingestion 084 | `reports/ingestion_084_cursor.txt` | Historical PASS |
+| SEO Track A | `reports/seo_track_a_proof.txt` | On feat branch only |
+| ADR-000 | `docs/adr/ADR-000-langgraph-gate.md` | Binding |
+| SEO spec | `docs/SEO_COMMAND_SPEC.md` | feat branch |
+| Session handoff | `docs/handoff/*.md`, `docs/08_SEO_COMMAND_HANDOFF.md` | This reconcile pass |
 
 ## Ingestion verify script
 
 ```powershell
 $env:DATABASE_URL="postgresql://lawapp:lawapp@localhost:5435/lawapp"
 python scripts/proof/verify_ingestion_084.py
-# NOT re-run this session — historical PASS at 97a405b/1e10075
+# NOT re-run this session — historical PASS at 97a405b; re-run after RAG verification
 ```
 
 ## Stash / local-only commits
@@ -102,12 +104,6 @@ python scripts/proof/verify_ingestion_084.py
 ```powershell
 git stash list
 # stash@{0}: On feat/seo-command: wip-all
-
-git show 160015a --stat
-# docs/08_SEO_COMMAND_HANDOFF.md (local commit, not on origin)
-
-git rev-parse fda7afca
-# fatal: unknown revision
 ```
 
 ## Handoff bundle
@@ -121,3 +117,4 @@ git rev-parse fda7afca
 | `docs/handoff/NEXT_TASKS.md` | Prioritized work |
 | `docs/handoff/KNOWN_ISSUES.md` | Issues register |
 | `docs/handoff/PROOF_INDEX.md` | This file |
+| `docs/handoff/AGENTS_AND_SUBAGENTS_STATE.md` | Agent STOP policy |

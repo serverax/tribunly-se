@@ -1,26 +1,28 @@
 # Release State
 
-Generated: 2026-06-17  
+Generated: 2026-06-18
 Branch: `release/lawapp-clean-snapshot`
 
 ## HEAD verification
 
 | Ref | SHA | Match |
 |-----|-----|-------|
-| Local HEAD | `804a232` | — |
-| `origin/release/lawapp-clean-snapshot` | `804a232` | Yes |
-| Owner expected | `804a232` or newer | **At expected** |
+| Local HEAD | `4209216` | — |
+| `origin/release/lawapp-clean-snapshot` | `4209216` | Yes |
+| Branch sync | 0 ahead / 0 behind | Yes |
 
-Latest commit message: `docs: embed hardening evidence and local DB password guidance`
+Latest commit message: `fix(rag): align semantic retrieval with corpus_chunks 1024-dim plane`
 
 ## Working tree
 
-```text
-$ git status --short
-(clean)
-```
+Handoff docs may be modified during reconcile pass; code tree clean at `4209216`.
 
-No uncommitted RAG repair on release at handoff time. Commit hash `fda7afca` **not found** in repository history.
+## RAG repair status
+
+- **Shipped / provisionally complete** @ `4209216`.
+- RAG 1024-dim repair appears shipped at `4209216`; verification should be re-run before beta promotion.
+- Historical proof: `reports/rag_1024_retrieval_repair.txt` (exists; refresh required).
+- **Required next step: verification, not fresh repair.**
 
 ## Embed proof (978/978 @ 1024-dim)
 
@@ -31,13 +33,13 @@ No uncommitted RAG repair on release at handoff time. Commit hash `fda7afca` **n
 | `reports/BETA_PROMOTION_REVIEW.md` | Gate summary + beta NO recommendation |
 | `scripts/reembed_corpus_1024.py` | Hardened (truncation retries, skip already-1024) |
 
-**Beta ready:** NO (corpus plane yes; retrieval stack no)
+**Beta ready:** No — corpus + retrieval plane aligned @ `4209216`; verification proof re-run and human review pending.
 
-## RAG blockers (owner-aligned)
+## RAG blockers (resolved @ 4209216)
 
-1. **`retrieve_semantic`** still checks `legislation.embedding` (384 schema, empty) instead of `corpus_chunks` 1024 embeddings.
-2. **RAG microservice** query embedder uses 384-dim fastembed while corpus index is 1024 — live `/api/rag/search` returns 0 hits.
-3. **Source table migration** not applied — `legislation` / `acas_guidance` remain `vector(384)`.
+1. ~~`retrieve_semantic` gated on empty `legislation.embedding`~~ → uses `corpus_chunks` 1024-dim.
+2. ~~RAG service 384-dim query embed~~ → Ollama `bge-large-en-v1.5` 1024-dim (`ollama_embed.py`).
+3. **Open (non-blocking):** source tables still `vector(384)`; corpus plane is authoritative for search.
 
 ## DB password note (operator)
 
@@ -57,7 +59,7 @@ Documented in: `.env.example`, `.env.docker.example`, `docs/qa/LAWAPP_DOCKER_TES
 
 ## Gate status (reference bundle)
 
-From `reports/beta_gate_evidence_unified.txt` (stamp @ 97a405b; release now @ 804a232):
+From `reports/beta_gate_evidence_unified.txt` (stamp @ 97a405b; release now @ `4209216`):
 
 | Gate | Status |
 |------|--------|
@@ -65,21 +67,25 @@ From `reports/beta_gate_evidence_unified.txt` (stamp @ 97a405b; release now @ 80
 | D Ingestion 084 | PASS (re-run after RAG fix recommended) |
 | E Grounding / CitationGuard | PASS |
 | F i18n + domain fail-closed | PASS |
-| SB Single Brain ADR-000 | PASS (16 pytest this session) |
+| SB Single Brain ADR-000 | PASS (16 pytest historical) |
 
-## Pytest (release @ 804a232)
+## Pytest (release @ 4209216)
+
+Historical from `reports/rag_1024_retrieval_repair.txt`:
 
 ```text
-python -m pytest tests/test_single_brain_architecture.py tests/test_build_order_gates.py -q
-16 passed, 33 warnings in 15.11s
+python -m pytest tests/test_rag_1024_retrieval_repair.py tests/test_single_brain_architecture.py tests/test_build_order_gates.py -q
+21 passed
 ```
 
-## Next repair (release line)
+Re-run required as part of verification checklist.
 
-1. Repoint semantic retrieve to `corpus_chunks` **OR** migrate source tables to 1024-dim.
-2. Switch RAG service query embedding to Ollama `bge-large-en-v1.5` (1024).
-3. Re-run hybrid search integration + `verify_ingestion_084.py`.
-4. Update `reports/BETA_PROMOTION_REVIEW.md` after proof.
+## Next verification (release line)
+
+1. Run RAG 1024 verification checklist (see [NEXT_TASKS.md](./NEXT_TASKS.md)).
+2. Re-run `verify_ingestion_084.py` with `DATABASE_URL=postgresql://lawapp:lawapp@localhost:5435/lawapp`.
+3. Rebuild RAG container if pulled on another host: `docker compose build lawapp-rag-service && docker compose up -d lawapp-rag-service`.
+4. Refresh `/api/rag/search` API proof and update `reports/BETA_PROMOTION_REVIEW.md` after owner review.
 
 **Do not push to `main`.** Commit on `release/lawapp-clean-snapshot`; owner merges.
 

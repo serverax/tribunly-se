@@ -1,23 +1,24 @@
-Generated: 2026-06-18T00:06:00Z
+Generated: 2026-06-18T12:00:00Z
 Repo: serverax/lawapp
 Branch: release/lawapp-clean-snapshot
-Commit: 6eca1b6 (local; not pushed)
+Commit: 4209216 (0 ahead / 0 behind origin)
 Phase: 3 (RAG/ingestion verification and pre-beta hardening; approximate)
 
 > **MANDATORY — agents and subagents STOP state:** [AGENTS_AND_SUBAGENTS_STATE.md](./AGENTS_AND_SUBAGENTS_STATE.md)
-> All agent/subagent work is stopped. No background agents authorised. Read before spawning any Task/subagent or resuming WIP.
+> All agent/subagent work is stopped. No background agents authorised. Read before spawning any Task/subagent or resuming hidden subagent context.
 
 ## Completed (this snapshot)
 
 - Local Docker stack for LawApp core services reported healthy (db, backend, rag, graph-rag, rules, admin, audit, ollama, outbox-worker).
 - Handoff documentation set under `docs/handoff/` including agent/subagent state ([AGENTS_AND_SUBAGENTS_STATE.md](./AGENTS_AND_SUBAGENTS_STATE.md)).
 - Recent history includes Gate D PASS evidence (verify_ingestion_084 exit 0) and unified evidence stamping.
-- Owner STOP applied: no RAG repair commit, no SEO Track B, no push.
+- RAG 1024-dim repair appears shipped at `4209216`; verification should be re-run before beta promotion.
+- Proof artifact exists: `reports/rag_1024_retrieval_repair.txt` (historical PASS @ repair commit; refresh required).
+- SEO Track B still not approved.
 
 ## Recently modified
 
-- `docs/handoff/HANDOFF.md`, `docs/handoff/AGENTS_AND_SUBAGENTS_STATE.md` (this STOP pass)
-- Uncommitted RAG repair artifacts (abandon list in [AGENTS_AND_SUBAGENTS_STATE.md](./AGENTS_AND_SUBAGENTS_STATE.md))
+- `docs/handoff/HANDOFF.md`, `docs/handoff/AGENTS_AND_SUBAGENTS_STATE.md`, `docs/handoff/RELEASE_STATE.md`, `docs/handoff/NEXT_TASKS.md`, `docs/handoff/PROOF_INDEX.md` (reconcile pass)
 
 ## Currently running (local, verified)
 
@@ -31,18 +32,20 @@ Phase: 3 (RAG/ingestion verification and pre-beta hardening; approximate)
 
 ## Build phase (01-06)
 
-- Between Phase 2 (engine) and Phase 3 (retention/RAG verification): ingestion gate evidence recorded; pre-beta documentation and hardening in progress.
-- Owner STOP: no RAG repair, SEO B, push, or code changes beyond `docs/handoff/` in this pass.
+- Between Phase 2 (engine) and Phase 3 (retention/RAG verification): ingestion gate evidence recorded; pre-beta verification in progress.
+- Pre-beta: re-run RAG 1024 verification checklist and refresh `BETA_PROMOTION_REVIEW.md` (not a fresh repair).
 
 ## RAG status
 
-- Retrieval/embeddings: local rag and graph-rag containers healthy; corpus/embedding counts not re-queried (UNKNOWN - requires verification).
-- RAG repair WIP abandoned (subagent `fda7afca`); do not resume without owner.
+- RAG 1024-dim repair appears shipped at `4209216`; verification should be re-run before beta promotion.
+- Semantic plane: `corpus_chunks` @ 1024-dim via Ollama `bge-large-en-v1.5`; `/api/rag/search` cited hits proven historically in `reports/rag_1024_retrieval_repair.txt` (refresh required).
+- Source tables (`legislation`, etc.) remain `vector(384)` — non-blocking; corpus plane is canonical.
 
 ## Agent status
 
 - Single reasoning runtime: `brain.py` (ADR-000); no second runtime.
 - **All agents and subagents stopped.** Full policy: **[AGENTS_AND_SUBAGENTS_STATE.md](./AGENTS_AND_SUBAGENTS_STATE.md)**
+- LangGraph still blocked (ADR-000).
 
 ## Legal compliance / guardrails
 

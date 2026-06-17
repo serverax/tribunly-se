@@ -1,9 +1,9 @@
 # Agents and subagents state
 
-Generated: 2026-06-18T00:06:00Z
+Generated: 2026-06-18T12:00:00Z
 Repo: serverax/lawapp
 Branch: release/lawapp-clean-snapshot
-Commit at write: 6eca1b6 (local; not pushed)
+Commit at write: 4209216 (0 ahead / 0 behind origin)
 Owner directive: STOP all agents; documentation only; no push unless owner approves.
 
 ## 1. Global stop state
@@ -11,7 +11,7 @@ Owner directive: STOP all agents; documentation only; no push unless owner appro
 - **All agent work is stopped.**
 - **No agents or subagents are currently authorised to continue.**
 - **No background work should remain running.**
-- Any in-flight or partial agent work must be treated as **abandoned** unless the owner explicitly restarts it.
+- Any in-flight or partial **hidden subagent context** must be treated as **abandoned** unless the owner explicitly restarts it.
 - Do not spawn Task/subagent runners, parallel coding agents, or autonomous recovery loops on `release/lawapp-clean-snapshot` or `feat/seo-command` without explicit owner tasking.
 
 ## 2. LangGraph agent state
@@ -48,26 +48,23 @@ Owner directive: STOP all agents; documentation only; no push unless owner appro
 - Track C (gated execution / auto-execute): **NOT STARTED** — blocked behind Track B.
 - Reference: `docs/handoff/SEO_COMMAND_STATE.md`, `docs/08_SEO_COMMAND_HANDOFF.md`.
 
-## 4. RAG/retrieval WIP agent state
+## 4. RAG/retrieval state (repo source of truth)
 
-- Release/RAG repair was identified as the next priority but **must NOT continue in this handoff session**.
-- Any in-flight RAG WIP must be **abandoned/stopped now** (subagent `fda7afca`).
-- The next session must restart from the handoff docs, **not** from partial hidden agent context.
-- **Do not continue** editing retrieval, embeddings, RAG routes, or DB logic in this session.
-- Abandon list (do not commit):
-
-| Path | Role |
-|------|------|
-| `backend/core/retrieve.py` | RAG repair WIP |
-| `backend/services/lawapp-rag-service/main.py` | RAG service repair WIP |
-| `backend/services/lawapp-rag-service/requirements.txt` | RAG service deps WIP |
-| `backend/services/lawapp-rag-service/ollama_embed.py` | Untracked embed helper (repair) |
-| `docker-compose.override.yml` | Local stack tweak for repair |
-| `.env.example` | Local env guidance touched during repair |
-| `tests/integration/test_semantic_retrieval.py` | Repair-related test edits |
-| `tests/test_rag_1024_retrieval_repair.py` | Untracked repair test |
-
-- Planned proof file `reports/rag_1024_retrieval_repair.txt` was **not created** (repair abandoned before proof).
+- **Repo-visible RAG 1024-dim repair at `4209216` is the current source of truth** — not abandoned.
+- RAG 1024-dim repair appears shipped at `4209216`; verification should be re-run before beta promotion.
+- **Hidden/old subagent context for RAG repair remains abandoned** — do not resume partial in-memory work from subagent `fda7afca` or replay stale abandon lists.
+- **Future work must start from git HEAD (`4209216`) and these handoff docs**, not from hidden subagent memory or untracked WIP assumptions.
+- Committed repair paths (tracked at `4209216`):
+  - `backend/core/retrieve.py`
+  - `backend/services/lawapp-rag-service/main.py`
+  - `backend/services/lawapp-rag-service/ollama_embed.py`
+  - `backend/services/lawapp-rag-service/requirements.txt`
+  - `docker-compose.override.yml`
+  - `.env.example`
+  - `tests/integration/test_semantic_retrieval.py`
+  - `tests/test_rag_1024_retrieval_repair.py`
+- Proof artifact: `reports/rag_1024_retrieval_repair.txt` (exists; verification re-run required before beta promotion).
+- **Do not start a fresh repair** unless verification proves regression. Next step is verification only.
 
 ## 5. Subagent runs
 
@@ -78,9 +75,9 @@ Verified from git history, `docs/handoff/PROOF_INDEX.md`, `docs/handoff/SEO_COMM
 | Gate D live recovery | `release/lawapp-clean-snapshot` | `7f29543e` | **completed** | `reports/beta_gate_evidence_unified.txt`; commit `97a405b` | docs + evidence commits | **Yes** (historical) |
 | Prod embed hardening | `release/lawapp-clean-snapshot` | — | **completed** | `reports/prod_embed_hardening_cursor.txt`; commit `804a232` | docs + evidence | **Yes** (on origin release) |
 | SEO Track A read-only spine | `feat/seo-command` | `ce07c144` | **completed** | `reports/seo_track_a_proof.txt` (feat branch only) | code + tests + migration 087 | **Yes** (`origin/feat/seo-command` @ `263baa3`) |
-| 1024-dim RAG retrieval repair | `release/lawapp-clean-snapshot` | `fda7afca` | **abandoned** | none (planned proof not written) | code WIP uncommitted | **No** |
-| Session handoff bundle | `release/lawapp-clean-snapshot` | `9cc246a9` | **completed** | `docs/handoff/*`; commit `4f6ec91` | docs only | **No** (local ahead of origin) |
-| Agent handoff STOP state | `release/lawapp-clean-snapshot` | `30d16599`, `c27f611a` | **completed** | commit `dfd4ec9` | docs only | **No** (local ahead of origin) |
+| 1024-dim RAG retrieval repair | `release/lawapp-clean-snapshot` | `fda7afca` | **completed** | commit `4209216`; `reports/rag_1024_retrieval_repair.txt` | pushed to origin | **Yes** (`origin/release/lawapp-clean-snapshot` @ `4209216`) |
+| Session handoff bundle | `release/lawapp-clean-snapshot` | `9cc246a9` | **completed** | `docs/handoff/*`; commit `4f6ec91` | docs only | **Yes** (on origin) |
+| Agent handoff STOP state | `release/lawapp-clean-snapshot` | `30d16599`, `c27f611a` | **completed** | commit `dfd4ec9` | docs only | **Yes** (on origin) |
 | LangGraph / backend/ai bootstrap | `release/lawapp-clean-snapshot` | `6e5e6e51` | **blocked** | ADR-000; commits `993b3b5`/`bb004cd` not on origin | code reverted locally | **No** |
 | Ingestion workers | `release/lawapp-clean-snapshot` | `89552fa1` | **abandoned** | no `ingestion/workers/` in repo | none landed | **No** |
 
@@ -88,16 +85,19 @@ If no verified evidence exists for a subagent not listed above: **No verified re
 
 ## 6. Required stop condition
 
-After `AGENTS_AND_SUBAGENTS_STATE.md` and `HANDOFF.md` are committed locally, **STOP EVERYTHING**.
+After handoff docs are committed locally, **STOP EVERYTHING**.
 
-Do **not** continue with: RAG repair, release fixes, SEO Track B, SEO agents, LangGraph, tests beyond handoff verification, deployment, push, cleanup, or code changes.
+Do **not** continue with: fresh RAG repair (unless regression proven), SEO Track B, SEO agents, LangGraph, deployment, push, or code changes without owner instruction.
+
+**Allowed next step:** RAG 1024 verification re-run per [NEXT_TASKS.md](./NEXT_TASKS.md) when owner authorises.
 
 ## New session entry (anti-drift)
 
 1. Read [HANDOFF.md](./HANDOFF.md) and this file first.
-2. Confirm `backend/ai/` absent and `backend/seo/agents/` absent.
-3. Do not resume subagents `fda7afca` or `6e5e6e51` without explicit owner approval.
-4. Wait for owner instruction before any implementation work.
+2. Confirm `git rev-parse HEAD` is `4209216` or newer on `release/lawapp-clean-snapshot`.
+3. Confirm `backend/ai/` absent and `backend/seo/agents/` absent.
+4. Do not resume subagents `6e5e6e51` or hidden RAG WIP context from `fda7afca` — use git HEAD and handoff docs instead.
+5. Wait for owner instruction before any implementation work.
 
 ## Parallel agent drift history
 
@@ -108,9 +108,9 @@ Do **not** continue with: RAG repair, release fixes, SEO Track B, SEO agents, La
 
 ## Push and remote
 
-- Handoff commits `4f6ec91`, `dfd4ec9`, and `6eca1b6`: **local only**; branch ahead of `origin/release/lawapp-clean-snapshot`; **NO PUSH** in this task.
-- `804a232` (prod embed): on origin release before local handoff commits.
-- RAG repair and SEO Track B: **not started / not committed** on release at STOP time.
+- Branch `release/lawapp-clean-snapshot`: **0 ahead / 0 behind** `origin/release/lawapp-clean-snapshot` @ `4209216`.
+- RAG repair: **committed and pushed @ `4209216`**. SEO Track B: **not started**.
+- Handoff doc commits after `4209216`: local only until owner requests push.
 
 ## Pointers
 
