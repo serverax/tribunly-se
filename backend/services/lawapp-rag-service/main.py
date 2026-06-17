@@ -4,6 +4,8 @@ Port 8017
 
 Hybrid RAG retrieval: PostgreSQL FTS (keyword) + pgvector semantic search
 against the real `corpus_chunks` table (not the legacy `legal_corpus` stub).
+
+Query embeddings: Ollama bge-large-en-v1.5 (1024-dim), matching corpus_chunks.
 """
 
 from __future__ import annotations
@@ -19,6 +21,8 @@ import psycopg2.extras
 import redis
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+
+from ollama_embed import EMBEDDING_DIM, embed_query
 
 SERVICE_NAME = "lawapp-rag-service"
 SERVICE_PORT = 8017
@@ -42,6 +46,18 @@ def get_db_connection():
     except Exception as e:
         logger.warning("DB connection failed: %s", e)
         return None
+
+
+def _ensure_db():
+    """Lazy (re)connect  -  startup may race DB readiness."""
+    global db
+    try:
+        if db is None or db.closed:
+            db = get_db_connection()
+    except Exception as exc:
+        logger.warning("DB reconnect failed: %s", exc)
+        db = None
+    return db
 
 
 def get_redis_connection():
@@ -75,6 +91,8 @@ def startup():
     cache = get_redis_connection()
     if db:
         logger.info("Database connected")
+    else:
+        logger.warning("Database not connected at startup  -  will retry per request")
     if cache:
         logger.info("Cache connected")
 
@@ -90,10 +108,11 @@ def health():
 
 @app.get("/ready")
 def ready():
+    conn = _ensure_db()
     return {
         "status": "ready",
         "service": SERVICE_NAME,
-        "database_connected": db is not None,
+        "database_connected": conn is not None,
         "redis_connected": cache is not None,
     }
 
@@ -104,6 +123,9 @@ def hybrid_search(request: SearchRequest):
 
     if not request.query or len(request.query.strip()) < 3:
         raise HTTPException(status_code=400, detail="Query too short")
+
+    if _ensure_db() is None:
+        raise HTTPException(status_code=503, detail="Database unavailable")
 
     limit = max(1, min(int(request.limit or 10), 50))
     cache_key = f"search:{request.query}:{request.corpus_filter}:{limit}"
@@ -116,7 +138,6 @@ def hybrid_search(request: SearchRequest):
     vector_results = _vector_search(request.query, request.corpus_filter, limit)
 
     merged: dict[str, dict] = {}
-    # Prefer FTS (keyword) hits  -  vector ranking is noisy on a sparse corpus.
     for row in bm25_results:
         merged[row["chunk_id"]] = row
     for row in vector_results:
@@ -145,10 +166,18 @@ def _row_to_result(row: psycopg2.extras.DictRow, match_type: str, score: float) 
     source = row.get("source_type") or row.get("source_table") or "corpus"
     authority = row.get("authority_ref") or ""
     text = (row.get("body_text") or "")[:500]
+    eff_from = row.get("effective_from")
+    eff_to = row.get("effective_to")
     return {
         "chunk_id": str(row["id"]),
         "source": source,
+        "source_type": source,
         "authority_ref": authority,
+        "source_url": row.get("source_url") or "",
+        "section": authority,
+        "jurisdiction": row.get("jurisdiction_code"),
+        "effective_from": eff_from.isoformat() if eff_from else None,
+        "effective_to": eff_to.isoformat() if eff_to else None,
         "text": text,
         "relevance_score": round(float(score), 4),
         "match_type": match_type,
@@ -157,13 +186,14 @@ def _row_to_result(row: psycopg2.extras.DictRow, match_type: str, score: float) 
 
 def _fts_search(query: str, corpus_filter: Optional[str], limit: int) -> List[Dict]:
     """Full-text search against corpus_chunks (indexed via corpus_chunks_fts_idx)."""
-    if not db:
+    conn = _ensure_db()
+    if not conn:
         logger.warning("FTS search skipped  -  no DB connection")
         return []
 
     results: List[Dict] = []
     try:
-        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             filter_sql = ""
             sql_params: list[Any] = [query, query]
             if corpus_filter:
@@ -172,7 +202,8 @@ def _fts_search(query: str, corpus_filter: Optional[str], limit: int) -> List[Di
             sql_params.append(limit)
             cur.execute(
                 f"""
-                SELECT id, source_type, source_table, authority_ref, body_text,
+                SELECT id, source_type, source_table, authority_ref, source_url,
+                       jurisdiction_code, effective_from, effective_to, body_text,
                        ts_rank(
                            to_tsvector('english', body_text),
                            plainto_tsquery('english', %s)
@@ -195,13 +226,24 @@ def _fts_search(query: str, corpus_filter: Optional[str], limit: int) -> List[Di
     return results
 
 
+def _corpus_embedding_dim(conn) -> int | None:
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT vector_dims(embedding) FROM corpus_chunks "
+            "WHERE embedding IS NOT NULL LIMIT 1"
+        )
+        row = cur.fetchone()
+        return int(row[0]) if row and row[0] is not None else None
+
+
 def _vector_search(query: str, corpus_filter: Optional[str], limit: int) -> List[Dict]:
-    """Semantic search via pgvector on corpus_chunks when embeddings exist."""
-    if not db:
+    """Semantic search via pgvector on corpus_chunks (1024-dim Ollama query embed)."""
+    conn = _ensure_db()
+    if not conn:
         return []
 
     try:
-        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             cur.execute(
                 "SELECT EXISTS(SELECT 1 FROM corpus_chunks WHERE embedding IS NOT NULL LIMIT 1)"
             )
@@ -211,23 +253,36 @@ def _vector_search(query: str, corpus_filter: Optional[str], limit: int) -> List
         logger.warning("Embedding probe failed: %s", e)
         return []
 
-    try:
-        from fastembed import TextEmbedding
-    except ImportError:
-        logger.info("fastembed not installed  -  vector search disabled")
+    corpus_dim = _corpus_embedding_dim(conn)
+    if corpus_dim is None:
         return []
 
     try:
-        model = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
-        query_vec = list(model.embed([query]))[0].tolist()
-        embedding_str = "[" + ",".join(str(x) for x in query_vec) + "]"
-    except Exception as e:
+        query_vec = embed_query(query)
+    except RuntimeError as e:
         logger.warning("Query embedding failed: %s", e)
         return []
 
+    if len(query_vec) != corpus_dim:
+        logger.error(
+            "Query embedding dim %s != corpus dim %s  -  vector search rejected",
+            len(query_vec),
+            corpus_dim,
+        )
+        return []
+
+    if corpus_dim != EMBEDDING_DIM:
+        logger.error(
+            "Corpus dim %s != configured EMBEDDING_DIM %s  -  vector search rejected",
+            corpus_dim,
+            EMBEDDING_DIM,
+        )
+        return []
+
+    embedding_str = "[" + ",".join(str(x) for x in query_vec) + "]"
     results: List[Dict] = []
     try:
-        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             params: list[Any] = [embedding_str, embedding_str]
             filter_sql = ""
             if corpus_filter:
@@ -236,7 +291,8 @@ def _vector_search(query: str, corpus_filter: Optional[str], limit: int) -> List
             params.append(limit)
             cur.execute(
                 f"""
-                SELECT id, source_type, source_table, authority_ref, body_text,
+                SELECT id, source_type, source_table, authority_ref, source_url,
+                       jurisdiction_code, effective_from, effective_to, body_text,
                        (1.0 - (embedding <=> %s::vector)) AS similarity
                 FROM corpus_chunks
                 WHERE embedding IS NOT NULL

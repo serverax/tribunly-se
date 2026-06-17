@@ -26,13 +26,13 @@ from backend.core.retrieve import retrieve_semantic, retrieve
 # ── Skip guard ────────────────────────────────────────────────────────────────
 
 def _embeddings_present() -> bool:
-    """Return True if at least one embedding exists in the corpus."""
+    """Return True if corpus_chunks has at least one embedded row."""
     from ingestion.db import get_connection
     conn = get_connection()
     try:
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT EXISTS(SELECT 1 FROM legislation WHERE embedding IS NOT NULL LIMIT 1)"
+                "SELECT EXISTS(SELECT 1 FROM corpus_chunks WHERE embedding IS NOT NULL LIMIT 1)"
             )
             return cur.fetchone()[0]
     finally:
@@ -43,8 +43,8 @@ def _embeddings_present() -> bool:
 def require_embeddings():
     if not _embeddings_present():
         pytest.skip(
-            "Embeddings not populated  -  run: "
-            "docker compose run --rm ingestion python -m ingestion.embeddings.embedder"
+            "corpus_chunks embeddings not populated  -  run: "
+            "scripts/reembed_corpus_1024.py after Ollama model pull"
         )
 
 

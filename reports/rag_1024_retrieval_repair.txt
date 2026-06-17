@@ -1,0 +1,73 @@
+LawApp RAG 1024-dim retrieval repair proof
+Generated: 2026-06-17
+Branch: release/lawapp-clean-snapshot
+Baseline: 804a232
+
+## Problem (804a232)
+- 978/978 corpus_chunks @ 1024-dim bge-large-en-v1.5
+- retrieve_semantic gated on empty legislation.embedding (384 schema) -> BM25-only
+- RAG service used fastembed bge-small-en-v1.5 (384-dim) -> vector leg empty; /api/rag/search returned 0 when DB stale at startup
+- .env password drift: pgdata volume password lawapp vs .env change_this_password
+
+## Files changed
+- backend/core/retrieve.py — corpus_chunks canonical semantic plane; 1024-dim gate; no zero-vector fallback
+- backend/services/lawapp-rag-service/main.py — Ollama 1024 query embed; lazy DB reconnect; citation metadata
+- backend/services/lawapp-rag-service/ollama_embed.py — new Ollama embed helper (no fastembed)
+- backend/services/lawapp-rag-service/requirements.txt — removed fastembed
+- docker-compose.override.yml — RAG Ollama env (LAWAPP_OLLAMA_BASE_URL, EMBEDDING_MODEL, EMBEDDING_DIM)
+- .env.example — DATABASE_URL host-script comment (localhost:5435)
+- tests/integration/test_semantic_retrieval.py — corpus_chunks embedding guard
+- tests/test_rag_1024_retrieval_repair.py — dimension, gate, API integration tests
+
+## 384-path bypass (removed)
+| Path | Before | After |
+|------|--------|-------|
+| retrieve_semantic gate | legislation.embedding IS NOT NULL | corpus_chunks.embedding IS NOT NULL |
+| retrieve_semantic search | legislation / case_law_chunks / acas_guidance | corpus_chunks only |
+| generate_query_embedding failure | silent [0.0]*384 | RuntimeError (fail closed) |
+| RAG _vector_search | fastembed BAAI/bge-small-en-v1.5 (384) | Ollama bge-large-en-v1.5 (1024) |
+| Dimension mismatch | silent empty vector results | logged + vector leg skipped (FTS/hybrid still runs) |
+
+## SQL corpus_chunks counts (live Docker db)
+```
+ total | embedded | dim
+-------+----------+------
+   978 |      978 | 1024
+```
+
+## pytest (host, POSTGRES_PASSWORD=lawapp, localhost:5435)
+```
+python -m pytest tests/test_rag_1024_retrieval_repair.py tests/test_single_brain_architecture.py tests/test_build_order_gates.py -q
+21 passed
+```
+
+## Architecture grep (no LangGraph / legal/reason runtime)
+- backend/ai: absent
+- langgraph imports in backend/: none (test gate files only reference forbidden paths)
+- /api/v1/legal/reason, legal_reason_routes: not registered
+
+## API curl proof (POST http://localhost:8017/api/rag/search)
+After rebuild + restart lawapp-rag-service; redis FLUSHDB; database_connected=true.
+
+| Query | total_found | First authority_ref | source_url present |
+|-------|-------------|---------------------|-------------------|
+| unfair dismissal time limit | 5 | ACAS - Unfair dismissal | yes |
+| compensatory award cap | 3 | Employment Rights Act 1996 s.124 | yes |
+| qualifying period | 3 | Agency Workers Regulations 2010 s.regulation/7 | yes |
+| ACAS early conciliation | 3 | ACAS - Early conciliation | yes |
+
+Sample (unfair dismissal time limit):
+- chunk_id: cc281ac2-... 
+- authority_ref: Employment Rights Act 1996 s.111
+- source_url: https://www.legislation.gov.uk/ukpga/1996/18/section/111/data.xml
+- jurisdiction: GB
+- match_type: hybrid
+
+## Remaining blockers
+1. Source tables (legislation, acas_guidance) remain vector(384); ingestion.embeddings.embedder on source tables still dimension-mismatched until a follow-up migration — corpus_chunks is authoritative for retrieval.
+2. Host pytest/scripts must use POSTGRES_PASSWORD=lawapp or DATABASE_URL=postgresql://lawapp:lawapp@localhost:5435/lawapp (not .env change_this_password).
+3. RAG service requires Ollama reachable at LAWAPP_OLLAMA_BASE_URL for vector leg; FTS works without Ollama.
+4. legislation.embedding still empty by design post-080; brain semantic leg now uses corpus_chunks only.
+
+## Verdict
+PASS — semantic retrieval and /api/rag/search return non-zero cited results at 1024-dim with corpus_chunks as canonical plane.

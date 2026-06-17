@@ -243,6 +243,44 @@ def retrieve_keyword(
     return results[:k]
 
 
+def _corpus_embeddings_present() -> bool:
+    """True when corpus_chunks has at least one embedded row (canonical semantic plane)."""
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT EXISTS(SELECT 1 FROM corpus_chunks WHERE embedding IS NOT NULL LIMIT 1)"
+            )
+            return bool(cur.fetchone()[0])
+    finally:
+        conn.close()
+
+
+def _corpus_embedding_dim() -> int | None:
+    """Return pgvector dimension of stored corpus embeddings, or None if absent."""
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT vector_dims(embedding) FROM corpus_chunks "
+                "WHERE embedding IS NOT NULL LIMIT 1"
+            )
+            row = cur.fetchone()
+            return int(row[0]) if row and row[0] is not None else None
+    finally:
+        conn.close()
+
+
+def _normalize_corpus_source_type(source_type: str | None, source_table: str | None) -> str:
+    table = (source_table or "").lower()
+    st = (source_type or "").lower()
+    if "case" in table:
+        return "case_law"
+    if table == "legislation" or "legislation" in st:
+        return "legislation"
+    return "acas"
+
+
 def retrieve_semantic(
     query: str,
     jurisdiction: str = "EW",
@@ -250,111 +288,95 @@ def retrieve_semantic(
     k: int = 5,
 ) -> list[dict]:
     """
-    Primary retrieval: pgvector cosine search when embeddings exist;
-    BM25 keyword fallback when they don't (run the embedder first).
+    Primary retrieval: pgvector cosine search on corpus_chunks (1024-dim);
+    BM25 keyword fallback when corpus embeddings are absent or query embed fails.
 
-    Model: sentence-transformers/all-MiniLM-L6-v2 (384-dim, local, no API key).
-    Both paths return the same dict shape. The semantic path activates
-    automatically once `python -m ingestion.embeddings.embedder` has run.
+    Canonical semantic plane: corpus_chunks with bge-large-en-v1.5 (1024-dim).
+    legislation.embedding (legacy 384-dim) is not consulted.
     """
-    # Check embeddings in a short-lived connection, then close it.
-    conn = get_connection()
-    try:
-        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute(
-                "SELECT EXISTS(SELECT 1 FROM legislation WHERE embedding IS NOT NULL LIMIT 1)"
-            )
-            has_embeddings = cur.fetchone()["exists"]
-    finally:
-        conn.close()
-
-    if not has_embeddings:
+    if not _corpus_embeddings_present():
         logger.info(
-            "Embeddings absent  -  using BM25 keyword fallback. "
-            "Run `python -m ingestion.embeddings.embedder` to activate semantic retrieval."
+            "corpus_chunks embeddings absent  -  using BM25 keyword fallback. "
+            "Run scripts/reembed_corpus_1024.py after Ollama model pull."
         )
         return retrieve_keyword(query, jurisdiction, edt, k)
 
-    # Embeddings exist  -  open a new connection for the cosine search.
+    corpus_dim = _corpus_embedding_dim()
+    if corpus_dim is None:
+        return retrieve_keyword(query, jurisdiction, edt, k)
+
+    from ingestion.config import settings
     from ingestion.embeddings.embedder import embed_texts
 
-    query_embedding = embed_texts([query])[0]
+    expected_dim = settings.embedding_dim
+    if corpus_dim != expected_dim:
+        logger.error(
+            "corpus embedding dim %s != configured %s  -  semantic search skipped",
+            corpus_dim,
+            expected_dim,
+        )
+        return retrieve_keyword(query, jurisdiction, edt, k)
+
+    try:
+        query_embedding = embed_texts([query])[0]
+    except Exception as exc:
+        logger.warning("Query embedding failed (%s)  -  keyword fallback", exc)
+        return retrieve_keyword(query, jurisdiction, edt, k)
+
+    if len(query_embedding) != corpus_dim:
+        logger.error(
+            "Query embedding dim %s != corpus dim %s  -  semantic search rejected",
+            len(query_embedding),
+            corpus_dim,
+        )
+        return retrieve_keyword(query, jurisdiction, edt, k)
+
     embedding_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
     edt_filter = edt or date.today()
     results: list[dict] = []
 
-    conn2 = get_connection()
+    conn = get_connection()
     try:
-        with conn2.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute(
                 """
                 SELECT
-                    'legislation'       AS source_type,
-                    act_title || ' s.' || section_ref AS cite,
-                    heading,
-                    LEFT(body_text, 600) AS text,
-                    source_url          AS url,
-                    jurisdiction   AS jurisdiction,
-                    effective_from, effective_to,
-                    embedding <=> %s::vector AS distance
-                FROM legislation
-                WHERE jurisdiction = ANY(%s)
-                  AND is_prospective = false
-                  AND (effective_to IS NULL OR effective_to >= %s)
-                  AND embedding IS NOT NULL
-                ORDER BY embedding <=> %s::vector
-                LIMIT %s
-                """,
-                (embedding_str, list(juris_codes(jurisdiction)), edt_filter, embedding_str, k),
-            )
-            results.extend(dict(r) for r in cur.fetchall())
-
-            cur.execute(
-                """
-                SELECT
-                    'case_law'                 AS source_type,
-                    d.neutral_citation         AS cite,
-                    d.case_name                AS heading,
-                    LEFT(c.body_text, 600)     AS text,
-                    d.fetch_url                AS url,
-                    'UK'                       AS jurisdiction,
-                    d.decision_date            AS effective_from,
-                    NULL::date                 AS effective_to,
+                    c.source_type,
+                    c.source_table,
+                    c.authority_ref AS cite,
+                    COALESCE(c.heading, c.title) AS heading,
+                    LEFT(c.body_text, 600) AS text,
+                    c.source_url AS url,
+                    c.jurisdiction_code AS jurisdiction,
+                    c.effective_from,
+                    c.effective_to,
                     c.embedding <=> %s::vector AS distance
-                FROM case_law_chunks c
-                JOIN case_law_documents d ON c.document_id = d.id
-                WHERE d.court_code  = 'eat'
+                FROM corpus_chunks c
+                WHERE c.jurisdiction_code = ANY(%s)
+                  AND COALESCE(c.is_prospective, false) = false
+                  AND (c.effective_to IS NULL OR c.effective_to >= %s)
+                  AND c.is_current IS DISTINCT FROM false
                   AND c.embedding IS NOT NULL
                 ORDER BY c.embedding <=> %s::vector
                 LIMIT %s
                 """,
-                (embedding_str, embedding_str, k),
+                (
+                    embedding_str,
+                    list(juris_codes(jurisdiction)),
+                    edt_filter,
+                    embedding_str,
+                    k,
+                ),
             )
-            results.extend(dict(r) for r in cur.fetchall())
-
-            cur.execute(
-                """
-                SELECT
-                    'acas'              AS source_type,
-                    doc_title           AS cite,
-                    doc_title           AS heading,
-                    LEFT(body_text, 600) AS text,
-                    source_url          AS url,
-                    jurisdiction   AS jurisdiction,
-                    effective_from,
-                    NULL::date          AS effective_to,
-                    embedding <=> %s::vector AS distance
-                FROM acas_guidance
-                WHERE jurisdiction = ANY(%s)
-                  AND embedding IS NOT NULL
-                ORDER BY embedding <=> %s::vector
-                LIMIT %s
-                """,
-                (embedding_str, list(juris_codes(jurisdiction)), embedding_str, k),
-            )
-            results.extend(dict(r) for r in cur.fetchall())
+            for row in cur.fetchall():
+                item = dict(row)
+                item["source_type"] = _normalize_corpus_source_type(
+                    item.get("source_type"), item.get("source_table")
+                )
+                item.pop("source_table", None)
+                results.append(item)
     finally:
-        conn2.close()
+        conn.close()
 
     results.sort(key=lambda r: r.get("distance", 1.0))
     return results[:k]
@@ -712,7 +734,7 @@ def _write_retrieval_audit(
                         (query_text, query_hash, domain, claim_type, {jurisdiction_column},
                          retrieved_bundle, exact_rules, grounding_score, retrieval_model, embedding_model)
                     VALUES (%s, md5(%s), %s, %s, %s,
-                            %s::jsonb, %s::jsonb, %s, 'hybrid', 'bge-small-en-v1.5')
+                            %s::jsonb, %s::jsonb, %s, 'hybrid', 'bge-large-en-v1.5')
                     """,
                     (query[:500], query[:500], retrieval_domain, claim_type, jcode,
                      bundle_json, rules_json, 0.0 if insufficient else 1.0),
@@ -728,20 +750,19 @@ def _write_retrieval_audit(
 
 def generate_query_embedding(query: str) -> list[float]:
     """
-    Generate embedding vector for a query.
+    Generate embedding vector for a query via local Ollama (bge-large-en-v1.5).
 
-    Args:
-        query: Query text
-
-    Returns:
-        Embedding vector (384-dim for all-MiniLM-L6-v2)
+    Fails closed on embedder error or dimension mismatch  -  no silent zero vector.
     """
-    try:
-        from ingestion.embeddings.embedder import embed_texts
-        return embed_texts([query])[0]
-    except Exception as exc:
-        logger.warning("generate_query_embedding failed: %s (returning zero vector)", exc)
-        return [0.0] * 384
+    from ingestion.config import settings
+    from ingestion.embeddings.embedder import embed_texts
+
+    vec = embed_texts([query])[0]
+    if len(vec) != settings.embedding_dim:
+        raise RuntimeError(
+            f"Query embedding dim {len(vec)} != configured {settings.embedding_dim}"
+        )
+    return vec
 
 
 def vector_search(
