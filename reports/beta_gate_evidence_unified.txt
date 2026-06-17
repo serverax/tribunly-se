@@ -1,6 +1,6 @@
 LawApp beta gate evidence bundle (owner review only)
 =====================================================
-Generated: 2026-06-17T00:46:00Z
+Generated: 2026-06-17T01:50:00Z (reconciled after remediation run)
 Branch: release/lawapp-clean-snapshot
 Base commit (Commit A): 8981c53
 Evidence commit (Commit B): 6b379e7
@@ -10,46 +10,59 @@ debug artifacts only. Architectural truth = ADR-000 + git log on this branch.
 
 Product status: PRE-BETA (unchanged)
 
+## Reconciliation note (owner)
+
+Prior bundle at origin HEAD 629ca4d recorded Gate D PASS (exit 0, code + live DB).
+2026-06-17 remediation on this workstation: verify_ingestion_084.py exit 1.
+Static ingestion criteria PASS; live Postgres (localhost:5435) SKIP; Docker
+idempotent sync FAIL; Ollama CLI not on PATH (model pull not attempted via host).
+Truth chain commits 8981c53 and 6b379e7 are unchanged. Gate D must be re-run
+with Docker Desktop, corpus DB, and Ollama model bge-large-en-v1.5 before C-F
+close.
+
 ## Gate summary
 
 | Gate | Description | Result | Evidence |
 |------|-------------|--------|----------|
 | C | Case OS beta audit | PASS | reports/case_os_beta_ship_cursor.txt |
-| D | Ingestion 084 dual-plane | PASS | reports/ingestion_084_cursor.txt |
+| D | Ingestion 084 dual-plane | PARTIAL FAIL | reports/ingestion_084_cursor.txt |
 | E | Grounding regression suite | PASS | reports/grounding_verification_cursor.txt |
 | F | i18n / no-translate invariant | PASS | reports/multi_language_verify_cursor.txt |
 | F | Domain plugin fail-closed | PASS | reports/domain_plugin_verify_cursor.txt |
 
-## Gate E — grounding (blocker gate)
+## Gate E - grounding (blocker gate)
 
 Command:
   python -m pytest tests/test_grounding_regression.py tests/test_single_brain_architecture.py -q
 
-Result: 24 passed, 0 failed
+Result: 24 passed, 0 failed (per bundle at 6b379e7; re-run if branch drift)
 
 verify_grounding.py exit code: 0
 Static checks: Brain CitationGuard PASS, pipeline corpus_citation_guard PASS,
 No /api/v1/legal/reason PASS
 
-## Gate C — Case OS
+## Gate C - Case OS
 
 Script: python scripts/proof/audit_case_os_beta.py
 Exit code: 0
 Verdict: PASS (30 pages, forbidden string grep clean)
 
-## Gate D — Ingestion 084
+## Gate D - Ingestion 084
 
 Script: python scripts/proof/verify_ingestion_084.py
-Exit code: 0
-Verdict: PASS (code + live DB)
+Exit code: 1 (remediation run 2026-06-17T01:46Z)
+Verdict: PARTIAL FAIL - code/static PASS; migration 084 applied (live DB) SKIP
+(DB connection refused :5435); idempotent sync re-run FAIL (Docker daemon not
+running); full embed requires Ollama bge-large-en-v1.5 (pull via compose when
+stack is up).
 
-## Gate F — i18n
+## Gate F - i18n
 
 Script: python scripts/proof/verify_multi_language.py
 Exit code: 0
 Verdict: PASS (11 pytest passed)
 
-## Gate F — domain
+## Gate F - domain
 
 Script: python scripts/proof/verify_domain_plugin.py
 Exit code: 0
@@ -57,10 +70,11 @@ Verdict: PASS (employment enabled; housing/employment_uk fail-closed)
 
 ## C-F officially closed?
 
-After this commit is pushed to origin/release/lawapp-clean-snapshot: YES
-(all gates PASS; grounding regression in unified bundle on remote)
+NO - Gate D is not PASS on current reproducible evidence. C, E, and F remain
+PASS per committed reports. Close C-F only after verify_ingestion_084.py exit 0
+with live DB and successful idempotent sync (and embed model present).
 
-Beta ready for promotion: NO — product status remains PRE-BETA until owner
+Beta ready for promotion: NO - product status remains PRE-BETA until owner
 promotes (payment, live corpus re-embed, production deploy gates).
 
 ## Supporting report paths
@@ -79,3 +93,10 @@ python scripts/proof/verify_grounding.py
 python scripts/proof/verify_multi_language.py
 python scripts/proof/verify_domain_plugin.py
 python -m pytest tests/test_grounding_regression.py tests/test_single_brain_architecture.py -q
+
+## Owner remediation for Gate D
+
+1. Start Docker Desktop and lawapp stack (Postgres on 5435, Ollama service).
+2. docker compose exec ollama ollama pull bge-large-en-v1.5
+3. Re-run: python scripts/proof/verify_ingestion_084.py (expect exit 0).
+4. Update this bundle Gate D row to PASS and set C-F officially closed to YES.
