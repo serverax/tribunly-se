@@ -1,27 +1,4 @@
-....F...........                                                         [100%]
-================================== FAILURES ===================================
-______________ test_langgraph_artifacts_absent[forbidden_path0] _______________
-
-forbidden_path = WindowsPath('F:/lawapp/backend/ai')
-
-    @pytest.mark.parametrize(
-        "forbidden_path",
-        [
-            REPO_ROOT / "backend" / "ai",
-            REPO_ROOT / "backend" / "core" / "langgraph",
-            REPO_ROOT / "backend" / "api" / "legal_reason_routes.py",
-            REPO_ROOT / "tests" / "test_langgraph_legal_reason.py",
-            REPO_ROOT / "tests" / "test_legal_reason_api.py",
-        ],
-    )
-    def test_langgraph_artifacts_absent(forbidden_path: Path):
->       assert not forbidden_path.exists(), f"Forbidden LangGraph artifact present: {forbidden_path}"
-E       AssertionError: Forbidden LangGraph artifact present: F:\lawapp\backend\ai
-E       assert not True
-E        +  where True = exists()
-E        +    where exists = WindowsPath('F:/lawapp/backend/ai').exists
-
-tests\test_single_brain_architecture.py:52: AssertionError
+...................                                                      [100%]
 ============================== warnings summary ===============================
 C:\Python314\Lib\site-packages\slowapi\extension.py:717: 32 warnings
   C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
@@ -31,12 +8,8 @@ C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovi
   C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
     config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
 
-C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429
-  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\lastfailed: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
-    config.cache.set("cache/lastfailed", self.lastfailed)
-
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========================== short test summary info ===========================
-FAILED tests/test_single_brain_architecture.py::test_langgraph_artifacts_absent[forbidden_path0]
-1 failed, 15 passed, 34 warnings in 13.40s
-EXIT:1
+19 passed, 33 warnings in 37.55s
+
+OVERALL: PASS (19 tests)
+
