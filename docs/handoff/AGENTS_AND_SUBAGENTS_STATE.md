@@ -1,43 +1,60 @@
 # Agents and subagents state
 
-Generated: 2026-06-17T23:00:00Z
+Generated: 2026-06-18T00:02:00Z
 Repo: serverax/lawapp
 Branch: release/lawapp-clean-snapshot
-Commit at write: 4f6ec91
+Commit at write: see git rev-parse HEAD after local docs commit
 Owner directive: STOP all agents; documentation only; no push unless owner approves.
 
-## Policy (mandatory for new sessions)
+## 1. Global stop state
 
-| Rule | Status |
-|------|--------|
-| SEO Track B | **NOT APPROVED** — do not create `backend/seo/agents/`, orchestrator, or specialist roster |
-| SEO Track C | **NOT STARTED** — blocked until Track B boundary and owner sign-off |
-| Second reasoning runtime | **FORBIDDEN** — ADR-000; `brain.py` only; no LangGraph stack |
-| Subagent `6e5e6e51` (LangGraph / bootstrap) | **PERMANENTLY BLOCKED** — never resume, never scaffold `backend/ai/`, `backend/core/langgraph/`, or `POST /api/v1/legal/reason` |
-| RAG retrieve repair subagent `fda7afca` | **STOP** — do not resume without explicit owner approval; do not commit or push repair WIP |
-| Autonomous agent spawn on `release/lawapp-clean-snapshot` or `feat/seo-command` | **DO NOT** — no bootstrap agents, no parallel coding agents on RAG/SEO without owner tasking |
+- **All agent work is stopped.**
+- **No agents or subagents are currently authorised to continue.**
+- **No background work should remain running.**
+- Any in-flight or partial agent work must be treated as **abandoned** unless the owner explicitly restarts it.
+- Do not spawn Task/subagent runners, parallel coding agents, or autonomous recovery loops on `release/lawapp-clean-snapshot` or `feat/seo-command` without explicit owner tasking.
 
-## Significant subagent runs (this session arc)
+## 2. LangGraph agent state
 
-| Title | Subagent ID (optional) | Focus | Outcome | Pushed | Resume |
-|-------|------------------------|-------|---------|--------|--------|
-| Gate D recovery | 7f29543e | Ingestion 084 verification, evidence bundle | Recovery / proof path documented; Gate D PASS evidence in git history (97a405b era) | Prior commits only; not part of this STOP pass | Only if owner re-opens ingestion verification |
-| SEO Track A | ce07c144 | Read-only SEO command spine on `feat/seo-command` | Track A work exists on feature branch (remote `feat/seo-command` per prior handoff); **no `backend/seo/agents/`** on release | Feature branch pushes historical; **release line not SEO-extended** | SEO docs/read-only only until owner lifts STOP |
-| RAG repair | fda7afca | 1024-dim retrieve alignment (`retrieve.py`, RAG microservice, compose, tests) | **INCOMPLETE — abandoned at owner STOP**; dirty tree on release (see below) | **NO** | **NEVER** without owner; do not commit repair |
-| Handoff / sync | 9cc246a9 | `docs/handoff/` snapshots, owner STOP finalization | Handoff docs updated; agent state captured in this file | Local commit only when owner allows; **no push in this task** | Docs-only handoff OK |
-| Rogue LangGraph / bootstrap | 6e5e6e51 | Attempted second runtime / agent bootstrap | **BLOCKED** per ADR-000 and project rules | **NO** | **NEVER** |
+- **LangGraph work is blocked.**
+- **ADR-000 remains binding** (`docs/adr/ADR-000-langgraph-gate.md`).
+- **`brain.py` is the only legal reasoning runtime.**
+- **No LangGraph runtime is approved.**
+- **No second legal orchestration path is approved.**
+- Any previous LangGraph/subagent idea must remain **stopped** unless the owner explicitly reopens it.
+- Hard block (never resume subagent `6e5e6e51` or replay commits `993b3b5` / `bb004cd`):
+  - No `backend/ai/`
+  - No `backend/core/langgraph/`
+  - No `legal_reason_routes.py`
+  - No `POST /api/v1/legal/reason`
+  - No `langgraph` / `langchain-core` production deps
+- Enforcement: `tests/test_single_brain_architecture.py` must remain green; `rg langgraph backend/` must stay at 0 matches on release.
 
-## What each agent class was doing
+## 3. SEO agents state
 
-- **Gate D recovery (7f29543e):** Restore confidence in migration 084 / ingestion proof after drift; outcome tied to committed evidence scripts and pytest gates, not to uncommitted RAG repair.
-- **SEO Track A (ce07c144):** Implement read-only SEO command module and tests on `feat/seo-command`; **did not** build Track B agent roster; Track A is the only SEO code path approved historically and remains gated by owner STOP for further SEO work.
-- **RAG repair (fda7afca):** Align semantic/hybrid retrieve and RAG service query embeddings with 1024-dim `corpus_chunks`; **stopped mid-edit** — must not be resumed or committed without owner.
-- **Handoff (9cc246a9):** Consolidate session state for humans and next agent; no code changes beyond `docs/handoff/` in this final step.
-- **Rogue LangGraph (6e5e6e51):** Would have reintroduced forbidden paths; treat as permanently rejected.
+- **SEO Track A is complete only** (on `feat/seo-command` @ `263baa3`, pushed to `origin/feat/seo-command`).
+- **SEO Track B is not approved.**
+- **`backend/seo/agents/` must not be created.**
+- **No SEO agent or specialist may run.**
+- **No SEO execution layer may run.**
+- SEO agents may not draft, queue, publish, or execute until Track B is explicitly approved by the owner.
+- **G1-G6 SEO gates remain binding** (from `docs/SEO_COMMAND_SPEC.md` on feat branch):
+  - **G1** — Never push/deploy to `main`; SEO work stays on `feat/seo-command`
+  - **G2** — Never rotate/log secrets; missing creds = STOP
+  - **G3** — No legal substance auto-published
+  - **G4** — Legal figures from `rules` table only
+  - **G5** — No user case data in SEO module
+  - **G6** — No paid spend
+- Track C (gated execution / auto-execute): **NOT STARTED** — blocked behind Track B.
+- Reference: `docs/handoff/SEO_COMMAND_STATE.md`, `docs/08_SEO_COMMAND_HANDOFF.md`.
 
-## In-flight work to abandon (do not commit)
+## 4. RAG/retrieval WIP agent state
 
-Owner STOP: leave the following **uncommitted** on `release/lawapp-clean-snapshot` (verified `git status` at handoff write):
+- Release/RAG repair was identified as the next priority but **must NOT continue in this handoff session**.
+- Any in-flight RAG WIP must be **abandoned/stopped now** (subagent `fda7afca`).
+- The next session must restart from the handoff docs, **not** from partial hidden agent context.
+- **Do not continue** editing retrieval, embeddings, RAG routes, or DB logic in this session.
+- Abandon list (do not commit):
 
 | Path | Role |
 |------|------|
@@ -50,42 +67,43 @@ Owner STOP: leave the following **uncommitted** on `release/lawapp-clean-snapsho
 | `tests/integration/test_semantic_retrieval.py` | Repair-related test edits |
 | `tests/test_rag_1024_retrieval_repair.py` | Untracked repair test |
 
-Also modified outside `docs/handoff/` (not staged in agent handoff commit): `docs/08_SEO_COMMAND_HANDOFF.md`.
+- Planned proof file `reports/rag_1024_retrieval_repair.txt` was **not created** (repair abandoned before proof).
 
-**Do not** run repair pytest, do not `git add` the RAG files above, do not push.
+## 5. Subagent runs
 
-## SEO agent roster (doc 07 / SEO command spec)
+Verified from git history, `docs/handoff/PROOF_INDEX.md`, `docs/handoff/SEO_COMMAND_STATE.md`, and agent session transcripts.
 
-| Track | Status | Notes |
-|-------|--------|-------|
-| Track A | **Done** (on `feat/seo-command`, not release) | Read-only spine; admin/dashboard; **no agents directory** |
-| Track B | **NOT STARTED** | **NOT APPROVED** — orchestrator + six specialists **NOT BUILT** |
-| Track C | **NOT STARTED** | Blocked behind Track B |
+| Purpose | Branch | Subagent ID | Status | Output / proof path | Changed code or docs | Pushed |
+|---------|--------|-------------|--------|---------------------|----------------------|--------|
+| Gate D live recovery | `release/lawapp-clean-snapshot` | `7f29543e` | **completed** | `reports/beta_gate_evidence_unified.txt`; commit `97a405b` | docs + evidence commits | **Yes** (historical) |
+| Prod embed hardening | `release/lawapp-clean-snapshot` | — | **completed** | `reports/prod_embed_hardening_cursor.txt`; commit `804a232` | docs + evidence | **Yes** (on origin release) |
+| SEO Track A read-only spine | `feat/seo-command` | `ce07c144` | **completed** | `reports/seo_track_a_proof.txt` (feat branch only) | code + tests + migration 087 | **Yes** (`origin/feat/seo-command` @ `263baa3`) |
+| 1024-dim RAG retrieval repair | `release/lawapp-clean-snapshot` | `fda7afca` | **abandoned** | none (planned proof not written) | code WIP uncommitted | **No** |
+| Session handoff bundle | `release/lawapp-clean-snapshot` | `9cc246a9` | **completed** | `docs/handoff/*`; commit `4f6ec91` | docs only | **No** (local ahead of origin) |
+| Agent handoff STOP state | `release/lawapp-clean-snapshot` | `30d16599`, `c27f611a` | **completed** | commit `dfd4ec9` | docs only | **No** (local ahead of origin) |
+| LangGraph / backend/ai bootstrap | `release/lawapp-clean-snapshot` | `6e5e6e51` | **blocked** | ADR-000; commits `993b3b5`/`bb004cd` not on origin | code reverted locally | **No** |
+| Ingestion workers | `release/lawapp-clean-snapshot` | `89552fa1` | **abandoned** | no `ingestion/workers/` in repo | none landed | **No** |
 
-Reference: `docs/07_PROJECT_HANDOVER.md`, `docs/08_SEO_COMMAND_HANDOFF.md`, `docs/SEO_COMMAND_SPEC.md` (feature branch).
+If no verified evidence exists for a subagent not listed above: **No verified repo evidence found. Do not infer.**
 
-## How a new session should start (anti-drift)
+## 6. Required stop condition
 
-1. **Checkout** `release/lawapp-clean-snapshot` unless owner explicitly tasks SEO-only doc work on `feat/seo-command`.
-2. **Do not** spawn subagents to implement LangGraph, `backend/ai/`, SEO Track B agents, or RAG repair unless owner removes STOP and names the task.
-3. **Read** this file and `docs/handoff/HANDOFF.md` before any code.
-4. **Prefer** single-threaded, owner-scoped tasks; no parallel “bootstrap” agents on release or feat/seo-command.
-5. **Confirm** `backend/ai/` absent (`Test-Path backend/ai` → False) and `backend/seo/agents/` absent before coding.
+After `AGENTS_AND_SUBAGENTS_STATE.md` and `HANDOFF.md` are committed locally, **STOP EVERYTHING**.
 
-## Parallel agent drift history
+Do **not** continue with: RAG repair, release fixes, SEO Track B, SEO agents, LangGraph, tests beyond handoff verification, deployment, push, cleanup, or code changes.
 
-- **`backend/ai/` reappearing:** Forbidden second-runtime tree has been recreated by parallel agents in past sessions; removed per ADR-000; must not return.
-- **Protection:** `.gitignore` includes `backend/ai/` so accidental commits are harder; **not a substitute for review** — agents must not create the directory at all.
-- **LangGraph subagent 6e5e6e51:** Canonical “do not resume” example for bootstrap drift.
+## New session entry (anti-drift)
 
-## Push and remote
-
-- This handoff pass: **local commit only** (`docs/handoff/`), **NO PUSH**.
-- RAG repair and SEO Track B: **not started / not committed** on release at STOP time.
+1. Read [HANDOFF.md](./HANDOFF.md) and this file first.
+2. Confirm `backend/ai/` absent and `backend/seo/agents/` absent.
+3. Do not resume subagents `fda7afca` or `6e5e6e51` without explicit owner approval.
+4. Wait for owner instruction before any implementation work.
 
 ## Pointers
 
 - Session snapshot: `docs/handoff/HANDOFF.md`
 - Architecture: `docs/handoff/ARCHITECTURE_STATE.md`
+- SEO command: `docs/handoff/SEO_COMMAND_STATE.md`
 - Next tasks: `docs/handoff/NEXT_TASKS.md`
 - Known issues: `docs/handoff/KNOWN_ISSUES.md`
+- Proof index: `docs/handoff/PROOF_INDEX.md`
