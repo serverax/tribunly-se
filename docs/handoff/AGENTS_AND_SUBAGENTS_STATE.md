@@ -1,9 +1,9 @@
 # Agents and subagents state
 
-Generated: 2026-06-18T00:02:00Z
+Generated: 2026-06-18T00:06:00Z
 Repo: serverax/lawapp
 Branch: release/lawapp-clean-snapshot
-Commit at write: see git rev-parse HEAD after local docs commit
+Commit at write: 6eca1b6 (local; not pushed)
 Owner directive: STOP all agents; documentation only; no push unless owner approves.
 
 ## 1. Global stop state
@@ -98,6 +98,19 @@ Do **not** continue with: RAG repair, release fixes, SEO Track B, SEO agents, La
 2. Confirm `backend/ai/` absent and `backend/seo/agents/` absent.
 3. Do not resume subagents `fda7afca` or `6e5e6e51` without explicit owner approval.
 4. Wait for owner instruction before any implementation work.
+
+## Parallel agent drift history
+
+- **`backend/ai/` reappearing:** Forbidden second-runtime tree has been recreated by parallel agents in past sessions; removed per ADR-000; must not return.
+- **Protection:** `.gitignore` includes `backend/ai/` so accidental commits are harder; **not a substitute for review** — agents must not create the directory at all.
+- **LangGraph subagent `6e5e6e51`:** Canonical "do not resume" example for bootstrap drift.
+- **No LangGraph/bootstrap on `release/lawapp-clean-snapshot` or `feat/seo-command`** unless owner explicitly reopens ADR-000.
+
+## Push and remote
+
+- Handoff commits `4f6ec91`, `dfd4ec9`, and `6eca1b6`: **local only**; branch ahead of `origin/release/lawapp-clean-snapshot`; **NO PUSH** in this task.
+- `804a232` (prod embed): on origin release before local handoff commits.
+- RAG repair and SEO Track B: **not started / not committed** on release at STOP time.
 
 ## Pointers
 

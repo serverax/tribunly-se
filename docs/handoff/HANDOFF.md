@@ -1,7 +1,7 @@
-Generated: 2026-06-18T00:02:00Z
+Generated: 2026-06-18T00:06:00Z
 Repo: serverax/lawapp
 Branch: release/lawapp-clean-snapshot
-Commit: see git rev-parse HEAD after local docs commit
+Commit: 6eca1b6 (local; not pushed)
 Phase: 3 (RAG/ingestion verification and pre-beta hardening; approximate)
 
 > **MANDATORY — agents and subagents STOP state:** [AGENTS_AND_SUBAGENTS_STATE.md](./AGENTS_AND_SUBAGENTS_STATE.md)
