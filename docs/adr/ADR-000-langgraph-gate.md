@@ -33,6 +33,19 @@ An experimental LangGraph stack (`backend/ai/graph/`, `backend/core/langgraph/`,
 4. **Delete rolled-back code:** Remove `backend/ai/`, `backend/core/langgraph/`, and LangGraph-only tests.
 5. **Enforcement test:** `tests/test_single_brain_architecture.py` fails CI if LangGraph paths or the legal-reason route reappear.
 
+## Sidecar exception
+
+The NestJS control-plane (`control-plane/`) is allowed **only** as a non-legal sidecar: retrieval metadata, queues (BullMQ), cache, and request validation. It is **not** a second reasoning runtime.
+
+| Rule | Requirement |
+|------|-------------|
+| Legal answers | **Must** proxy `POST /assess` on the Python Brain (FastAPI monolith :8000). |
+| CitationGuard | No bypass. Governance validates Brain responses; sidecar never serves legal text directly. |
+| External LLM | Forbidden on legal paths when `ALLOW_EXTERNAL_LLM=false` (default). |
+| LangGraph / Mastra | **Not allowed.** No second orchestration runtime, graph package tree, or `/api/v1/legal/reason`. |
+
+Full sidecar spec: [`docs/architecture/CONTROL_PLANE_NESTJS_V1.md`](../architecture/CONTROL_PLANE_NESTJS_V1.md).
+
 ## Why LangGraph is blocked (build order)
 
 Per `.cursor/rules/40-ai-gate.mdc`, legal answers must traverse: **rules → GraphRAG → local LLM → CitationGuard → fail-closed**. LangGraph was introduced as a parallel orchestration layer before that gate was proven on a single runtime. Build order requires one verification surface before adding alternate orchestrators.
@@ -83,7 +96,7 @@ Per `.cursor/rules/40-ai-gate.mdc`, legal answers must traverse: **rules → Gra
 
 | Area | Decision |
 |------|----------|
-| Orchestration | Python Brain only; no Mastra/LangGraph sidecar (Agentic Q1) |
+| Orchestration | Python Brain only for legal reasoning; NestJS control-plane sidecar for retrieval/queues/cache only (see Sidecar exception); no LangGraph/Mastra/second runtime (Agentic Q1) |
 | Graph engine | Postgres `legal_nodes` / `legal_edges`; no Neo4j container (Deployment Q2) |
 | Knowledge schema | `provision` canonical; `corpus_chunks` as embedding layer (Q1, Feature §5 #2) |
 | Embeddings | 1024-dim local model; re-embed corpus (Q5) |
@@ -103,4 +116,5 @@ Per `.cursor/rules/40-ai-gate.mdc`, legal answers must traverse: **rules → Gra
 - `.cursor/rules/40-ai-gate.mdc`
 - `docs/decisions/OWNER_DECISIONS_2026-06-16.md`
 - `docs/architecture/AGENTIC_FOUNDATION_QUESTIONS.md`
+- `docs/architecture/CONTROL_PLANE_NESTJS_V1.md`
 - `backend/core/brain.py`
