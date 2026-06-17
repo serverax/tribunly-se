@@ -3,7 +3,7 @@ LawApp beta gate evidence bundle (owner review only)
 Generated: 2026-06-17T00:46:00Z
 Branch: release/lawapp-clean-snapshot
 Base commit (Commit A): 8981c53
-Evidence commit (Commit B): 03fb4bf
+Evidence commit (Commit B): 6b379e7
 
 This file is the sole C-F evidence bundle for owner review. Checkpoints are
 debug artifacts only. Architectural truth = ADR-000 + git log on this branch.
