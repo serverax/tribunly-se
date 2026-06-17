@@ -1,7 +1,8 @@
 LawApp beta gate evidence bundle (owner review only)
 =====================================================
-Generated: 2026-06-17T01:50:00Z (reconciled after remediation run)
+Generated: 2026-06-17T02:48:40Z (reconcile 61441132 follow-up)
 Branch: release/lawapp-clean-snapshot
+HEAD: 733f5b1
 Base commit (Commit A): 8981c53
 Evidence commit (Commit B): 6b379e7
 
@@ -50,11 +51,11 @@ Verdict: PASS (30 pages, forbidden string grep clean)
 ## Gate D - Ingestion 084
 
 Script: python scripts/proof/verify_ingestion_084.py
-Exit code: 1 (remediation run 2026-06-17T01:46Z)
-Verdict: PARTIAL FAIL - code/static PASS; migration 084 applied (live DB) SKIP
-(DB connection refused :5435); idempotent sync re-run FAIL (Docker daemon not
-running); full embed requires Ollama bge-large-en-v1.5 (pull via compose when
-stack is up).
+Exit code: 1 (reconcile 61441132 run 2026-06-17T02:48Z)
+Verdict: PARTIAL FAIL - code/static PASS (14 criteria); migration 084 applied
+(live DB) SKIP (Postgres :5435 connection refused); idempotent sync re-run FAIL
+(Docker Desktop daemon not running); Ollama CLI not on host PATH (bge-large-en-v1.5
+pull not attempted). No live proof - cannot claim PASS.
 
 ## Gate F - i18n
 
@@ -101,11 +102,13 @@ python -m pytest tests/test_grounding_regression.py tests/test_single_brain_arch
 3. Re-run: python scripts/proof/verify_ingestion_084.py (expect exit 0).
 4. Update this bundle Gate D row to PASS and set C-F officially closed to YES.
 
-## Pre-push sanity (2026-06-17)
+## Pre-push sanity (reconcile 61441132)
 
 Command:
-  python -m pytest tests/test_single_brain_architecture.py tests/test_grounding_regression.py -q
+  python -m pytest tests/test_single_brain_architecture.py tests/test_build_order_gates.py -q
 
-Result (committed tree; local untracked backend/ai excluded): 24 passed, 0 failed
-Raw log: reports/_pytest_grounding_single_brain.txt
-Timestamp UTC: 2026-06-17T02:08:23Z
+Result: 16 passed, 0 failed (ADR-000 absence checks; backend/ai deleted if present)
+Timestamp UTC: 2026-06-17T02:48:40Z
+
+Env blockers (Gate D live re-run): docker compose ps FAIL (Docker API unreachable);
+ollama list FAIL (CLI not on PATH).
