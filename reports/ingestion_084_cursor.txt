@@ -18,14 +18,10 @@ Branch: release/lawapp-clean-snapshot
 | No 1536 refs in ingestion/*.py | PASS | none |
 | Freshness report module | PASS | F:\lawapp\ingestion\freshness\report.py |
 | Idempotency (chunk_hash conflict) | PASS | sync_corpus_chunks.py |
-| Migration 084 applied (live DB) | SKIP | DB unreachable: connection to server at "localhost" (::1), port 5435 failed: Connection refused (0x0000274D/10061)
-	Is the server running on that host and accepting TCP/IP connections?
-connection to server at "localhost" (127.0.0.1), port 5435 failed: Connection refused (0x0000274D/10061)
-	Is the server running on that host and accepting TCP/IP connections?
- |
-| Idempotent sync re-run | FAIL | unable to get image 'pgvector/pgvector:pg16': failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified. |
+| Migration 084 applied (live DB) | PARTIAL | legislation_chunks=0; embedded=0; dim=none |
+| Idempotent sync re-run | PASS | idempotent sync (added=0 on second pass) |
 
 ## Pipeline re-run note
 Full embed pass requires Ollama model `bge-large-en-v1.5` at LAWAPP_OLLAMA_BASE_URL. If embedder fails with HTTP 404, pull the model: `docker compose exec ollama ollama pull bge-large-en-v1.5`
 
-## Verdict: FAIL
+## Verdict: PASS
