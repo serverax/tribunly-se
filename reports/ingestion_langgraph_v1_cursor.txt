@@ -40,9 +40,12 @@ Note: backend/ai/graph/ pre-exists; backend/core/langgraph/ is the spec-canonica
 [PASS] docker compose up -d db redis backend (backend healthy after migration unblock)
 [PASS] Migration 084 applied + ingestion_jobs table created
 [PASS] Migration 082_knowledge_proposals.sql marked applied (approval_status column added)
-[WARN] docker compose build backend in progress (image lacks new /api/v1/legal/reason route until rebuild completes)
-[WARN] curl POST /api/v1/legal/reason returned 404 on pre-rebuild image (expected until redeploy)
-[PENDING] docker compose --profile ingestion up -d ingestion-worker (image build in progress)
+[PASS] docker compose build backend completed (~57 min, exit 0, lawapp-backend:latest)
+      Log: reports/gate1_docker_build_backend_ingestion.txt
+[PASS] Backend healthy after redeploy (knowledge_proposer import fix applied in running container)
+[WARN] Stale image lacked list_proposals/approve_proposal in knowledge_proposer.py — host file has them; rebuild image or bind-mount for persistence
+[INFO] POST /api/v1/legal/reason NOT implemented per docs/adr/ADR-000-langgraph-gate.md — use POST /assess (Brain-backed)
+[PENDING] docker compose --profile ingestion up -d ingestion-worker
 
 Health (in-container):
 {"status":"ok","service":"lawapp-backend","db":"connected","auth_mode":"jwt","payment_mode":"test"}
@@ -79,8 +82,9 @@ Total: 7 passed (local pytest)
 - External OpenRouter disabled unless ALLOW_EXTERNAL_LLM=true
 
 === Gaps ===
-1. Backend image rebuild required for live /api/v1/legal/reason (route in repo, not yet in running container)
-2. ingestion-worker Docker build slow (large build context); use profile after build completes
+1. LangGraph /api/v1/legal/reason rolled back per ADR-000; legal assessment via /assess only
+2. Rebuild backend again so image bakes in current knowledge_proposer.py (approve_proposal)
+3. ingestion-worker Docker build slow (large build context); use profile after build completes
 3. Duplicate 082_* migration files in repo need consolidation (pre-existing)
 4. backend/ai/graph vs backend/core/langgraph overlap: consolidate in follow-up
 5. Control-plane enqueue UI not wired
@@ -90,4 +94,4 @@ Total: 7 passed (local pytest)
 - ingestion-worker (compose profile: ingestion)
 - neo4j (compose profile: graph-neo4j)
 
-VERDICT: IMPLEMENTED / PARTIAL DEPLOY (await backend image rebuild for live API proof)
+VERDICT: INGESTION WORKERS IMPLEMENTED / BACKEND IMAGE REBUILT / LangGraph route blocked by ADR-000

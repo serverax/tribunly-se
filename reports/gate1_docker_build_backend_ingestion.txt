@@ -560,3 +560,109 @@
 #11 1354.8 Downloading numpy-2.4.6-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)
 #11 1452.0    ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü 16.6/16.6 MB 349.0 kB/s  0:01:37
 #11 1452.1 Downloading onnxruntime-1.27.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (18.7 MB)
+#11 1554.4    ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü 18.7/18.7 MB 272.5 kB/s  0:01:42
+#11 1554.4 Downloading packaging-26.2-py3-none-any.whl (100 kB)
+#11 1554.5 Downloading propcache-0.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (61 kB)
+#11 1554.6 Downloading hiredis-3.4.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (313 kB)
+#11 1555.7 Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+#11 1555.8 Downloading rpds_py-2026.5.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (376 kB)
+#11 1563.4 Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+#11 1563.8 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#11 1564.1 Downloading starlette-1.3.1-py3-none-any.whl (73 kB)
+#11 1564.3 Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+#11 1564.7 Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (523 kB)
+#11 1565.8 Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
+#11 1613.0    ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü 4.4/4.4 MB 117.1 kB/s  0:00:47
+#11 1613.1 Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
+#11 1628.5 WARNING: Connection timed out while downloading.
+#11 1628.5 WARNING: Attempting to resume incomplete download (262 kB/456 kB, attempt 1)
+#11 1631.7 Resuming download watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (262 kB/456 kB)
+#11 1632.6 Downloading websockets-16.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (184 kB)
+#11 1633.4 Downloading zipp-4.1.0-py3-none-any.whl (10 kB)
+#11 1633.6 Downloading flatbuffers-25.12.19-py2.py3-none-any.whl (26 kB)
+#11 1634.0 Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+#11 1634.4 Downloading regex-2026.5.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+#11 1654.0    ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü                            262.1/801.2 kB ? eta -:--:--
+#11 1654.0 WARNING: Connection timed out while downloading.
+#11 1654.0 WARNING: Attempting to resume incomplete download (262 kB/801 kB, attempt 1)
+#11 1672.9 Resuming download regex-2026.5.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (262 kB/801 kB)
+#11 1677.6    ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü 801.2/801.2 kB 114.0 kB/s  0:00:04
+#11 1677.7 Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+#11 1682.2 Installing collected packages: flatbuffers, zipp, wrapt, websockets, uvloop, urllib3, typing-extensions, tqdm, tenacity, sniffio, six, shellingham, rpds-py, regex, redis, PyYAML, python-multipart, python-dotenv, pypdf, PyJWT, pygments, pycparser, py-rust-stemmers, psycopg2-binary, protobuf, propcache, pluggy, pillow, packaging, opentelemetry-util-http, numpy, networkx, multidict, mmh3, mdurl, MarkupSafe, lxml, loguru, jmespath, jiter, iniconfig, idna, hyperframe, httptools, hpack, hiredis, hf-xet, h11, fsspec, frozenlist, filelock, fastuuid, docstring-parser, distro, coverage, click, charset_normalizer, certifi, attrs, asgiref, annotated-types, annotated-doc, aiohappyeyeballs, aiofiles, yarl, uvicorn, typing-inspection, requests, referencing, python-docx, python-dateutil, pytest, pydantic-core, pgvector, opentelemetry-proto, opentelemetry-api, onnxruntime, markdown-it-py, jinja2, importlib-metadata, httpcore, h2, googleapis-common-protos, deprecated, cffi, anyio, aiosignal, watchfiles, tiktoken, stripe, starlette, rich, pytest-cov, pytest-asyncio, pydantic, opentelemetry-semantic-conventions, opentelemetry-exporter-otlp-proto-common, limits, jsonschema-specifications, httpx, cryptography, botocore, aiohttp, typer, slowapi, s3transfer, pydantic-settings, opentelemetry-sdk, opentelemetry-instrumentation, openai, jsonschema, fastapi, anthropic, opentelemetry-instrumentation-asgi, opentelemetry-exporter-otlp-proto-http, huggingface-hub, boto3, tokenizers, opentelemetry-instrumentation-fastapi, litellm, fastembed
+#11 1917.4 
+#11 1917.5 Successfully installed MarkupSafe-3.0.3 PyJWT-2.13.0 PyYAML-6.0.3 aiofiles-25.1.0 aiohappyeyeballs-2.6.2 aiohttp-3.14.1 aiosignal-1.4.0 annotated-doc-0.0.4 annotated-types-0.7.0 anthropic-0.109.2 anyio-4.14.0 asgiref-3.11.1 attrs-26.1.0 boto3-1.43.31 botocore-1.43.31 certifi-2026.5.20 cffi-2.0.0 charset_normalizer-3.4.7 click-8.4.1 coverage-7.14.1 cryptography-49.0.0 deprecated-1.3.1 distro-1.9.0 docstring-parser-0.18.0 fastapi-0.137.1 fastembed-0.8.0 fastuuid-0.14.0 filelock-3.29.4 flatbuffers-25.12.19 frozenlist-1.8.0 fsspec-2026.6.0 googleapis-common-protos-1.75.0 h11-0.16.0 h2-4.3.0 hf-xet-1.5.1 hiredis-3.4.0 hpack-4.1.0 httpcore-1.0.9 httptools-0.8.0 httpx-0.28.1 huggingface-hub-1.19.0 hyperframe-6.1.0 idna-3.18 importlib-metadata-8.9.0 iniconfig-2.3.0 jinja2-3.1.6 jiter-0.15.0 jmespath-1.1.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 limits-5.8.0 litellm-1.89.1 loguru-0.7.3 lxml-6.1.1 markdown-it-py-4.2.0 mdurl-0.1.2 mmh3-5.2.1 multidict-6.7.1 networkx-3.6.1 numpy-2.4.6 onnxruntime-1.27.0 openai-2.42.0 opentelemetry-api-1.42.1 opentelemetry-exporter-otlp-proto-common-1.42.1 opentelemetry-exporter-otlp-proto-http-1.42.1 opentelemetry-instrumentation-0.63b1 opentelemetry-instrumentation-asgi-0.63b1 opentelemetry-instrumentation-fastapi-0.63b1 opentelemetry-proto-1.42.1 opentelemetry-sdk-1.42.1 opentelemetry-semantic-conventions-0.63b1 opentelemetry-util-http-0.63b1 packaging-26.2 pgvector-0.4.2 pillow-12.2.0 pluggy-1.6.0 propcache-0.5.2 protobuf-6.33.6 psycopg2-binary-2.9.12 py-rust-stemmers-0.1.8 pycparser-3.0 pydantic-2.13.4 pydantic-core-2.46.4 pydantic-settings-2.14.1 pygments-2.20.0 pypdf-6.13.2 pytest-9.1.0 pytest-asyncio-1.4.0 pytest-cov-7.1.0 python-dateutil-2.9.0.post0 python-docx-1.2.0 python-dotenv-1.2.2 python-multipart-0.0.32 redis-8.0.0 referencing-0.37.0 regex-2026.5.9 requests-2.34.2 rich-15.0.0 rpds-py-2026.5.1 s3transfer-0.19.0 shellingham-1.5.4 six-1.17.0 slowapi-0.1.10 sniffio-1.3.1 starlette-1.3.1 stripe-15.2.1 tenacity-9.1.4 tiktoken-0.13.0 tokenizers-0.23.1 tqdm-4.68.2 typer-0.25.1 typing-extensions-4.15.0 typing-inspection-0.4.2 urllib3-2.7.0 uvicorn-0.49.0 uvloop-0.22.1 watchfiles-1.2.0 websockets-16.0 wrapt-2.2.1 yarl-1.24.2 zipp-4.1.0
+#11 1917.5 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#11 DONE 1935.0s
+
+#12 [ 6/20] RUN python -c "from fastembed import TextEmbedding; TextEmbedding('BAAI/bge-small-en-v1.5')"     && echo "fastembed model pre-downloaded OK"
+#12 19.73 
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+#12 20.53 
+Fetching 5 files:  20%|ÔûêÔûê        | 1/5 [00:00<00:03,  1.26it/s]
+Fetching 5 files:  40%|ÔûêÔûêÔûêÔûê      | 2/5 [01:54<03:21, 67.30s/it]
+Fetching 5 files: 100%|ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûê| 5/5 [01:54<00:00, 22.93s/it]
+#12 136.0 fastembed model pre-downloaded OK
+#12 DONE 136.1s
+
+#13 [ 7/20] RUN groupadd -g 10001 lawapp && useradd -u 10001 -g 10001 -m lawapp     && chown -R lawapp:lawapp /app
+#13 DONE 2.4s
+
+#14 [ 8/20] COPY --chown=lawapp:lawapp backend ./backend
+#14 DONE 1.1s
+
+#15 [ 9/20] COPY --chown=lawapp:lawapp services ./services
+#15 DONE 0.3s
+
+#16 [10/20] COPY --chown=lawapp:lawapp shared ./shared
+#16 DONE 0.2s
+
+#17 [11/20] COPY --chown=lawapp:lawapp ingestion ./ingestion
+#17 DONE 0.4s
+
+#18 [12/20] COPY --chown=lawapp:lawapp db ./db
+#18 DONE 0.5s
+
+#19 [13/20] COPY --chown=lawapp:lawapp client ./client
+#19 DONE 49.4s
+
+#20 [14/20] COPY --chown=lawapp:lawapp scripts ./scripts
+#20 DONE 5.8s
+
+#21 [15/20] COPY --chown=lawapp:lawapp docs ./docs
+#21 DONE 4.7s
+
+#22 [16/20] COPY --chown=lawapp:lawapp docker-compose.yml ./docker-compose.yml
+#22 DONE 3.0s
+
+#23 [17/20] COPY --chown=lawapp:lawapp .gitignore ./.gitignore
+#23 DONE 2.2s
+
+#24 [18/20] COPY --chown=lawapp:lawapp .env.example ./.env.example
+#24 DONE 1.2s
+
+#25 [19/20] COPY --chown=lawapp:lawapp .github ./.github
+#25 DONE 1.2s
+
+#26 [20/20] COPY --chown=lawapp:lawapp tests ./tests
+#26 DONE 1.2s
+
+#27 exporting to image
+#27 exporting layers
+#27 exporting layers 198.0s done
+#27 exporting manifest sha256:e9e4dbd7cc69e6d086feb8b11ae56237e6c0a003bdf2846835d1487c727558cf
+#27 exporting manifest sha256:e9e4dbd7cc69e6d086feb8b11ae56237e6c0a003bdf2846835d1487c727558cf 0.8s done
+#27 exporting config sha256:23e5fb9ecfa3e3eba90a9e42219d12bdb09f1e2274008a4f57f5d5b6b417d7fb
+#27 exporting config sha256:23e5fb9ecfa3e3eba90a9e42219d12bdb09f1e2274008a4f57f5d5b6b417d7fb 0.7s done
+#27 exporting attestation manifest sha256:e2377317589e5e011773e15ab89ae4e0a92d0aa9bd5cd9c2ed50e54040b3f0c8
+#27 exporting attestation manifest sha256:e2377317589e5e011773e15ab89ae4e0a92d0aa9bd5cd9c2ed50e54040b3f0c8 0.6s done
+#27 exporting manifest list sha256:0bf6b76bfea79d0258e9c40ca481954b9cff5d15699a142fa29c5f9629dbcf25
+#27 exporting manifest list sha256:0bf6b76bfea79d0258e9c40ca481954b9cff5d15699a142fa29c5f9629dbcf25 0.2s done
+#27 naming to docker.io/library/lawapp-backend:latest
+#27 naming to docker.io/library/lawapp-backend:latest 0.0s done
+#27 unpacking to docker.io/library/lawapp-backend:latest
+#27 unpacking to docker.io/library/lawapp-backend:latest 141.3s done
+#27 DONE 342.6s
+
+#28 resolving provenance for metadata file
+#28 DONE 1.7s
+ Image lawapp-backend Built 

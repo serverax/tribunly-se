@@ -100,3 +100,12 @@ python -m pytest tests/test_grounding_regression.py tests/test_single_brain_arch
 2. docker compose exec ollama ollama pull bge-large-en-v1.5
 3. Re-run: python scripts/proof/verify_ingestion_084.py (expect exit 0).
 4. Update this bundle Gate D row to PASS and set C-F officially closed to YES.
+
+## Pre-push sanity (2026-06-17)
+
+Command:
+  python -m pytest tests/test_single_brain_architecture.py tests/test_grounding_regression.py -q
+
+Result (committed tree; local untracked backend/ai excluded): 24 passed, 0 failed
+Raw log: reports/_pytest_grounding_single_brain.txt
+Timestamp UTC: 2026-06-17T02:08:23Z
