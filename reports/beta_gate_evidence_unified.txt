@@ -1,8 +1,8 @@
 LawApp beta gate evidence bundle (owner review only)
 =====================================================
-Generated: 2026-06-17T02:48:40Z (reconcile 61441132 follow-up)
+Generated: 2026-06-17T03:22:00Z (follow-up; LangGraph drift dropped)
 Branch: release/lawapp-clean-snapshot
-HEAD: 733f5b1
+HEAD: 4b51d31
 Base commit (Commit A): 8981c53
 Evidence commit (Commit B): 6b379e7
 
@@ -108,7 +108,7 @@ Command:
   python -m pytest tests/test_single_brain_architecture.py tests/test_build_order_gates.py -q
 
 Result: 16 passed, 0 failed (ADR-000 absence checks; backend/ai deleted if present)
-Timestamp UTC: 2026-06-17T02:48:40Z
+Timestamp UTC: 2026-06-17T03:22:00Z
 
 Env blockers (Gate D live re-run): docker compose ps FAIL (Docker API unreachable);
 ollama list FAIL (CLI not on PATH).

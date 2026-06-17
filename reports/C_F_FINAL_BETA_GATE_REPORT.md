@@ -1,5 +1,8 @@
 # C-F Final Beta Gate Report
 
+> **SUPPLEMENTARY — see `reports/beta_gate_evidence_unified.txt` for authority.**
+> This file must not contradict the unified bundle or claim BETA READY YES.
+
 **BETA READY: NO** (Gate D live ingestion proof FAIL — Docker daemon not running; 2 i18n API tests FAIL without DB)
 
 Generated: 2026-06-17  
