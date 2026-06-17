@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -16,7 +17,7 @@ def run_pytest() -> tuple[int, str]:
         "-m",
         "pytest",
         "tests/test_grounding_regression.py",
-        "tests/test_legal_truth_validator.py",
+        "tests/test_single_brain_architecture.py",
         "-q",
         "--tb=no",
     ]
@@ -51,9 +52,10 @@ def main() -> int:
     code, out = run_pytest()
     static = static_checks()
     any_fail = code != 0 or any(r[1] == "FAIL" for r in static)
+    generated = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     lines = [
         "LawApp grounding verification (assess/brain path)",
-        "Generated: 2026-06-16 (evidence run)",
+        f"Generated: {generated}",
         "Branch: release/lawapp-clean-snapshot",
         "",
         "## Static checks",

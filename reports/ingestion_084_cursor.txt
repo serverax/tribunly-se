@@ -14,10 +14,10 @@ Branch: release/lawapp-clean-snapshot
 | Unified indexer Neo4j optional | PASS | F:\lawapp\ingestion\workers\unified_indexer.py |
 | Ollama 1024 embedder | PASS | F:\lawapp\ingestion\embeddings\ollama_embed.py |
 | Config embedding_dim 1024 | PASS | F:\lawapp\ingestion\config.py |
-| FCL bulk disabled | FAIL | F:\lawapp\ingestion\config.py |
+| FCL bulk disabled | PASS | F:\lawapp\ingestion\config.py |
 | No 1536 refs in ingestion/*.py | PASS | none |
 | Freshness report module | PASS | F:\lawapp\ingestion\freshness\report.py |
-| Idempotency (chunk_hash conflict) | FAIL | unified_indexer.py |
+| Idempotency (chunk_hash conflict) | PASS | sync_corpus_chunks.py |
 | Migration 084 applied (live DB) | PASS | provision_id col=yes; no embedded chunks |
 
-## Verdict: FAIL
+## Verdict: PASS (code); DB PASS

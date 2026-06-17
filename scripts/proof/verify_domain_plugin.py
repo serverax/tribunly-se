@@ -26,19 +26,9 @@ def run_pytest() -> tuple[int, str]:
 
 def runtime_probe() -> tuple[str, str]:
     try:
+        probe = ROOT / "scripts/proof/_domain_probe.py"
         out = subprocess.run(
-            [
-                sys.executable,
-                "-c",
-                "from backend.domains.registry import enabled_domains, require_domain; "
-                "from backend.domains.registry import DomainDisabledError, UnsupportedDomainError; "
-                "print('enabled', enabled_domains()); "
-                "require_domain('employment'); print('employment PASS'); "
-                "try: require_domain('housing'); print('housing UNEXPECTED'); "
-                "except DomainDisabledError: print('housing DomainDisabledError'); "
-                "try: require_domain('employment_uk'); print('employment_uk UNEXPECTED'); "
-                "except Exception as e: print('employment_uk', type(e).__name__)",
-            ],
+            [sys.executable, str(probe)],
             cwd=ROOT,
             capture_output=True,
             text=True,

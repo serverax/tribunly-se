@@ -36,7 +36,7 @@ def check_files() -> list[tuple[str, str, str]]:
     cfg = ROOT / "ingestion/config.py"
     cfg_text = cfg.read_text(encoding="utf-8") if cfg.is_file() else ""
     dim_ok = "1024" in cfg_text or "embedding_dim" in cfg_text
-    fcl_ok = "fcl_bulk_licence_granted=False" in cfg_text or "fcl_bulk_licence_granted = False" in cfg_text
+    fcl_ok = re.search(r"fcl_bulk_licence_granted\s*:\s*bool\s*=\s*False", cfg_text) is not None
     rows.append(("Config embedding_dim 1024", "PASS" if dim_ok else "FAIL", str(cfg)))
     rows.append(("FCL bulk disabled", "PASS" if fcl_ok else "FAIL", str(cfg)))
     hits_1536: list[str] = []
@@ -48,9 +48,10 @@ def check_files() -> list[tuple[str, str, str]]:
     rows.append(("No 1536 refs in ingestion/*.py", "PASS" if not hits_1536 else "FAIL", ", ".join(hits_1536) or "none"))
     freshness = ROOT / "ingestion/freshness/report.py"
     rows.append(("Freshness report module", "PASS" if freshness.is_file() else "FAIL", str(freshness)))
-    indexer_text = indexer.read_text(encoding="utf-8") if indexer.is_file() else ""
-    idem = "ON CONFLICT" in indexer_text or "chunk_hash" in indexer_text
-    rows.append(("Idempotency (chunk_hash conflict)", "PASS" if idem else "FAIL", "unified_indexer.py"))
+    sync = ROOT / "ingestion/sync_corpus_chunks.py"
+    sync_text = sync.read_text(encoding="utf-8") if sync.is_file() else ""
+    idem = "ON CONFLICT (chunk_hash) DO NOTHING" in sync_text
+    rows.append(("Idempotency (chunk_hash conflict)", "PASS" if idem else "FAIL", "sync_corpus_chunks.py"))
     return rows
 
 
@@ -83,20 +84,53 @@ def check_db() -> tuple[str, str]:
             "WHERE table_name='corpus_chunks' AND column_name='provision_id'"
         )
         prov = cur.fetchone()[0]
-        cur.execute("SELECT count(*) FROM corpus_chunks WHERE embedding IS NOT NULL LIMIT 1")
+        cur.execute("SELECT count(*) FROM corpus_chunks WHERE source_type = 'legislation'")
+        leg = cur.fetchone()[0]
+        cur.execute("SELECT count(*) FROM corpus_chunks WHERE embedding IS NOT NULL")
+        embedded = cur.fetchone()[0]
         cur.execute(
             "SELECT vector_dims(embedding) FROM corpus_chunks WHERE embedding IS NOT NULL LIMIT 1"
         )
         row = cur.fetchone()
-        dim_note = f"embedding dim={row[0]}" if row else "no embedded chunks"
-        return ("PASS" if prov else "PARTIAL"), f"provision_id col={'yes' if prov else 'no'}; {dim_note}"
+        dim_note = f"legislation_chunks={leg}; embedded={embedded}; dim={row[0] if row else 'none'}"
+        ok = prov and leg > 0
+        return ("PASS" if ok else "PARTIAL"), dim_note
     finally:
         conn.close()
+
+
+def check_pipeline_rerun() -> tuple[str, str]:
+    """Optional docker pipeline rerun (legislation+acas+embed+sync)."""
+    import subprocess
+
+    cmd = [
+        "docker",
+        "compose",
+        "--profile",
+        "ingestion",
+        "run",
+        "--rm",
+        "ingestion",
+        "sh",
+        "-c",
+        "python -m ingestion.sync_corpus_chunks && python -m ingestion.sync_corpus_chunks",
+    ]
+    try:
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=120)
+        out = (proc.stdout or "") + (proc.stderr or "")
+        if "added=0" in out or "added=0 " in out:
+            return "PASS", "idempotent sync (added=0 on second pass)"
+        if proc.returncode == 0:
+            return "PARTIAL", out.strip()[-400:]
+        return "FAIL", out.strip()[-600:]
+    except Exception as exc:
+        return "SKIP", str(exc)
 
 
 def main() -> int:
     rows = check_files()
     db_status, db_note = check_db()
+    pipe_status, pipe_note = check_pipeline_rerun()
     lines = [
         "LawApp dual-plane ingestion migration 084 audit",
         "Generated: 2026-06-16 (evidence run)",
@@ -113,7 +147,16 @@ def main() -> int:
     if db_status == "FAIL":
         any_fail = True
     lines.append(f"| Migration 084 applied (live DB) | {db_status} | {db_note} |")
-    verdict = "FAIL" if any_fail else ("PASS (code); DB " + db_status)
+    if pipe_status == "FAIL":
+        any_fail = True
+    lines.append(f"| Idempotent sync re-run | {pipe_status} | {pipe_note} |")
+    lines.append("")
+    lines.append("## Pipeline re-run note")
+    lines.append(
+        "Full embed pass requires Ollama model `bge-large-en-v1.5` at LAWAPP_OLLAMA_BASE_URL. "
+        "If embedder fails with HTTP 404, pull the model: `docker compose exec ollama ollama pull bge-large-en-v1.5`"
+    )
+    verdict = "FAIL" if any_fail else "PASS"
     lines.extend(["", f"## Verdict: {verdict}"])
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))

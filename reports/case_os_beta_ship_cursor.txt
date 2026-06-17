@@ -1,25 +1,14 @@
-LawApp Case OS beta ship audit
-Generated: 2026-06-16 (evidence run)
-Branch: release/lawapp-clean-snapshot
-
-## Page-by-page
-
-| Page | Result | Notes |
-|------|--------|-------|
-| dashboard | PASS | ok |
-| case-intake | PASS | ok |
-| analysis | PASS | ok |
-| workspace | PASS | ok |
-| timeline | PASS | ok |
-| deadlines | PASS | ok |
-| evidence | PASS | ok |
-| documents | PASS | ok |
-| escalation | PASS | ok |
-| advisor | PASS | ok |
-| settings | PASS | ok |
-| index.html | PASS | ok |
-
-## Forbidden string grep (client/public)
-- PASS: zero hits for 0 corpus / >production< (excluding internal mappers)
-
-## Verdict: PASS
+Traceback (most recent call last):
+  File "F:\lawapp\scripts\audit_case_os_beta.py", line 74, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "F:\lawapp\scripts\audit_case_os_beta.py", line 68, in main
+    REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\pathlib\__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\pathlib\__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'F:\\lawapp\\reports\\case_os_beta_ship_cursor.txt'

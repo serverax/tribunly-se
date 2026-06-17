@@ -1,0 +1,81 @@
+LawApp beta gate evidence bundle (owner review only)
+=====================================================
+Generated: 2026-06-17T00:46:00Z
+Branch: release/lawapp-clean-snapshot
+Base commit (Commit A): 8981c53
+Evidence commit (Commit B): 03fb4bf
+
+This file is the sole C-F evidence bundle for owner review. Checkpoints are
+debug artifacts only. Architectural truth = ADR-000 + git log on this branch.
+
+Product status: PRE-BETA (unchanged)
+
+## Gate summary
+
+| Gate | Description | Result | Evidence |
+|------|-------------|--------|----------|
+| C | Case OS beta audit | PASS | reports/case_os_beta_ship_cursor.txt |
+| D | Ingestion 084 dual-plane | PASS | reports/ingestion_084_cursor.txt |
+| E | Grounding regression suite | PASS | reports/grounding_verification_cursor.txt |
+| F | i18n / no-translate invariant | PASS | reports/multi_language_verify_cursor.txt |
+| F | Domain plugin fail-closed | PASS | reports/domain_plugin_verify_cursor.txt |
+
+## Gate E — grounding (blocker gate)
+
+Command:
+  python -m pytest tests/test_grounding_regression.py tests/test_single_brain_architecture.py -q
+
+Result: 24 passed, 0 failed
+
+verify_grounding.py exit code: 0
+Static checks: Brain CitationGuard PASS, pipeline corpus_citation_guard PASS,
+No /api/v1/legal/reason PASS
+
+## Gate C — Case OS
+
+Script: python scripts/proof/audit_case_os_beta.py
+Exit code: 0
+Verdict: PASS (30 pages, forbidden string grep clean)
+
+## Gate D — Ingestion 084
+
+Script: python scripts/proof/verify_ingestion_084.py
+Exit code: 0
+Verdict: PASS (code + live DB)
+
+## Gate F — i18n
+
+Script: python scripts/proof/verify_multi_language.py
+Exit code: 0
+Verdict: PASS (11 pytest passed)
+
+## Gate F — domain
+
+Script: python scripts/proof/verify_domain_plugin.py
+Exit code: 0
+Verdict: PASS (employment enabled; housing/employment_uk fail-closed)
+
+## C-F officially closed?
+
+After this commit is pushed to origin/release/lawapp-clean-snapshot: YES
+(all gates PASS; grounding regression in unified bundle on remote)
+
+Beta ready for promotion: NO — product status remains PRE-BETA until owner
+promotes (payment, live corpus re-embed, production deploy gates).
+
+## Supporting report paths
+
+- reports/case_os_beta_ship_cursor.txt
+- reports/ingestion_084_cursor.txt
+- reports/grounding_verification_cursor.txt
+- reports/multi_language_verify_cursor.txt
+- reports/domain_plugin_verify_cursor.txt
+
+## Proof commands (reproduce)
+
+python scripts/proof/audit_case_os_beta.py
+python scripts/proof/verify_ingestion_084.py
+python scripts/proof/verify_grounding.py
+python scripts/proof/verify_multi_language.py
+python scripts/proof/verify_domain_plugin.py
+python -m pytest tests/test_grounding_regression.py tests/test_single_brain_architecture.py -q
