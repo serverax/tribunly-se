@@ -55,3 +55,8 @@ fastembed_cache/
 
 # disposable ops/diagnostic scripts (not product code)
 scripts/ops/
+
+# LangGraph drift (single-brain: brain.py only; ADR-000)
+backend/ai/
+scripts/langgraph_payload/
+install_langgraph_all.py
