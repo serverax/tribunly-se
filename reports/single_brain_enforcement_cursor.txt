@@ -1,49 +1,95 @@
-LawApp single-brain architecture enforcement
-Generated: 2026-06-16
-Branch: release/lawapp-clean-snapshot
-Agent: cursor subagent (architecture compliance rollback)
+......FF.....FF....                                                      [100%]
+================================== FAILURES ===================================
+______________ test_langgraph_artifacts_absent[forbidden_path2] _______________
 
-## Checklist (build order)
+forbidden_path = WindowsPath('F:/lawapp/backend/api/legal_reason_routes.py')
 
-| # | Task | Status |
-|---|------|--------|
-| 1 | docs/adr/ADR-000-langgraph-gate.md (why blocked, coexistence risk) | DONE |
-| 2 | docs/checkpoint/INGESTION_LANGGRAPH_CHECKPOINT.md rewritten (STOPPED, priorities 084/Case OS/i18n/domain) | DONE |
-| 3 | Deprecation banners on LANGGRAPH_ORCHESTRATION_V1.md + LEGAL_REASON_API_V1.md | DONE |
-| 4 | docs/checkpoint/README.md updated | DONE |
-| 5 | langgraph removed from pyproject.toml / Dockerfile | VERIFIED (absent) |
-| 6 | tests/test_langgraph_legal_reason.py, legal_reason_routes.py deleted | VERIFIED (absent) |
-| 7 | tests/test_single_brain_architecture.py | PRESENT (anti-LangGraph gate) |
-| 8 | reports/single_brain_enforcement_cursor.txt | THIS FILE |
-| 9 | Commit + push release/lawapp-clean-snapshot | THIS COMMIT |
+    @pytest.mark.parametrize(
+        "forbidden_path",
+        [
+            REPO_ROOT / "backend" / "ai",
+            REPO_ROOT / "backend" / "core" / "langgraph",
+            REPO_ROOT / "backend" / "api" / "legal_reason_routes.py",
+            REPO_ROOT / "tests" / "test_langgraph_legal_reason.py",
+            REPO_ROOT / "tests" / "test_legal_reason_api.py",
+        ],
+    )
+    def test_langgraph_artifacts_absent(forbidden_path: Path):
+>       assert not forbidden_path.exists(), f"Forbidden LangGraph artifact present: {forbidden_path}"
+E       AssertionError: Forbidden LangGraph artifact present: F:\lawapp\backend\api\legal_reason_routes.py
+E       assert not True
+E        +  where True = exists()
+E        +    where exists = WindowsPath('F:/lawapp/backend/api/legal_reason_routes.py').exists
 
-## Pytest proof
+tests\test_single_brain_architecture.py:52: AssertionError
+______________ test_langgraph_artifacts_absent[forbidden_path3] _______________
 
-Command: python -m pytest tests/test_single_brain_architecture.py -q
-Result: 13 passed in 9.64s
+forbidden_path = WindowsPath('F:/lawapp/tests/test_langgraph_legal_reason.py')
 
-## Production backend (after cleanup)
+    @pytest.mark.parametrize(
+        "forbidden_path",
+        [
+            REPO_ROOT / "backend" / "ai",
+            REPO_ROOT / "backend" / "core" / "langgraph",
+            REPO_ROOT / "backend" / "api" / "legal_reason_routes.py",
+            REPO_ROOT / "tests" / "test_langgraph_legal_reason.py",
+            REPO_ROOT / "tests" / "test_legal_reason_api.py",
+        ],
+    )
+    def test_langgraph_artifacts_absent(forbidden_path: Path):
+>       assert not forbidden_path.exists(), f"Forbidden LangGraph artifact present: {forbidden_path}"
+E       AssertionError: Forbidden LangGraph artifact present: F:\lawapp\tests\test_langgraph_legal_reason.py
+E       assert not True
+E        +  where True = exists()
+E        +    where exists = WindowsPath('F:/lawapp/tests/test_langgraph_legal_reason.py').exists
 
-- backend/ai/ - ABSENT
-- backend/api/legal_reason_routes.py - ABSENT
-- backend/api/main.py - no legal_reason_routes import
-- pyproject.toml - no langgraph / langchain-core
-- Dockerfile - no langgraph / langchain-core
+tests\test_single_brain_architecture.py:52: AssertionError
+____________________ test_no_langgraph_imports_in_backend _____________________
 
-## Allowed references (documentation / enforcement only)
+    def test_no_langgraph_imports_in_backend():
+        backend_root = REPO_ROOT / "backend"
+        offenders: list[str] = []
+        for path in backend_root.rglob("*.py"):
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if "langgraph" in text.lower() or "backend.ai.graph" in text or "backend.core.langgraph" in text:
+                offenders.append(str(path.relative_to(REPO_ROOT)))
+>       assert not offenders, f"LangGraph references in backend: {offenders}"
+E       AssertionError: LangGraph references in backend: ['backend\\api\\legal_reason_routes.py']
+E       assert not ['backend\\api\\legal_reason_routes.py']
 
-- tests/test_single_brain_architecture.py
-- docs/adr/ADR-000-langgraph-gate.md
-- docs/checkpoint/*.md
-- docs/architecture/LANGGRAPH_ORCHESTRATION_V1.md (SUPERSEDED banner)
-- docs/architecture/LEGAL_REASON_API_V1.md (SUPERSEDED banner)
-- .cursor/rules/40-ai-gate.mdc
+tests\test_single_brain_architecture.py:94: AssertionError
+______________ test_no_legal_reason_route_strings_in_backend_api ______________
 
-## Single brain authoritative path
+    def test_no_legal_reason_route_strings_in_backend_api():
+        api_root = REPO_ROOT / "backend" / "api"
+        hits: list[str] = []
+        for path in api_root.rglob("*.py"):
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if "legal/reason" in text or "legal_reason_routes" in text:
+                hits.append(str(path.relative_to(REPO_ROOT)))
+>       assert not hits, f"legal/reason route references in backend/api: {hits}"
+E       AssertionError: legal/reason route references in backend/api: ['backend\\api\\legal_reason_routes.py']
+E       assert not ['backend\\api\\legal_reason_routes.py']
 
-backend/core/brain.py -> 19-step pipeline -> CitationGuard -> response
-No POST /api/v1/legal/reason
+tests\test_single_brain_architecture.py:104: AssertionError
+============================== warnings summary ===============================
+C:\Python314\Lib\site-packages\slowapi\extension.py:717: 32 warnings
+  C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
 
-## Verdict
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
 
-PASS
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\lastfailed: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_single_brain_architecture.py::test_langgraph_artifacts_absent[forbidden_path2]
+FAILED tests/test_single_brain_architecture.py::test_langgraph_artifacts_absent[forbidden_path3]
+FAILED tests/test_single_brain_architecture.py::test_no_langgraph_imports_in_backend
+FAILED tests/test_single_brain_architecture.py::test_no_legal_reason_route_strings_in_backend_api
+4 failed, 15 passed, 34 warnings in 50.58s
+EXIT:1

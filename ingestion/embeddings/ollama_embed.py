@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def ollama_base_url() -> str:
     return os.getenv(
         "LAWAPP_OLLAMA_BASE_URL",
-        os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+        os.getenv("OLLAMA_BASE_URL", os.getenv("OLLAMA_URL", "http://localhost:11434")),
     ).rstrip("/")
 
 

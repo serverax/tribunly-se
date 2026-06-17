@@ -30,7 +30,7 @@ C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovi
     config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-9 passed, 33 warnings in 8.14s
+9 passed, 33 warnings in 3.23s
 ```
 
 ## Verdict: PASS

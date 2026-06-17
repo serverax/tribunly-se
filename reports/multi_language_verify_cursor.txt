@@ -11,11 +11,9 @@ Branch: release/lawapp-clean-snapshot
 
 ## Pytest
 
-Exit code: 0
+Exit code: 1
 ```
-...........                                                              [100%]
-============================== warnings summary ===============================
-tests/test_no_translation_invariant.py: 32 warnings
+ warnings
   C:\Python314\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
     if asyncio.iscoroutinefunction(func):
 
@@ -23,8 +21,15 @@ C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovi
   C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\nodeids: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
     config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
 
+C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429
+  C:\Users\kalsh\AppData\Roaming\Python\Python314\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path F:\lawapp\.pytest_cache\v\cache\lastfailed: [WinError 183] Cannot create a file when that file already exists: 'F:\\lawapp\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-11 passed, 33 warnings in 67.25s (0:01:07)
+=========================== short test summary info ===========================
+FAILED tests/test_i18n_api.py::test_mother_assess_ar_locale_fields - psycopg2...
+FAILED tests/test_i18n_api.py::test_mother_assess_en_has_assessment_core - ps...
+2 failed, 9 passed, 34 warnings in 42.26s
 ```
 
-## Verdict: PASS
+## Verdict: FAIL

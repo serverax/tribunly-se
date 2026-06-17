@@ -36,3 +36,9 @@ Tests:
 - pytest tests/test_build_order_gates.py -q — LangGraph routes 404/405
 
 Verdict: PASS (repo + local idempotency + corpus documented). PARTIAL: migration 084 Docker proof + freshness view + full 1024 re-embed in live env.
+corpus_chunks: 13
+legislation_rows: 85
+acas_guidance_rows: 2
+legal_nodes_active: 15
+legal_edges: 14
+embedding_dim_sample: None
