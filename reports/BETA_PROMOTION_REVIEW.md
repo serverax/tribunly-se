@@ -1,9 +1,9 @@
 # Beta Promotion Review
 
-Generated: 2026-06-18T15:45:00Z  
+Generated: 2026-06-18T04:05:00Z  
 Repo: serverax/lawapp  
 Branch: `release/lawapp-clean-snapshot`  
-Code HEAD: pending (`fix: repair beta diagnosis and JWT readiness gates`)  
+Code HEAD: `3511b67` (`fix: repair beta diagnosis and JWT readiness gates`)  
 Prior HEAD: `97aeae4`  
 Evidence report: `reports/rag_1024_retrieval_repair.txt` (refreshed 2026-06-18)
 
@@ -25,7 +25,7 @@ All targeted beta gate tests pass on fixed code. RAG 1024-dim verification remai
 | Retrieval plane | `corpus_chunks` canonical; semantic leg not gated on `legislation.embedding` | **PASS** |
 | Query embeddings | 1024-dim; dimension mismatch fails closed | **PASS** |
 | RAG microservice | `/api/rag/search` — 4/4 queries, 5 cited hits each | **PASS** |
-| Targeted tests | 27 pytest passed (repair + ADR-000 + semantic integration) | **PASS** |
+| Targeted tests | 77 pytest passed (3 batches, 2026-06-18 re-run) | **PASS** |
 | ADR-000 / single brain | No `backend/ai`, no LangGraph runtime, no `/api/v1/legal/reason` | **PASS** |
 | Diagnosis alias | `POST /api/diagnosis` matches `/assess` shape | **PASS** |
 | JWT readiness | `tests/integration/test_phase6c_jwt.py` 34/34 | **PASS** |
@@ -42,8 +42,9 @@ Full checklist: see `reports/rag_1024_retrieval_repair.txt`.
 
 | Gate | Root cause | Fix |
 |------|------------|-----|
-| Diagnosis alias `domain_unavailable` | `diagnosis_endpoint` called `assess_endpoint()` directly; FastAPI `Header()` default object became `domain_code` | Pass `x_lawapp_domain` from request header into `assess_endpoint` |
-| JWT admin routes 404 | Static `/admin/{page_name}` catch-all matched `/admin/production-readiness` before JSON API routes | Restrict static admin route to `/admin/{page_name}.html` |
+| Diagnosis alias `domain_unavailable` | `diagnosis_endpoint` called `assess_endpoint()` directly; FastAPI `Header()` default object became `domain_code` | Pass `x_lawapp_domain` from request header into `assess_endpoint` (`3511b67`) |
+| JWT admin routes 404 | Static `/admin/{page_name}` catch-all matched `/admin/production-readiness` before JSON API routes | Restrict static admin route to `/admin/{page_name}.html` (`3511b67`) |
+| Live Docker `domain_unavailable` | Repo-root `domains/` not copied into backend image; `pack_codes: []` in container | `COPY --chown=lawapp:lawapp domains ./domains` in `Dockerfile` (infra-only; separate from 3511b67) |
 
 ---
 
@@ -58,17 +59,16 @@ Full checklist: see `reports/rag_1024_retrieval_repair.txt`.
 | Agent / subagent automation | **Stopped** | See `docs/handoff/AGENTS_AND_SUBAGENTS_STATE.md` |
 | SEO Track A proof on release | **Not on branch** | `reports/seo_track_a_proof.txt` on `feat/seo-command` only |
 | Kubernetes production deploy | **Unverified** | kubectl unreachable from this workstation (historical) |
-| Live Docker API smoke | **Pending redeploy** | Running pre-fix image; pytest uses local code |
+| Live Docker API smoke | **PASS** | `POST /assess` + `/api/diagnosis` → `status: ok`, `final_governed_assessment`; `/app/domains` present |
 
 ---
 
 ## Risks and caveats
 
-1. **Docker image lag:** Rebuild/restart backend container for live `/assess` and `/api/diagnosis` smoke to match pytest.
-2. **Operator env:** Host scripts must use `POSTGRES_PASSWORD=lawapp` or `DATABASE_URL=postgresql://lawapp:lawapp@localhost:5435/lawapp`.
-3. **Ollama dependency:** RAG vector leg requires Ollama with `bge-large-en-v1.5` at `LAWAPP_OLLAMA_BASE_URL`.
-4. **DPIA gate:** `controlled_beta_ready=false` is honest compliance state, not a test failure.
-5. **SEO scope:** Beta legal product gates are green; SEO command tracks are separate.
+1. **Operator env:** Host scripts must use `POSTGRES_PASSWORD=lawapp` or `DATABASE_URL=postgresql://lawapp:lawapp@localhost:5435/lawapp`.
+2. **Ollama dependency:** RAG vector leg requires Ollama with `bge-large-en-v1.5` at `LAWAPP_OLLAMA_BASE_URL`.
+3. **DPIA gate:** `controlled_beta_ready=false` is honest compliance state, not a test failure.
+4. **SEO scope:** Beta legal product gates are green; SEO command tracks are separate.
 
 ---
 
@@ -77,7 +77,6 @@ Full checklist: see `reports/rag_1024_retrieval_repair.txt`.
 **Recommend owner approve conditional beta promotion** on `release/lawapp-clean-snapshot` after this fix commit.
 
 Conditions:
-- Rebuild Docker backend image before claiming live API parity with pytest.
 - `controlled_beta_ready` stays false until DPIA/privacy sign-off (expected).
 - Do not enable SEO Track B, LangGraph, or background agents without explicit owner approval.
 - Re-run `reports/rag_1024_retrieval_repair.txt` checklist after any RAG/embedding code change.

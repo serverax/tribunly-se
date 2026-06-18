@@ -1,9 +1,9 @@
 # LawApp Technology and Workflow Verification
 
-Generated: 2026-06-18T15:45:00Z  
+Generated: 2026-06-18T04:05:00Z  
 Repo: serverax/lawapp  
 Branch: `release/lawapp-clean-snapshot`  
-Code HEAD (verified): pending commit (`fix: repair beta diagnosis and JWT readiness gates`)  
+Code HEAD (verified): `3511b67` (`fix: repair beta diagnosis and JWT readiness gates`)  
 Prior HEAD: `97aeae4`  
 Inventory: backend ~696 files (depth 3), client ~2680 files (depth 3), docs/handoff 9 files, reports ~325 files (depth 1).
 
@@ -15,9 +15,9 @@ This pass fixed two beta gate failures on `release/lawapp-clean-snapshot`. **Dia
 
 **RAG 1024-dim retrieval remains WORKING** (27 regression pytest green). **ADR-000 single-brain compliance remains WORKING** (no `backend/ai/`, zero `langgraph` in `backend/`). Targeted beta gate pytest: **34/34 pass** (claim checker, mother controller, phase6c JWT).
 
-Live Docker smoke (`:8000`) still serves pre-fix image — both `/assess` and `/api/diagnosis` return `domain_unavailable` until container rebuild/redeploy. Pytest uses local code and passes.
+Live Docker smoke (`:8000`) after `docker compose up -d --build backend`: `/health` OK; JWT admin routes return **403** (auth gate, not 404). **`POST /assess` and `POST /api/diagnosis` return `status: ok`, `result_type: final_governed_assessment`** (unfair dismissal payload; not `domain_unavailable`). Container has `/app/domains` with `pack_codes: ['benefits', 'debt', 'employment', 'housing', 'immigration']` after `COPY domains ./domains` in `Dockerfile`. Pytest **77/77** pass on host (3511b67 code + domains present).
 
-**Beta recommendation:** Diagnosis alias **PASS** and JWT gate **PASS** on fixed code. Conditional promotion for legal-engine beta on local/staging after Docker image refresh. `controlled_beta_ready` remains **false** by design (DPIA not reviewed).
+**Beta recommendation:** Diagnosis alias **PASS**, JWT gate **PASS**, and live Docker assess/diagnosis **PASS** after image refresh. `controlled_beta_ready` remains **false** by design (DPIA not reviewed).
 
 ---
 
@@ -39,16 +39,16 @@ Live Docker smoke (`:8000`) still serves pre-fix image — both `/assess` and `/
 | 3 | Rules table | **WORKING** | 136 rows | DB count | Full rules verification script not re-run |
 | 3 | Citations table | **NOT STARTED** | Relation does not exist | `psql`: `relation "citations" does not exist` | Confirm schema design vs `corpus_chunks` citation metadata |
 | 3 | Source freshness | **WORKING** | API returns dated sources | `GET /freshness` 2026-06-18 | — |
-| 4 | Free diagnosis / `/assess` | **WORKING** | Routes + alias tests pass | `backend/api/main.py` L652, L753; `tests/test_claim_checker.py`, `tests/test_mother_controller.py` | Refresh Docker image for live smoke |
+| 4 | Free diagnosis / `/assess` | **WORKING** | Routes + alias tests + live Docker smoke | `backend/api/main.py` L652, L753; live `POST :8000/assess` → `status: ok` | — |
 | 4 | Guided intake | **WIRED BUT NOT FULLY PROVEN** | Static pages + JS | `client/public/pages/intake.html`, `case-intake.html` | No browser E2E this pass |
 | 4 | Deadline calculator (server) | **WORKING** | Deterministic rules tests | `tests/legal_accuracy/test_legal_accuracy.py`; `backend/core/tools.py` | — |
 | 4 | ACAS EC stop-clock | **WIRED BUT NOT FULLY PROVEN** | WASM + JS fallback | `client/public/js/deadline.js`; `client/public/wasm/lawapp_wasm_bg.wasm` | No live EC scenario API test |
-| 4 | Unfair dismissal workflow | **WORKING** | Domain enabled; alias tests pass | `domains/employment/` operational; diagnosis alias pytest green | Docker smoke pending redeploy |
+| 4 | Unfair dismissal workflow | **WORKING** | Domain enabled; live + pytest pass | `domains/employment/` operational; live assess `claim_type: unfair_dismissal` | — |
 | 4 | Document generation (PoC, SoL) | **WORKING** | Unit tests pass | `tests/documents/test_documents.py`; `tests/test_schedule_of_loss.py` | Payment gating for full doc not live-tested |
 | 4 | Case workspace | **WIRED BUT NOT FULLY PROVEN** | Pages present | `client/public/pages/workspace.html`, `client/next/app/workspace/` | No authenticated workspace E2E |
 | 4 | Handoff leads | **WIRED BUT NOT FULLY PROVEN** | Route + client JS | `POST /handoff/leads`; `client/public/js/api-client.js` | No POST proof this pass |
 | 4 | Payment gating | **WIRED BUT NOT FULLY PROVEN** | `PAYMENT_MODE=test` | `/health` → `payment_mode: test`; `tests/security/test_payment_access.py` 6/6 pass | Stripe live modes not configured |
-| 4 | Auth / session JWT | **WORKING** | JWT routes; phase6c 34/34 pass | `/health` → `auth_mode: jwt`; `tests/integration/test_phase6c_jwt.py` | Docker image refresh for live admin smoke |
+| 4 | Auth / session JWT | **WORKING** | JWT routes; phase6c 34/34 pass | `/health` → `auth_mode: jwt`; live admin 403 not 404 | — |
 | 4 | Saved cases / dashboard | **WIRED BUT NOT FULLY PROVEN** | Routes + pages | `GET /cases`, `client/public/pages/saved_case.html` | No saved-case round-trip proof |
 | 4 | Admin dashboard | **WIRED BUT NOT FULLY PROVEN** | Admin service healthy :8007 | Docker; `client/public/admin/dashboard.html` | Admin E2E not run |
 | 5 | SEO Track A (release) | **NOT STARTED** | Code on feat branch only | `git ls-files` SEO = docs only; no `backend/seo/*.py` tracked | Merge feat branch or cherry-pick Track A |

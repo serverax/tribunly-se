@@ -1,7 +1,7 @@
 # Proof Index
 
-Generated: 2026-06-18T15:45:00Z  
-Code HEAD: pending fix commit on `release/lawapp-clean-snapshot`  
+Generated: 2026-06-18T04:05:00Z  
+Code HEAD: `3511b67` on `release/lawapp-clean-snapshot`  
 Prior HEAD: `97aeae4`
 
 ## Git verification
@@ -24,7 +24,36 @@ git status -sb
 | RAG 1024 regression suite | **27/27 PASS** |
 | Payment + schedule of loss | **16/16 PASS** |
 | ADR-000 forbidden paths | **clean** |
-| **Verdict** | **PASS** (conditional — Docker redeploy for live smoke) |
+| **Verdict** | **PASS** (conditional — `controlled_beta_ready` false by design) |
+
+## Docker domains packaging (2026-06-18)
+
+| Check | Result |
+|-------|--------|
+| `COPY domains ./domains` in `Dockerfile` | **applied** |
+| `docker exec ... ls /app/domains` | **employment, benefits, debt, housing, immigration** |
+| `pack_codes()` in container | **5 packs** |
+| Live `POST /assess` | **`status: ok`** (not `domain_unavailable`) |
+| Live `POST /api/diagnosis` | **`result_type: final_governed_assessment`** |
+| Pytest after image fix | **77/77 PASS** |
+
+Note: commit `3511b67` fixed diagnosis/JWT test gates; Docker `COPY domains` was a separate infra gap.
+
+## Verification re-run (2026-06-18 @ 3511b67 + Docker rebuild)
+
+| Batch | Result |
+|-------|--------|
+| claim_checker + mother_controller + phase6c_jwt | **34/34 PASS** |
+| rag_1024 + single_brain + build_order + semantic_retrieval | **27/27 PASS** |
+| payment_access + schedule_of_loss | **16/16 PASS** |
+| **Total** | **77/77 PASS** |
+
+| Live Docker smoke | Result |
+|-------------------|--------|
+| `GET /health` | **200 OK** |
+| `POST /assess` / `POST /api/diagnosis` | **`status: ok`** / `final_governed_assessment` (after `COPY domains`) |
+| `GET /admin/production-readiness` | **403** (route exists; JWT fix OK, not 404) |
+| `pack_codes` in container | **5 packs** (`employment` operational) |
 
 ## RAG 1024 verification (refreshed 2026-06-18)
 
