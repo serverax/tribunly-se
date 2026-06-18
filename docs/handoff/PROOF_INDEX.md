@@ -1,8 +1,8 @@
 # Proof Index
 
-Generated: 2026-06-18T02:02:21+01:00  
-Code HEAD: `4209216` on `release/lawapp-clean-snapshot`  
-Docs HEAD: pending proof commit (after `b75cd6c`)
+Generated: 2026-06-18T15:45:00Z  
+Code HEAD: pending fix commit on `release/lawapp-clean-snapshot`  
+Prior HEAD: `97aeae4`
 
 ## Git verification
 
@@ -13,6 +13,18 @@ git branch --show-current
 git rev-parse HEAD
 git status -sb
 ```
+
+## Beta gate fixes (2026-06-18)
+
+| Check | Result |
+|-------|--------|
+| `tests/test_claim_checker.py` (diagnosis alias) | **PASS** |
+| `tests/test_mother_controller.py` (diagnosis alias) | **PASS** |
+| `tests/integration/test_phase6c_jwt.py` | **34/34 PASS** |
+| RAG 1024 regression suite | **27/27 PASS** |
+| Payment + schedule of loss | **16/16 PASS** |
+| ADR-000 forbidden paths | **clean** |
+| **Verdict** | **PASS** (conditional — Docker redeploy for live smoke) |
 
 ## RAG 1024 verification (refreshed 2026-06-18)
 

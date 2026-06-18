@@ -280,10 +280,10 @@ if _CLIENT_DIR.exists():
             raise HTTPException(status_code=404, detail="Page not found")
         return FileResponse(str(target))
 
-    @app.get("/admin/{page_name}", include_in_schema=False)
+    @app.get("/admin/{page_name}.html", include_in_schema=False)
     def serve_admin_page(page_name: str):
-        target = _CLIENT_DIR / "admin" / page_name
-        if not target.exists() or not page_name.endswith(".html"):
+        target = _CLIENT_DIR / "admin" / f"{page_name}.html"
+        if not target.exists():
             raise HTTPException(status_code=404, detail="Admin page not found")
         return FileResponse(str(target))
 
@@ -751,7 +751,11 @@ def _orchestrator_assess(req: AssessRequest) -> dict:
 # ── Phase 3C: Document generation ────────────────────────────────────────────
 
 @app.post("/api/diagnosis")
-def diagnosis_endpoint(request: Request, req: AssessRequest) -> dict:
+def diagnosis_endpoint(
+    request: Request,
+    req: AssessRequest,
+    x_lawapp_domain: Optional[str] = Header(default=None, alias="X-Lawapp-Domain"),
+) -> dict:
     """
     POST /api/diagnosis  -  primary diagnosis endpoint for lawapp.
 
@@ -768,7 +772,7 @@ def diagnosis_endpoint(request: Request, req: AssessRequest) -> dict:
     GUARDRAIL: no raw personal data sent to any third-party model.
     GUARDRAIL: deadlines and caps always from rules table, never from LLM.
     """
-    return jsonable_encoder(assess_endpoint(request, req))
+    return jsonable_encoder(assess_endpoint(request, req, x_lawapp_domain))
 
 
 class DocumentRequest(BaseModel):
