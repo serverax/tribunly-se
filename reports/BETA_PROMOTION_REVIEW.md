@@ -1,79 +1,79 @@
 # Beta Promotion Review
 
-Generated: 2026-06-17  
+Generated: 2026-06-18T02:02:21+01:00  
 Repo: serverax/lawapp  
 Branch: `release/lawapp-clean-snapshot`  
-Evidence run base: `1e10075` (pre-commit; see commit SHA below after push)
+Code HEAD: `4209216`  
+Evidence report: `reports/rag_1024_retrieval_repair.txt` (refreshed 2026-06-18)
 
 ---
 
-## Gate status (reference: `reports/beta_gate_evidence_unified.txt`)
+## Beta readiness
 
-| Gate | Description | Status | Notes |
-|------|-------------|--------|-------|
-| C | Case OS beta audit | **PASS** | `reports/case_os_beta_ship_cursor.txt` |
-| D | Ingestion 084 dual-plane | **PASS** (live re-verified) | `verify_ingestion_084.py` exit 0; embedded=978 dim=1024 |
-| E | Grounding / CitationGuard | **PASS** | Unified bundle |
-| F | i18n + domain fail-closed | **PASS** | Unified bundle |
-| SB | Single Brain ADR-000 | **PASS** | 16 pytest passed; no `backend/ai` |
+### **PASS** (subject only to owner promotion decision)
+
+All RAG 1024-dim verification checks passed on the live local Docker stack. No code defects block beta promotion on the release line.
 
 ---
 
-## Embed hardening results
+## What is now proven
 
-| Check | Result |
-|-------|--------|
-| corpus_chunks count | 978 |
-| embedded rows | 978 / 978 |
-| legislation-path embedded (primary + secondary + SI) | 885 |
-| dimension sample | **1024 only** (978 rows) |
-| model | bge-large-en-v1.5 |
-| sync_corpus_chunks idempotent | added=0 |
-| re-embed duration | ~155 min (972 chunks, Ollama local) |
+| Area | Evidence | Status |
+|------|----------|--------|
+| Corpus embeddings | 978/978 @ 1024-dim, `bge-large-en-v1.5` | **PASS** |
+| Retrieval plane | `corpus_chunks` canonical; semantic leg not gated on `legislation.embedding` | **PASS** |
+| Query embeddings | 1024-dim; dimension mismatch fails closed | **PASS** |
+| RAG microservice | `/api/rag/search` — 4/4 queries, 5 cited hits each | **PASS** |
+| Targeted tests | 27 pytest passed (repair + ADR-000 + semantic integration) | **PASS** |
+| ADR-000 / single brain | No `backend/ai`, no LangGraph runtime, no `/api/v1/legal/reason` | **PASS** |
+| Gate D (ingestion 084) | Historical PASS @ `verify_ingestion_084.py`; corpus counts re-confirmed | **PASS** |
+| Case OS beta | Historical PASS (`reports/case_os_beta_ship_cursor.txt`) | **PASS** |
+| Grounding / CitationGuard | Historical PASS (unified bundle) | **PASS** |
 
-**Partial gaps:**
-- Source `legislation` table still `vector(384)`, 0 embeddings — `retrieve_semantic` uses BM25 fallback
-- RAG service `/api/rag/search` returns 0 hits — query embedder still 384-dim fastembed vs 1024 corpus
-
----
-
-## ADR-000 clean
-
-| Check | Result |
-|-------|--------|
-| `tests/test_single_brain_architecture.py` + `tests/test_build_order_gates.py` | **16 passed** |
-| `backend/ai/` present | **NO** |
-| LangGraph / legal/reason in backend | **0 grep hits** |
+Full checklist: see `reports/rag_1024_retrieval_repair.txt`.
 
 ---
 
-## Beta ready recommendation
+## What remains not started / blocked
 
-### **NO** (conditional — corpus embed proven; retrieval stack not fully aligned)
-
-**Evidence for YES (corpus plane):**
-- All 978 `corpus_chunks` carry 1024-dim `bge-large-en-v1.5` embeddings
-- Direct pgvector retrieval against corpus returns ranked 1024-dim hits
-- `retrieve_hybrid` returns grounded authorities (score 1.0) on test query
-- ADR-000 enforcement green
-
-**Evidence blocking YES:**
-- Brain `retrieve_semantic` gates on `legislation.embedding` (still empty / 384 schema) — semantic leg not using new corpus embeddings
-- RAG microservice vector search dimension mismatch (384 query vs 1024 index) — live `/api/rag/search` empty
-- Host `.env` password drift (`change_this_password` vs volume `lawapp`) — documented, requires operator alignment
+| Item | Status | Notes |
+|------|--------|-------|
+| SEO Track B | **Not approved** | Owner decision required before any Track B work |
+| LangGraph / second runtime | **Blocked** | ADR-000 binding; `backend/ai` absent by design |
+| Agent / subagent automation | **Stopped** | See `docs/handoff/AGENTS_AND_SUBAGENTS_STATE.md` |
+| SEO Track A proof on release | **Not on branch** | `reports/seo_track_a_proof.txt` on `feat/seo-command` only |
+| Kubernetes production deploy | **Unverified** | kubectl unreachable from this workstation (historical) |
+| Source table 1024 migration | **Deferred** | `legislation`/`acas_guidance` still vector(384); non-blocking while corpus_chunks is canonical |
 
 ---
 
-## Owner actions remaining
+## Risks and caveats
 
-1. **DB password:** Set local `.env` `POSTGRES_PASSWORD=lawapp` or use `DATABASE_URL=postgresql://lawapp:lawapp@localhost:5435/lawapp` for all host proof scripts.
-2. **Source table migration:** Apply 1024-dim to `legislation` / `acas_guidance` OR repoint `backend/core/retrieve.py` semantic leg to `corpus_chunks`.
-3. **RAG service:** Switch `_vector_search` query embedding to Ollama `bge-large-en-v1.5` (1024) — remove fastembed 384 path for prod.
-4. **Ollama prod alias:** Document `ollama cp mxbai-embed-large bge-large-en-v1.5` in deploy runbook when direct pull fails.
-5. **Re-run Gate D proof** after RAG retrieve fix: `verify_ingestion_084.py` + hybrid search integration test.
+1. **Operator env:** Host scripts must use `POSTGRES_PASSWORD=lawapp` or `DATABASE_URL=postgresql://lawapp:lawapp@localhost:5435/lawapp` — `.env` default `change_this_password` drifts from Docker volume password.
+2. **Ollama dependency:** RAG vector leg requires Ollama with `bge-large-en-v1.5` (or aliased model) at `LAWAPP_OLLAMA_BASE_URL`.
+3. **Source-table embeddings:** Empty 384-dim `legislation.embedding` is expected; do not repoint ingestion embedder to source tables without a migration plan.
+4. **Remote cluster:** Production pod health not verified in this pass; local Docker proof only.
+5. **SEO scope:** Beta legal product is ready; SEO command tracks are separate and not part of this promotion gate.
 
 ---
 
-## Commit / push
+## Promotion recommendation
 
-See git log after commit on `release/lawapp-clean-snapshot` (never `main`).
+**Recommend owner approve beta promotion** on `release/lawapp-clean-snapshot` at code `4209216` (or later docs-only commits on the same line).
+
+Conditions:
+- Promotion is a release/process decision, not a further engineering gate on RAG 1024.
+- Do not enable SEO Track B, LangGraph, or background agents without explicit owner approval.
+- Re-run `reports/rag_1024_retrieval_repair.txt` checklist after any RAG/embedding code change.
+
+---
+
+## Evidence files
+
+| File | Purpose |
+|------|---------|
+| `reports/rag_1024_retrieval_repair.txt` | RAG 1024 verification (this pass) |
+| `reports/beta_gate_evidence_unified.txt` | Historical gate bundle |
+| `reports/ingestion_084_cursor.txt` | Gate D historical |
+| `reports/seo_track_a_proof.txt` | feat/seo-command only |
+| `docs/handoff/PROOF_INDEX.md` | Index of all proof artifacts |

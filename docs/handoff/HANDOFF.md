@@ -1,8 +1,8 @@
-Generated: 2026-06-18T12:00:00Z
+Generated: 2026-06-18T02:02:21+01:00
 Repo: serverax/lawapp
 Branch: release/lawapp-clean-snapshot
-Commit: 4209216 (0 ahead / 0 behind origin)
-Phase: 3 (RAG/ingestion verification and pre-beta hardening; approximate)
+Code HEAD: 4209216
+Phase: 3 (RAG/ingestion verification complete; beta promotion decision pending)
 
 > **MANDATORY — agents and subagents STOP state:** [AGENTS_AND_SUBAGENTS_STATE.md](./AGENTS_AND_SUBAGENTS_STATE.md)
 > All agent/subagent work is stopped. No background agents authorised. Read before spawning any Task/subagent or resuming hidden subagent context.
@@ -12,8 +12,9 @@ Phase: 3 (RAG/ingestion verification and pre-beta hardening; approximate)
 - Local Docker stack for LawApp core services reported healthy (db, backend, rag, graph-rag, rules, admin, audit, ollama, outbox-worker).
 - Handoff documentation set under `docs/handoff/` including agent/subagent state ([AGENTS_AND_SUBAGENTS_STATE.md](./AGENTS_AND_SUBAGENTS_STATE.md)).
 - Recent history includes Gate D PASS evidence (verify_ingestion_084 exit 0) and unified evidence stamping.
-- RAG 1024-dim repair appears shipped at `4209216`; verification should be re-run before beta promotion.
-- Proof artifact exists: `reports/rag_1024_retrieval_repair.txt` (historical PASS @ repair commit; refresh required).
+- **RAG 1024 verification PASS** (8/8 checks, 2026-06-18): `reports/rag_1024_retrieval_repair.txt`.
+- **Beta readiness PASS** (subject to owner promotion only): `reports/BETA_PROMOTION_REVIEW.md`.
+- Evidence reports refreshed in proof commit after `b75cd6c`.
 - SEO Track B still not approved.
 
 ## Recently modified
@@ -32,13 +33,13 @@ Phase: 3 (RAG/ingestion verification and pre-beta hardening; approximate)
 
 ## Build phase (01-06)
 
-- Between Phase 2 (engine) and Phase 3 (retention/RAG verification): ingestion gate evidence recorded; pre-beta verification in progress.
-- Pre-beta: re-run RAG 1024 verification checklist and refresh `BETA_PROMOTION_REVIEW.md` (not a fresh repair).
+- Phase 3 RAG verification complete on release line @ `4209216`.
+- Pre-beta engineering gate cleared; owner promotion decision is the remaining step.
 
 ## RAG status
 
-- RAG 1024-dim repair appears shipped at `4209216`; verification should be re-run before beta promotion.
-- Semantic plane: `corpus_chunks` @ 1024-dim via Ollama `bge-large-en-v1.5`; `/api/rag/search` cited hits proven historically in `reports/rag_1024_retrieval_repair.txt` (refresh required).
+- **RAG 1024 verification PASS:** 978/978 embedded @ 1024-dim `bge-large-en-v1.5`; `/api/rag/search` 4/4 queries with cited hits (5 each).
+- Semantic plane: `corpus_chunks` canonical; query embed 1024-dim; ADR-000 clean.
 - Source tables (`legislation`, etc.) remain `vector(384)` — non-blocking; corpus plane is canonical.
 
 ## Agent status
