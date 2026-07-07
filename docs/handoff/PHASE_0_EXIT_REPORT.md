@@ -119,3 +119,5 @@ Only documentation, handoff, and verification-report artifacts were touched.
 ## Hard Stop
 
 Phase 0 stops here. PHASE_1 was not opened by Codex during Phase 0 execution.
+
+**PHASE_0 HARD EXIT APPROVAL:** VERIFIED / SIGNED by owner on 2026-07-07.
