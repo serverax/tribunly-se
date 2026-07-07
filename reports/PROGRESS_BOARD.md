@@ -10,3 +10,4 @@ Base: `codex/phase-1@c29e960`
 | Stage 1A | Backend coverage audit + route/service inventory | COMPLETE | `this commit` | `reports/BACKEND_COVERAGE_MATRIX.md`, `reports/_backend_inventory.json` | 2026-07-07 |
 | Stage 1B | Canonical paid document generation routed to template-backed particulars and schedule outputs | COMPLETE | `this commit` | `tests/integration/test_canonical_paid_documents.py` (`2 passed`) | 2026-07-07 |
 | Stage 1B | Assessment contract verified spec-clean: canonical `deadline` on `/assess` and `/api/diagnosis` | COMPLETE | `this commit` | `tests/integration/test_assessment_contract_deadline.py` | 2026-07-07 |
+| Stage 1B | User-data security hard stop parked: standalone uploads route uses XOR storage + no-op malware scan | PARKED | `this commit` | `backend/api/upload_routes.py:96`, `backend/api/upload_routes.py:119` | 2026-07-07 |
