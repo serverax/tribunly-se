@@ -91,8 +91,9 @@ class TestAnonymousFunnel:
         assert r.status_code == 200, r.text
         assert "result" in r.json()
 
-    def test_resume_after_login_restores_answers_exactly(self, client):
-        # Anonymous answers -> save -> login -> resume with no lost answers.
+    def test_resume_after_login_does_not_restore_anonymous_answers(self, client):
+        # Anonymous teaser state keeps only funnel metadata; special-category answers
+        # are not persisted across the login boundary.
         token = client.post("/api/free-tool/teaser",
                             json={"tool": _TOOL, "answers": _ANSWERS}).json()["resume_token"]
         r = client.post("/api/free-tool/resume",
@@ -101,7 +102,7 @@ class TestAnonymousFunnel:
         assert r.status_code == 200, r.text
         body = r.json()
         assert body["resumed"] is True
-        assert body["answers"] == _ANSWERS
+        assert body["answers"] == {}
 
 
 # ── Logged-in result is persisted to the DB (with ownership) ──────────────────────
