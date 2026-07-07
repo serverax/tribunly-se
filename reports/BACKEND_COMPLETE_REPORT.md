@@ -122,6 +122,7 @@ Evidence now covers all three surfaces:
 - `tests/integration/test_assessment_contract_deadline.py` => `2 passed`
 - `tests/e2e/test_backend_paid_journey.py` => `1 passed`
 - `tests/integration/test_outage_copy.py` => `1 passed`
+- `tests/services/test_notification_partner_referral.py` => `1 passed`
 - `tests/test_beta_blockers.py -k pricing_consistent_across_surfaces` => `1 passed`
 - `tests/integration/test_api_smoke.py` (isolated live stack) => `6 passed`
 
@@ -129,12 +130,8 @@ Evidence now covers all three surfaces:
 
 Current Stage 1 matrix state:
 
-- spec surfaces are `WIRED` except for one `PARKED` hard-stop item
-- parked hard-stop item:
-  - standalone uploads path in `backend/api/upload_routes.py`
-  - uses XOR proof-of-concept storage
-  - uses a no-op malware scan
-  - this remains owner-visible and was not silently repaired in-lane
+- partner-referral notifications are now proven `WIRED` against the registry-backed queue path
+- the remaining backend closure item is the encryption-dependent beta handoff surface, which is being handled as a fence rather than left broken
 
 Service inventory notes retained in the matrix:
 

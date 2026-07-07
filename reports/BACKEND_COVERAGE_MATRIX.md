@@ -7,7 +7,7 @@ Generated: 2026-07-07
 - Spec set audited: `docs/02_HLD_ARCHITECTURE.md`, `docs/03_DATABASE_DESIGN.md`, `docs/04_RAG_REASONING_SPEC.md`.
 - Allowed statuses: `WIRED`, `STUB`, `BROKEN`, `MISSING`, `ORPHAN`, `FENCED`.
 - Every backend route listed below inherits its family status unless called out in the note.
-- Surface-family counts in this file: `WIRED=14`, `STUB=1`, `BROKEN=1`, `MISSING=0`, `ORPHAN=7`, `FENCED=1`.
+- Surface-family counts in this file: `WIRED=15`, `STUB=0`, `BROKEN=1`, `MISSING=0`, `ORPHAN=7`, `FENCED=1`.
 
 ## Live Evidence
 
@@ -22,6 +22,7 @@ Generated: 2026-07-07
 | `L7` | Handoff / referral | `POST /handoff/leads` then `DELETE /handoff/leads/{id}` | `201 {"status":"received", ...}` then `200 {"status":"pii_cleared", ...}` |
 | `L8` | Encryption-at-rest weakness | same `POST /handoff/leads` on current live stack | `201` but body returned `"pii_encrypted": false, "encryption_method": "none"`; backend log: `Handoff lead env-key encryption failed - storing plaintext: ENCRYPTION_KEY is malformed: ValueError` |
 | `L9` | Upload fence in beta | regression floor test `tests/integration/test_beta_upload_route_fenced.py` | `1 passed`; in beta config `POST /api/uploads/upload` returns `404 {"detail":"Not found"}` |
+| `L10` | Partner referral notifications | `POST /api/notifications/partner-referral` against the notification service app with an active registry-backed partner | `200 {"status":"accepted","email_queued":true,...}` and the test proved a Redis queue job was emitted |
 
 ## Capability Matrix
 
@@ -165,9 +166,9 @@ Generated: 2026-07-07
 
 ### `backend/services/lawapp-notification-service/main.py`
 
-- Status: **STUB**
+- Status: **WIRED**
 - Routes: `GET /health`, `GET /ready`, `GET /api/notifications`, `POST /api/notifications/create`, `POST /api/notifications/send-email`, `POST /api/notifications/{notification_id}/read`, `GET /api/notifications/debug/queue-status`, `POST /api/notifications/partner-referral`
-- Note: partner-referral remains explicitly stubbed.
+- Proof: `L10`, `tests/services/test_notification_partner_referral.py`
 
 ### `backend/services/lawapp-rag-service/main.py`
 
