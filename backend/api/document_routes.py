@@ -33,7 +33,12 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from backend.core.payment import is_case_paid, preview_document
-from backend.core.documents import safety_check, LEGAL_BOUNDARY_NOTICE
+from backend.core.documents import (
+    LEGAL_BOUNDARY_NOTICE,
+    generate_particulars_of_claim,
+    generate_schedule_of_loss,
+    safety_check,
+)
 from backend.core.user_auth import get_current_user, check_case_ownership
 from ingestion.db import get_connection
 
@@ -310,18 +315,29 @@ def generate_document(
 
     # ── Generate document content ──────────────────────────────────────────
     try:
+        merged_facts = {**key_dates, **req.confirmed_facts}
         if req.document_type == "et1_support":
             html_content = _generate_et1_support(
                 {"case_id": case_id_str},
                 assessment,
-                {**key_dates, **req.confirmed_facts},
+                merged_facts,
+            )
+        elif req.document_type == "particulars":
+            html_content = generate_particulars_of_claim(
+                assessment,
+                merged_facts,
+            )
+        elif req.document_type == "schedule_of_loss":
+            html_content = generate_schedule_of_loss(
+                assessment,
+                merged_facts,
             )
         else:
             html_content = _generate_generic_document(
                 req.document_type,
                 {"case_id": case_id_str},
                 assessment,
-                {**key_dates, **req.confirmed_facts},
+                merged_facts,
             )
     except Exception as exc:
         logger.error("Document generation failed: %s", exc)
