@@ -10,6 +10,25 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 
+def _canonical_node_type(raw_type: str | None) -> str:
+    mapping = {
+        "section": "legislation_section",
+        "statute": "legislation_section",
+        "act": "legislation_section",
+        "guidance": "procedure",
+        "legaltest": "legal_test",
+        "legal_test": "legal_test",
+        "concept": "concept",
+        "case": "concept",
+    }
+    valid = {
+        "claim_type", "legal_test", "procedure", "deadline",
+        "remedy", "defence", "evidence_type", "legislation_section", "concept",
+    }
+    key = str(raw_type or "section").strip().replace("-", "_").replace(" ", "_").lower()
+    return mapping.get(key, key if key in valid else "concept")
+
+
 class UnifiedIndexer:
     """Coordinates document_id, chunk_id, embedding, graph_entities, graph_edges, rule_candidates."""
 
@@ -129,7 +148,7 @@ class UnifiedIndexer:
                     linker.upsert_node(
                         conn,
                         node_id=str(node_id),
-                        node_type=str(ent.get("type") or "Section"),
+                        node_type=_canonical_node_type(ent.get("type")),
                         label=str(ent.get("label") or ent.get("authority_ref") or node_id),
                         jurisdiction=str(ent.get("jurisdiction") or jurisdiction),
                         source_url=source_url,

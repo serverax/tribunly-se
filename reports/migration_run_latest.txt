@@ -79,7 +79,8 @@ SKIP: 083_quarantine_queue.sql
 SKIP: 084_ingestion_jobs_dual_plane.sql
 SKIP: 085_user_preferences_locale.sql
 SKIP: 086_domain_registry.sql
-APPLY: 087_knowledge_proposal_type_compat.sql
-PASS: 087_knowledge_proposal_type_compat.sql
+SKIP: 087_knowledge_proposal_type_compat.sql
+APPLY: 088_legal_node_type_canonical.sql
+PASS: 088_legal_node_type_canonical.sql
 
-MIGRATIONS COMPLETE: total=76 applied=1 skipped=75
+MIGRATIONS COMPLETE: total=77 applied=1 skipped=76
