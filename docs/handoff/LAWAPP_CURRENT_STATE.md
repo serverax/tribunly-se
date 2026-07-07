@@ -56,3 +56,29 @@ This is the Phase 0 floor baseline for the recovered tree. Do not substitute pre
 ## Phase 0 Commits
 
 - Task 1 phase-plan commit: `e25e0dc` (`docs: add phase reset plan`)
+
+## Phase 1 Floor Repair State
+
+- Phase 1 branch: `codex/phase-1`, cut from `codex/phase-0`.
+- Stage 1 collection unlock: `tests/test_knowledge_proposals.py --collect-only` collected 7 tests; whole-suite collect collected 1875 tests with zero collection errors.
+- Stage 2 real floor baseline after collection/bootstrap fixes: `6 failed, 1814 passed, 61 skipped, 6 warnings in 380.31s` at `a14f263`.
+- Final Phase 1 floor after authorized fixes: `3 failed, 1821 passed, 57 skipped, 6 warnings in 408.45s` at `7fc5144`.
+- The final floor is above the Stage 2 baseline with no unexplained regression. Remaining failures are owner-gated behavior conflicts, not collection or environment blockers.
+
+### Phase 1 Fix Commits
+
+- `5a4c786` - restored `propose_knowledge_gap()` so `tests/test_knowledge_proposals.py` collects.
+- `00b05c5` - defined the Brain module logger for fail-soft paths.
+- `fe0293a` - publishes proposal approval events to the outbox.
+- `3c08e60` - restored schema bootstrap compatibility for payment events and audit events.
+- `a14f263` - disables graph Redis cache when Redis is not configured in one-off test containers.
+- `63fe17b` - factual lane fails closed on rules lookup outages and proposal inserts satisfy recovered schema columns.
+- `670ccef` - relaxes recovered graph-only proposal type constraint.
+- `00ae393` - marks zero source-table embeddings as an environment precondition skip; partial embeddings still fail.
+- `7fc5144` - canonicalizes legal graph node types.
+
+### Phase 1 Owner-Gated Items
+
+- `tests/test_assess_orchestrator.py::test_missing_rule_fails_closed`: NI/no-rule factual lane currently returns `insufficient_grounding`; changing it to `not_supported` is legal-output status behavior and needs owner approval.
+- `tests/test_brain_outbox.py::test_brain_publishes_assessment_complete_then_worker_processes`: legal-truth validation demotes an uncited/nested-citation patched `"ok"` assessment to `insufficient_grounding`; changing that gate is legal-output/citation-integrity behavior and needs owner approval.
+- `tests/test_integration_tools.py::TestAnonymousFunnel::test_resume_after_login_restores_answers_exactly`: test expects anonymous special-category answers to be restored, but owner decision 2026-06-16 says anonymous flows persist only non-sensitive funnel signals. Changing this needs owner approval.

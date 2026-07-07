@@ -1,0 +1,216 @@
+........................................................................ [  3%]
+.......................................................................s [  7%]
+........................................................................ [ 11%]
+..............F......F................ssssss............................ [ 15%]
+..ssssssss.............................................................. [ 19%]
+........................................................................ [ 22%]
+.............................sssss.sssss................................ [ 26%]
+........................................................................ [ 30%]
+........................................................................ [ 34%]
+........................................................................ [ 38%]
+.....................................ssssssssssssssssssssssss........... [ 42%]
+........................................................................ [ 45%]
+...............................................sss...................... [ 49%]
+..................ssssss................................................ [ 53%]
+........................................................................ [ 57%]
+.............................................................s.......... [ 61%]
+........................................................................ [ 65%]
+............................FF.......................................... [ 68%]
+...........................F............................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 80%]
+........................................................................ [ 84%]
+.....................F.................................................. [ 88%]
+........................................................................ [ 91%]
+.................................s...................................... [ 95%]
+...............................................s........................ [ 99%]
+.........                                                                [100%]
+=================================== FAILURES ===================================
+_____________ TestLegislationTable.test_legislation_has_embeddings _____________
+tests/ingestion/test_ingestion.py:71: in test_legislation_has_embeddings
+    assert embedded == total, f"Only {embedded}/{total} legislation rows have embeddings"
+E   AssertionError: Only 0/84 legislation rows have embeddings
+E   assert 0 == 84
+___________ TestAcasGuidanceTable.test_acas_guidance_has_embeddings ____________
+tests/ingestion/test_ingestion.py:136: in test_acas_guidance_has_embeddings
+    assert embedded == total, f"Only {embedded}/{total} ACAS rows have embeddings"
+E   AssertionError: Only 0/2 ACAS rows have embeddings
+E   assert 0 == 2
+________________________ test_missing_rule_fails_closed ________________________
+tests/test_assess_orchestrator.py:97: in test_missing_rule_fails_closed
+    assert body["status"] == "not_supported"
+E   AssertionError: assert 'insufficient_grounding' == 'not_supported'
+E     
+E     - not_supported
+E     + insufficient_grounding
+------------------------------ Captured log call -------------------------------
+WARNING  backend.core.knowledge_proposer:knowledge_proposer.py:96 Proposal queue unavailable: null value in column "from_ref" of relation "ingestion_proposals" violates not-null constraint
+DETAIL:  Failing row contains (82652afc-7411-447a-84af-4819a124d646, insufficient_grounding, null, null, null, null, llm_extractor, pending, {"gap_type": "insufficient_grounding", "rationale": "Assessment ..., 2026-07-07 18:27:13.637227+00, null, null, pending, llm, pending_review, 6c12ecf8-f039-4cb5-be12-84151c9814f2, null, 2026-07-07 18:27:13.637227+00, null, null, null).
+__________________ test_db_unavailable_fails_closed_not_crash __________________
+tests/test_assess_orchestrator.py:105: in test_db_unavailable_fails_closed_not_crash
+    r = _assess(FACTUAL_Q, {}, jurisdiction="EW")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_assess_orchestrator.py:25: in _assess
+    return client.post("/assess", json={
+/usr/local/lib/python3.12/site-packages/starlette/testclient.py:555: in post
+    return super().post(
+/usr/local/lib/python3.12/site-packages/httpx/_client.py:1144: in post
+    return self.request(
+/usr/local/lib/python3.12/site-packages/starlette/testclient.py:454: in request
+    return super().request(
+/usr/local/lib/python3.12/site-packages/httpx/_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/httpx/_client.py:914: in send
+    response = self._send_handling_auth(
+/usr/local/lib/python3.12/site-packages/httpx/_client.py:942: in _send_handling_auth
+    response = self._send_handling_redirects(
+/usr/local/lib/python3.12/site-packages/httpx/_client.py:979: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/httpx/_client.py:1014: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/starlette/testclient.py:356: in handle_request
+    raise exc
+/usr/local/lib/python3.12/site-packages/starlette/testclient.py:353: in handle_request
+    portal.call(self.app, scope, receive, send)
+/usr/local/lib/python3.12/site-packages/anyio/from_thread.py:338: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/usr/local/lib/python3.12/site-packages/anyio/from_thread.py:263: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/starlette/applications.py:90: in __call__
+    await self.middleware_stack(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+/usr/local/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+backend/core/otel.py:126: in __call__
+    await self.app(scope, receive, _send)
+/usr/local/lib/python3.12/site-packages/starlette/middleware/base.py:193: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/api/main.py:188: in _auth_cookie_to_bearer
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/starlette/middleware/base.py:168: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+/usr/local/lib/python3.12/site-packages/starlette/middleware/base.py:144: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+/usr/local/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/usr/local/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/starlette/routing.py:660: in __call__
+    await self.middleware_stack(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/fastapi/routing.py:2683: in app
+    await route.handle(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/fastapi/routing.py:1266: in handle
+    await super().handle(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/starlette/routing.py:276: in handle
+    await self.app(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/fastapi/routing.py:150: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/usr/local/lib/python3.12/site-packages/fastapi/routing.py:136: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/fastapi/routing.py:690: in app
+    raw_response = await run_endpoint_function(
+/usr/local/lib/python3.12/site-packages/fastapi/routing.py:346: in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/anyio/to_thread.py:63: in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2596: in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1029: in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/site-packages/slowapi/extension.py:770: in sync_wrapper
+    response = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+backend/api/main.py:715: in assess_endpoint
+    out = MotherController().process(
+backend/core/control_plane/mother_controller.py:112: in process
+    result = self.router.assess_factual(
+backend/core/control_plane/reasoning_router.py:59: in assess_factual
+    rules = retrieve_rules(claim, jurisdiction, date.today(), domain=domain_code)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/core/retrieve.py:120: in retrieve_rules
+    conn = get_connection()
+           ^^^^^^^^^^^^^^^^
+tests/test_assess_orchestrator.py:102: in boom
+    raise RuntimeError("db unavailable")
+E   RuntimeError: db unavailable
+________ test_brain_publishes_assessment_complete_then_worker_processes ________
+tests/test_brain_outbox.py:134: in test_brain_publishes_assessment_complete_then_worker_processes
+    assert result["assessment"]["status"] == "ok"
+E   AssertionError: assert 'insufficient_grounding' == 'ok'
+E     
+E     - ok
+E     + insufficient_grounding
+------------------------------ Captured log call -------------------------------
+WARNING  backend.core.agents.registry:registry.py:124 DeadlineAgent error: 'str' object has no attribute 'month'
+WARNING  backend.core.brain:brain.py:950 Legal truth validation skipped: null value in column "from_ref" of relation "ingestion_proposals" violates not-null constraint
+DETAIL:  Failing row contains (89f65fad-0542-40b6-b3a9-f5410d8e8208, missing_provision, null, null, null, null, llm_extractor, pending, {"gaps": ["missing_citations", "missing_rule"], "gap_type": "mis..., 2026-07-07 18:27:26.461184+00, null, null, pending, llm, pending_review, c916ad14-e704-4df4-b4fd-f2f3ce474b8d, null, 2026-07-07 18:27:26.461184+00, null, null, null).
+_____ TestAnonymousFunnel.test_resume_after_login_restores_answers_exactly _____
+tests/test_integration_tools.py:104: in test_resume_after_login_restores_answers_exactly
+    assert body["answers"] == _ANSWERS
+E   AssertionError: assert {} == {'what_happen...': 'Acme Ltd'}
+E     
+E     Right contains 4 more items:
+E     {'dismissal_date': '2026-05-20',
+E      'employer': 'Acme Ltd',
+E      'employment_start': '2021-03-01',
+E      'what_happened': 'I was dismissed without warning after raising a safety '
+E                       'concern.'}
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+backend/core/models.py:662
+  /app/backend/core/models.py:662: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OAuthToken(BaseModel):
+
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_blocks_wrong_user
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_allows_correct_user
+  /usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_blocks_wrong_user
+tests/user_isolation/test_user_isolation.py::TestRequireCaseOwnerDependency::test_dependency_allows_correct_user
+  /usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/ingestion/test_ingestion.py::TestLegislationTable::test_legislation_has_embeddings
+FAILED tests/ingestion/test_ingestion.py::TestAcasGuidanceTable::test_acas_guidance_has_embeddings
+FAILED tests/test_assess_orchestrator.py::test_missing_rule_fails_closed - As...
+FAILED tests/test_assess_orchestrator.py::test_db_unavailable_fails_closed_not_crash
+FAILED tests/test_brain_outbox.py::test_brain_publishes_assessment_complete_then_worker_processes
+FAILED tests/test_integration_tools.py::TestAnonymousFunnel::test_resume_after_login_restores_answers_exactly
+6 failed, 1814 passed, 61 skipped, 6 warnings in 380.31s (0:06:20)
