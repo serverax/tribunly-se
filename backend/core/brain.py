@@ -47,6 +47,8 @@ from typing import Any, Optional
 
 from backend.domains.constants import DOMAIN_DEFAULT
 
+logger = logging.getLogger(__name__)
+
 
 # ── Step definitions (immutable  -  used in trace output) ─────────────────────
 # 19 steps as per PHASE 1 Brain Algorithm specification.
