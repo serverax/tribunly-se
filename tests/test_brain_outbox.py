@@ -111,12 +111,38 @@ def test_brain_publishes_assessment_complete_then_worker_processes(monkeypatch, 
     def _fake_assess(message, facts, model=None, jurisdiction="EW", graph_context=None, **kwargs):
         return {
             "status": "ok",
-            "assessment": {
-                "verdict": "likely_eligible",
-                "citations": [
-                    {"source_id": "ERA1996_s94", "quote": "right not to be unfairly dismissed"}
-                ],
+            "claim_type": "unfair_dismissal",
+            "jurisdiction": jurisdiction,
+            "reasoning_summary": "Grounded test fixture with verified unfair dismissal authorities.",
+            "recommended_next_step": "prepare_documents",
+            "key_weaknesses": [
+                "Procedural fairness remains fact-sensitive."
+            ],
+            "citations": [
+                {
+                    "cite": "Employment Rights Act 1996 s.94",
+                    "type": "legislation",
+                    "url": "https://www.legislation.gov.uk/ukpga/1996/18/section/94",
+                },
+                {
+                    "cite": "Employment Rights Act 1996 s.98",
+                    "type": "legislation",
+                    "url": "https://www.legislation.gov.uk/ukpga/1996/18/section/98",
+                },
+            ],
+            "deadline": {
+                "limitation_date": "2026-12-31",
+                "source": "rules",
+                "authority": "ERA 1996 s.111(2)",
             },
+            "deadline_info": {
+                "limitation_date": "2026-12-31",
+                "source": "rules",
+                "authority": "ERA 1996 s.111(2)",
+            },
+            "insufficient_grounding": False,
+            "fallback_used": False,
+            "source": "model_cited",
         }
 
     monkeypatch.setattr("backend.core.pipeline.assess", _fake_assess)
