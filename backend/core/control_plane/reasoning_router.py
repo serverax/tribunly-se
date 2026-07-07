@@ -70,10 +70,10 @@ class ReasoningRouter:
         if not rules:
             return {
                 **base,
-                "status": "insufficient_grounding",
+                "status": "not_supported",
                 "claim_type": claim,
                 "citations": [],
-                "reason": "required rule missing  -  fail closed",
+                "reason": "no verified rules for this jurisdiction  -  fail closed",
             }
         citations = [
             {
