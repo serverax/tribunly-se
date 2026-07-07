@@ -56,7 +56,17 @@ class ReasoningRouter:
         if not getattr(c, "in_scope", True):
             return {**base, "status": "not_supported", "message": "Out of scope for this system  -  no guess."}
         claim = getattr(c, "matter_type", None) or "unfair_dismissal"
-        rules = retrieve_rules(claim, jurisdiction, date.today(), domain=domain_code)
+        try:
+            rules = retrieve_rules(claim, jurisdiction, date.today(), domain=domain_code)
+        except Exception as exc:
+            logger.warning("Factual rules lookup failed closed: %s", exc)
+            return {
+                **base,
+                "status": "not_supported",
+                "claim_type": claim,
+                "citations": [],
+                "reason": "rules lookup unavailable  -  fail closed",
+            }
         if not rules:
             return {
                 **base,

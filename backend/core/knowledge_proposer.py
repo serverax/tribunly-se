@@ -71,10 +71,12 @@ def propose_ingestion(
                     """
                     INSERT INTO knowledge.ingestion_proposals (
                         id, proposed_by, proposal_type, payload,
-                        source_verification_status, approval_status, trace_id
+                        source_verification_status, approval_status, trace_id,
+                        from_ref, to_ref, relationship_type
                     ) VALUES (
                         %s::uuid, 'llm', %s, %s::jsonb,
-                        'pending_review', 'pending', %s
+                        'pending_review', 'pending', %s,
+                        %s, %s, %s
                     )
                     RETURNING id
                     """,
@@ -83,6 +85,9 @@ def propose_ingestion(
                         gap_type,
                         json.dumps(merged_payload),
                         trace_id,
+                        authority_ref,
+                        f"{gap_type}:review",
+                        "proposes_ingestion",
                     ),
                 )
                 row = cur.fetchone()
@@ -135,10 +140,12 @@ def propose_knowledge_gap(
                 """
                 INSERT INTO knowledge.ingestion_proposals (
                     id, proposed_by, proposal_type, payload,
-                    source_verification_status, approval_status, trace_id
+                    source_verification_status, approval_status, trace_id,
+                    from_ref, to_ref, relationship_type
                 ) VALUES (
                     %s::uuid, %s, %s, %s::jsonb,
-                    'pending_review', 'pending', %s
+                    'pending_review', 'pending', %s,
+                    %s, %s, %s
                 )
                 RETURNING id, proposed_by, proposal_type, payload,
                           source_verification_status, approval_status, trace_id, created_at
@@ -149,6 +156,9 @@ def propose_knowledge_gap(
                     gap_type,
                     json.dumps(merged_payload),
                     trace_id,
+                    f"{gap_type}:detected",
+                    f"{gap_type}:review",
+                    "proposes_ingestion",
                 ),
             )
             row = cur.fetchone()
