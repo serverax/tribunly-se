@@ -11,6 +11,6 @@ PASS: payment_sessions required columns present
 PASS: rules required columns present
 PASS: users required columns present
 PASS: employment_modules has 24 rows
-INFO: _migrations rows: 62
+INFO: _migrations rows: 75
 
 SCHEMA READINESS: PASS

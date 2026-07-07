@@ -6,6 +6,10 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_status text NOT NULL DEF
 
 ALTER TABLE documents ADD COLUMN IF NOT EXISTS user_id uuid REFERENCES users(id) ON DELETE CASCADE;
 
+CREATE TABLE IF NOT EXISTS audit_events (
+    id bigserial PRIMARY KEY
+);
+
 ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS user_id uuid REFERENCES users(id) ON DELETE SET NULL;
 ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS action text;
 ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS resource_type text;
