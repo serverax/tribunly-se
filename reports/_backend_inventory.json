@@ -1,0 +1,1428 @@
+{
+  "routes": [
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_cases_auth_gate",
+      "method": "GET",
+      "path": "/api/cases",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "register",
+      "method": "POST",
+      "path": "/auth/register",
+      "test_refs": 10
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "login_for_token",
+      "method": "POST",
+      "path": "/auth/token",
+      "test_refs": 6
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_me",
+      "method": "GET",
+      "path": "/auth/me",
+      "test_refs": 4
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "livez",
+      "method": "GET",
+      "path": "/livez",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "freshness",
+      "method": "GET",
+      "path": "/freshness",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_rules",
+      "method": "GET",
+      "path": "/rules/{claim_type}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "assess_endpoint",
+      "method": "POST",
+      "path": "/assess",
+      "test_refs": 29
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "diagnosis_endpoint",
+      "method": "POST",
+      "path": "/api/diagnosis",
+      "test_refs": 2
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "generate_document",
+      "method": "POST",
+      "path": "/documents/generate",
+      "test_refs": 57
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "workflow_diagnosis",
+      "method": "POST",
+      "path": "/api/workflow/diagnosis",
+      "test_refs": 4
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "workflow_payment_create",
+      "method": "POST",
+      "path": "/api/workflow/payment/create",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "workflow_payment_confirm",
+      "method": "POST",
+      "path": "/api/workflow/payment/confirm",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "workflow_documents_generate",
+      "method": "POST",
+      "path": "/api/workflow/documents/generate",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "save_case",
+      "method": "POST",
+      "path": "/cases",
+      "test_refs": 32
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "complete_onboarding",
+      "method": "POST",
+      "path": "/onboarding/complete",
+      "test_refs": 13
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "onboarding_status",
+      "method": "GET",
+      "path": "/onboarding/status",
+      "test_refs": 4
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "list_cases",
+      "method": "GET",
+      "path": "/cases",
+      "test_refs": 32
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_case",
+      "method": "GET",
+      "path": "/cases/{case_id}",
+      "test_refs": 23
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "capture_handoff_lead",
+      "method": "POST",
+      "path": "/handoff/leads",
+      "test_refs": 17
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_case_deadline",
+      "method": "GET",
+      "path": "/cases/{case_id}/deadline",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "create_reminder",
+      "method": "POST",
+      "path": "/cases/{case_id}/reminders",
+      "test_refs": 6
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "list_reminders",
+      "method": "GET",
+      "path": "/cases/{case_id}/reminders",
+      "test_refs": 6
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "upload_document",
+      "method": "POST",
+      "path": "/cases/{case_id}/uploads",
+      "test_refs": 13
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "list_uploads",
+      "method": "GET",
+      "path": "/cases/{case_id}/uploads",
+      "test_refs": 13
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "extract_document",
+      "method": "POST",
+      "path": "/cases/{case_id}/uploads/{upload_id}/extract",
+      "test_refs": 17
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "update_extracted_facts",
+      "method": "PATCH",
+      "path": "/cases/{case_id}/uploads/{upload_id}/facts",
+      "test_refs": 8
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "apply_confirmed_facts",
+      "method": "POST",
+      "path": "/cases/{case_id}/uploads/{upload_id}/apply-confirmed",
+      "test_refs": 2
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "preview_bundle",
+      "method": "POST",
+      "path": "/cases/{case_id}/bundle/preview",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "generate_bundle",
+      "method": "POST",
+      "path": "/cases/{case_id}/bundle/generate",
+      "test_refs": 13
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_bundle_status",
+      "method": "GET",
+      "path": "/cases/{case_id}/bundle",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "record_funnel_event",
+      "method": "POST",
+      "path": "/funnel/events",
+      "test_refs": 6
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "list_funnel_events",
+      "method": "GET",
+      "path": "/cases/{case_id}/funnel",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_dp_report",
+      "method": "GET",
+      "path": "/admin/dp-report",
+      "test_refs": 13
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_rules_verification",
+      "method": "GET",
+      "path": "/admin/rules-verification",
+      "test_refs": 6
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_production_readiness",
+      "method": "GET",
+      "path": "/admin/production-readiness",
+      "test_refs": 55
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_compliance_status",
+      "method": "GET",
+      "path": "/admin/compliance-status",
+      "test_refs": 9
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_timeline",
+      "method": "GET",
+      "path": "/cases/{case_id}/timeline",
+      "test_refs": 13
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "create_timeline_event",
+      "method": "POST",
+      "path": "/cases/{case_id}/timeline/events",
+      "test_refs": 2
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "update_timeline_event",
+      "method": "PATCH",
+      "path": "/cases/{case_id}/timeline/events/{event_id}",
+      "test_refs": 1
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_escalation",
+      "method": "GET",
+      "path": "/cases/{case_id}/escalation",
+      "test_refs": 6
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "delete_case",
+      "method": "DELETE",
+      "path": "/cases/{case_id}",
+      "test_refs": 23
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "delete_handoff_lead",
+      "method": "DELETE",
+      "path": "/handoff/leads/{lead_id}",
+      "test_refs": 1
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "brain_trace",
+      "method": "POST",
+      "path": "/api/brain/trace",
+      "test_refs": 1
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_constructive_dismissal",
+      "method": "POST",
+      "path": "/api/workflows/constructive-dismissal",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "list_agents",
+      "method": "GET",
+      "path": "/api/agents",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "create_payment_session",
+      "method": "POST",
+      "path": "/api/payment/create-session",
+      "test_refs": 6
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_payment_status",
+      "method": "GET",
+      "path": "/api/payment/status",
+      "test_refs": 4
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_route_agent",
+      "method": "POST",
+      "path": "/api/test/route-agent",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_hybrid_search",
+      "method": "POST",
+      "path": "/api/test/hybrid-search",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_legal_graph",
+      "method": "POST",
+      "path": "/api/test/legal-graph",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "kg_entity_lookup",
+      "method": "POST",
+      "path": "/api/kg/entity",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_evaluate",
+      "method": "POST",
+      "path": "/api/test/evaluate",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_router",
+      "method": "POST",
+      "path": "/api/test/router",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_cache",
+      "method": "POST",
+      "path": "/api/test/cache",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "memory_save",
+      "method": "POST",
+      "path": "/api/test/memory/save",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "memory_get",
+      "method": "POST",
+      "path": "/api/test/memory/get",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_citation_verify",
+      "method": "POST",
+      "path": "/api/test/citation-verify",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_conflict_detect",
+      "method": "POST",
+      "path": "/api/test/conflict-detect",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "debug_agents",
+      "method": "GET",
+      "path": "/api/debug/agents",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "debug_mcp_tools",
+      "method": "GET",
+      "path": "/api/debug/mcp-tools",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_mcp_call",
+      "method": "POST",
+      "path": "/api/test/mcp-call",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "context_compress",
+      "method": "POST",
+      "path": "/api/context/compress",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "security_cross_user_test",
+      "method": "GET",
+      "path": "/api/security/cross-user-test",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "get_retention_status",
+      "method": "GET",
+      "path": "/admin/retention-status",
+      "test_refs": 2
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_router_test",
+      "method": "POST",
+      "path": "/api/router/test",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_rag_hybrid_search",
+      "method": "POST",
+      "path": "/api/rag/hybrid-search",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_rag_graph",
+      "method": "POST",
+      "path": "/api/rag/graph",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_memory_save",
+      "method": "POST",
+      "path": "/api/memory/save",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_memory_get",
+      "method": "POST",
+      "path": "/api/memory/get",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_evaluate",
+      "method": "POST",
+      "path": "/api/evaluate",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_mcp_tools",
+      "method": "GET",
+      "path": "/api/mcp/tools",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_cache_test",
+      "method": "POST",
+      "path": "/api/cache/test",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_documents_upload",
+      "method": "POST",
+      "path": "/api/documents/upload",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_documents_facts",
+      "method": "POST",
+      "path": "/api/documents/facts",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_wasm_deadline",
+      "method": "POST",
+      "path": "/api/test/wasm-deadline",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "test_ollama_smoke",
+      "method": "POST",
+      "path": "/api/test/ollama-smoke",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_sources_freshness",
+      "method": "GET",
+      "path": "/api/sources/freshness",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_get_rules",
+      "method": "GET",
+      "path": "/api/rules/{claim_type}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_deadline_calculate",
+      "method": "POST",
+      "path": "/api/deadline/calculate",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_deadline_calc_alias",
+      "method": "POST",
+      "path": "/api/deadline/calc",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_payment_webhook",
+      "method": "POST",
+      "path": "/api/payment/webhook",
+      "test_refs": 7
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_document_download",
+      "method": "GET",
+      "path": "/api/documents/{document_id}/download",
+      "test_refs": 2
+    },
+    {
+      "file": "backend/api/main.py",
+      "handler": "api_list_case_documents",
+      "method": "GET",
+      "path": "/api/cases/{case_id}/documents",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "ready",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "get_admin_dashboard",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "get_module_coverage",
+      "method": "GET",
+      "path": "/api/admin/module-coverage",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "admin_list_ingestion_proposals",
+      "method": "GET",
+      "path": "/api/admin/ingestion-proposals",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "admin_approve_ingestion_proposal",
+      "method": "POST",
+      "path": "/api/admin/ingestion-proposals/{proposal_id}/approve",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "admin_list_cases",
+      "method": "GET",
+      "path": "/admin/cases",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "admin_list_ai_logs",
+      "method": "GET",
+      "path": "/admin/ai-logs",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "admin_list_users",
+      "method": "GET",
+      "path": "/admin/users",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "admin_system_health",
+      "method": "GET",
+      "path": "/admin/system-health",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-admin-service/main.py",
+      "handler": "admin_compliance",
+      "method": "GET",
+      "path": "/admin/compliance",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-audit-service/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-audit-service/main.py",
+      "handler": "readiness",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-audit-service/main.py",
+      "handler": "log_audit",
+      "method": "POST",
+      "path": "/api/audit/log",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-audit-service/main.py",
+      "handler": "get_audit_trace",
+      "method": "GET",
+      "path": "/api/audit/trace/{trace_id}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-audit-service/main.py",
+      "handler": "get_user_audit",
+      "method": "GET",
+      "path": "/api/audit/user/{user_id}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-case-service/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-case-service/main.py",
+      "handler": "ready",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-case-service/main.py",
+      "handler": "get_case_timeline",
+      "method": "GET",
+      "path": "/api/cases/{case_id}/timeline",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-case-service/main.py",
+      "handler": "get_case_detail",
+      "method": "GET",
+      "path": "/api/cases/{case_id}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-case-service/main.py",
+      "handler": "create_case_event",
+      "method": "POST",
+      "path": "/api/cases/{case_id}/events",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-citation-guard/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-citation-guard/main.py",
+      "handler": "ready",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-citation-guard/main.py",
+      "handler": "validate_answer",
+      "method": "POST",
+      "path": "/api/citation/validate",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-graph-rag-service/main.py",
+      "handler": "health_check",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-graph-rag-service/main.py",
+      "handler": "readiness_check",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-graph-rag-service/main.py",
+      "handler": "graphrag_traverse",
+      "method": "POST",
+      "path": "/api/graphrag/traverse",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-graph-rag-service/main.py",
+      "handler": "graph_search",
+      "method": "POST",
+      "path": "/api/graph/search",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-graph-rag-service/main.py",
+      "handler": "get_requirements",
+      "method": "GET",
+      "path": "/api/graphrag/requirements/{claim_type}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-graph-rag-service/main.py",
+      "handler": "get_remedies",
+      "method": "GET",
+      "path": "/api/graphrag/remedies/{claim_type}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-graph-rag-service/main.py",
+      "handler": "get_deadlines",
+      "method": "GET",
+      "path": "/api/graphrag/deadlines/{claim_type}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-notification-service/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-notification-service/main.py",
+      "handler": "ready",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-notification-service/main.py",
+      "handler": "create_notification",
+      "method": "POST",
+      "path": "/api/notifications/create",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-notification-service/main.py",
+      "handler": "send_email_notification",
+      "method": "POST",
+      "path": "/api/notifications/send-email",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-notification-service/main.py",
+      "handler": "list_notifications",
+      "method": "GET",
+      "path": "/api/notifications",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-notification-service/main.py",
+      "handler": "mark_notification_read",
+      "method": "POST",
+      "path": "/api/notifications/{notification_id}/read",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-notification-service/main.py",
+      "handler": "notify_partner_referral",
+      "method": "POST",
+      "path": "/api/notifications/partner-referral",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-notification-service/main.py",
+      "handler": "check_queue_status",
+      "method": "GET",
+      "path": "/api/notifications/debug/queue-status",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-rag-service/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-rag-service/main.py",
+      "handler": "ready",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-rag-service/main.py",
+      "handler": "hybrid_search",
+      "method": "POST",
+      "path": "/api/rag/search",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-redaction-service/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-redaction-service/main.py",
+      "handler": "readiness",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-redaction-service/main.py",
+      "handler": "redact",
+      "method": "POST",
+      "path": "/api/redact",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-redaction-service/main.py",
+      "handler": "validate_redaction",
+      "method": "POST",
+      "path": "/api/validate_redaction",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-rules-service/main.py",
+      "handler": "health",
+      "method": "GET",
+      "path": "/health",
+      "test_refs": 33
+    },
+    {
+      "file": "backend/services/lawapp-rules-service/main.py",
+      "handler": "ready",
+      "method": "GET",
+      "path": "/ready",
+      "test_refs": 3
+    },
+    {
+      "file": "backend/services/lawapp-rules-service/main.py",
+      "handler": "get_rule",
+      "method": "GET",
+      "path": "/api/rules/{domain}/{module}/{rule_key}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-rules-service/main.py",
+      "handler": "list_rules",
+      "method": "GET",
+      "path": "/api/rules/list",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/services/lawapp-rules-service/main.py",
+      "handler": "validate_rules",
+      "method": "GET",
+      "path": "/api/rules/validate/{domain}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/admin_workspace_routes.py",
+      "handler": "admin_cases",
+      "method": "GET",
+      "path": "/admin/cases",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/admin_workspace_routes.py",
+      "handler": "admin_ai_logs",
+      "method": "GET",
+      "path": "/admin/ai-logs",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/admin_workspace_routes.py",
+      "handler": "admin_users",
+      "method": "GET",
+      "path": "/admin/users",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/admin_workspace_routes.py",
+      "handler": "admin_system_health",
+      "method": "GET",
+      "path": "/admin/system-health",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/admin_workspace_routes.py",
+      "handler": "admin_compliance",
+      "method": "GET",
+      "path": "/admin/compliance",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "register",
+      "method": "POST",
+      "path": "/register",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "login",
+      "method": "POST",
+      "path": "/login",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "logout",
+      "method": "POST",
+      "path": "/logout",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "magic_link",
+      "method": "POST",
+      "path": "/magic-link",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "providers",
+      "method": "GET",
+      "path": "/providers",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "google",
+      "method": "POST",
+      "path": "/google",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "microsoft",
+      "method": "POST",
+      "path": "/microsoft",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "apple",
+      "method": "POST",
+      "path": "/apple",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "linkedin",
+      "method": "POST",
+      "path": "/linkedin",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "refresh",
+      "method": "POST",
+      "path": "/refresh",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "me",
+      "method": "GET",
+      "path": "/me",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "verify_email",
+      "method": "POST",
+      "path": "/verify-email",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/auth_routes.py",
+      "handler": "password_reset",
+      "method": "POST",
+      "path": "/password-reset",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/document_routes.py",
+      "handler": "generate_document",
+      "method": "POST",
+      "path": "/generate",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/document_routes.py",
+      "handler": "download_document",
+      "method": "GET",
+      "path": "/{document_id}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/domain_routes.py",
+      "handler": "list_domain_packs_endpoint",
+      "method": "GET",
+      "path": "",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/domain_routes.py",
+      "handler": "get_domain_pack_endpoint",
+      "method": "GET",
+      "path": "/{code}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "knowledge_modules",
+      "method": "GET",
+      "path": "/knowledge/modules",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "knowledge_module_detail",
+      "method": "GET",
+      "path": "/knowledge/modules/{module_key}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "document_decode",
+      "method": "POST",
+      "path": "/document-decode",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "claim_assessment",
+      "method": "POST",
+      "path": "/claim-assessment",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "create_matter",
+      "method": "POST",
+      "path": "/matter",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "matter_hub",
+      "method": "GET",
+      "path": "/matter/{matter_id}/hub",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "save_deadlines",
+      "method": "POST",
+      "path": "/matter/{matter_id}/deadlines",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "save_valuation",
+      "method": "POST",
+      "path": "/matter/{matter_id}/valuation",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "create_referral",
+      "method": "POST",
+      "path": "/matter/{matter_id}/referral",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/features_routes.py",
+      "handler": "strength_preview",
+      "method": "POST",
+      "path": "/strength",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/feedback_routes.py",
+      "handler": "submit_feedback",
+      "method": "POST",
+      "path": "/feedback",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/feedback_routes.py",
+      "handler": "submit_outcome_feedback",
+      "method": "POST",
+      "path": "/feedback/outcome",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/i18n_routes.py",
+      "handler": "list_locales",
+      "method": "GET",
+      "path": "/locales",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/i18n_routes.py",
+      "handler": "detect_locale",
+      "method": "POST",
+      "path": "/detect",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/i18n_routes.py",
+      "handler": "render_assessment_route",
+      "method": "POST",
+      "path": "/render",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/i18n_routes.py",
+      "handler": "get_native_prompts",
+      "method": "GET",
+      "path": "/prompts/{locale}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/i18n_routes.py",
+      "handler": "get_locale",
+      "method": "GET",
+      "path": "/locale",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/i18n_routes.py",
+      "handler": "set_locale",
+      "method": "POST",
+      "path": "/locale",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/ingestion_proposal_routes.py",
+      "handler": "get_ingestion_proposals",
+      "method": "GET",
+      "path": "/ingestion-proposals",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/ingestion_proposal_routes.py",
+      "handler": "post_approve_ingestion_proposal",
+      "method": "POST",
+      "path": "/ingestion-proposals/{proposal_id}/approve",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/login_gate_routes.py",
+      "handler": "teaser",
+      "method": "POST",
+      "path": "/teaser",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/login_gate_routes.py",
+      "handler": "full_result",
+      "method": "POST",
+      "path": "/full-result",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/login_gate_routes.py",
+      "handler": "resume",
+      "method": "POST",
+      "path": "/resume",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/payment_routes.py",
+      "handler": "create_payment_session",
+      "method": "POST",
+      "path": "/create-session",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/payment_routes.py",
+      "handler": "confirm_test_payment",
+      "method": "POST",
+      "path": "/confirm-test",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/payment_routes.py",
+      "handler": "stripe_webhook",
+      "method": "POST",
+      "path": "/webhook",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/payment_routes.py",
+      "handler": "get_payment_status",
+      "method": "GET",
+      "path": "/status/{case_id}",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/reasoning_routes.py",
+      "handler": "reasoning_route",
+      "method": "POST",
+      "path": "/reasoning/route",
+      "test_refs": 2
+    },
+    {
+      "file": "backend/api/reasoning_routes.py",
+      "handler": "reasoning_stream",
+      "method": "POST",
+      "path": "/reasoning/stream",
+      "test_refs": 4
+    },
+    {
+      "file": "backend/api/sovereign_routes.py",
+      "handler": "ingest",
+      "method": "POST",
+      "path": "/api/v1/lawapp/ingest",
+      "test_refs": 1
+    },
+    {
+      "file": "backend/api/sovereign_routes.py",
+      "handler": "query",
+      "method": "POST",
+      "path": "/api/v1/lawapp/query",
+      "test_refs": 2
+    },
+    {
+      "file": "backend/api/tools_routes.py",
+      "handler": "claim_checker",
+      "method": "POST",
+      "path": "/claim-checker",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/tools_routes.py",
+      "handler": "deadline_calculator",
+      "method": "POST",
+      "path": "/deadline-calculator",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/tools_routes.py",
+      "handler": "compensation_estimate",
+      "method": "POST",
+      "path": "/compensation-estimate",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/tools_routes.py",
+      "handler": "acas_prep",
+      "method": "POST",
+      "path": "/acas-prep",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/upload_routes.py",
+      "handler": "upload_document",
+      "method": "POST",
+      "path": "/upload",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/upload_routes.py",
+      "handler": "confirm_upload_facts",
+      "method": "POST",
+      "path": "/{file_id}/confirm-facts",
+      "test_refs": 0
+    },
+    {
+      "file": "backend/api/upload_routes.py",
+      "handler": "get_upload_status",
+      "method": "GET",
+      "path": "/status/{file_id}",
+      "test_refs": 0
+    }
+  ],
+  "services": [
+    {
+      "service": "lawapp-admin-service",
+      "has_main": true,
+      "route_count": 11
+    },
+    {
+      "service": "lawapp-audit-service",
+      "has_main": true,
+      "route_count": 5
+    },
+    {
+      "service": "lawapp-case-service",
+      "has_main": true,
+      "route_count": 5
+    },
+    {
+      "service": "lawapp-citation-guard",
+      "has_main": true,
+      "route_count": 3
+    },
+    {
+      "service": "lawapp-graph-rag-service",
+      "has_main": true,
+      "route_count": 7
+    },
+    {
+      "service": "lawapp-ingestion-worker",
+      "has_main": false,
+      "route_count": 0
+    },
+    {
+      "service": "lawapp-notification-service",
+      "has_main": true,
+      "route_count": 8
+    },
+    {
+      "service": "lawapp-rag-service",
+      "has_main": true,
+      "route_count": 3
+    },
+    {
+      "service": "lawapp-redaction-service",
+      "has_main": true,
+      "route_count": 4
+    },
+    {
+      "service": "lawapp-rules-service",
+      "has_main": true,
+      "route_count": 5
+    }
+  ]
+}
