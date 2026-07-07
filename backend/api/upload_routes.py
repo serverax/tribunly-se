@@ -36,7 +36,26 @@ from ingestion.db import get_connection
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/uploads", tags=["uploads"])
+def _uploads_enabled_for_env() -> bool:
+    explicit = os.getenv("LAWAPP_ENABLE_API_UPLOADS", "").strip().lower()
+    if explicit in {"1", "true", "yes", "on"}:
+        return True
+    if explicit in {"0", "false", "no", "off"}:
+        return False
+    env = os.getenv("ENVIRONMENT", "development").strip().lower()
+    return env not in {"beta", "controlled_beta"}
+
+
+def _require_uploads_enabled() -> None:
+    if not _uploads_enabled_for_env():
+        raise HTTPException(status_code=404, detail="Not found")
+
+
+router = APIRouter(
+    prefix="/api/uploads",
+    tags=["uploads"],
+    dependencies=[Depends(_require_uploads_enabled)],
+)
 
 # ── Models ────────────────────────────────────────────────────────────────────
 
