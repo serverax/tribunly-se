@@ -1,3 +1,5 @@
+> SUPERSEDED - see docs/handoff/LAWAPP_CURRENT_STATE.md. Do not act on this document.
+
 # LAWAPP PROJECT HANDOFF
 
 ## Vision

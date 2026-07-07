@@ -1,3 +1,5 @@
+> SUPERSEDED - see docs/handoff/LAWAPP_CURRENT_STATE.md. Do not act on this document.
+
 # 08 - Unfair Dismissal `rules` Seed Specification
 
 **Type:** Specification document. Not code. Not Phase 1 build artefact.

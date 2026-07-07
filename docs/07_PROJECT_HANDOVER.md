@@ -1,3 +1,5 @@
+> SUPERSEDED - see docs/handoff/LAWAPP_CURRENT_STATE.md. Do not act on this document.
+
 > **STALE  -  HISTORICAL ONLY (banner added 2026-06-10).** This document predates the current release state. The active source of truth is [docs/GO_LIVE_HANDOFF_2026-06-10.md](../docs/GO_LIVE_HANDOFF_2026-06-10.md) and branch `release/lawapp-clean-snapshot`. Do not use this file for release decisions.
 
 # PROJECT HANDOVER - UK Employment Claim Co-Pilot
