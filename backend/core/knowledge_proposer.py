@@ -255,6 +255,15 @@ def approve_proposal(proposal_id: str, *, reviewed_by: str = "admin") -> dict:
                     json.dumps({"proposal_id": proposal_id, "proposal_type": row[1]}),
                 ),
             )
+            from backend.core.outbox import publish
+
+            publish(
+                "ingestion_proposal_approved",
+                {"proposal_id": proposal_id, "proposal_type": row[1]},
+                trace_id=None,
+                idempotency_key=f"ingestion_proposal_approved:{proposal_id}",
+                conn=conn,
+            )
         conn.commit()
         return {"ok": True, "proposal_id": proposal_id, "ingestion_job_id": job_id}
     except Exception as exc:
