@@ -1728,6 +1728,21 @@ _VALID_TRIGGER_REASONS = {
 }
 
 
+def _handoff_enabled_for_env() -> bool:
+    explicit = _os.getenv("LAWAPP_ENABLE_HANDOFF_LEADS", "").strip().lower()
+    if explicit in {"1", "true", "yes", "on"}:
+        return True
+    if explicit in {"0", "false", "no", "off"}:
+        return False
+    env = _os.getenv("ENVIRONMENT", "development").strip().lower()
+    return env not in {"beta", "controlled_beta"}
+
+
+def _require_handoff_enabled() -> None:
+    if not _handoff_enabled_for_env():
+        raise HTTPException(status_code=404, detail="Not found")
+
+
 class HandoffLeadRequest(BaseModel):
     case_id: Optional[str] = None
     trigger_reason: str
@@ -1755,6 +1770,7 @@ def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
     GUARDRAIL: no representation or filing implied.
     GUARDRAIL: clearly free to the user (no charge for submitting).
     """
+    _require_handoff_enabled()
     if not req.consent_given:
         raise HTTPException(
             status_code=422,
