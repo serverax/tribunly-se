@@ -125,9 +125,24 @@ class MotherController:
             return MotherOutput(result=result, stages=stages, governance_verdict=gov.verdict, trace_id=trace_id)
 
         # Retrieve + swarm agents
-        router_out = self.router.route_and_retrieve(
-            inp.query, inp.facts, inp.jurisdiction, domain=domain_code,
-        )
+        try:
+            router_out = self.router.route_and_retrieve(
+                inp.query, inp.facts, inp.jurisdiction, domain=domain_code,
+            )
+        except Exception as exc:
+            logger.warning("Retrieval temporarily unavailable: %s", exc)
+            stages.append({"stage": "retrieve", "status": "error", "detail": str(exc)})
+            blocked = {
+                "status": "temporarily_unavailable",
+                "message": "Assessment is temporarily unavailable. Please try again.",
+                "in_scope": True,
+                "jurisdiction": inp.jurisdiction,
+                "domain_code": domain_code,
+                "insufficient_grounding": True,
+                "citations": [],
+                "retryable": True,
+            }
+            return MotherOutput(result=blocked, stages=stages, governance_verdict="FAIL", trace_id=trace_id)
         bundle = router_out.get("bundle")
         stages.append({
             "stage": "retrieve",
