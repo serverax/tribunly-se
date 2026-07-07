@@ -1,0 +1,1028 @@
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   assert 503 == 201
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "handoff_leads" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "graph_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "graph_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "graph_edges" does not exist
+E   assert False
+WARNING  backend.core.auth.service:service.py:491 magic link issue failed: UndefinedTable
+    raise AssertionError(f"No email with subject containing {subject_contains!r} in outbox")
+E   AssertionError: No email with subject containing 'sign-in' in outbox
+WARNING  backend.core.auth.service:service.py:491 magic link issue failed: UndefinedTable
+E   AssertionError: assert 500 == 400
+ERROR    backend.core.auth.service:service.py:525 magic link consume failed: UndefinedTable
+E   psycopg2.errors.UndefinedTable: relation "auth_events" does not exist
+WARNING  backend.core.auth.service:service.py:491 magic link issue failed: UndefinedTable
+E   AssertionError: {"detail":"OAuth sign-in failed."}
+E   assert 500 == 200
+ERROR    backend.core.auth.service:service.py:725 oauth login failed: UndefinedTable
+E   AssertionError: {"detail":"OAuth sign-in failed."}
+E   assert 500 == 200
+ERROR    backend.core.auth.service:service.py:725 oauth login failed: UndefinedTable
+E   AssertionError: {"detail":"OAuth sign-in failed."}
+E   assert 500 == 200
+ERROR    backend.core.auth.service:service.py:725 oauth login failed: UndefinedTable
+E   AssertionError: {"detail":"OAuth sign-in failed."}
+E   assert 500 == 200
+ERROR    backend.core.auth.service:service.py:725 oauth login failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:725 oauth login failed: UndefinedTable
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+E   AssertionError: {"detail":"Login failed."}
+E   assert 500 == 200
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+E   AssertionError: {"detail":"Login failed."}
+E   assert 500 == 200
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+E   assert 500 == 401
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+E   assert 500 == 401
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+E   AssertionError: assert 500 == 201
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+    raise AssertionError(f"No email with subject containing {subject_contains!r} in outbox")
+E   AssertionError: No email with subject containing 'Verify' in outbox
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+    raise AssertionError(f"No email with subject containing {subject_contains!r} in outbox")
+E   AssertionError: No email with subject containing 'Reset' in outbox
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "documents" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   AssertionError: assert 'case_id' in set()
+E   AssertionError: assert None == 'ud_claim'
+E   assert 0 > 0
+E   assert 0 > 0
+E   AssertionError: assert 'limitation_date' in []
+E   AssertionError: assert 'qualifying_service' in []
+E   AssertionError: assert 0 > 10
+E   assert 0 > 0
+E   assert 0 >= 1
+E   assert 0 >= 1
+E   AssertionError: assert 'legal_graph' == 'knowledge_graph'
+E   AssertionError: assert 0 > 0
+E   assert 0 == 1
+E   AssertionError: Missing column: id
+E   assert 'id' in set()
+E   psycopg2.errors.UndefinedTable: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   assert 500 == 201
+ERROR    backend.api.main:main.py:365 Registration failed: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "users" does not exist
+ERROR    backend.api.main:main.py:365 Registration failed: relation "users" does not exist
+E   AssertionError: assert 'not_supported' in ('ok', 'insufficient_grounding', 'model_not_configured')
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: assert 'deadline_info' in {'status': 'not_supported', 'jurisdiction': 'EW', 'jurisdiction_supported': False, 'insufficient_grounding': True, ...}
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: assert 'not_supported' in ('insufficient_grounding', 'ok')
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: boundary_log must be present in every pipeline response
+E   assert None is not None
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   assert None is not None
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: boundary_log must be in every response
+E   assert None is not None
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   assert None is not None
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   assert None is not None
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: assert 'boundary_log' in {'status': 'not_supported', 'jurisdiction': 'EW', 'jurisdiction_supported': False, 'insufficient_grounding': True, ...}
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "assessment_audit_logs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "assessment_audit_logs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "assessment_audit_logs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "assessment_audit_logs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "assessment_audit_logs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "assessment_audit_logs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "assessment_audit_logs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: assert 'boundary_log' in {'status': 'not_supported', 'jurisdiction': 'EW', 'jurisdiction_supported': False, 'insufficient_grounding': True, ...}
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: Deadline should be 2026-06-29 (3mo from 2026-03-31 with clamping), got None
+E   assert None == '2026-06-29'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   AssertionError: CI gate failed. Output:
+E     jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   assert 1 == 0
+E   AssertionError: assert None == '2026-06-30'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "cases" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: assert None == 'rules'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: Legal accuracy gate failed:
+E   assert 1 == 0
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   AssertionError: assert 1 == 0
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "users" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: Legal accuracy gate failed:
+E   assert 1 == 0
+E   AssertionError: Rules verification gate failed:
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/local/bin/python', 'scripts/check_rules_verification.py'], returncode=1, stdout='========...able: relation "rules" does not exist\nLINE 4:                     FROM rules\n                                 ^\n\n').returncode
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: Legal accuracy gate failed:
+E   assert 1 == 0
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/local/bin/python', 'scripts/check_rules_verification.py'], returncode=1, stdout='========...able: relation "rules" does not exist\nLINE 4:                     FROM rules\n                                 ^\n\n').returncode
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: assert 1 == 0
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/local/bin/python', 'scripts/check_rules_verification.py'], returncode=1, stdout='========...able: relation "rules" does not exist\nLINE 4:                     FROM rules\n                                 ^\n\n').returncode
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: assert 1 == 0
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/local/bin/python', 'scripts/check_rules_verification.py'], returncode=1, stdout='========...able: relation "rules" does not exist\nLINE 4:                     FROM rules\n                                 ^\n\n').returncode
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: assert 1 == 0
+E   AssertionError: assert 'boundary_log' in {'status': 'not_supported', 'jurisdiction': 'EW', 'jurisdiction_supported': False, 'insufficient_grounding': True, ...}
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: Deadline must always come from rules
+E   assert None == 'rules'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: pii_in_output must be empty
+E   assert None == []
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: Legal accuracy gate:
+E   assert 1 == 0
+E   AssertionError: Rules gate:
+E     psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/local/bin/python', 'scripts/check_rules_verification.py'], returncode=1, stdout='========...able: relation "rules" does not exist\nLINE 4:                     FROM rules\n                                 ^\n\n').returncode
+E   AssertionError: assert 'not_supported' in ('insufficient_grounding', 'ok')
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: assert 'not_supported' in ('insufficient_grounding', 'ok')
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_edges" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_nodes" does not exist
+E   AssertionError: FP1 deadline wrong: None != 2026-06-30
+E   assert None == '2026-06-30'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: Deadline must always come from rules, never from model
+E   assert None == 'rules'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: Authority must reference ERA 1996 s.111, got: 
+E   assert ('ERA 1996' in '' or 's.111' in '')
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: FP2 deadline wrong: None
+E   assert None == '2026-06-14'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: assert None == '2026-07-02'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: FP4 deadline (no floor): expected 2026-04-14, got None
+E   assert None == '2026-04-14'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: FP4: EC must be applied
+E   assert (None is True or 's.207B' in '')
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: FP5 deadline (floor bites): expected 2026-04-25, got None
+E   assert None == '2026-04-25'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: FP6 deadline: expected 2025-03-31, got None
+E   assert None == '2025-03-31'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: assert None == '2026-06-30'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: assert None == 'rules'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: UPW1 deadline: expected 2026-06-29, got None
+E   assert None == '2026-06-29'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: UPW5 deadline: expected 2026-02-27, got None
+E   assert None == '2026-02-27'
+WARNING  backend.core.retrieve:retrieve.py:92 jurisdiction_supported failed closed for EW: relation "rules" does not exist
+E   AssertionError: assert 'tool_name' in []
+E   assert None is not None
+E   AssertionError: assert 'error' == 'ok'
+ERROR    backend.core.mcp_connectors:mcp_connectors.py:104 MCP tool error rules_lookup/lookup: relation "rules" does not exist
+ERROR    backend.core.mcp_connectors:mcp_connectors.py:104 MCP tool error rules_lookup/lookup: relation "rules" does not exist
+E   AssertionError: assert 'error' == 'ok'
+ERROR    backend.core.mcp_connectors:mcp_connectors.py:104 MCP tool error legislation_lookup/lookup: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "mcp_tool_calls" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   AssertionError: assert False
+E   assert None is not None
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   assert 500 == 201
+ERROR    backend.api.main:main.py:365 Registration failed: relation "users" does not exist
+E   assert 500 == 200
+ERROR    backend.api.main:main.py:365 Registration failed: relation "users" does not exist
+E   assert 500 in (401, 403, 422)
+ERROR    backend.api.main:main.py:365 Registration failed: relation "users" does not exist
+ERROR    backend.api.main:main.py:365 Registration failed: relation "users" does not exist
+E   assert 503 in (401, 403)
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "cases" does not exist
+E   assert 500 == 400
+ERROR    backend.api.main:main.py:365 Registration failed: relation "users" does not exist
+ERROR    backend.api.main:main.py:365 Registration failed: relation "users" does not exist
+E   AssertionError: cases.facts_encrypted column missing
+E   assert None is not None
+E   AssertionError: cases.encryption_version column missing
+E   assert None is not None
+E   AssertionError: facts_encrypted column missing
+E   assert 'facts_encrypted' in {}
+E   assert 401 == 400
+E   assert 401 == 200
+E   psycopg2.errors.UndefinedTable: relation "legislation" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   RuntimeError: db unavailable
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+E   AssertionError: {"detail":"Token refresh failed."}
+E   assert 500 in (400, 401)
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+E   AssertionError: {"detail":"Verification failed."}
+E   assert 500 == 400
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+E   psycopg2.errors.UndefinedTable: relation "corpus_ingestion_runs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_ingestion_runs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_ingestion_runs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_ingestion_runs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_ingestion_runs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_ingestion_runs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   AssertionError: Internal Server Error
+E   assert 500 == 200
+E   AssertionError: Internal Server Error
+E   assert 500 == 200
+E   AssertionError: {"detail":"Not authenticated"}
+E   assert 401 == 200
+E   AssertionError: {"detail":"Not authenticated"}
+E   assert 401 == 422
+E   AssertionError: {"detail":"Not authenticated"}
+E   assert 401 == 422
+E   AssertionError: assert 'fail_closed' == 'ok'
+E   AssertionError: assert 'unknown' == 'high'
+E   AssertionError: ERA 1996 s.95 (constructive dismissal) must be cited
+E   assert '95' in set()
+E   AssertionError: assert 'repudiatory_acts' in []
+E   AssertionError: assert 'no_statutory_grounding' == 'resignation_before_breach'
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "source_freshness" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_quality_report" does not exist
+E   psycopg2.errors.UndefinedTable: relation "deadline_calculation_audit" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+E   AssertionError: {"detail":"Login failed."}
+E   assert 500 == 200
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+E   AssertionError: {"detail":"Login failed."}
+E   assert 500 == 401
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+E   AssertionError: {"detail":"Login failed."}
+E   assert 500 == 401
+ERROR    backend.core.auth.service:service.py:335 login failed: UndefinedTable
+E   AssertionError: assert None == 'evidence_parsed:test:3d8ccd4d-9432-418c-bf0b-c5a4db81d53d'
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=evidence_parsed: relation "outbox_events" does not exist
+E   AssertionError: assert False is True
+E   psycopg2.errors.UndefinedTable: relation "prompt_versions" does not exist
+E   psycopg2.errors.UndefinedTable: relation "agent_validation_failures" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_ingestion_runs" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_ingestion_runs" does not exist
+E   AssertionError: assert False
+E   AssertionError: {"detail":"Could not record funnel signal."}
+E   assert 500 == 200
+ERROR    backend.core.login_gate:login_gate.py:121 Funnel signal save failed: UndefinedTable
+E   AssertionError: {"detail":{"login_required":true,"capability":"full_result","message":"Please sign in to continue. For your privacy we do not store anonymous case details; sign in to save your matter securely."}}
+E   assert 401 == 200
+ERROR    backend.core.login_gate:login_gate.py:121 Funnel signal save failed: UndefinedTable
+E   AssertionError: {"detail":"Database schema is not ready. Run migrations before saving cases."}
+E   assert 503 == 201
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "cases" does not exist
+E   AssertionError: Internal Server Error
+E   assert 500 in (403, 404)
+ERROR    backend.api.main:main.py:1390 Case save failed: database schema not ready: relation "cases" does not exist
+E   AssertionError: Internal Server Error
+E   assert 500 == 200
+E   AssertionError: {"detail":"relation \"rules\" does not exist\nLINE 6:                 FROM rules\n                             ^\n"}
+E   assert 400 == 200
+E   AssertionError: {"detail":"Not authenticated"}
+E   assert 401 == 200
+E   psycopg2.errors.UndefinedTable: relation "agent_validation_failures" does not exist
+E   AssertionError: fake law not flagged: Section 999 Equality Act 2010
+E   assert 401 == 422
+E   psycopg2.errors.UndefinedTable: relation "legal_jurisdictions" does not exist
+    raise AssertionError(msg)
+E   AssertionError: Expected 'publish' to have been called once. Called 0 times.
+E   AssertionError: assert False
+E   assert 0 >= 1
+E   assert 0 >= 3
+E   assert 0 >= 5
+E   AssertionError: assert False
+E   assert 0 == 2
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_sources" does not exist
+E   psycopg2.errors.UndefinedTable: relation "legal_sources" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "funnel_signals" does not exist
+ERROR    backend.core.login_gate:login_gate.py:121 Funnel signal save failed: UndefinedTable
+E   psycopg2.errors.UndefinedTable: relation "funnel_signals" does not exist
+ERROR    backend.core.login_gate:login_gate.py:121 Funnel signal save failed: UndefinedTable
+E   AssertionError: {"detail":"Sign-in failed."}
+E   assert 500 == 400
+ERROR    backend.core.auth.service:service.py:525 magic link consume failed: UndefinedTable
+E   AssertionError: magic-link token was not issued/delivered
+E   assert (None)
+WARNING  backend.core.auth.service:service.py:491 magic link issue failed: UndefinedTable
+E   AssertionError: {"detail":"Registration failed."}
+E   assert 500 == 201
+ERROR    backend.core.auth.service:service.py:262 register failed: UndefinedTable
+WARNING  backend.core.auth.service:service.py:491 magic link issue failed: UndefinedTable
+E   psycopg2.errors.UndefinedTable: relation "mv_current_employment_legal_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "mv_current_employment_legal_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   AssertionError: Internal Server Error
+E   assert 500 == 200
+E   AssertionError: Internal Server Error
+E   assert 500 == 200
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "cases" does not exist
+E   assert 401 == 400
+E   assert 401 == 400
+E   AssertionError: {"detail":"Authentication required"}
+E   assert 401 == 201
+E   AssertionError: {"detail":"Authentication required"}
+E   assert 401 == 201
+E   AssertionError: {"detail":"Authentication required"}
+E   assert 401 == 201
+E   assert 401 == 201
+E   assert 401 == 200
+E   assert 401 == 200
+E   AssertionError: assert None == 'test:c8993e1d-cc96-4a18-b039-6b57feb6e6cd'
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+E   AssertionError: assert None == 'test:45a94caf-43ff-45e5-8d3b-9580e7eddc66'
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+E   assert 0 >= 1
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:152 outbox.claim_batch error: relation "outbox_events" does not exist
+E   psycopg2.errors.UndefinedTable: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+E   AssertionError: assert 'wtest:db5c1024-0e90-47aa-b097-2a2c06627c13' in []
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:152 outbox.claim_batch error: relation "outbox_events" does not exist
+E   psycopg2.errors.UndefinedTable: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:152 outbox.claim_batch error: relation "outbox_events" does not exist
+E   psycopg2.errors.UndefinedTable: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:152 outbox.claim_batch error: relation "outbox_events" does not exist
+E   psycopg2.errors.UndefinedTable: relation "outbox_events" does not exist
+WARNING  backend.core.outbox:outbox.py:63 outbox.publish failed type=assessment_complete: relation "outbox_events" does not exist
+E   assert 401 == 403
+E   assert 500 == 200
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   NameError: name 'logger' is not defined
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   psycopg2.errors.UndefinedTable: relation "rules" does not exist
+E   assert (503 == 200)
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   assert (503 == 200)
+E   psycopg2.errors.UndefinedTable: relation "user_legal_profiles" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   psycopg2.errors.UndefinedTable: relation "corpus_chunks" does not exist
+E   AssertionError: assert 'id' in []
+E   AssertionError: documents.case_id column missing
+E   assert None is not None
+E   assert None is not None
+E   AssertionError: extracted_facts column missing
+E   assert None is not None
+E   assert None is not None
+E   assert None is not None
+E   assert None is not None
+FAILED tests/test_legal_db_indexes.py::test_extensions - AssertionError: asse...
+FAILED tests/test_onboarding.py::test_creates_first_case - AssertionError: {"...

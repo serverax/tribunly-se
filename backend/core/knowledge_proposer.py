@@ -97,6 +97,79 @@ def propose_ingestion(
         return {"status": "rejected", "reason": [str(exc)], "offline_safe": True}
 
 
+def propose_knowledge_gap(
+    gap_type: str,
+    payload: dict,
+    *,
+    proposed_by: str = "llm",
+    trace_id: Optional[str] = None,
+) -> dict:
+    """
+    Queue a knowledge-gap proposal for human/ops review.
+
+    Compatibility entry point used by the brain path. It writes only to the
+    proposal queue and never applies rules, legislation, or corpus rows.
+    """
+    if proposed_by not in {"llm", "human"}:
+        raise ValueError("proposed_by must be 'llm' or 'human'")
+
+    proposal_id = str(uuid.uuid4())
+    body = {
+        "gap_type": gap_type,
+        "payload": payload or {},
+        "trace_id": trace_id,
+    }
+    content_hash = _proposal_hash(body)
+    merged_payload = {
+        **body["payload"],
+        "gap_type": gap_type,
+        "content_hash": content_hash,
+    }
+
+    from ingestion.db import get_connection
+
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO knowledge.ingestion_proposals (
+                    id, proposed_by, proposal_type, payload,
+                    source_verification_status, approval_status, trace_id
+                ) VALUES (
+                    %s::uuid, %s, %s, %s::jsonb,
+                    'pending_review', 'pending', %s
+                )
+                RETURNING id, proposed_by, proposal_type, payload,
+                          source_verification_status, approval_status, trace_id, created_at
+                """,
+                (
+                    proposal_id,
+                    proposed_by,
+                    gap_type,
+                    json.dumps(merged_payload),
+                    trace_id,
+                ),
+            )
+            row = cur.fetchone()
+        conn.commit()
+        if not row:
+            return {}
+        return {
+            "id": str(row[0]),
+            "proposed_by": row[1],
+            "proposal_type": row[2],
+            "payload": row[3],
+            "source_verification_status": row[4],
+            "approval_status": row[5],
+            "trace_id": row[6],
+            "created_at": row[7].isoformat() if row[7] else None,
+            "content_hash": content_hash,
+        }
+    finally:
+        conn.close()
+
+
 def list_proposals(*, approval_status: str | None = None, limit: int = 50) -> list[dict]:
     """List queued ingestion proposals for admin review."""
     from ingestion.db import get_connection
