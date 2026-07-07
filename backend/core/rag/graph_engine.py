@@ -28,11 +28,22 @@ def _cache_key(payload: dict) -> str:
 
 
 def _get_redis():
+    redis_url = os.getenv("REDIS_URL", "").strip()
+    redis_host = os.getenv("REDIS_HOST", "").strip()
+    if not redis_url and not redis_host:
+        return None
     try:
         import redis
 
+        if redis_url:
+            return redis.Redis.from_url(
+                redis_url,
+                decode_responses=True,
+                socket_connect_timeout=1,
+                socket_timeout=1,
+            )
         return redis.Redis(
-            host=os.getenv("REDIS_HOST", "redis"),
+            host=redis_host,
             port=int(os.getenv("REDIS_PORT", "6379")),
             db=int(os.getenv("REDIS_DB", "0")),
             decode_responses=True,
