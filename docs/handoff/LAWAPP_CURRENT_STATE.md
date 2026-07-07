@@ -1,0 +1,58 @@
+# LawApp Current State
+
+Generated: 2026-07-07
+
+## Authority
+
+- Root: `F:\lawapp-restore`
+- Working branch: `codex/phase-0`
+- Base branch: `main-restored`
+- Base commit: `8432368` (`fix(beta): package domains in backend image`)
+- Forbidden stale bases: `origin/master`, `origin/main`
+- Authoritative reset plan: `docs/handoff/phases/LAWAPP_RESET_AND_EXECUTION_PLAN.md`
+
+All pre-recovery floor numbers, branch names, and file paths from the destroyed tree are VOID, including any references to `E:\lawapp`, `F:\lawapp`, `1866/16/49`, or stale branches outside `main-restored`.
+
+## Reset Decisions
+
+- D1 - Beta scope frozen: unfair dismissal, England & Wales only. No new features, modules, or refactors outside the phase files until beta ships.
+- D2 - The 13 partial modules stay cut from beta. Out-of-scope queries must return not supported, never a guess.
+- D3 - Stripe test mode only behind controlled access. Live keys remain permanently owner-gated.
+- D4 - No bulk case-law ingestion until the FCL computational-analysis licence is granted. OGL sources remain permitted.
+
+## Handoff Summary
+
+- `HANDOFF.md`: Snapshot recorded a near-beta release line with RAG/ingestion verification complete and beta promotion pending owner decision. It also recorded local Docker health evidence and AKS remote visibility as unverified.
+- `RELEASE_STATE.md`: Historical release context recorded RAG 1024 repair and stated verification should be re-run before beta promotion.
+- `KNOWN_ISSUES.md`: Open issues included AKS DNS/remote ops, stale handover docs, untracked workspace noise, and unknown full test state pending verification.
+- `NEXT_TASKS.md`: Immediate priority was RAG 1024 verification, ADR-000 checks, forbidden path checks, and ingestion/RAG metrics before beta promotion.
+- `PROOF_INDEX.md`: Indexed beta gate evidence, Docker domain packaging, targeted pytest, RAG 1024 proof, and known historical path checks.
+
+## Phase 0 Floor Baseline
+
+- Commit tested: `8432368`
+- Command: `docker compose -f docker-compose.yml run --rm -T -e POSTGRES_HOST=db -e POSTGRES_PASSWORD=lawapp ingestion sh -c "cd /app && python -m pytest tests/ -q -p no:cacheprovider --ignore=tests/integration/test_semantic_retrieval.py"`
+- Environment note: base compose file used to avoid local `docker-compose.override.yml` publishing the already-allocated host port `5435`; tests used the internal `db` service.
+- New baseline summary: `ERROR tests/test_knowledge_proposals.py`; `Interrupted: 1 error during collection`; `2 warnings, 1 error in 83.08s`.
+- Aggregated baseline count: `0 passed / 0 failed / 0 skipped / 1 collection error`.
+
+This is the Phase 0 floor baseline for the recovered tree. Do not substitute pre-recovery floor numbers.
+
+## Survival Results
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| PII/model boundary on RAG/embed path | Present in code; runtime proof deferred to Phase 2 | `backend/services/lawapp-rag-service/ollama_embed.py:24`, `backend/services/lawapp-rag-service/main.py:261`, `backend/core/deidentify.py:67`, `backend/core/agentic/litellm_adapter.py:57` |
+| Stripe webhook proof path | Present | `backend/api/payment_routes.py:419`, `scripts/proof/prove_lawapp_full_workflows.sh:384`, `tests/security/test_payment_access.py:72` |
+| 13-module scope-cut fencing | Present at tip | `client/public/js/beta-scope.js:21`, `tests/test_ui_beta_scope.py:13`, `reports/track_b_scope_cut_response.json:1`, `reports/ui_scope_enforcement_cursor.txt:8` |
+| 1024-dim embedding config | Present at tip | `backend/services/lawapp-rag-service/ollama_embed.py:13`, `scripts/reembed_corpus_1024.py:27`, `backend/core/retrieve.py:291`, `tests/test_rag_1024_retrieval_repair.py:14` |
+
+## Price Decision
+
+- Live document-pack config: `backend/api/payment_routes.py:85` has `"full_documents": 2999,  # £29.99`.
+- Matching user-facing copy remains in `backend/api/main.py`, `client/public/index.html`, and `client/public/pages/assessment.html`.
+- Open owner decision: reset plan records a discrepancy between repo-shipped £29.99 and an owner decision on record of £99. Owner reconfirmation remains pending; no price change was made in Phase 0.
+
+## Phase 0 Commits
+
+- Task 1 phase-plan commit: `e25e0dc` (`docs: add phase reset plan`)
