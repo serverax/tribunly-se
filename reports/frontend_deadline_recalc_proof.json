@@ -1,0 +1,157 @@
+{
+  "generated_at": "2026-07-08T02:15:53.728Z",
+  "auth_mode": "mock-header",
+  "screenshot": "F:\\lawapp-restore\\reports\\frontend_deadline_recalc.png",
+  "input_dates": {
+    "first": "2026-04-01",
+    "second": "2026-05-15"
+  },
+  "before": {
+    "date": "2026-06-30",
+    "note": "Live preview uses the current server rule set (ERA 1996 s.111(2) (commencement 1996-08-22); ERA 1996 s.207B (in force 2014-04-06, inserted by ERRA 2013); Luton Borough Council v Haque UKEAT/0180/17/JOJ [2018] UKEAT 0180_17_1204 para 17 (ratio) and para 26 (no-op (3) case)). Reminder delivery remains descoped in controlled beta.",
+    "summary": "Deadline tracker\n\n2026-06-30 · -8 days remaining\n\nACAS early conciliation may be required before tribunal.\n\nDismissal\nACAS EC\nTribunal claim"
+  },
+  "after": {
+    "date": "2026-08-14",
+    "note": "Live preview uses the current server rule set (ERA 1996 s.111(2) (commencement 1996-08-22); ERA 1996 s.207B (in force 2014-04-06, inserted by ERRA 2013); Luton Borough Council v Haque UKEAT/0180/17/JOJ [2018] UKEAT 0180_17_1204 para 17 (ratio) and para 26 (no-op (3) case)). Reminder delivery remains descoped in controlled beta.",
+    "summary": "Deadline tracker\n\n2026-08-14 · 37 days remaining\n\nACAS early conciliation may be required before tribunal.\n\nDismissal\nACAS EC\nTribunal claim"
+  },
+  "rules_response": {
+    "claim_type": "unfair_dismissal",
+    "jurisdiction": "EW",
+    "rules": [
+      {
+        "rule_key": "unfair_dismissal.acas_code_adjustment_percent",
+        "value_numeric": "25",
+        "value_text": null,
+        "unit": "percent",
+        "authority_ref": "TULRCA 1992 s.207A",
+        "authority_url": "https://www.legislation.gov.uk/ukpga/1992/52/section/207A",
+        "effective_from": "2009-04-06",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:30:12.597862+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.basic_award_formula",
+        "value_numeric": null,
+        "value_text": "Per complete year of service (max 20 years): 1.5 x week's pay for each year while aged 41+; 1.0 x week's pay for each year while aged 22-40; 0.5 x week's pay for each year while under 22. Week's pay capped at weeks_pay_cap_amount (s.227). Computed in application code. Do not hard-code the cap value.",
+        "unit": null,
+        "authority_ref": "ERA 1996 s.119",
+        "authority_url": "https://www.legislation.gov.uk/ukpga/1996/18/section/119",
+        "effective_from": "1996-08-22",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.basic_award_min_automatic",
+        "value_numeric": "9157",
+        "value_text": null,
+        "unit": "GBP",
+        "authority_ref": "ERA 1996 s.120(1) + SI 2026/310",
+        "authority_url": "https://www.legislation.gov.uk/uksi/2026/310/schedule/made",
+        "effective_from": "2026-04-06",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.compensatory_cap_amount",
+        "value_numeric": "123543",
+        "value_text": null,
+        "unit": "GBP",
+        "authority_ref": "ERA 1996 s.124(1ZA)(a) + SI 2026/310",
+        "authority_url": "https://www.legislation.gov.uk/uksi/2026/310/schedule/made",
+        "effective_from": "2026-04-06",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.compensatory_cap_weeks_pay",
+        "value_numeric": "52",
+        "value_text": null,
+        "unit": "weeks_gross_pay",
+        "authority_ref": "ERA 1996 s.124(1ZA)(b)",
+        "authority_url": "https://www.legislation.gov.uk/ukpga/1996/18/section/124",
+        "effective_from": "2013-07-29",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.early_conciliation_required",
+        "value_numeric": null,
+        "value_text": "true",
+        "unit": null,
+        "authority_ref": "Employment Tribunals Act 1996 s.18A (in force 2014-04-06 per Haque para 30; inserted by ERRA 2013 s.7); SI 2014/253 (mandatory requirement from 2014-05-06)",
+        "authority_url": "https://www.legislation.gov.uk/ukpga/1996/17/section/18A",
+        "effective_from": "2014-04-06",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.ec_max_duration_weeks",
+        "value_numeric": "12",
+        "value_text": null,
+        "unit": "weeks",
+        "authority_ref": "Employment Tribunals (Early Conciliation: Exemptions and Rules of Procedure) (Amendment) Regulations 2025 (SI 2025/1153), Schedule rule 6(1)",
+        "authority_url": "https://www.legislation.gov.uk/uksi/2025/1153/made",
+        "effective_from": "2025-12-01",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.not_reasonably_practicable_extension",
+        "value_numeric": null,
+        "value_text": "The tribunal may consider a complaint presented after the primary time limit where it was not reasonably practicable to present it in time, and it was then presented within such further period as the tribunal considers reasonable.",
+        "unit": "qualitative",
+        "authority_ref": "ERA 1996 s.111(2)(b)",
+        "authority_url": "https://www.legislation.gov.uk/ukpga/1996/18/section/111",
+        "effective_from": "1996-08-22",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:30:12.597862+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.qualifying_period",
+        "value_numeric": "2",
+        "value_text": null,
+        "unit": "years",
+        "authority_ref": "ERA 1996 s.108(1); SI 2012/989 (Unfair Dismissal and Statement of Reasons for Dismissal (Variation of Qualifying Period) Order 2012)",
+        "authority_url": "https://www.legislation.gov.uk/ukpga/1996/18/section/108",
+        "effective_from": "2012-04-06",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.time_limit_months",
+        "value_numeric": "3",
+        "value_text": null,
+        "unit": "months",
+        "authority_ref": "ERA 1996 s.111(2) (commencement 1996-08-22); ERA 1996 s.207B (in force 2014-04-06, inserted by ERRA 2013); Luton Borough Council v Haque UKEAT/0180/17/JOJ [2018] UKEAT 0180_17_1204 para 17 (ratio) and para 26 (no-op (3) case)",
+        "authority_url": "https://www.legislation.gov.uk/ukpga/1996/18/section/111",
+        "effective_from": "1996-08-22",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      },
+      {
+        "rule_key": "unfair_dismissal.weeks_pay_cap_amount",
+        "value_numeric": "751",
+        "value_text": null,
+        "unit": "GBP",
+        "authority_ref": "ERA 1996 s.227(1) + SI 2026/310",
+        "authority_url": "https://www.legislation.gov.uk/uksi/2026/310/schedule/made",
+        "effective_from": "2026-04-06",
+        "effective_to": null,
+        "is_prospective": false,
+        "last_verified_at": "2026-06-14T00:17:19.233443+00:00"
+      }
+    ]
+  }
+}

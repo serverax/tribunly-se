@@ -24,6 +24,7 @@ Stage 2 of Work Order 004 was completed in `client/public/` only. The Next.js sc
 
 4. Deadline tracker UX:
    - `deadlines.html` now loads `deadline.js` and performs a live in-browser preview from server-supplied rule values.
+   - The closure pass fixed the preview path to use the live page origin for rules fetches, which restored the previously broken server-rules preview in the browser.
    - The note on the page now states that reminder delivery remains descoped in controlled beta.
 
 ## Responsive Matrix
@@ -69,6 +70,9 @@ Observed result:
 - Authenticated persistence is now artifact-proven in `reports/frontend_persistence_proof.json`:
   the saved note, active case id, heading, and deadline all restored intact in a
   fresh browser context from `reports/frontend_persistence_storage_state.json`.
+- Deadline live preview is now artifact-proven in `reports/frontend_deadline_recalc_proof.json`:
+  editing the event date changed the visible limitation date from `2026-06-30`
+  to `2026-08-14` while the note cited the rules service authority string.
 
 ## Coverage / Honesty Checks
 

@@ -48,6 +48,7 @@
 (function () {
   var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
   var deadlineRules = null;
+  var rulesApiBase = window.location.origin;
 
   CaseOSShell.init({ page: "deadlines" }).then(function (ok) {
     if (!ok) return;
@@ -109,7 +110,7 @@
     async function previewDeadline(dateStr) {
       if (!dateStr || !window.LawappDeadline) return;
       try {
-        deadlineRules = deadlineRules || await LawappDeadline.fetchDeadlineRules(API_BASE || "", "unfair_dismissal");
+        deadlineRules = deadlineRules || await LawappDeadline.fetchDeadlineRules(rulesApiBase, "unfair_dismissal");
         var preview = LawappDeadline.computeDeadline(dateStr, deadlineRules.timeLimitMonths);
         if (!preview || preview.error || !preview.limitation_date) return;
         var msPerDay = 24 * 60 * 60 * 1000;

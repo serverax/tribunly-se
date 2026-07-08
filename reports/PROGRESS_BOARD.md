@@ -24,3 +24,4 @@ Base: `codex/phase-1@c29e960`
 | Stage 2F | Frontend floor held (`1827 passed / 63 skipped / 0 failed`) | COMPLETE | `this commit` | `reports/FRONTEND_COMPLETE_REPORT.md` | 2026-07-08 |
 | Stage 2 Closure | Payment + download screenshot matrix completed at 360/390/768/1024/1440; no new layout fixes required | COMPLETE | `this commit` | `reports/payment_download_surface_proof.json`, `reports/frontend_snaps/payment-*.png`, `reports/frontend_snaps/download-*.png` | 2026-07-08 |
 | Stage 2 Closure | Authenticated workspace persistence proven across a fresh browser context | COMPLETE | `this commit` | `reports/frontend_persistence_proof.json`, `reports/frontend_persistence_before.png`, `reports/frontend_persistence_restored.png` | 2026-07-08 |
+| Stage 2 Closure | Deadline live preview repaired and proven against server-supplied rules values | COMPLETE | `this commit` | `reports/frontend_deadline_recalc_proof.json`, `reports/frontend_deadline_recalc.png` | 2026-07-08 |
