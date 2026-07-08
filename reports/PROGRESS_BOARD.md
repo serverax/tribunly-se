@@ -32,3 +32,6 @@ Base: `main-restored@526cbcc`
 | WO006 | Embedding test skip guard for missing Ollama model | COMPLETE | `42fdab5` | `tests/test_autonomous_ingestion.py` | 2026-07-08 |
 | WO006 | Floor: 1834 passed / 0 failed / 44 skipped / 8 errors | COMPLETE | `42fdab5` | Docker pytest output | 2026-07-08 |
 | WO006 | A7 owner directive received: full UK employment statute spine ingestion from OGL sources | RECEIVED | - | `docs/handoff/phases/A7_FULL_STATUTE_SPINE.md` | 2026-07-08 |
+| Expert Mode | Fullstack Architect review (5 findings, 2×P1, 1×P2, 2×P3) | COMPLETE | `this commit` | `reports/ARCHITECT_REVIEW.md` | 2026-07-08 |
+| Expert Mode | UI/UX review (5 findings, 2×P1, 3×P2) | COMPLETE | `this commit` | `reports/UX_REVIEW.md` | 2026-07-08 |
+| Expert Mode | AI Architect review (4 sections: timings, progressive-render spec, quant rec, escalation audit) | COMPLETE | `this commit` | `reports/AI_ARCHITECT_REVIEW.md` | 2026-07-08 |
