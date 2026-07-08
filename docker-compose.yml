@@ -73,7 +73,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       # LOCAL OLLAMA ONLY  -  no external LLM providers for lawapp legal routes.
       LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
-      LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://ollama:11434}
       LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       ENVIRONMENT: ${ENVIRONMENT:-development}
@@ -111,6 +111,8 @@ services:
       db:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      ollama:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -192,7 +194,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       # LOCAL OLLAMA ONLY  -  no external LLM providers.
       LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
-      LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://ollama:11434}
       LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-bge-large-en-v1.5}
       EMBEDDING_DIM: ${EMBEDDING_DIM:-1024}
@@ -492,7 +494,7 @@ services:
       REDIS_URL: "redis://redis:6379"
       LAWAPP_API_URL: ${LAWAPP_API_URL:-http://backend:8000}
       GRAPH_RAG_SERVICE_URL: ${GRAPH_RAG_SERVICE_URL:-http://lawapp-graph-rag-service:8018}
-      OLLAMA_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://ollama:11434}
       OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
       ALLOW_EXTERNAL_LLM: ${ALLOW_EXTERNAL_LLM:-false}
       NEO4J_ENABLED: ${NEO4J_ENABLED:-false}
@@ -550,7 +552,7 @@ services:
       REDIS_URL: redis://redis:6379
       RATELIMIT_STORAGE_URI: redis://redis:6379
       LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
-      LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://ollama:11434}
       LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
       NEO4J_ENABLED: ${NEO4J_ENABLED:-false}
       NEO4J_URI: ${NEO4J_URI:-bolt://neo4j:7687}
@@ -568,12 +570,13 @@ services:
     profiles:
       - ingestion
 
-  # Then set LAWAPP_OLLAMA_BASE_URL=http://ollama:11434 on backend (or use host.docker.internal).
+  # Ollama local LLM — always starts with the default compose profile.
+  # First run: models must be pulled manually:
+  #   docker compose exec ollama ollama pull qwen2.5:3b-instruct-q6_K
+  #   docker compose exec ollama ollama pull bge-large-en-v1.5
   ollama:
     image: ollama/ollama:latest
     restart: unless-stopped
-    profiles:
-      - ollama
     ports:
       - "${OLLAMA_PORT:-11434}:11434"
     volumes:

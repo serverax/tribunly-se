@@ -17,7 +17,7 @@ EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "1024"))
 def ollama_base_url() -> str:
     return os.getenv(
         "LAWAPP_OLLAMA_BASE_URL",
-        os.getenv("OLLAMA_BASE_URL", os.getenv("OLLAMA_URL", "http://host.docker.internal:11434")),
+        os.getenv("OLLAMA_BASE_URL", os.getenv("OLLAMA_URL", "http://ollama:11434")),
     ).rstrip("/")
 
 

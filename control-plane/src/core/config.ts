@@ -21,7 +21,7 @@ export const envSchema = z.object({
   REDIS_URL: z.string().default('redis://redis:6379'),
   LAWAPP_API_URL: z.string().default('http://backend:8000'),
   GRAPH_RAG_SERVICE_URL: z.string().default('http://lawapp-graph-rag-service:8018'),
-  OLLAMA_URL: z.string().default('http://host.docker.internal:11434'),
+  OLLAMA_URL: z.string().default('http://ollama:11434'),
   OLLAMA_MODEL: z.string().default('qwen2.5:3b-instruct-q6_K'),
   ALLOW_EXTERNAL_LLM: boolFromEnv.default(false),
   NEO4J_ENABLED: boolFromEnv.default(false),
