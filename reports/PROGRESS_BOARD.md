@@ -22,3 +22,4 @@ Base: `codex/phase-1@c29e960`
 | Stage 2D | Deadline tracker upgraded to live in-browser preview from server rules; reminders remain honestly descoped | COMPLETE | `this commit` | `client/public/pages/deadlines.html`, `client/public/js/deadline.js` | 2026-07-08 |
 | Stage 2E | Notices and coverage sweep completed; solicitor referral lane marked unavailable in controlled beta | COMPLETE | `this commit` | `reports/FRONTEND_COMPLETE_REPORT.md` | 2026-07-08 |
 | Stage 2F | Frontend floor held (`1827 passed / 63 skipped / 0 failed`) | COMPLETE | `this commit` | `reports/FRONTEND_COMPLETE_REPORT.md` | 2026-07-08 |
+| Stage 2 Closure | Payment + download screenshot matrix completed at 360/390/768/1024/1440; no new layout fixes required | COMPLETE | `this commit` | `reports/payment_download_surface_proof.json`, `reports/frontend_snaps/payment-*.png`, `reports/frontend_snaps/download-*.png` | 2026-07-08 |

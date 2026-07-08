@@ -1,0 +1,120 @@
+{
+  "generated_at": "2026-07-08T02:11:30.124Z",
+  "case_id": "507c283c-22fd-41e3-8964-7f1e0c2982e2",
+  "auth_mode": "mock-header",
+  "layout_fixes_required": false,
+  "payment": [
+    {
+      "screen": "payment",
+      "width": 360,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\payment-360.png",
+      "title": "Your diagnosis - lawapp",
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    },
+    {
+      "screen": "payment",
+      "width": 390,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\payment-390.png",
+      "title": "Your diagnosis - lawapp",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    },
+    {
+      "screen": "payment",
+      "width": 768,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\payment-768.png",
+      "title": "Your diagnosis - lawapp",
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    },
+    {
+      "screen": "payment",
+      "width": 1024,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\payment-1024.png",
+      "title": "Your diagnosis - lawapp",
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    },
+    {
+      "screen": "payment",
+      "width": 1440,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\payment-1440.png",
+      "title": "Your diagnosis - lawapp",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    }
+  ],
+  "download": [
+    {
+      "screen": "download",
+      "width": 360,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\download-360.png",
+      "title": "Saved case - lawapp",
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    },
+    {
+      "screen": "download",
+      "width": 390,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\download-390.png",
+      "title": "Saved case - lawapp",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    },
+    {
+      "screen": "download",
+      "width": 768,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\download-768.png",
+      "title": "Saved case - lawapp",
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    },
+    {
+      "screen": "download",
+      "width": 1024,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\download-1024.png",
+      "title": "Saved case - lawapp",
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    },
+    {
+      "screen": "download",
+      "width": 1440,
+      "screenshot": "F:\\lawapp-restore\\reports\\frontend_snaps\\download-1440.png",
+      "title": "Saved case - lawapp",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "overflowX": false,
+      "footerCount": 1,
+      "hasLegalNotice": true
+    }
+  ]
+}

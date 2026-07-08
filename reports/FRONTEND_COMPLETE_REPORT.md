@@ -50,12 +50,16 @@ Evidence files:
 
 - screenshots: `reports/frontend_snaps/*.png`
 - machine-checked overflow matrix: `reports/frontend_responsive_matrix.json`
+- payment/download closure proof: `reports/payment_download_surface_proof.json`
 
 Observed result:
 
 - every audited page in the matrix reported `overflowX=false`
 - every audited page reported `footerCount=1`
 - every audited page reported `hasLegalNotice=true`
+- payment and download surfaces now have their missing five-width screenshot set
+  captured against the live UI at 360 / 390 / 768 / 1024 / 1440 with
+  `overflowX=false`, `footerCount=1`, and `hasLegalNotice=true` in every shot
 
 ## Accessibility / WCAG Notes
 
