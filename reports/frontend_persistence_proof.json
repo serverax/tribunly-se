@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-07-08T02:13:01.273Z",
+  "auth_mode": "mock-header",
+  "user_id": "22222222-2222-2222-2222-222222222222",
+  "case_id": "b2355cbf-cddc-4c88-8a53-ef93f7f0b5a9",
+  "note_title": "Persistence proof note",
+  "note_body": "State restored intact after a fresh browser context.",
+  "screenshots": {
+    "before": "F:\\lawapp-restore\\reports\\frontend_persistence_before.png",
+    "restored": "F:\\lawapp-restore\\reports\\frontend_persistence_restored.png"
+  },
+  "storage_state_path": "F:\\lawapp-restore\\reports\\frontend_persistence_storage_state.json",
+  "before": {
+    "activeCaseId": "b2355cbf-cddc-4c88-8a53-ef93f7f0b5a9",
+    "heading": "Unfair Dismissal",
+    "deadline": "30 Jun 2026",
+    "notesText": "Persistence proof note\n\nState restored intact after a fresh browser context."
+  },
+  "restored": {
+    "activeCaseId": "b2355cbf-cddc-4c88-8a53-ef93f7f0b5a9",
+    "heading": "Unfair Dismissal",
+    "deadline": "30 Jun 2026",
+    "notesText": "Persistence proof note\n\nState restored intact after a fresh browser context."
+  }
+}

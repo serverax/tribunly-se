@@ -66,6 +66,9 @@ Observed result:
 - Keyboard affordances already present and retained: skip links, labeled mobile menu buttons, labeled auth and intake form fields.
 - No new P1 keyboard or label blockers were introduced.
 - Workspace anonymous path still lands on login rather than restoring case state, which aligns with the authenticated-only resume rule.
+- Authenticated persistence is now artifact-proven in `reports/frontend_persistence_proof.json`:
+  the saved note, active case id, heading, and deadline all restored intact in a
+  fresh browser context from `reports/frontend_persistence_storage_state.json`.
 
 ## Coverage / Honesty Checks
 
