@@ -7,7 +7,7 @@ Generated: 2026-07-07
 - Spec set audited: `docs/02_HLD_ARCHITECTURE.md`, `docs/03_DATABASE_DESIGN.md`, `docs/04_RAG_REASONING_SPEC.md`.
 - Allowed statuses: `WIRED`, `STUB`, `BROKEN`, `MISSING`, `ORPHAN`, `FENCED`.
 - Every backend route listed below inherits its family status unless called out in the note.
-- Surface-family counts in this file: `WIRED=15`, `STUB=0`, `BROKEN=0`, `MISSING=0`, `ORPHAN=7`, `FENCED=2`.
+- Surface-family counts in this file: `WIRED=16`, `STUB=0`, `BROKEN=0`, `MISSING=0`, `ORPHAN=7`, `FENCED=1`.
 
 ## Live Evidence
 
@@ -19,11 +19,10 @@ Generated: 2026-07-07
 | `L4` | Accounts / workspace | `POST /api/auth/register` -> `POST /api/auth/login` -> `GET /api/auth/me` -> `POST /cases` -> `GET /cases/{id}` -> `DELETE /cases/{id}` | `201`, `200`, `200`, `201`, `200`, `200`; live save/read/delete path works for authenticated users |
 | `L5` | Admin dual-layer guard | `GET /admin/cases` unauthenticated and with a non-admin JWT | `403 {"detail":"Admin role required"}` in both cases |
 | `L6` | Payment gate | `POST /api/documents/generate` for an unpaid saved case | `402 {"detail":"Payment required to generate documents"}` |
-| `L7` | Handoff / referral | `POST /handoff/leads` then `DELETE /handoff/leads/{id}` | `201 {"status":"received", ...}` then `200 {"status":"pii_cleared", ...}` |
-| `L8` | Encryption-at-rest weakness | same `POST /handoff/leads` on current live stack | `201` but body returned `"pii_encrypted": false, "encryption_method": "none"`; backend log: `Handoff lead env-key encryption failed - storing plaintext: ENCRYPTION_KEY is malformed: ValueError` |
+| `L7` | Handoff / referral | `POST /handoff/leads` then `DELETE /handoff/leads/{id}` | `201 {"status":"received","pii_encrypted":true,"encryption_method":"direct_fernet",...}` then `200 {"status":"pii_cleared", ...}` |
+| `L8` | Encryption-at-rest | `tests/integration/test_handoff_lead_fail_closed.py` | `3 passed`; absent key -> `503` with unchanged row count, malformed key -> `503` with unchanged row count, valid key -> encrypted row persisted and decrypted round-trip matched the request payload |
 | `L9` | Upload fence in beta | regression floor test `tests/integration/test_beta_upload_route_fenced.py` | `1 passed`; in beta config `POST /api/uploads/upload` returns `404 {"detail":"Not found"}` |
 | `L10` | Partner referral notifications | `POST /api/notifications/partner-referral` against the notification service app with an active registry-backed partner | `200 {"status":"accepted","email_queued":true,...}` and the test proved a Redis queue job was emitted |
-| `L11` | Handoff beta fence | `POST /handoff/leads` in beta config with no explicit override | `404 {"detail":"Not found"}` while non-beta handoff regression tests still passed |
 
 ## Capability Matrix
 
@@ -42,7 +41,7 @@ Generated: 2026-07-07
 | Accounts / workspace | WIRED | Authenticated register/login/me/save/read/delete path worked live; anonymous resume remains blocked by existing Phase 1 guardrail. | `L4`, `tests/test_auth_flows.py`, `tests/test_onboarding.py` |
 | Admin dual-layer guard | WIRED | Admin workspace endpoints reject both unauthenticated callers and authenticated non-admin users. | `L5`, `tests/security/test_admin*` |
 | De-id boundary | WIRED | Live assessment path proved de-identification fires before reasoning and the boundary log stays clean of outbound PII. | `L2`, `tests/security/test_deidentification.py`, `tests/integration/test_phase2e_audit_log.py` |
-| Data protection / encryption at rest | FENCED | The beta handoff write path is now unreachable by default unless an explicit `LAWAPP_ENABLE_HANDOFF_LEADS` override is set, preventing the live malformed-key fallback from reaching the beta surface. | `L11`, `tests/integration/test_phase3d_paid_handoff.py` |
+| Data protection / encryption at rest | WIRED | Handoff lead capture now fails closed when `ENCRYPTION_KEY` is absent or malformed and persists only encrypted PII when a valid key is configured. | `L8`, `tests/integration/test_handoff_lead_fail_closed.py` |
 | Canonical uploads beta surface | FENCED | Standalone `/api/uploads/*` is explicitly unreachable in beta config after the new fence landed. | `L9`, `backend/api/upload_routes.py`, `tests/integration/test_beta_upload_route_fenced.py` |
 
 ## Route Family Inventory
@@ -99,10 +98,10 @@ Generated: 2026-07-07
 ### `backend/api/main.py`
 
 - Status: **WIRED**
-- Note: the canonical beta surface remains wired; the sensitive handoff lead write path is separately fenced in beta unless explicitly enabled.
+- Note: the canonical beta surface remains wired; handoff lead capture now requires working encryption and fails closed otherwise.
 - Routes:
   `GET /api/cases`; `GET /`; `GET /pages/{page_name}`; `GET /admin/{page_name}.html`; `POST /auth/register`; `POST /auth/token`; `GET /auth/me`; `GET /health`; `GET /livez`; `GET /freshness`; `GET /rules/{claim_type}`; `POST /assess`; `POST /api/diagnosis`; `POST /documents/generate`; `POST /api/workflow/diagnosis`; `POST /api/workflow/payment/create`; `POST /api/workflow/payment/confirm`; `POST /api/workflow/documents/generate`; `POST /cases`; `POST /onboarding/complete`; `GET /onboarding/status`; `GET /cases`; `GET /cases/{case_id}`; `POST /handoff/leads`; `GET /cases/{case_id}/deadline`; `POST /cases/{case_id}/reminders`; `GET /cases/{case_id}/reminders`; `POST /cases/{case_id}/uploads`; `GET /cases/{case_id}/uploads`; `POST /cases/{case_id}/uploads/{upload_id}/extract`; `PATCH /cases/{case_id}/uploads/{upload_id}/facts`; `POST /cases/{case_id}/uploads/{upload_id}/apply-confirmed`; `POST /cases/{case_id}/bundle/preview`; `POST /cases/{case_id}/bundle/generate`; `GET /cases/{case_id}/bundle`; `POST /funnel/events`; `GET /cases/{case_id}/funnel`; `GET /admin/dp-report`; `GET /admin/rules-verification`; `GET /admin/production-readiness`; `GET /admin/compliance-status`; `GET /cases/{case_id}/timeline`; `POST /cases/{case_id}/timeline/events`; `PATCH /cases/{case_id}/timeline/events/{event_id}`; `GET /cases/{case_id}/escalation`; `DELETE /cases/{case_id}`; `DELETE /handoff/leads/{lead_id}`; `POST /api/brain/trace`; `POST /api/workflows/constructive-dismissal`; `GET /api/agents`; `POST /api/payment/create-session`; `GET /api/payment/status`; `POST /api/test/route-agent`; `POST /api/test/hybrid-search`; `POST /api/test/legal-graph`; `POST /api/kg/entity`; `POST /api/test/evaluate`; `POST /api/test/router`; `POST /api/test/cache`; `POST /api/test/memory/save`; `POST /api/test/memory/get`; `POST /api/test/citation-verify`; `POST /api/test/conflict-detect`; `GET /api/debug/agents`; `GET /api/debug/mcp-tools`; `POST /api/test/mcp-call`; `POST /api/context/compress`; `GET /api/security/cross-user-test`; `GET /admin/retention-status`; `POST /api/router/test`; `POST /api/rag/hybrid-search`; `POST /api/rag/graph`; `POST /api/memory/save`; `POST /api/memory/get`; `POST /api/evaluate`; `GET /api/mcp/tools`; `POST /api/cache/test`; `POST /api/documents/upload`; `POST /api/documents/facts`; `POST /api/test/wasm-deadline`; `POST /api/test/ollama-smoke`; `GET /api/sources/freshness`; `GET /api/rules/{claim_type}`; `POST /api/deadline/calculate`; `POST /api/deadline/calc`; `POST /api/payment/webhook`; `GET /api/documents/{document_id}/download`; `GET /api/cases/{case_id}/documents`
-- Proof: `L1`, `L2`, `L4`, `L5`, `L7`, `L11`
+- Proof: `L1`, `L2`, `L4`, `L5`, `L7`, `L8`
 
 ### `backend/api/payment_routes.py`
 

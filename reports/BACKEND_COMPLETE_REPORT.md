@@ -21,6 +21,7 @@ This report captures the Stage 1 backend completion evidence for Work Order 004:
 - `e51f9bd` `test(e2e): codify backend paid journey`
 - `9a0f0df` `fix(control-plane): return honest outage copy on retrieval failure`
 - `9ca0855` `test(notifications): prove partner referral path is wired`
+- `this commit` `fix(handoff): fail closed without valid encryption and restore beta wiring`
 
 ## Live Stack Proof
 
@@ -124,7 +125,8 @@ Evidence now covers all three surfaces:
 - `tests/e2e/test_backend_paid_journey.py` => `1 passed`
 - `tests/integration/test_outage_copy.py` => `1 passed`
 - `tests/services/test_notification_partner_referral.py` => `1 passed`
-- `tests/integration/test_beta_handoff_route_fenced.py` + `tests/integration/test_phase3d_paid_handoff.py -k handoff` => `23 passed`
+- `tests/integration/test_handoff_lead_fail_closed.py` => `3 passed`
+- `tests/integration/test_phase3d_paid_handoff.py -k handoff` => `22 passed`
 - `tests/test_beta_blockers.py -k pricing_consistent_across_surfaces` => `1 passed`
 - `tests/integration/test_api_smoke.py` (isolated live stack) => `6 passed`
 
@@ -133,7 +135,7 @@ Evidence now covers all three surfaces:
 Current Stage 1 matrix state:
 
 - partner-referral notifications are now proven `WIRED` against the registry-backed queue path
-- beta handoff lead capture is now `FENCED` by default unless an explicit owner override is set
+- handoff lead capture is now `WIRED` and fails closed unless working encryption is available
 - the matrix now reads `STUB=0` and `BROKEN=0`
 
 Service inventory notes retained in the matrix:

@@ -1728,21 +1728,6 @@ _VALID_TRIGGER_REASONS = {
 }
 
 
-def _handoff_enabled_for_env() -> bool:
-    explicit = _os.getenv("LAWAPP_ENABLE_HANDOFF_LEADS", "").strip().lower()
-    if explicit in {"1", "true", "yes", "on"}:
-        return True
-    if explicit in {"0", "false", "no", "off"}:
-        return False
-    env = _os.getenv("ENVIRONMENT", "development").strip().lower()
-    return env not in {"beta", "controlled_beta"}
-
-
-def _require_handoff_enabled() -> None:
-    if not _handoff_enabled_for_env():
-        raise HTTPException(status_code=404, detail="Not found")
-
-
 class HandoffLeadRequest(BaseModel):
     case_id: Optional[str] = None
     trigger_reason: str
@@ -1770,7 +1755,6 @@ def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
     GUARDRAIL: no representation or filing implied.
     GUARDRAIL: clearly free to the user (no charge for submitting).
     """
-    _require_handoff_enabled()
     if not req.consent_given:
         raise HTTPException(
             status_code=422,
@@ -1787,11 +1771,11 @@ def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
     from backend.core.encryption import is_configured as _enc_ready
     from backend.core.envelope_encryption import envelope_encrypt_str
 
-    _pii_encrypted   = False
+    _pii_encrypted = False
     _name_enc = _email_enc = _phone_enc = None
-    _name_store  = req.name
-    _email_store = req.email
-    _phone_store = req.phone
+    _name_store = "[encrypted]"
+    _email_store = "[encrypted]"
+    _phone_store = "[encrypted]" if req.phone else None
     _enc_metadata: Optional[str] = None   # EncryptedKeyBundle JSON for envelope path
 
     kms_mode = get_key_management_mode()
@@ -1823,23 +1807,24 @@ def capture_handoff_lead(req: HandoffLeadRequest) -> dict:
             logger.error("Handoff lead envelope encryption failed: %s  -  failing closed.", type(exc).__name__)
             raise HTTPException(status_code=503, detail="Encryption service unavailable.")
 
-    elif _enc_ready():
-        # Existing env-key path (Phase 6, backward compat)
+    else:
+        # Existing env-key path (Phase 6, backward compat) now fails closed.
         try:
             from backend.core.encryption import encrypt_str as _enc
-            _name_enc  = _enc(req.name)
+
+            if not _enc_ready():
+                raise ValueError("ENCRYPTION_KEY environment variable is not set.")
+            _name_enc = _enc(req.name)
             _email_enc = _enc(req.email)
             _phone_enc = _enc(req.phone) if req.phone else None
-            _name_store = "[encrypted]"
-            _email_store = "[encrypted]"
-            _phone_store = "[encrypted]" if req.phone else None
             _pii_encrypted = True
             logger.info("Handoff lead PII encrypted (env key). Plaintext not stored.")
         except Exception as exc:
-            logger.error("Handoff lead env-key encryption failed  -  storing plaintext: %s", exc)
-            _name_store = req.name
-            _email_store = req.email
-            _phone_store = req.phone
+            logger.error(
+                "Handoff lead env-key encryption unavailable: %s. Failing closed.",
+                type(exc).__name__,
+            )
+            raise HTTPException(status_code=503, detail="Encryption service unavailable.")
 
     conn = get_connection()
     try:
