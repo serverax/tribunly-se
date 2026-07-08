@@ -73,6 +73,8 @@ Observed result:
 - Deadline live preview is now artifact-proven in `reports/frontend_deadline_recalc_proof.json`:
   editing the event date changed the visible limitation date from `2026-06-30`
   to `2026-08-14` while the note cited the rules service authority string.
+- Remaining non-P1 accessibility issues are now logged in
+  `reports/frontend_accessibility_log.md` with explicit `P2` / `P3` severity.
 
 ## Coverage / Honesty Checks
 
