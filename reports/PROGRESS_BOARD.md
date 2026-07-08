@@ -35,6 +35,7 @@ Base: `main-restored@526cbcc`
 | Expert Mode | Fullstack Architect review v2 (1×P1 embed dim, 2×P2 depends_on + country verdict, 2×P3 orphan routes + GPU) | COMPLETE | `this commit` | `reports/ARCHITECT_REVIEW.md` | 2026-07-08 |
 | Expert Mode | UI/UX review v2 (2×P1 deadline CSS mismatch + loading timeout, 2×P2 card position + error alert, 2×P3) | COMPLETE | `this commit` | `reports/UX_REVIEW.md` | 2026-07-08 |
 | Expert Mode | AI Architect review v2 (live latency: 38s det / 143s model, streaming spec, quant table, escalation DORMANT) | COMPLETE | `this commit` | `reports/AI_ARCHITECT_REVIEW.md` | 2026-07-08 |
+| Phase C T1 | P1 fixes: deadline CSS mismatch, expired-deadline guidance, card position #4→#1, progressive render (skeleton+SSE), error state styled | COMPLETE | `this commit` | `assessment.html`, `intake.html` | 2026-07-08 |
 | WO007 T1 | Floor closure: 14 pre-existing failures root-caused and fixed (8 ExternalLLMForbidden → skip, 5 doc_type NOT NULL → schema fix, 1 Dockerfile missing → skip) | COMPLETE | `this commit` | 1919 passed / 0 failed / 0 errors / 58 skipped | 2026-07-08 |
 | WO007 T1 | Pre-existing proof: `git diff 526cbcc..HEAD` empty for all failing test + policy files | COMPLETE | `this commit` | Empty diff output | 2026-07-08 |
 | WO007 T2 | A7 before-census captured (15 acts, 84 legislation rows, 128 rules, 13 chunks, 2 ACAS, 0 case_law) | COMPLETE | `this commit` | `reports/a7_before_census.md` | 2026-07-08 |

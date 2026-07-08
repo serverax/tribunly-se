@@ -475,12 +475,10 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-      use_model: false, query: brief || 'Assessment request', facts, jurisdiction: 'EW', use_model: true })
+          query: brief || 'Assessment request', facts, jurisdiction: 'EW', use_model: false })
       });
       if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
       const data = await resp.json();
-      // Field-level validation errors come back as status=invalid_date with
-      // field_errors  -  show them on the form instead of a generic failure.
       if (data.status === 'invalid_date' && data.field_errors) {
         form.style.display = 'block';
         document.getElementById('loading').style.display = 'none';
@@ -491,18 +489,26 @@
           if (el) { el.textContent = msg; el.classList.add('visible'); shown = true; }
         }
         if (!shown) alert(data.message || 'Please check the dates you entered.');
-        currentStep = 1;  // back to the dates step
+        currentStep = 1;
         updateWizard();
         window.scrollTo(0, 0);
         return;
       }
+      data._skeleton = true;
       sessionStorage.setItem('assessment_result', JSON.stringify(data));
       sessionStorage.setItem('assessment_facts_full', JSON.stringify(facts));
+      sessionStorage.setItem('assessment_query', brief || 'Assessment request');
       window.location.href = '/pages/assessment.html';
     } catch (err) {
-      alert('Something went wrong: ' + err.message + '\nPlease try again.');
-      form.style.display = 'block';
       document.getElementById('loading').style.display = 'none';
+      form.style.display = 'block';
+      const errBox = document.createElement('div');
+      errBox.className = 'form-section';
+      errBox.style.background = '#fff8f8';
+      errBox.style.borderColor = 'var(--warn)';
+      errBox.innerHTML = '<h3 style="color:var(--warn);">Something went wrong</h3><p>' +
+        err.message + '</p><p>Please try again. If the problem persists, try refreshing the page.</p>';
+      form.parentNode.insertBefore(errBox, form);
     }
   });
 

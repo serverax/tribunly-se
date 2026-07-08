@@ -238,10 +238,10 @@
     h1.textContent = 'Your diagnosis';
     container.appendChild(h1);
 
+    container.appendChild(renderDeadlineCard(d.deadline_info || d.deadline));
     container.appendChild(renderViabilityCard(viability, strength, d.reasoning_summary));
     container.appendChild(renderTribunalChecklist(d.tribunal_elements));
     container.appendChild(renderSaveSection(d));
-    container.appendChild(renderDeadlineCard(d.deadline_info || d.deadline));
     container.appendChild(renderWeaknessSection(d.key_weaknesses));
     container.appendChild(renderEmployerSection(d.employer_arguments));
     container.appendChild(renderValueRange(d.value_range));
@@ -250,6 +250,10 @@
     container.appendChild(renderHandoffSection(d));
     container.appendChild(renderCitations(d.citations));
     container.appendChild(renderBoundaryLog(d.boundary_log));
+
+    if (d._skeleton) {
+      streamReasoning(d, container);
+    }
 
     const footerNav = document.createElement('div');
     footerNav.style.margin = '2rem 0';
@@ -380,39 +384,44 @@
   function renderViabilityCard(viability, strength, summary) {
     const labels = {yes: 'Viable claim', no: 'Unlikely viable', uncertain: 'Uncertain'};
     const strengthLabels = {high: 'Strong', medium: 'Moderate', low: 'Weak', uncertain: 'Uncertain'};
-    
+
     const card = document.createElement('div');
     card.className = 'assessment-card';
-    
+    card.id = 'viability-card';
+
     const header = document.createElement('div');
     header.className = 'assessment-header';
     const h2 = document.createElement('h2');
     h2.textContent = 'Claim viability';
-    
+
     const badgeRow = document.createElement('div');
     badgeRow.style.display = 'flex';
     badgeRow.style.gap = '.5rem';
     badgeRow.style.alignItems = 'center';
-    
+
     const b1 = document.createElement('span');
     b1.className = `badge ${viability}`;
     b1.textContent = labels[viability] || viability;
-    
+
     const b2 = document.createElement('span');
+    b2.id = 'strength-badge';
     b2.className = `badge ${strength}`;
     b2.textContent = strengthLabels[strength] || strength;
-    
+
     badgeRow.append(b1, b2);
     header.append(h2, badgeRow);
     card.appendChild(header);
-    
+
+    const p = document.createElement('p');
+    p.id = 'reasoning-text';
+    p.style.marginTop = '.75rem';
+    p.style.lineHeight = '1.7';
     if (summary) {
-      const p = document.createElement('p');
-      p.style.marginTop = '.75rem';
-      p.style.lineHeight = '1.7';
       p.textContent = summary;
-      card.appendChild(p);
+    } else {
+      p.innerHTML = '<span class="spinner" style="width:1rem;height:1rem;display:inline-block;vertical-align:middle;margin-right:.5rem;"></span> Analysing your case…';
     }
+    card.appendChild(p);
     return card;
   }
 
@@ -461,7 +470,7 @@
                      (dt && daysUntil(dt) <= 30);
 
     const card = document.createElement('div');
-    card.className = `deadline-card ${isUrgent ? 'urgent' : ''}`;
+    card.className = `deadline-card ${isUrgent ? 'deadline-urgent' : ''}`;
     
     const row = document.createElement('div');
     row.style.display = 'flex';
@@ -517,7 +526,12 @@
     p.style.marginTop = '.75rem';
     p.style.fontSize = '.875rem';
     p.style.opacity = '.9';
-    p.textContent = 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
+    if (passed) {
+      p.innerHTML = '<strong>This deadline appears to have passed.</strong> Late claims are accepted only in exceptional circumstances (s.111(2A) ERA 1996). Seek legal advice immediately — a solicitor can assess whether a "not reasonably practicable" or "just and equitable" extension argument applies to your case.';
+      card.setAttribute('role', 'alert');
+    } else {
+      p.textContent = 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
+    }
 
     card.append(row, p, renderRuleDecision(dl));
     return card;
@@ -1246,6 +1260,73 @@
     if (n == null) return ' - ';
     const sym = currency === 'GBP' ? '£' : (currency || '');
     return sym + Number(n).toLocaleString('en-GB', {maximumFractionDigits:0});
+  }
+
+  function streamReasoning(skeleton) {
+    const query = sessionStorage.getItem('assessment_query') || 'Assessment request';
+    const factsRaw = sessionStorage.getItem('assessment_facts_full');
+    const facts = factsRaw ? JSON.parse(factsRaw) : {};
+    const reasoningEl = document.getElementById('reasoning-text');
+    const strengthBadge = document.getElementById('strength-badge');
+
+    fetch(`${API_BASE}/reasoning/stream`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, facts, jurisdiction: 'EW' })
+    }).then(resp => {
+      if (!resp.ok) throw new Error(`Stream error: ${resp.status}`);
+      const ct = resp.headers.get('content-type') || '';
+      if (ct.includes('text/event-stream')) {
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let text = '';
+        reasoningEl.textContent = '';
+        function pump() {
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              if (strengthBadge) {
+                strengthBadge.className = 'badge medium';
+                strengthBadge.textContent = 'Moderate';
+              }
+              sessionStorage.setItem('assessment_result',
+                JSON.stringify(Object.assign({}, skeleton, {
+                  reasoning_summary: text, _skeleton: false
+                })));
+              return;
+            }
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n');
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                text += line.slice(6);
+                reasoningEl.textContent = text;
+              }
+            }
+            pump();
+          });
+        }
+        pump();
+      } else {
+        resp.json().then(data => {
+          if (data.rules) {
+            reasoningEl.textContent = 'Analysis complete (rules-based assessment).';
+          } else {
+            reasoningEl.textContent = data.message || 'Analysis complete.';
+          }
+          if (strengthBadge) {
+            strengthBadge.className = 'badge medium';
+            strengthBadge.textContent = 'Moderate';
+          }
+        });
+      }
+    }).catch(() => {
+      reasoningEl.textContent = skeleton.reasoning_summary ||
+        'Detailed reasoning unavailable. The assessment above is based on statutory rules and citations.';
+      if (strengthBadge) {
+        strengthBadge.className = 'badge uncertain';
+        strengthBadge.textContent = 'Rules-based';
+      }
+    });
   }
 
 })();
