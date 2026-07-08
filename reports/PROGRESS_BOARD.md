@@ -1,8 +1,8 @@
 # Progress Board
 
 Root: `F:\lawapp-restore`
-Branch: `codex/backend-complete`
-Base: `codex/phase-1@c29e960`
+Branch: `cc/convergence`
+Base: `main-restored@526cbcc`
 
 | Phase | Checkpoint | Status | Commit | Evidence | Date |
 | --- | --- | --- | --- | --- | --- |
@@ -26,3 +26,9 @@ Base: `codex/phase-1@c29e960`
 | Stage 2 Closure | Authenticated workspace persistence proven across a fresh browser context | COMPLETE | `this commit` | `reports/frontend_persistence_proof.json`, `reports/frontend_persistence_before.png`, `reports/frontend_persistence_restored.png` | 2026-07-08 |
 | Stage 2 Closure | Deadline live preview repaired and proven against server-supplied rules values | COMPLETE | `this commit` | `reports/frontend_deadline_recalc_proof.json`, `reports/frontend_deadline_recalc.png` | 2026-07-08 |
 | Stage 2 Closure | P2/P3 accessibility log captured for the remaining surface issues | COMPLETE | `this commit` | `reports/frontend_accessibility_log.md` | 2026-07-08 |
+| WO006 | Ollama promoted to default compose service; all URL defaults repointed to compose DNS | COMPLETE | `01eb310` | `docker-compose.yml`, `control-plane/src/core/config.ts`, `backend/services/lawapp-rag-service/ollama_embed.py` | 2026-07-08 |
+| WO006 | Live brain proof: 15 services healthy, /health ai_provider active, live /assess with citations + rules deadline | COMPLETE | `01eb310` | compose ps + /health + /assess evidence in WO006 close | 2026-07-08 |
+| WO006 | .tmp/ gitignored; frontendproof.env throwaway-only, never committed | COMPLETE | `f7cb65e` | `git check-ignore .tmp/frontendproof.env` | 2026-07-08 |
+| WO006 | Embedding test skip guard for missing Ollama model | COMPLETE | `42fdab5` | `tests/test_autonomous_ingestion.py` | 2026-07-08 |
+| WO006 | Floor: 1834 passed / 0 failed / 44 skipped / 8 errors | COMPLETE | `42fdab5` | Docker pytest output | 2026-07-08 |
+| WO006 | A7 owner directive received: full UK employment statute spine ingestion from OGL sources | RECEIVED | - | `docs/handoff/phases/A7_FULL_STATUTE_SPINE.md` | 2026-07-08 |

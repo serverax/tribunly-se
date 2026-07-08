@@ -82,3 +82,44 @@ This is the Phase 0 floor baseline for the recovered tree. Do not substitute pre
 - `tests/test_assess_orchestrator.py::test_missing_rule_fails_closed`: NI/no-rule factual lane currently returns `insufficient_grounding`; changing it to `not_supported` is legal-output status behavior and needs owner approval.
 - `tests/test_brain_outbox.py::test_brain_publishes_assessment_complete_then_worker_processes`: legal-truth validation demotes an uncited/nested-citation patched `"ok"` assessment to `insufficient_grounding`; changing that gate is legal-output/citation-integrity behavior and needs owner approval.
 - `tests/test_integration_tools.py::TestAnonymousFunnel::test_resume_after_login_restores_answers_exactly`: test expects anonymous special-category answers to be restored, but owner decision 2026-06-16 says anonymous flows persist only non-sensitive funnel signals. Changing this needs owner approval.
+
+## Work Order 006 - Convergence (2026-07-08)
+
+Branch: `cc/convergence`, cut from `main-restored@526cbcc`.
+
+### Stack Self-Contained
+
+- Ollama service promoted from optional profile to default compose — starts with `docker compose up`.
+- All `LAWAPP_OLLAMA_BASE_URL` defaults repointed from `host.docker.internal:11434` to `http://ollama:11434` (compose service DNS) across: `docker-compose.yml`, `control-plane/src/core/config.ts`, `backend/services/lawapp-rag-service/ollama_embed.py`.
+- Backend `depends_on: ollama: condition: service_healthy` ensures model availability before backend starts.
+- Env-var override preserved: setting `LAWAPP_OLLAMA_BASE_URL=http://host.docker.internal:11434` still routes to a host-side Ollama.
+- First-run model pulls required: `docker compose exec ollama ollama pull qwen2.5:3b-instruct-q6_K` (inference) + embedding model when available.
+- Embedding model note: `bge-large-en-v1.5` is not natively in the Ollama registry. RAG embedding queries will fail until the model is imported or an Ollama-native alternative is configured.
+
+### Live Brain Proof
+
+- All 15 services healthy including ollama (compose ps evidence in WO006 close).
+- `/health` shows `ai_provider.active=true`, `base_url=http://ollama:11434`.
+- Live `POST /assess` with synthetic unfair-dismissal facts returned:
+  - `status: ok`, 8 legislation-backed citations with URLs
+  - `deadline.source: rules`, `authority: ERA 1996 s.111(2)`, `limitation_date: 2026-06-14`
+  - CitationGuard: 5/5 citations verified via `legislation_db`
+  - Governance: all 3 checks passed
+  - `model_provider: LocalInferenceReasoningModel`, `base_url: http://ollama:11434`
+
+### Hygiene
+
+- `.tmp/` added to `.gitignore` — previously untracked, never committed, no history purge needed.
+- `.tmp/frontendproof.env` contains throwaway dev values only.
+
+### Floor
+
+- `1834 passed / 0 failed / 44 skipped / 8 errors in 241.80s` at `42fdab5`.
+- 8 errors: pre-existing `ExternalLLMForbidden` from `test_phase2_real_model.py` (external LLM forbidden by policy — not regressions).
+
+### Data Scope (Owner Directive A7 - 2026-07-08)
+
+- Statute spine: PENDING FULL INGESTION — owner authorized full UK employment statute + SI ingestion from OGL sources.
+- `case_law` table: EMPTY — Find Case Law bulk extraction licence-gated until granted (D4, expected ~13 July 2026).
+- UI scope: unchanged at 11 topics.
+- Full directive: `docs/handoff/phases/A7_FULL_STATUTE_SPINE.md`.
