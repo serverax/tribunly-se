@@ -20,7 +20,7 @@
   <div id="esc-error" class="cos-error" style="display:none;"></div>
   <div id="esc-content" style="display:none;">
     <div class="cos-card" id="esc-state-card"></div>
-    <div class="cos-card" style="margin-top:1.5rem;">
+    <div class="cos-card" id="esc-referral-card" style="margin-top:1.5rem;">
       <h3>Request solicitor referral</h3>
       <p style="font-size:0.9rem;color:var(--muted);">We refer leads to partner firms. No success fee. SRA-style disclosure applies.</p>
       <form id="referral-form">
@@ -36,6 +36,7 @@
 </div>
 
 <script src="/js/auth.js"></script>
+<script src="/js/beta-scope.js"></script>
 <script src="/js/api-client.js"></script>
 <script src="/js/fetchWithAuth.js"></script>
 <script src="/js/case-engine.js"></script>
@@ -69,6 +70,25 @@
       }
     }
 
+    if (window.LAWAPP_BETA_SCOPE
+        && typeof LAWAPP_BETA_SCOPE.isEnabled === "function"
+        && !LAWAPP_BETA_SCOPE.isEnabled("handoffReferrals")) {
+      var referralCard = document.getElementById("esc-referral-card");
+      referralCard.innerHTML = "";
+      var title = document.createElement("h3");
+      title.textContent = "Solicitor introductions are unavailable in beta";
+      var body = document.createElement("p");
+      body.style.fontSize = "0.95rem";
+      body.style.color = "var(--text)";
+      body.textContent = LAWAPP_BETA_SCOPE.handoffNotice;
+      var note = document.createElement("p");
+      note.style.fontSize = "0.85rem";
+      note.style.color = "var(--muted)";
+      note.style.marginTop = ".75rem";
+      note.textContent = "lawapp remains an information tool only. No referral, representation, or legal advice is provided from this page during the controlled beta.";
+      referralCard.append(title, body, note);
+    }
+
     if (caseId) {
       CaseEngine.loadCase(caseId).then(function (b) {
         loading.style.display = "none";
@@ -85,7 +105,9 @@
       renderEsc({ state: "none", next_action: "Complete intake or select a case." });
     }
 
-    document.getElementById("referral-form").addEventListener("submit", function (e) {
+    var referralForm = document.getElementById("referral-form");
+    if (!referralForm) return;
+    referralForm.addEventListener("submit", function (e) {
       e.preventDefault();
       var status = document.getElementById("ref-status");
       status.textContent = "Submitting…";

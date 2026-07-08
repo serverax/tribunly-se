@@ -147,6 +147,6 @@ These were listed, not deleted, per the audit rule.
 
 Full branch floor on the current backend-complete branch:
 
-- `1824 passed, 63 skipped, 6 warnings in 532.16s (0:08:52)`
+- `1827 passed, 63 skipped, 6 warnings in 432.90s (0:07:12)`
 
 This meets the branch floor requirement of `>= 1824 passed / 0 failed`.

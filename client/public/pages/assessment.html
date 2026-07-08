@@ -45,6 +45,7 @@
   <p>&copy; 2026 lawapp. Unfair dismissal, England and Wales only. Employment Rights Act 1996.</p>
 </footer>
 
+<script src="/js/beta-scope.js"></script>
 <script src="/js/auth.js"></script>
 <script>
 (function() {
@@ -273,7 +274,7 @@
     disclaimer.style.fontSize = '.8rem';
     disclaimer.style.color = 'var(--muted)';
     disclaimer.style.marginTop = '1rem';
-    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. All legal points are cited to statutory or tribunal authority. Outputs are not guaranteed and should not be relied upon as a substitute for legal advice.';
+    disclaimer.textContent = 'lawapp is not a law firm and does not provide regulated legal advice. All legal points are cited to statutory or tribunal authority. Outputs may change with fuller facts and should not be relied upon as a substitute for legal advice.';
     container.appendChild(disclaimer);
 
     wireSaveButton(d);
@@ -875,6 +876,36 @@
       || d.insufficient_grounding
       || d.strength === 'low';
     if (!needsHandoff) return document.createDocumentFragment();
+
+    const handoffEnabled = !window.LAWAPP_BETA_SCOPE
+      || typeof LAWAPP_BETA_SCOPE.isEnabled !== 'function'
+      || LAWAPP_BETA_SCOPE.isEnabled('handoffReferrals');
+
+    if (!handoffEnabled) {
+      const card = document.createElement('div');
+      card.id = 'handoff-section';
+      card.className = 'assessment-card';
+      card.style.borderColor = 'var(--accent)';
+      card.style.background = 'var(--accent-tint)';
+
+      const h3 = document.createElement('h3');
+      h3.style.color = 'var(--accent-600)';
+      h3.textContent = 'Solicitor introductions are unavailable in beta';
+
+      const p1 = document.createElement('p');
+      p1.style.fontSize = '.92rem';
+      p1.style.margin = '.5rem 0 .75rem';
+      p1.textContent = (window.LAWAPP_BETA_SCOPE && LAWAPP_BETA_SCOPE.handoffNotice)
+        || 'Solicitor introductions are not available during the controlled beta. For regulated legal advice, contact ACAS or a qualified employment solicitor directly.';
+
+      const p2 = document.createElement('p');
+      p2.style.fontSize = '.82rem';
+      p2.style.color = 'var(--muted)';
+      p2.textContent = 'lawapp remains an information tool only. No referral, representation, or legal advice is provided from this page during beta.';
+
+      card.append(h3, p1, p2);
+      return card;
+    }
     
     const card = document.createElement('div');
     card.id = 'handoff-section';

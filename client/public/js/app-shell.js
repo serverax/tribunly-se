@@ -41,6 +41,20 @@
 
   var shellWired = false;
 
+  function betaFlagEnabled(flagName) {
+    if (!window.LAWAPP_BETA_SCOPE || typeof window.LAWAPP_BETA_SCOPE.isEnabled !== "function") {
+      return flagName === "handoffReferrals" ? false : true;
+    }
+    return LAWAPP_BETA_SCOPE.isEnabled(flagName);
+  }
+
+  function visibleNavItems() {
+    return NAV_ITEMS.filter(function (item) {
+      if (item.page === "escalation" && !betaFlagEnabled("handoffReferrals")) return false;
+      return true;
+    });
+  }
+
   function activePage() {
     return document.body.getAttribute("data-case-os-page") || "";
   }
@@ -75,9 +89,10 @@
     if (!mount) return;
 
     var inner = mount.innerHTML;
-    var sideNav = NAV_ITEMS.map(function (i) { return navLink(i, false); }).join("");
+    var navItems = visibleNavItems();
+    var sideNav = navItems.map(function (i) { return navLink(i, false); }).join("");
     var bottomNav = BOTTOM_NAV.map(function (page) {
-      var item = NAV_ITEMS.filter(function (i) { return i.page === page; })[0];
+      var item = navItems.filter(function (i) { return i.page === page; })[0];
       return item ? navLink(item, true) : "";
     }).join("");
 
@@ -221,6 +236,7 @@
   function injectBoundaryFooter() {
     if (document.getElementById("case-os-boundary-footer")) return;
     if (!document.body.classList.contains("case-os")) return;
+    if (document.querySelector(".case-os-shell .case-os-boundary.boundary")) return;
     var footer = document.createElement("footer");
     footer.id = "case-os-boundary-footer";
     footer.className = "case-os-boundary";

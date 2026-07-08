@@ -84,5 +84,12 @@
     coverageLabel: coverageLabel,
     corpusSummary: corpusSummary,
     betaNotice: "Controlled beta  -  11 employment topics (England & Wales). Not full UK employment law coverage.",
+    flags: {
+      handoffReferrals: false,
+    },
+    isEnabled: function (flagName) {
+      return !!(this.flags && this.flags[flagName]);
+    },
+    handoffNotice: "Solicitor introductions are not available during the controlled beta. For regulated legal advice, contact ACAS or a qualified employment solicitor directly.",
   };
 })();

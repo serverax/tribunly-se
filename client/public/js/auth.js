@@ -212,6 +212,7 @@
     if (document.getElementById('case-os-boundary-footer')) return;
     if (document.querySelector('footer.case-os-boundary')) return;
     if (document.querySelector('footer .case-os-boundary')) return;
+    if (document.querySelector('body > footer, main + footer, footer')) return;
     var footer = document.createElement('footer');
     footer.id = 'case-os-boundary-footer';
     footer.className = 'case-os-boundary';

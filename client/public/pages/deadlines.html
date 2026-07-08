@@ -37,14 +37,17 @@
 </div>
 
 <script src="/js/auth.js"></script>
+<script src="/js/beta-scope.js"></script>
 <script src="/js/api-client.js"></script>
 <script src="/js/fetchWithAuth.js"></script>
 <script src="/js/case-engine.js"></script>
 <script src="/js/case-components.js"></script>
+<script src="/js/deadline.js"></script>
 <script src="/js/app-shell.js"></script>
 <script>
 (function () {
   var caseId = new URLSearchParams(location.search).get("case_id") || CaseEngine.getActiveCaseId();
+  var deadlineRules = null;
 
   CaseOSShell.init({ page: "deadlines" }).then(function (ok) {
     if (!ok) return;
@@ -103,6 +106,34 @@
       });
     }
 
+    async function previewDeadline(dateStr) {
+      if (!dateStr || !window.LawappDeadline) return;
+      try {
+        deadlineRules = deadlineRules || await LawappDeadline.fetchDeadlineRules(API_BASE || "", "unfair_dismissal");
+        var preview = LawappDeadline.computeDeadline(dateStr, deadlineRules.timeLimitMonths);
+        if (!preview || preview.error || !preview.limitation_date) return;
+        var msPerDay = 24 * 60 * 60 * 1000;
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        var limit = new Date(preview.limitation_date + "T00:00:00");
+        var daysRemaining = Math.round((limit.getTime() - today.getTime()) / msPerDay);
+        var urgency = daysRemaining <= 14 ? "urgent" : (daysRemaining <= 30 ? "warning" : "safe");
+        loading.style.display = "none";
+        content.style.display = "block";
+        showDeadline({
+          deadline_date: preview.limitation_date,
+          days_remaining: daysRemaining,
+          urgency: urgency,
+          acas_required: true,
+          method: "server rules + live WASM/JS preview",
+        });
+        document.getElementById("dl-note").textContent =
+          "Live preview uses the current server rule set (" + (deadlineRules.authorityRef || "ERA 1996 s.111(2)") + "). Reminder delivery remains descoped in controlled beta.";
+      } catch (_) {
+        // Keep the explicit server-backed recalc path as the fallback.
+      }
+    }
+
     document.getElementById("btn-recalc").addEventListener("click", function () {
       var d = document.getElementById("event_date").value;
       if (!d) {
@@ -112,6 +143,10 @@
       }
       errEl.style.display = "none";
       recalc(d);
+    });
+
+    document.getElementById("event_date").addEventListener("input", function (e) {
+      if (e.target.value) previewDeadline(e.target.value);
     });
 
     loadFromCase();
