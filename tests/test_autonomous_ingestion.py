@@ -38,6 +38,24 @@ def _db_up() -> bool:
 db_required = pytest.mark.skipif(not _db_up(), reason="UNPROVEN  -  DB not accessible")
 
 
+def _embed_model_available() -> bool:
+    try:
+        import json, urllib.request
+        from ingestion.config import settings
+        url = f"http://{__import__('os').getenv('LAWAPP_OLLAMA_BASE_URL', 'http://ollama:11434').strip('/').split('://')[-1]}/api/tags"
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            models = [m["name"] for m in json.loads(resp.read()).get("models", [])]
+        return settings.embedding_model in models or any(settings.embedding_model in m for m in models)
+    except Exception:
+        return False
+
+
+embed_model_required = pytest.mark.skipif(
+    not _embed_model_available(),
+    reason="UNPROVEN  -  embedding model not available in Ollama",
+)
+
+
 def _valid_doc(content: str = "Section 98 of the Employment Rights Act 1996 sets out the fair reasons for dismissal. See s.98.") -> IngestionDoc:
     return IngestionDoc(
         source_url=SRC, source_type="primary_legislation", parser_type="clml",
@@ -153,6 +171,7 @@ def test_rejected_document_is_never_chunked(clean_db):
 
 
 @db_required
+@embed_model_required
 def test_approved_content_is_embedded_and_searchable(clean_db):
     from backend.core.ingestion.perpetual_law_brain import PerpetualLawBrain
     brain = PerpetualLawBrain()
