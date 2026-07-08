@@ -33,6 +33,9 @@ Thumbs.db
 *.log
 logs/
 
+# Temporary proof / scratch artifacts
+.tmp/
+
 # Test artefacts
 .pytest_cache/
 .coverage
