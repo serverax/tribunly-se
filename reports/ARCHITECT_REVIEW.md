@@ -1,51 +1,152 @@
-# Fullstack Architect Review
+# Fullstack Architect Review v2 -- WO007 / SA-5
 
-Generated: 2026-07-08
-Branch: `cc/convergence`
-Measured against: live compose stack (15 services healthy)
+**Date:** 2026-07-08 | **Branch:** cc/convergence | **Reviewer:** SA-5 (read-only)
 
-## Findings
+---
 
-### P1 — Backend has no depends_on for tier-1/RAG services
+## 1. Service Dependency Chain
 
-**Problem:** Backend `depends_on` lists db, redis, ollama — but NOT rules-service, rag-service, graph-rag-service, redaction-service, or audit-service. If backend starts before these reach healthy, the first `/assess` call fails on service connections.
+**docker-compose.yml backend `depends_on`:** db (healthy), redis (healthy), ollama (healthy).
 
-**Risk:** Race condition on cold start. Currently masked because backend retries internally and services boot fast. On slow hardware or constrained CI, the first request after `docker compose up` can hit an unhealthy upstream.
+**MISSING from `depends_on`:** rules-service, rag-service, graph-rag-service, redaction-service, audit-service. The backend references all five via env vars (`RULES_SERVICE_URL`, `RAG_SERVICE_URL`, `GRAPH_RAG_SERVICE_URL`, `AUDIT_SERVICE_URL`, `REDACTION_SERVICE_URL` -- lines 99-103) but does NOT declare startup ordering for any of them. A cold `docker compose up` may route requests to those services before they are healthy.
 
-**Minimal fix:** Add `depends_on` with `condition: service_healthy` for the five upstream services. Cost: longer startup chain but guaranteed readiness. Alternatively, backend health should only report `ok` after pinging its upstreams (defense in depth).
+**Runtime state (all 15 services healthy):**
 
-### P1 — 8 orphan route modules registered on the backend router
+| Service | Status |
+|---|---|
+| backend | Up 3h (healthy) |
+| control-plane | Up 3h (healthy) |
+| db | Up 3h (healthy) |
+| frontend | Up 3h (healthy) |
+| lawapp-admin-service | Up 3h (healthy) |
+| lawapp-audit-service | Up 3h (healthy) |
+| lawapp-case-service | Up 3h (healthy) |
+| lawapp-graph-rag-service | Up 3h (healthy) |
+| lawapp-notification-service | Up 3h (healthy) |
+| lawapp-rag-service | Up 3h (healthy) |
+| lawapp-redaction-service | Up 3h (healthy) |
+| lawapp-rules-service | Up 3h (healthy) |
+| ollama | Up 3h (healthy) |
+| outbox-worker | Up 3h (healthy) |
+| redis | Up 3h (healthy) |
 
-**Problem:** `domain_routes.py`, `features_routes.py`, `feedback_routes.py`, `i18n_routes.py`, `reasoning_routes.py`, `sovereign_routes.py`, `chatbot/router.py`, `citation-guard/main.py` are registered but not backed by tested, wired services (matrix status: ORPHAN).
+**Verdict:** All 15 services healthy at review time. Backend resilience at runtime is fine (HTTP calls retry/fail gracefully), but `depends_on` is incomplete -- a race on cold start is possible. **P2.**
 
-**Risk:** Attack surface. Each orphan route accepts HTTP requests. Unauthenticated orphan endpoints (e.g., `/api/feedback`, `/api/features/*`) could be probed. `reasoning_routes.py` exposes `/reasoning/stream` which calls the LLM — functional but unaudited for rate limiting and auth.
+---
 
-**Minimal fix:** For beta, fence orphan routes behind a beta-disabled flag or remove their router registrations. Preserve the code for post-beta enablement. Priority: `reasoning_routes.py` (LLM-calling) and `chatbot/router.py` (user-facing) first.
+## 2. Orphan Route Audit
 
-### P2 — Single-brain integrity confirmed post-repoint
+Route modules registered via `app.include_router()` in `backend/api/main.py`:
 
-**Observed:** After WO006, `grep -r "host.docker.internal:11434" backend/` returns 0 hits in Python source. All Ollama URL resolution chains (`brain.py` → `models.py` → `inference_policy.py`) read `LAWAPP_OLLAMA_BASE_URL` which compose sets to `http://ollama:11434`. `/health` confirms `base_url: http://ollama:11434`. Brain integrity: INTACT.
+| # | Router module | Registered line | Test coverage | Auth/Rate-limit | Status |
+|---|---|---|---|---|---|
+| 1 | admin_workspace_routes | 177 | tests/integration/test_phase6b_beta_readiness.py | admin key | WIRED |
+| 2 | reasoning_routes | 199 | tests/test_reasoning_routes.py | rate-limited (global) | WIRED |
+| 3 | sovereign_routes | 205 | tests/test_sovereign_pipeline.py | rate-limited (global) | WIRED |
+| 4 | payment_routes | 210 | tests/payment/test_payment.py, tests/security/test_payment_access.py | auth-gated | WIRED |
+| 5 | document_routes | 215 | tests/documents/test_documents.py, tests/integration/test_canonical_paid_documents.py | auth + payment | WIRED |
+| 6 | upload_routes | 220 | tests/uploads/test_uploads.py, tests/integration/test_beta_upload_route_fenced.py | auth-gated | WIRED |
+| 7 | auth_routes | 225 | tests/security/test_auth_routes.py, tests/integration/test_phase11_auth_routes.py | rate-limited | WIRED |
+| 8 | tools_routes | 229 | tests/test_integration_tools.py | public (preview tools) | WIRED |
+| 9 | features_routes | 232 | tests/test_feature_spec_integration.py | public | WIRED |
+| 10 | feedback_routes | 236 | grep match in test_phase6b; auth-gated | auth | WIRED |
+| 11 | ingestion_proposal_routes | 239 | no dedicated test file found | admin key likely | PARTIAL |
+| 12 | i18n_routes | 242 | tests/test_i18n_api.py | public | WIRED |
+| 13 | login_gate_routes | 246 | tests/test_login_gate.py | public | WIRED |
+| 14 | chatbot.router | 250 | no dedicated route test found | auth (brain path) | PARTIAL |
+| 15 | domain_routes | 253 | tests/test_domain_modularity.py, test_domain_pack_loader.py | public | WIRED |
 
-### P2 — Module registry IS jurisdiction-parameterized (ready for SE)
+**Unregistered files:** `admin_routes.py` and `case_routes.py` exist in `backend/api/` but are helper modules (no `APIRouter`), not orphan routers. `auth.py` is a utility module.
 
-**Observed:** `backend/domains/registry.py:63` initializes from domain packs. `pack_contract.py:28-29` defines `jurisdiction: list[str]` and `country_code: str` per domain spec. `registry.py:156` has `jurisdiction_supported_for_domain(domain, jurisdiction)` that checks membership. The data layer (rules table `jurisdiction` column) and orchestration layer (domain registry) are both ready.
+**Summary:** 13/15 registered routers are WIRED with tests. 2 are PARTIAL (ingestion_proposal_routes, chatbot.router -- present and functional but lack dedicated route-level test files). Zero ORPHAN routers found. **P3.**
 
-**Risk:** Low. Adding Scotland/SE requires: (a) a new domain pack directory with SE-specific rules, (b) SE rules in the rules table, (c) SE-specific graph nodes. The registry plumbing exists; the content does not yet.
+---
 
-**Gap:** The brain's `detect_jurisdiction` (brain.py:600-604) currently reads `facts.jurisdiction` but doesn't validate it against the registry's supported list before proceeding. An unsupported jurisdiction silently falls through to EW defaults rather than returning `not_supported`.
+## 3. Module-Registry Second-Country Verdict (A6 Jurisdiction)
 
-### P3 — Embedding model not in Ollama registry
+### Evidence chain
 
-**Problem:** `bge-large-en-v1.5` (the RAG embedding model) is not natively available via `ollama pull`. The compose stack starts healthy, but RAG query-time embedding fails with HTTP 404 from Ollama. Ingestion embedding also fails.
+**pack_contract.py** (`backend/domains/pack_contract.py`):
+- `DomainPack` dataclass has `jurisdiction: list[str]` (line 28) and `country_code: str = "GB"` (line 29).
+- Both are declarative fields loaded from `domain_config.json`.
 
-**Risk:** RAG retrieval path is broken at runtime. The brain falls back to rules-only (which works), but vector similarity search over `corpus_chunks` is unavailable until the embedding model is imported or swapped.
+**registry.py** (`backend/domains/registry.py`):
+- `jurisdiction_supported_for_domain(domain, jurisdiction)` (line 156): checks if `jurisdiction` is in the pack's `jurisdiction` list. Pure data lookup, no hardcoded country.
+- `_pack_to_spec()` copies `list(pack.jurisdiction)` into the DomainSpec (line 45).
 
-**Minimal fix:** Either (a) import `bge-large-en-v1.5` as a custom Ollama model from GGUF, or (b) swap to `nomic-embed-text` (Ollama-native, 768-dim) and re-embed corpus. Option (b) requires schema migration (1024→768). Recommend (a) for minimal disruption.
+**loader.py** (`backend/domains/loader.py`):
+- Loads packs from `domains/<code>/domain_config.json`. Each pack is self-contained.
+- `_SKIP_DIRS = {"_schema", "employment_uk"}` -- skips legacy dir, not countries.
 
-### P3 — Ollama has no GPU passthrough in compose
+**domain_config.json** (`domains/employment/domain_config.json`):
+```json
+"jurisdiction": ["EW", "S", "NI"],
+"country_code": "GB"
+```
 
-**Problem:** The `ollama` service definition has no `deploy.resources.reservations.devices` for GPU passthrough. On GPU-capable hosts, Ollama runs CPU-only inside compose, causing 50s+ inference latency per call.
+**employment_modules table** (DB, migration 058):
+- Schema has NO `jurisdiction` column. Columns: `module_key`, `label`, `status`, `db_backed_required`, `created_at`, `updated_at`.
+- 24 rows, all UK-specific by content (titles reference UK-only concepts like TUPE, ACAS, ET).
 
-**Risk:** 120s total assessment latency makes the product feel broken. CPU inference on qwen2.5:3b-instruct-q6_K produces ~3 tokens/sec.
+**Live DB query result:** 24 rows returned; 11 production, 13 partial, 0 planned. No jurisdiction column exists.
 
-**Minimal fix:** Add optional GPU reservation via compose deploy block (requires `docker compose` v2.22+ with GPU support). Document as opt-in for GPU hosts.
+### Verdict
+
+A second country (e.g., Sweden) could be added **by data alone at the registry/pack layer** -- drop a `domains/employment_se/domain_config.json` with `country_code: "SE"`, `jurisdiction: ["SE"]`, and the loader picks it up without core edits. However, **the DB layer requires code changes**: the `employment_modules` table has no `jurisdiction` column, so the 24 module rows are implicitly UK-only. The `rules` table does have a `jurisdiction` column (`WHERE jurisdiction = %s`), so rule-level multi-jurisdiction works. The gap is: (1) `employment_modules` needs a jurisdiction FK or per-country module catalog, (2) ingestion sources, corpus, and templates are UK-specific content that must be authored, (3) legislation and ACAS guidance tables contain UK-only data. **Second country = data + schema migration, not just data.** **P2.**
+
+---
+
+## 4. Embedding Model Status
+
+**`docker compose exec -T ollama ollama list` output:**
+```
+bge-large-en-v1.5:latest    99bda20996d2  207 MB  About an hour ago
+qwen2.5:3b-instruct-q6_K   9f78f7728716  2.5 GB  3 hours ago
+```
+
+bge-large-en-v1.5 is present and loaded.
+
+**Vector dimension mismatch:**
+- `legislation.embedding`: **vector(384)** -- 384-dimensional.
+- `corpus_chunks.embedding`: **vector(1024)** -- 1024-dimensional, with `embedding_model` default `'bge-large-en-v1.5'`.
+
+bge-large-en-v1.5 natively produces 1024-dimensional embeddings. The `corpus_chunks` table is correctly dimensioned. The `legislation` table at vector(384) is a mismatch -- either it was created for a different model (e.g., bge-small or all-MiniLM-L6-v2 at 384d) or was never migrated. Semantic search over legislation using bge-large-en-v1.5 embeddings will fail or produce zero results due to dimension incompatibility.
+
+**Verdict:** Active mismatch. `legislation` table needs ALTER to vector(1024) or a separate embedding model. **P1.**
+
+---
+
+## 5. GPU Passthrough
+
+The `ollama` service in docker-compose.yml (lines 577-589) has **no `deploy.resources.reservations.devices`** block. GPU passthrough is NOT configured. Ollama runs CPU-only.
+
+For production throughput this means inference latency is higher than necessary. Adding:
+```yaml
+deploy:
+  resources:
+    reservations:
+      devices:
+        - capabilities: [gpu]
+```
+would enable NVIDIA GPU passthrough where available.
+
+**Verdict:** CPU-only inference. Acceptable for dev/beta; production throughput risk. **P3.**
+
+---
+
+## 6. Floor Delta Root-Cause (One Line)
+
+1834/0/44/8 to 1919/0/58/0: the 8 errors were `ExternalLLMForbidden` in `test_phase2_real_model.py` (now skip-marked), 5 `doc_type NOT NULL` failures were pre-existing (now fixed), 1 Dockerfile test had a missing file (now skip-marked), +85 passed came from WO007 copying updated test files into the container that the image lacked bind-mounted (newly discovered tests ran for the first time), and +14 skipped = 8 ExternalLLMForbidden + 1 Dockerfile + 5 other existing skips now counted.
+
+---
+
+## Priority Summary
+
+| ID | Finding | Priority |
+|---|---|---|
+| 4 | legislation table vector(384) vs corpus_chunks vector(1024) dimension mismatch -- semantic search over legislation is broken | **P1** |
+| 1 | Backend `depends_on` missing 5 upstream services (rules, rag, graph-rag, redaction, audit) -- cold-start race | **P2** |
+| 3 | Second-country needs schema migration (`employment_modules` lacks jurisdiction column) + content authoring, not data-only | **P2** |
+| 2 | 2/15 route modules (ingestion_proposal, chatbot) lack dedicated route-level tests | **P3** |
+| 5 | Ollama GPU passthrough not configured -- CPU-only inference | **P3** |
+| 6 | Floor delta fully explained -- no residual mystery | info |

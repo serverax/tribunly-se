@@ -1,60 +1,154 @@
-# UI/UX Review
+# UX Review v2 -- SA-6 (UI/UX Review), WO007
 
-Generated: 2026-07-08
-Branch: `cc/convergence`
-Measured against: live surface at `localhost:8000`
+**Branch:** cc/convergence  
+**Reviewer:** SA-6 (read-only)  
+**Date:** 2026-07-08  
 
-## Assessment Rendering — Does the Deadline Dominate?
+---
 
-**Finding (P1 — conversion impact: HIGH):** No. The deadline card renders 4th in the assessment result, after: (1) viability card, (2) tribunal checklist, (3) save section. On mobile (360px), a user must scroll past ~3 screens of content before seeing their deadline. The deadline is the product's core promise — "understand your deadline" — but the page buries it.
+## 1. Assessment rendering order -- does the deadline dominate?
 
-**Rendering order** (`assessment.html:241-251`):
-1. `renderViabilityCard` — strength badge + reasoning summary
-2. `renderTribunalChecklist` — checklist of legal elements
-3. `renderSaveSection` — save-to-account CTA
-4. `renderDeadlineCard` — **the deadline** (navy/red card, 2.8rem days count)
-5. `renderWeaknessSection` — key weaknesses
-6. `renderEmployerSection` — employer arguments
-7. `renderValueRange` — compensation estimate
-8. `renderNextStep` — recommended action
-9. `renderDocumentSection` — paid docs CTA
-10. `renderHandoffSection` — solicitor referral
-11. `renderCitations` — legal citations
+**Verdict: P2 -- Deadline is buried at position 4 of 10.**
 
-**Styling observation:** When visible, the deadline card IS dominant — navy gradient, 2.8rem days counter, urgent variant turns red. The styling is correct; the position is wrong.
+The `renderAssessment()` function at `client/public/pages/assessment.html:241-252` appends cards in this order:
 
-**Fix (in-scope, copy/layout):** Move `renderDeadlineCard` to position 1 or 2. Deadline first, then viability. The user's most urgent question is "how long do I have?" not "how strong is my case?"
+1. Viability card (`renderViabilityCard`) -- line 241
+2. Tribunal checklist (`renderTribunalChecklist`) -- line 242
+3. Save section (`renderSaveSection`) -- line 243
+4. **Deadline card** (`renderDeadlineCard`) -- line 244
+5. Weaknesses (`renderWeaknessSection`) -- line 245
+6. Employer arguments (`renderEmployerSection`) -- line 246
+7. Value range (`renderValueRange`) -- line 247
+8. Next step (`renderNextStep`) -- line 248
+9. Document section (`renderDocumentSection`) -- line 249
+10. Handoff section (`renderHandoffSection`) -- line 250
 
-### P1 — 120-second blank loading state
+The product promise is "understand your deadline" -- the deadline is the single most time-sensitive, actionable piece of information. It sits behind viability, a checklist, and a save-to-account CTA. On mobile, a user must scroll past three full cards before seeing their deadline. The deadline card should be position 1 or 2 (immediately after viability at most).
 
-**Problem:** After intake submission, the assessment page shows "Loading your assessment..." spinner for ~120 seconds (full Ollama inference time). No progress indication, no partial results, no timeout message. Users will assume it's broken and leave.
+---
 
-**Risk:** Catastrophic for conversion. 120s of spinner is unacceptable for a consumer product.
+## 2. Expired limitation date renders as urgent warning, NOT neutral date
 
-**Minimal fix (Phase C spec):** Progressive render — paint the deterministic lane (deadline, viability skeleton, citations) in <1s from `use_model=false` response (measured: 200ms), then stream the reasoning summary via `/reasoning/stream` SSE. See AI_ARCHITECT_REVIEW.md for the spec.
+**Verdict: P1 -- Expired deadlines DO render as urgent. Implementation is correct but has a CSS class mismatch.**
 
-### P2 — Weakness section readability
+The `renderDeadlineCard()` function at `client/public/pages/assessment.html:452-524` implements expired-date detection:
 
-**Problem:** `key_weaknesses` renders as a plain `<ul>` with no visual weight. On the live assessment, weaknesses like "Early Conciliation: claimant must notify ACAS" are critical action items but visually identical to informational text. They don't stand out from the surrounding content.
+- **Line 459:** `const passed = dl.deadline_passed === true;`
+- **Line 460-461:** `const isUrgent = passed || ['expired', 'critical', 'urgent'].includes(dl.urgency_level) || (dt && daysUntil(dt) <= 30);`
+- **Line 464:** Card gets class `deadline-card urgent` when `isUrgent` is true.
+- **Line 476:** Label text changes to `'Tribunal deadline  -  PASSED'` when `passed` is true.
+- **Line 482-495:** A bold warning div is appended: either the backend's `deadline_warning` text (with `role="alert"` for screen readers), or a fallback `"Fewer than 30 days remain"`.
 
-**Fix (in-scope, styling):** Add a warning-yellow left border or background to the weaknesses list. Use `role="alert"` on deadline-critical weaknesses (EC requirement).
+The `daysUntil()` helper at line 1240-1242 correctly returns a negative number for past dates, triggering the <=30 check.
 
-### P2 — Intake wizard has no estimated time
+**CSS class mismatch (P2):** The JS applies class `urgent` (line 464: `deadline-card urgent`), but the CSS defines `.deadline-urgent` (styles.css:354), not `.deadline-card.urgent`. The red gradient background (`linear-gradient(135deg, #c15536, #963c22)`) never activates. An expired deadline gets the standard navy gradient, not the intended red. The text says "PASSED" but the card colour does not change. This is a styling-only bug -- the urgency IS communicated via text, but the visual signal (red background) is broken.
 
-**Problem:** The intake form (`intake.html`) has a progress bar and step labels but no "this takes about 5 minutes" indicator on the form itself. The landing page says "5 minutes" but by the time the user reaches intake, that context is gone.
+**Intake deadline preview (correct):** The intake wizard at `client/public/pages/intake.html:399-401` also checks `daysLeft < 0` and applies CSS class `passed` with badge text `"Deadline passed"`. The intake CSS at line 23 defines `.deadline-badge.passed { background: #dc3545; color: #fff; }` -- this one works correctly.
 
-**Fix (in-scope, copy):** Add time estimate to the intake page header, matching the landing page promise.
+---
 
-### P2 — Error states are honest but generic
+## 3. 120-second loading state
 
-**Problem:** The assessment error state ("Your session may have expired") and the insufficient-grounding state both route to "complete the intake form again." For expired sessions, this is correct. For insufficient grounding, the user already completed intake — the issue is their facts, not their session.
+**Verdict: P1 -- No timeout, no progress indication, no abort.**
 
-**Fix (in-scope, copy):** Differentiate the two error paths. Insufficient grounding should say "We need more detail about [specific missing fact]" not "complete the intake form again."
+After submit at `client/public/pages/intake.html:470-506`:
 
-### P3 — Trust signals placement
+- The form is hidden (`form.style.display = 'none'`).
+- A loading div appears (line 249-252) with a spinner and text: `"Analysing your case... This may take a moment."`.
+- A single `fetch()` call to `/assess` is issued (line 474) with **no AbortController, no timeout, no progress bar, no elapsed-time counter**.
+- If the backend takes 30, 60, or 120 seconds, the user sees an indefinite spinner with no feedback on whether the request is still alive.
+- The only exit is a network error or server error, which triggers a bare `alert()` (line 503).
 
-**Observed:** Trust bar ("11 topics in controlled beta / Grounded citations / Local AI / Not a law firm") sits below the hero fold on landing. Legal notice ("Not a law firm. Not legal advice.") is persistent at top of every page. Footer repeats the disclaimer. Trust presentation is honest and consistent.
+Missing:
+- No `AbortController` with a timeout (e.g., 120s).
+- No "still working..." message after 10-15 seconds.
+- No progress indication (percentage, step labels, or elapsed time).
+- No "this is taking longer than expected" warning after 30s.
+- No retry button if the request appears stuck.
 
-### P3 — Mobile ergonomics
+---
 
-**Observed:** Responsive CSS handles 360px cleanly — deadline card stacks vertically, wizard nav goes full-width, grid columns collapse. Skip links present. Mobile menu button has aria-label. No horizontal overflow (verified in responsive matrix). Accessibility bar (A+, Easy read, High contrast) is present on landing.
+## 4. Weakness section visual weight
+
+**Verdict: P3 -- Weaknesses have adequate visual prominence.**
+
+The `renderWeaknessSection()` at `client/public/pages/assessment.html:586-606` renders weaknesses as `<li>` elements inside a `<ul class="weakness-list">`.
+
+CSS at `client/public/css/styles.css:342`:
+```
+.weakness-list li {
+  padding: .65rem .85rem;
+  background: var(--warn-bg);
+  border-left: 3px solid var(--warn);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: .55rem;
+  font-size: .95rem;
+}
+```
+
+Each weakness item has: a warning-tinted background (`--warn-bg`), a 3px left border in warning colour (`--warn`), and rounded corners. This is visually distinct from plain text. The section header "Key weaknesses in your case" and subtext "These are the issues most likely to reduce your prospects or compensation" provide context. No icons are used, but the coloured border + background provide sufficient visual weight. Acceptable.
+
+---
+
+## 5. Intake wizard time estimate
+
+**Verdict: P3 -- No time estimate on the intake page itself.**
+
+The landing page at `client/public/index.html:68` promises:
+- `"Start your case in 5 minutes"` (CTA button)
+- `"About 5 minutes . Private & secure . No account needed to start"` (line 72)
+
+However, the intake form at `client/public/pages/intake.html:54` says only:
+- `"Tell us about your situation to receive an honest assessment of your claim."`
+
+No "takes about 5 minutes" or "4 steps, ~5 min" indicator appears on the actual form page. Users arriving directly (bookmarks, back-navigation) have no time-cost framing. The 4-step wizard with progress bar partially compensates, but an explicit time estimate would reinforce the landing page promise.
+
+**Also note:** The landing page CTA links to `/pages/case-intake.html` (line 68), while the actual intake wizard lives at `/pages/intake.html`. A separate `case-intake.html` file exists at `client/public/pages/case-intake.html` -- unclear whether this is a redirect or a duplicate. Potential dead link if `case-intake.html` does not redirect.
+
+---
+
+## 6. Error state differentiation
+
+**Verdict: P2 -- Differentiated, but generic errors get only an alert().**
+
+The assessment page at `client/public/pages/assessment.html` handles four distinct statuses:
+
+| Status | UI Treatment | Lines |
+|---|---|---|
+| `not_supported` | Yellow-tinted card, "Outside our scope", link home | 137-159 |
+| `missing_edt` | Yellow-tinted card, "Missing dismissal date", link to intake | 162-185 |
+| `insufficient_grounding` | Assessment card with "Uncertain" badge, actionable suggestions, handoff section | 187-229 |
+| `ok` | Full assessment rendering | 231+ |
+
+The intake form at `client/public/pages/intake.html` differentiates `invalid_date` (lines 484-498) -- field-level errors shown inline, user returned to step 2.
+
+**Gap:** A generic server error (HTTP 500, network failure, or any non-JSON response) at intake.html:502-505 produces only:
+```
+alert('Something went wrong: ' + err.message + '\nPlease try again.');
+```
+No styled error card, no recovery guidance, no trace ID. This is a bare browser alert for what may be a production outage. Compare with the assessment page's structured error state (lines 34-38) which at least shows a styled card.
+
+The assessment page itself handles fetch failure (line 74-77) by showing the `#error-state` div, but this says "Your session may have expired" -- potentially misleading if the actual cause is a server error.
+
+---
+
+## 7. Floor delta
+
+Floor: 1834->1919 passed (+85 from test discovery in container copy), 8->0 errors (ExternalLLMForbidden->skip, doc_type->fix, Dockerfile->skip), 44->58 skipped (+14 from gating fixes).
+
+---
+
+## Priority summary
+
+| # | Finding | Priority | File:Line |
+|---|---------|----------|-----------|
+| 1 | Deadline card CSS class mismatch -- urgent red gradient never applies | P1 | assessment.html:464, styles.css:354 |
+| 2 | No loading timeout/progress on /assess call (indefinite spinner) | P1 | intake.html:470-506 |
+| 3 | Deadline card position 4 of 10 -- should be 1-2 | P2 | assessment.html:244 |
+| 4 | Generic server error is a bare alert(), not a styled state | P2 | intake.html:502-505 |
+| 5 | No time estimate on intake form page (landing says "5 minutes") | P3 | intake.html:54 |
+| 6 | Weakness section styling is adequate | P3 (ok) | styles.css:342 |
+
+---
+
+*End of review. All observations from tree at F:\lawapp-restore, branch cc/convergence.*
