@@ -29,6 +29,7 @@ from datetime import date
 
 from ingestion.config import settings
 from backend.core.pipeline import assess
+from backend.core.inference_policy import ExternalLLMForbidden
 from backend.core.models import ClaudeReasoningModel
 from backend.core.deidentify import deidentify
 
@@ -43,7 +44,12 @@ def haiku():
         pytest.skip("ANTHROPIC_API_KEY not set  -  real model tests require it")
     if not mid:
         pytest.skip("WORKHORSE_MODEL_ID not set")
-    return ClaudeReasoningModel(model_id=mid, api_key=key)
+    try:
+        return ClaudeReasoningModel(model_id=mid, api_key=key)
+    except ExternalLLMForbidden as exc:
+        # Security policy (backend/core/inference_policy.py) forbids external/cloud
+        # LLMs on this environment  -  skip cleanly; do NOT weaken the control.
+        pytest.skip(f"External LLM forbidden by inference policy: {exc}")
 
 
 # ── 5 realistic unfair-dismissal fact patterns ───────────────────────────────

@@ -289,11 +289,18 @@ def test_download_wrong_owner(setup_test_user_and_case, test_case_id):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO documents (
-                    id, case_id, user_id, document_type, storage_ref
-                ) VALUES (%s::uuid, %s::uuid, %s::uuid, %s, %s)
+                INSERT INTO users (id, email, password_hash)
+                VALUES (%s, %s, %s) ON CONFLICT (email) DO NOTHING
                 """,
-                (document_id, test_case_id, other_user, "et1_support", "/tmp/test.html"),
+                (other_user, f"other-{other_user}@example.com", "hash"),
+            )
+            cur.execute(
+                """
+                INSERT INTO documents (
+                    id, case_id, user_id, doc_type, document_type, storage_ref
+                ) VALUES (%s::uuid, %s::uuid, %s::uuid, %s, %s, %s)
+                """,
+                (document_id, test_case_id, other_user, "et1_support", "et1_support", "/tmp/test.html"),
             )
         conn.commit()
     finally:
@@ -341,10 +348,10 @@ def test_download_unpaid():
             cur.execute(
                 """
                 INSERT INTO documents (
-                    id, case_id, user_id, document_type, storage_ref
-                ) VALUES (%s::uuid, %s::uuid, %s::uuid, %s, %s)
+                    id, case_id, user_id, doc_type, document_type, storage_ref
+                ) VALUES (%s::uuid, %s::uuid, %s::uuid, %s, %s, %s)
                 """,
-                (document_id, case_id, user_id, "et1_support", "/tmp/test.html"),
+                (document_id, case_id, user_id, "et1_support", "et1_support", "/tmp/test.html"),
             )
         conn.commit()
     finally:

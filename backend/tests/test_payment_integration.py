@@ -279,10 +279,10 @@ def test_document_download_requires_payment(setup_test_user_and_case, test_user_
             cur.execute(
                 """
                 INSERT INTO documents (
-                    id, case_id, user_id, document_type, storage_ref, is_user_upload
-                ) VALUES (%s, %s, %s, %s, %s, %s)
+                    id, case_id, user_id, doc_type, document_type, storage_ref, is_user_upload
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
-                (document_id, test_case_id, test_user_id, "et1_support", "/tmp/doc.html", False),
+                (document_id, test_case_id, test_user_id, "et1_support", "et1_support", "/tmp/doc.html", False),
             )
         conn.commit()
     finally:

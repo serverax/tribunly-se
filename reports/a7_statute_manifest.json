@@ -1,0 +1,272 @@
+[
+  {
+    "title": "Employment Rights Act 1996",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/1996/18",
+    "type": "ukpga",
+    "year": 1996,
+    "number": 18,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Equality Act 2010",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/2010/15",
+    "type": "ukpga",
+    "year": 2010,
+    "number": 15,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Employment Relations Act 1999",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/1999/26",
+    "type": "ukpga",
+    "year": 1999,
+    "number": 26,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Employment Act 2002",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/2002/22",
+    "type": "ukpga",
+    "year": 2002,
+    "number": 22,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Trade Union and Labour Relations (Consolidation) Act 1992",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/1992/52",
+    "type": "ukpga",
+    "year": 1992,
+    "number": 52,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Employment Tribunals Act 1996",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/1996/17",
+    "type": "ukpga",
+    "year": 1996,
+    "number": 17,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "National Minimum Wage Act 1998",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/1998/39",
+    "type": "ukpga",
+    "year": 1998,
+    "number": 39,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Carer's Leave Act 2023",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/2023/18",
+    "type": "ukpga",
+    "year": 2023,
+    "number": 18,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page; exact-title match selected from listed candidates. Other candidate: /id/uksi/2023/1283 (The Carer's Leave Act 2023 (Commencement) Regulations 2023)."
+  },
+  {
+    "title": "Neonatal Care (Leave and Pay) Act 2023",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/2023/20",
+    "type": "ukpga",
+    "year": 2023,
+    "number": 20,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Protection from Redundancy (Pregnancy and Family Leave) Act 2023",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/2023/17",
+    "type": "ukpga",
+    "year": 2023,
+    "number": 17,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Workers (Predictable Terms and Conditions) Act 2023",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/2023/46",
+    "type": "ukpga",
+    "year": 2023,
+    "number": 46,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "FLAG in-force: legislation.gov.uk page title reads 'Workers (Predictable Terms and Conditions) Act 2023 (repealed)'; page states Act repealed (6.1.2026) by Employment Rights Act 2025 (c. 36), and content is shown as 'prospective' versions (consistent with reports it was never commenced). Verify commencement independently before relying on it."
+  },
+  {
+    "title": "Employment (Allocation of Tips) Act 2023",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/2023/13",
+    "type": "ukpga",
+    "year": 2023,
+    "number": 13,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Employment Rights Act 2025",
+    "resolved_uri": "https://www.legislation.gov.uk/id/ukpga/2025/36",
+    "type": "ukpga",
+    "year": 2025,
+    "number": 36,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "Query 'Employment Rights Act 2024' returned 404 (no such Act); 'Employment Rights Act 2025' resolved via 301. This is the enacted 2024-25 employment reform bill (c. 36); it repeals the Workers (Predictable Terms and Conditions) Act 2023 w.e.f. 6.1.2026 per legislation.gov.uk."
+  },
+  {
+    "title": "National Minimum Wage Regulations 2015",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2015/621",
+    "type": "uksi",
+    "year": 2015,
+    "number": 621,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page; exact-title match ('The National Minimum Wage Regulations 2015') selected. Other candidate: /id/uksi/2015/1724 (Amendment Regulations 2015)."
+  },
+  {
+    "title": "Working Time Regulations 1998",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/1998/1833",
+    "type": "uksi",
+    "year": 1998,
+    "number": 1833,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page; exact-title match selected. Other candidates: /id/uksi/2004/2516 (Amendment Regs 2004), /id/uksi/2005/2241 (Amendment Order 2005)."
+  },
+  {
+    "title": "Transfer of Undertakings (Protection of Employment) Regulations 2006",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2006/246",
+    "type": "uksi",
+    "year": 2006,
+    "number": 246,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page; exact-title match selected. Other candidate: /id/uksi/2006/2405 (Consequential Amendments Regulations 2006)."
+  },
+  {
+    "title": "Part-time Workers (Prevention of Less Favourable Treatment) Regulations 2000",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2000/1551",
+    "type": "uksi",
+    "year": 2000,
+    "number": 1551,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page; exact-title match selected. Other candidates: /id/uksi/2002/2035 (Amendment Regs 2002), /id/uksi/2005/2240 (Amendment Order 2005)."
+  },
+  {
+    "title": "Fixed-term Employees (Prevention of Less Favourable Treatment) Regulations 2002",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2002/2034",
+    "type": "uksi",
+    "year": 2002,
+    "number": 2034,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page with a single candidate whose title matches exactly ('The Fixed-term Employees (Prevention of Less Favourable Treatment) Regulations 2002')."
+  },
+  {
+    "title": "Agency Workers Regulations 2010",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2010/93",
+    "type": "uksi",
+    "year": 2010,
+    "number": 93,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Flexible Working Regulations 2014",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2014/1398",
+    "type": "uksi",
+    "year": 2014,
+    "number": 1398,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Flexible Working (Amendment) Regulations 2023",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2023/1328",
+    "type": "uksi",
+    "year": 2023,
+    "number": 1328,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "301 redirect from /id?title="
+  },
+  {
+    "title": "Maternity and Parental Leave etc. Regulations 1999",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/1999/3312",
+    "type": "uksi",
+    "year": 1999,
+    "number": 3312,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page with a single candidate whose title matches exactly ('The Maternity and Parental Leave etc. Regulations 1999')."
+  },
+  {
+    "title": "Paternity and Adoption Leave Regulations 2002",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2002/2788",
+    "type": "uksi",
+    "year": 2002,
+    "number": 2788,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page with a single candidate whose title matches exactly ('The Paternity and Adoption Leave Regulations 2002')."
+  },
+  {
+    "title": "Shared Parental Leave Regulations 2014",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2014/3050",
+    "type": "uksi",
+    "year": 2014,
+    "number": 3050,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page; exact-title match selected. Other candidates: /id/uksi/2014/3092 (Adoptions from Overseas Regs 2014), /id/uksi/2014/3096 (Parental Order Cases Regs 2014)."
+  },
+  {
+    "title": "Employment Tribunals (Early Conciliation: Exemptions and Rules of Procedure) Regulations 2014",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2014/254",
+    "type": "uksi",
+    "year": 2014,
+    "number": 254,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page; exact-title match selected. Other candidate: /id/uksi/2014/847 (Amendment Regulations 2014)."
+  },
+  {
+    "title": "Carer's Leave Regulations 2024",
+    "resolved_uri": "https://www.legislation.gov.uk/id/uksi/2024/251",
+    "type": "uksi",
+    "year": 2024,
+    "number": 251,
+    "data_xml_status": 200,
+    "status": "resolved",
+    "notes": "HTTP 300 multiple-choices page; exact-title match ('The Carer's Leave Regulations 2024') selected. Other candidate: /id/uksi/2024/266 (Consequential Amendments to Subordinate Legislation Regs 2024)."
+  },
+  {
+    "title": "Neonatal Care (Leave and Pay) Regulations (2024/2025)",
+    "resolved_uri": null,
+    "type": "uksi",
+    "year": null,
+    "number": null,
+    "data_xml_status": null,
+    "status": "ambiguous",
+    "notes": "FLAG: no instrument with this exact title found. 'Neonatal Care (Leave and Pay) Regulations 2024' returned 404. 'Neonatal Care (Leave and Pay) Regulations 2025' returned HTTP 300 with candidates that do NOT match the queried title: /id/uksi/2025/201 (The Neonatal Care Leave and Pay (Consequential Amendments to Subordinate Legislation) Regulations 2025) and /id/uksi/2025/41 (The Neonatal Care (Leave and Pay) Act 2023 (Commencement No. 2) Regulations 2025). The principal leave/pay implementing SIs likely carry different exact titles; do not guess — resolve the correct principal instrument titles in a follow-up task."
+  }
+]

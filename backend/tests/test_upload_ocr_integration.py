@@ -254,16 +254,17 @@ def test_upload_creates_audit_record(setup_test_user_and_case, test_user_id, tes
             cur.execute(
                 """
                 INSERT INTO documents (
-                    id, case_id, user_id, original_filename, content_type,
+                    id, case_id, user_id, doc_type, original_filename, content_type,
                     file_size_bytes, storage_ref, is_user_upload, extraction_status
                 ) VALUES (
-                    %s::uuid, %s::uuid, %s::uuid, %s, %s, %s, %s, %s, %s
+                    %s::uuid, %s::uuid, %s::uuid, %s, %s, %s, %s, %s, %s, %s
                 )
                 """,
                 (
                     str(uuid.uuid4()),
                     test_case_id,
                     test_user_id,
+                    "user_upload",
                     "test.pdf",
                     "application/pdf",
                     1000,
@@ -354,17 +355,19 @@ def test_get_upload_status(setup_test_user_and_case, test_user_id, test_case_id)
             cur.execute(
                 """
                 INSERT INTO documents (
-                    id, case_id, user_id, original_filename, extraction_status,
-                    extracted_content
-                ) VALUES (%s::uuid, %s::uuid, %s::uuid, %s, %s, %s)
+                    id, case_id, user_id, doc_type, original_filename, extraction_status,
+                    extracted_content, storage_ref
+                ) VALUES (%s::uuid, %s::uuid, %s::uuid, %s, %s, %s, %s, %s)
                 """,
                 (
                     file_id,
                     test_case_id,
                     test_user_id,
+                    "user_upload",
                     "test.pdf",
                     "extracted",
                     "Sample extracted text",
+                    "/tmp/test.pdf",
                 ),
             )
         conn.commit()
