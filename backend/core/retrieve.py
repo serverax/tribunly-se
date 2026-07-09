@@ -31,6 +31,7 @@ from shared.schemas import RetrievalBundle
 from backend.core.retrieval.trust_scorer import score_authorities
 from backend.core.retrieval.rrf import reciprocal_rank_fusion
 from backend.core.retrieval.rerank import rerank_authorities
+from backend.domains.constants import DEFAULT_JURISDICTION
 
 logger = logging.getLogger(__name__)
 
@@ -144,7 +145,7 @@ def retrieve_rules(
 
 def retrieve_keyword(
     query: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     edt: Optional[date] = None,
     k: int = 5,
 ) -> list[dict]:
@@ -283,7 +284,7 @@ def _normalize_corpus_source_type(source_type: str | None, source_table: str | N
 
 def retrieve_semantic(
     query: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     edt: Optional[date] = None,
     k: int = 5,
 ) -> list[dict]:
@@ -425,7 +426,7 @@ def _exact_rule_authorities(query: str, rules: list[dict], jurisdiction: str) ->
 def retrieve_graph_context(
     query: str,
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
 ) -> dict:
     """Graph leg of hybrid retrieval via graph_engine (Neo4j or Postgres)."""
     try:

@@ -160,3 +160,46 @@ def test_ec_requirement_returned():
     assert ec is not None
     assert ec["value_text"] == "true"
     assert "ETA" in ec["authority_ref"] or "Employment Tribunals" in ec["authority_ref"]
+
+
+# ── ERA 2025 suppression regression (today-dated) ───────────────────────────
+
+def test_today_dated_assessment_never_surfaces_provisional():
+    """
+    WO009 Task 2 regression: using date.today() as EDT, no prospective
+    ERA 2025 value may appear. This catches regressions where a
+    commencement date in the seed data passes without the is_prospective
+    flag being cleared (which must only happen when the commencement SI
+    is verified and ingested).
+    """
+    today = date.today()
+    rules = retrieve_rules("unfair_dismissal", "EW", today)
+
+    for rule in rules:
+        assert rule["is_prospective"] is False, (
+            f"Prospective rule leaked at today={today}: "
+            f"{rule['rule_key']} (effective_from={rule['effective_from']})"
+        )
+
+    rule_map = {r["rule_key"]: r for r in rules}
+
+    tl = rule_map.get("unfair_dismissal.time_limit_months")
+    if tl:
+        assert int(tl["value_numeric"]) == 3, (
+            f"Time limit must be 3 months today ({today}), "
+            f"got {tl['value_numeric']} — ERA 2025 s.152 leaked"
+        )
+
+    qp = rule_map.get("unfair_dismissal.qualifying_period")
+    if qp:
+        assert float(qp["value_numeric"]) == 2.0, (
+            f"Qualifying period must be 2 years today ({today}), "
+            f"got {qp['value_numeric']} — ERA 2025 s.25 leaked"
+        )
+
+    cap = rule_map.get("unfair_dismissal.compensatory_cap_amount")
+    if cap:
+        assert cap["value_numeric"] is not None, (
+            f"Compensatory cap must be a number today ({today}), "
+            f"not uncapped — ERA 2025 s.25(3) leaked"
+        )

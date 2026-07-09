@@ -112,7 +112,7 @@
     const missing = [];
 
     const _REQUIRED_UD = {
-      edt: 'Date your employment ended (EDT)',
+      edt: 'Date your employment ended',
       service_start_date: 'Date you started employment',
     };
 

@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div class="legal-notice" role="alert">
+<div class="legal-notice" role="note">
   <strong>Not a law firm. Not legal advice.</strong>
   This is information and assessment only  -  not regulated legal advice.
   lawapp does not file claims, represent you, or conduct litigation.
@@ -24,6 +24,7 @@
 </nav>
 
 <main class="page-narrow" style="padding-top:1.5rem;" id="app">
+  <div id="doc-status" role="status" aria-live="polite" style="display:none;padding:0.75rem 1rem;margin-bottom:1rem;border-radius:6px;font-size:0.9rem;"></div>
   <div id="loading-state" style="text-align:center;padding:3rem 0;">
     <div class="spinner"></div>
     <p style="color:var(--muted);">Loading saved case…</p>
@@ -213,7 +214,7 @@
         })
       });
       if (resp.status === 402) {
-        alert('Payment is required before full documents can be generated. Open the assessment page to unlock documents.');
+        showDocStatus('Payment is required before full documents can be generated. Open the assessment page to unlock documents.', 'warn');
         return;
       }
       if (!resp.ok) throw new Error(`Generation failed (HTTP ${resp.status})`);
@@ -222,7 +223,7 @@
       const docUrl = `${API_BASE}${data.download_url || `/api/documents/${data.document_id}`}`;
       const docResp = await LAWAPP_AUTH.fetchWithAuth(docUrl);
       if (docResp.status === 402) {
-        alert('Payment is required before documents can be downloaded.');
+        showDocStatus('Payment is required before documents can be downloaded.', 'warn');
         return;
       }
       if (!docResp.ok) throw new Error(`Download failed (HTTP ${docResp.status})`);
@@ -236,8 +237,17 @@
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Error generating document: ' + err.message);
+      showDocStatus('Error generating document: ' + err.message, 'error');
     }
+  }
+
+  function showDocStatus(msg, level) {
+    const el = document.getElementById('doc-status');
+    el.textContent = msg;
+    el.style.display = 'block';
+    el.style.background = level === 'error' ? 'var(--danger-bg, #fef2f2)' : 'var(--warn-bg, #fffbeb)';
+    el.style.color = level === 'error' ? 'var(--danger, #b91c1c)' : 'var(--warn, #92400e)';
+    el.style.border = '1px solid ' + (level === 'error' ? 'var(--danger, #b91c1c)' : 'var(--warn, #92400e)');
   }
 
   function renderDeadlineCard(dl, kd) {

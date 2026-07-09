@@ -419,7 +419,11 @@
     if (summary) {
       p.textContent = summary;
     } else {
-      p.innerHTML = '<span class="spinner" style="width:1rem;height:1rem;display:inline-block;vertical-align:middle;margin-right:.5rem;"></span> Analysing your case…';
+      const spinner = document.createElement('span');
+      spinner.className = 'spinner';
+      spinner.style.cssText = 'width:1rem;height:1rem;display:inline-block;vertical-align:middle;margin-right:.5rem;';
+      p.appendChild(spinner);
+      p.appendChild(document.createTextNode(' Analysing your case…'));
     }
     card.appendChild(p);
     return card;
@@ -527,7 +531,10 @@
     p.style.fontSize = '.875rem';
     p.style.opacity = '.9';
     if (passed) {
-      p.innerHTML = '<strong>This deadline appears to have passed.</strong> Late claims are accepted only in exceptional circumstances (s.111(2A) ERA 1996). Seek legal advice immediately — a solicitor can assess whether a "not reasonably practicable" or "just and equitable" extension argument applies to your case.';
+      const strong = document.createElement('strong');
+      strong.textContent = 'This deadline appears to have passed.';
+      p.appendChild(strong);
+      p.appendChild(document.createTextNode(' Late claims are accepted only in exceptional circumstances (s.111(2A) ERA 1996). Seek legal advice immediately — a solicitor can assess whether a “not reasonably practicable” or “just and equitable” extension argument applies to your case.'));
       card.setAttribute('role', 'alert');
     } else {
       p.textContent = 'You must start ACAS Early Conciliation before this date. Missing the deadline is usually fatal to a claim.';
@@ -549,11 +556,11 @@
     if (dl.authority) rows.push(['Authority', dl.authority]);
     if (dl.base_limit) rows.push(['Base limit (before ACAS)', dl.base_limit]);
     if (dl.ec_applied === true) {
-      if (dl.pause_days != null) rows.push(['ACAS EC stop-clock', `+${dl.pause_days} days`]);
+      if (dl.pause_days != null) rows.push(['ACAS early conciliation stop-clock', `+${dl.pause_days} days`]);
       if (dl.ec_floor) rows.push(['EC floor (1 month after cert.)', dl.ec_floor]);
       if (dl.floor_applied === true) rows.push(['Floor applied', 'yes  -  floor date is later than the adjusted limit']);
     } else if (dl.ec_applied === false) {
-      rows.push(['ACAS EC stop-clock', 'not applied (no EC dates supplied)']);
+      rows.push(['ACAS early conciliation stop-clock', 'not applied (no EC dates supplied)']);
     }
     const traceId = dl.trace_id || dl.request_id;
     if (traceId) rows.push(['Trace id', traceId]);

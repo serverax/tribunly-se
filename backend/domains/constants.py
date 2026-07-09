@@ -9,6 +9,10 @@ DOMAIN_DEFAULT: str = "employment"
 
 ENV_DOMAIN_KEY = "LAWAPP_DOMAIN"
 
+# Default jurisdiction when none supplied by the caller.
+# Configurable via env so a future deployment can override without code changes.
+DEFAULT_JURISDICTION: str = os.getenv("LAWAPP_DEFAULT_JURISDICTION", "EW")
+
 
 def active_domain_from_env() -> str:
     """Return LAWAPP_DOMAIN env value or DOMAIN_DEFAULT."""

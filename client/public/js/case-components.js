@@ -150,7 +150,7 @@
       }
 
       var steps = textEl("div", "cos-deadline-steps");
-      ["Dismissal", "ACAS EC", "Tribunal claim"].forEach(function (label, i) {
+      ["Dismissal", "ACAS early conciliation", "Tribunal claim"].forEach(function (label, i) {
         var step = textEl("div", "cos-deadline-step" + (i === 0 ? " done" : i === 1 ? " current" : ""), label);
         steps.appendChild(step);
       });

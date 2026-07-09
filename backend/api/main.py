@@ -188,6 +188,28 @@ async def _auth_cookie_to_bearer(request: Request, call_next):
     return await call_next(request)
 
 
+@app.middleware("http")
+async def _security_headers(request: Request, call_next):
+    """Add security headers to every response."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; "
+        "font-src 'self'; "
+        "connect-src 'self'; "
+        "frame-ancestors 'none'"
+    )
+    response.headers["Permissions-Policy"] = (
+        "camera=(), microphone=(), geolocation=(), payment=()"
+    )
+    return response
+
+
 # ── Observability (§18): request-id/trace correlation, counters, /metrics, /ready
 from backend.core import otel as _otel
 _otel.setup_telemetry(app)
@@ -230,6 +252,8 @@ app.include_router(_tools_router)
 
 from backend.api.features_routes import router as _features_router
 app.include_router(_features_router)
+
+from backend.domains.constants import DEFAULT_JURISDICTION as _DJ
 
 # ── User feedback (corrections)  -  auth-gated ─────────────────────────────────
 from backend.api.feedback_routes import router as _feedback_router
@@ -492,7 +516,7 @@ def freshness() -> dict:
 
 
 @app.get("/rules/{claim_type}")
-def get_rules(claim_type: str, jurisdiction: str = "EW") -> dict:
+def get_rules(claim_type: str, jurisdiction: str = _DJ) -> dict:
     """
     Return current rules for a claim type.
 
@@ -550,7 +574,7 @@ def get_rules(claim_type: str, jurisdiction: str = "EW") -> dict:
 class AssessRequest(BaseModel):
     query: str
     facts: dict
-    jurisdiction: str = "EW"
+    jurisdiction: str = _DJ
     use_model: bool = True          # set False to use StubReasoningModel (tests/dev)
     client_deadline: Optional[str] = None  # YYYY-MM-DD supplied by client-side calc
     language: Optional[str] = None  # en | ar — multi-native rendering (not translation)
@@ -902,7 +926,7 @@ class WorkflowDiagnosisRequest(BaseModel):
     """End-to-end diagnosis request for registry-backed employment modules."""
     claim_type: str = "unfair_dismissal"
     facts: dict  # employment_start_date, dismissal_date, gross_weekly_pay, age, etc.
-    jurisdiction: str = "EW"  # England & Wales
+    jurisdiction: str = _DJ  # England & Wales
     query: Optional[str] = None
 
 
@@ -1319,7 +1343,7 @@ def workflow_documents_generate(
 
 class SaveCaseRequest(BaseModel):
     claim_type: str = "unfair_dismissal"
-    jurisdiction: str = "EW"
+    jurisdiction: str = _DJ
     assessment: dict            # structured assessment summary (no PII  -  pipeline output)
     key_dates: dict             # {"edt": "YYYY-MM-DD", "deadline_date": "YYYY-MM-DD"}
     recommended_next_step: Optional[str] = None
@@ -3300,7 +3324,7 @@ class BrainRequest(BaseModel):
     message: str
     facts: dict = {}
     case_id: Optional[str] = None
-    jurisdiction: str = "EW"
+    jurisdiction: str = _DJ
 
 
 @app.post("/api/brain/trace")
@@ -3503,7 +3527,7 @@ def test_route_agent(req: RouteAgentRequest, _admin: str = Depends(_require_admi
 
 class HybridSearchRequest(BaseModel):
     query: str
-    jurisdiction: str = "EW"
+    jurisdiction: str = _DJ
     edt: Optional[str] = None
 
 
@@ -3532,7 +3556,7 @@ def test_hybrid_search(req: HybridSearchRequest, _admin: str = Depends(_require_
 
 class LegalGraphRequest(BaseModel):
     claim_type: str = "unfair_dismissal"
-    jurisdiction: str = "EW"
+    jurisdiction: str = _DJ
 
 
 @app.post("/api/test/legal-graph")
@@ -3589,7 +3613,7 @@ def test_legal_graph(req: LegalGraphRequest, _admin: str = Depends(_require_admi
 
 class KGEntityRequest(BaseModel):
     entity: str
-    jurisdiction: str = "EW"
+    jurisdiction: str = _DJ
 
 
 @app.post("/api/kg/entity")
@@ -3689,7 +3713,7 @@ def test_router(req: RouterTestRequest, _admin: str = Depends(_require_admin_in_
 
 class CacheTestRequest(BaseModel):
     query: str
-    jurisdiction: str = "EW"
+    jurisdiction: str = _DJ
     case_id: Optional[str] = None
 
 
@@ -4397,7 +4421,7 @@ def api_sources_freshness() -> dict:
 
 
 @app.get("/api/rules/{claim_type}")
-def api_get_rules(claim_type: str, jurisdiction: str = "EW") -> dict:
+def api_get_rules(claim_type: str, jurisdiction: str = _DJ) -> dict:
     """Alias for /rules/{claim_type} under the /api prefix."""
     return get_rules(claim_type, jurisdiction=jurisdiction)
 
@@ -4409,7 +4433,7 @@ class DeadlineCalcRequest(BaseModel):
     acas_end:    Optional[str] = None
     ec_day_a:    Optional[str] = None
     ec_day_b:    Optional[str] = None
-    jurisdiction: str = "EW"
+    jurisdiction: str = _DJ
 
 
 @app.post("/api/deadline/calculate")

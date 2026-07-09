@@ -51,7 +51,7 @@
 
 <main class="page-narrow" style="padding-top:1.5rem;">
   <h1 style="color:var(--primary);margin-bottom:.5rem;" id="form-title">Free diagnosis</h1>
-  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:0.9rem;">Tell us about your situation to receive an honest assessment of your claim.</p>
+  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:0.9rem;">Tell us about your situation to receive an honest assessment of your claim. <span style="white-space:nowrap;">4 steps · about 5 minutes.</span></p>
   <p id="beta-scope-note" style="color:var(--muted);margin:-1rem 0 1.5rem;font-size:0.85rem;"></p>
 
   <div class="wizard-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -83,7 +83,7 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="edt">Dismissal date (EDT) <span aria-hidden="true" style="color:#dc3545">*</span></label>
+            <label for="edt">Dismissal date <span aria-hidden="true" style="color:#dc3545">*</span></label>
             <input type="date" id="edt" name="edt" required aria-required="true" aria-describedby="err-edt" oninput="updateDeadlinePreview()">
             <p class="field-hint">Effective date of termination  -  the last day of your employment.</p>
             <p class="error-msg" id="err-edt">Please enter your dismissal date.</p>
@@ -467,13 +467,22 @@
     const brief = form.brief_facts ? form.brief_facts.value.trim() : '';
     if (brief) facts.brief_facts = brief;
 
-    document.getElementById('loading').style.display = 'block';
+    const loadingEl = document.getElementById('loading');
+    const loadingMsg = loadingEl.querySelector('p');
+    loadingEl.style.display = 'block';
     form.style.display = 'none';
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 120000);
+    const stillWorking = setTimeout(() => {
+      if (loadingMsg) loadingMsg.textContent = 'Still working — this can take up to two minutes for a thorough analysis.';
+    }, 15000);
 
     try {
       const resp = await fetch(`${API_BASE}/assess`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           query: brief || 'Assessment request', facts, jurisdiction: 'EW', use_model: false })
       });
@@ -498,16 +507,33 @@
       sessionStorage.setItem('assessment_result', JSON.stringify(data));
       sessionStorage.setItem('assessment_facts_full', JSON.stringify(facts));
       sessionStorage.setItem('assessment_query', brief || 'Assessment request');
+      clearTimeout(timeout);
+      clearTimeout(stillWorking);
       window.location.href = '/pages/assessment.html';
     } catch (err) {
-      document.getElementById('loading').style.display = 'none';
+      clearTimeout(timeout);
+      clearTimeout(stillWorking);
+      loadingEl.style.display = 'none';
       form.style.display = 'block';
+      const isTimeout = err.name === 'AbortError';
       const errBox = document.createElement('div');
       errBox.className = 'form-section';
       errBox.style.background = '#fff8f8';
       errBox.style.borderColor = 'var(--warn)';
-      errBox.innerHTML = '<h3 style="color:var(--warn);">Something went wrong</h3><p>' +
-        err.message + '</p><p>Please try again. If the problem persists, try refreshing the page.</p>';
+      const errH3 = document.createElement('h3');
+      errH3.style.color = 'var(--warn)';
+      errH3.textContent = isTimeout ? 'Request timed out' : 'Something went wrong';
+      errBox.appendChild(errH3);
+      const errP1 = document.createElement('p');
+      errP1.textContent = isTimeout
+        ? 'The analysis took longer than expected. Please try again — if the problem persists, the service may be under heavy load.'
+        : err.message;
+      errBox.appendChild(errP1);
+      if (!isTimeout) {
+        const errP2 = document.createElement('p');
+        errP2.textContent = 'Please try again. If the problem persists, try refreshing the page.';
+        errBox.appendChild(errP2);
+      }
       form.parentNode.insertBefore(errBox, form);
     }
   });

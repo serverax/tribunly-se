@@ -42,3 +42,25 @@ Base: `main-restored@526cbcc`
 | WO007 T2 | A7 manifest resolved: 26 resolved / 1 ambiguous / 0 not_found via live legislation.gov.uk API | COMPLETE | `this commit` | `reports/a7_statute_manifest.json` | 2026-07-08 |
 | WO007 T2 | Embedding model installed: bge-large-en-v1.5 (HF GGUF import, 207MB, verified 1024-dim) | COMPLETE | `this commit` | `ollama list` + embedding test | 2026-07-08 |
 | WO007 T3 | A6 jurisdiction evidence pack: 2 jurisdictions (EW/GB), 24-row module catalog, 276 hardcode hits mapped | COMPLETE | `this commit` | `reports/a6_jurisdiction_evidence.md` (659 lines) | 2026-07-08 |
+| WO007 T2 | A7 statute spine ingestion complete: 16 acts, 970 legislation rows, 2706 corpus chunks (2693 embedded) | COMPLETE | `this commit` | `reports/a7_after_census.md` | 2026-07-08 |
+| WO007 T2 | A7 spot-check: ERA 1996 s.132 body text matches live legislation.gov.uk API content | COMPLETE | `this commit` | API 200 + text match proof | 2026-07-08 |
+| Phase C T1 | Expired deadline rendering proof: red gradient, PASSED label, out-of-time guidance, role=alert, position 1 | COMPLETE | `this commit` | `reports/expired_deadline_proof.md` | 2026-07-08 |
+| Phase C T1 | Loading timeout (120s AbortController) + 15s "still working" message + styled timeout error | COMPLETE | `this commit` | `intake.html` | 2026-07-08 |
+| Phase C T2 | Rules verification sheet: 30 rules vs source text, 18 not-yet-ingested, 2 flagged conflicts | COMPLETE | `this commit` | `reports/RULES_VERIFICATION_SHEET.md` | 2026-07-08 |
+| Phase C T3 | Jurisdiction defaults: DEFAULT_JURISDICTION config constant applied to ~103 function defaults across 31 files | COMPLETE | `this commit` | `backend/domains/constants.py` | 2026-07-08 |
+| Phase C T3 | Jurisdiction structural backlog: 133 hits logged with effort estimates (~31h) | COMPLETE | `this commit` | `reports/JURISDICTION_BACKLOG.md` | 2026-07-08 |
+| Phase C T4 | P2 sweep: depends_on fix, intake time estimate, CTA link fix, contrast audit clean | COMPLETE | `this commit` | `reports/P2_SWEEP_LOG.md` | 2026-07-08 |
+| Phase C T5 | Ship-readiness exit: floor clean, 15/15 healthy, live journey proven, census updated, board GREEN | COMPLETE | `this commit` | `reports/SHIP_READINESS.md` | 2026-07-08 |
+| WO008 | XSS elimination: 3 `.innerHTML =` replaced with safe DOM methods across assessment.html (2) + intake.html (1) | COMPLETE | `this commit` | `test_no_unsafe_inner_html` passes; 0 innerHTML hits | 2026-07-09 |
+| WO008 | CitationGuard slug-format fallback: `_verify_legislation_by_source_url` added for `ukpga/1996/18`-style citations | COMPLETE | `this commit` | `verify_citation('ukpga/1996/18')` → verified=True, method=source_url_slug | 2026-07-09 |
+| WO008 | Smoke test timeout fix: httpx client 10s→60s for live-stack /assess calls | COMPLETE | `this commit` | 6/6 smoke tests pass (was 5 FAILED) | 2026-07-09 |
+| WO008 | A7 manifest reconciliation: 27-item manifest → 15 ingested, 1 covered, 10 not-ingested (small SIs), 1 ambiguous; 18 source-less rules → 7 resolved, 4 URL-mismatch-only | COMPLETE | `this commit` | `reports/a7_manifest_reconciliation.md` | 2026-07-09 |
+| WO008 | Floor: 1925 passed / 0 failed / 0 errors / 52 skipped / 46 warnings (34m19s) | COMPLETE | `this commit` | Full pytest output | 2026-07-09 |
+| WO008 | Ship-readiness re-exit: census 22 acts / 2242 legislation / 4069 chunks; floor +91/+8; security controls updated | COMPLETE | `this commit` | `reports/SHIP_READINESS.md` (v2) | 2026-07-09 |
+| WO009 T1 | Statute spine: 27 acts, 3066 legislation, 6038 chunks; 0 genuine source-less (4 URL-mismatch, 11 SI schedule) | COMPLETE | `this commit` | `reports/RULES_VERIFICATION_SHEET.md` Section B updated | 2026-07-09 |
+| WO009 T2 | ERA 2025 suppression verified: `is_prospective = true` gate, today-dated regression test (11 passed) | COMPLETE | `this commit` | `tests/integration/test_retrieve_rules.py`, `reports/RULES_VERIFICATION_SHEET.md` | 2026-07-09 |
+| WO009 T3 | Freshness automation: `freshness-monitor` compose service + ERA 2025 commencement check + one full run proof | COMPLETE | `this commit` | `ingestion/freshness/report.py`, `docker-compose.yml`, `reports/freshness_proof.md` | 2026-07-09 |
+| WO009 T4 | Security hardening: pip-audit clean, no secrets, 5 security headers deployed, rate limiting proven (429 on req 11) | COMPLETE | `this commit` | `reports/security_sweep.md`, `backend/api/main.py` | 2026-07-09 |
+| WO009 T5 | k6 smoke latency: health p95=926ms (cold-start), assess p95=28.5s, 0% failures, citations verified | COMPLETE | `this commit` | `reports/k6_smoke_latency_report.md` | 2026-07-09 |
+| WO009 T6 | Accessibility P2/P3 fixes (5 items) + plain-English jargon sweep (6 fixes, 5 logged-not-changed) | COMPLETE | `this commit` | `reports/frontend_accessibility_log.md` | 2026-07-09 |
+| WO009 T7 | Ship package: floor 1841/0/0/52, live journey proven, OWNER_RUNBOOK.md, state docs updated | COMPLETE | `this commit` | `reports/OWNER_RUNBOOK.md`, `reports/SHIP_READINESS.md`, `reports/wo009_live_journey_proof.md` | 2026-07-09 |

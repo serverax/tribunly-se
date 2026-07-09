@@ -123,3 +123,48 @@ Branch: `cc/convergence`, cut from `main-restored@526cbcc`.
 - `case_law` table: EMPTY — Find Case Law bulk extraction licence-gated until granted (D4, expected ~13 July 2026).
 - UI scope: unchanged at 11 topics.
 - Full directive: `docs/handoff/phases/A7_FULL_STATUTE_SPINE.md`.
+
+## Work Order 009 — Final Hardening (2026-07-09)
+
+Branch: `cc/convergence` (unchanged).
+
+### Task 1 — Statute Spine
+
+- Ingestion re-run processed all 26 resolved manifest entries. Census: 27 acts, 3066 legislation rows, 6038 corpus chunks (up from 22/2242/4069).
+- Source-less rules: 0 genuinely missing. 4 URL-mismatch (act present, URL format differs). 11 SI schedule rules (owner-seeded constants). 2 ERA 2025 (suppressed).
+- See `reports/RULES_VERIFICATION_SHEET.md` Section B (updated).
+
+### Task 2 — ERA 2025 Suppression
+
+- `is_prospective = true` gate confirmed in `retrieve_rules()`. Today-dated regression test: 11 passed.
+- RULES_VERIFICATION_SHEET flags → RESOLVED-SUPPRESSED.
+
+### Task 3 — Freshness Automation
+
+- `freshness-monitor` compose service added (monitoring profile). Weekly cadence.
+- ERA 2025 commencement check hits legislation.gov.uk for commencement SIs.
+- One full run proven: `reports/freshness_proof.md`.
+
+### Task 4 — Security Hardening
+
+- pip-audit clean, no real secrets, 5 security headers deployed, rate limiting proven (429 on request 11).
+- Full report: `reports/security_sweep.md`.
+
+### Task 5 — Test-Lock (k6 Smoke)
+
+- Health p95 = 926ms (cold-start artifact, median 130ms). Assess p95 = 28.5s (under 60s threshold).
+- 0% failure rate, all citations verified.
+- Full report: `reports/k6_smoke_latency_report.md`.
+
+### Task 6 — Accessibility + Plain-English
+
+- 5 P2/P3 markup fixes from `frontend_accessibility_log.md`.
+- 6 jargon fixes: "EDT" acronym removed from labels, "ACAS EC" expanded to "ACAS early conciliation" in all user-facing text.
+- Full log: `reports/frontend_accessibility_log.md` (WO009 sections).
+
+### Task 7 — Ship Package
+
+- Floor: pending (run in progress).
+- 15/15 services healthy.
+- Owner runbook: `reports/OWNER_RUNBOOK.md`.
+- State docs: this file + `reports/SHIP_READINESS.md` + `reports/PROGRESS_BOARD.md`.

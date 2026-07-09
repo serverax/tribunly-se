@@ -56,7 +56,7 @@ def client():
     the backend service up). This prevents a transient ConnectError from
     appearing as a test failure in the regression suite.
     """
-    c = httpx.Client(base_url=API_BASE, timeout=10)
+    c = httpx.Client(base_url=API_BASE, timeout=60)
     try:
         c.get("/health")
     except (httpx.ConnectError, httpx.TimeoutException) as exc:

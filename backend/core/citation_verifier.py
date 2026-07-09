@@ -100,6 +100,26 @@ def _verify_legislation_in_db(act_title: str, section_ref: str | None) -> bool:
         return False
 
 
+def _verify_legislation_by_source_url(slug: str) -> bool:
+    """Check legislation table for a source_url containing the slug."""
+    try:
+        from ingestion.db import get_connection
+        conn = get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT 1 FROM legislation "
+                    "WHERE source_url LIKE %s LIMIT 1",
+                    (f"%{slug}%",),
+                )
+                return cur.fetchone() is not None
+        finally:
+            conn.close()
+    except Exception as exc:
+        logger.debug("Legislation source_url check failed: %s", exc)
+        return False
+
+
 def _verify_case_in_db(neutral_citation: str) -> bool:
     """Check case_law_documents for the cited neutral citation."""
     try:
@@ -199,6 +219,11 @@ def verify_citation(cite: str, source_type: str | None = None) -> dict:
     act, section = _parse_legislation_cite(cite)
     if _verify_legislation_in_db(act, section):
         return {"cite": cite, "verified": True, "reason": None, "method": "legislation_db_fallback"}
+
+    # Slug-format fallback: "ukpga/1996/18" style → match against source_url
+    if re.match(r"uk(?:pga|si)/\d{4}/\d+", cite):
+        if _verify_legislation_by_source_url(cite):
+            return {"cite": cite, "verified": True, "reason": None, "method": "source_url_slug"}
 
     # Cannot verify  -  mark as unverified (do not remove, just flag)
     return {
