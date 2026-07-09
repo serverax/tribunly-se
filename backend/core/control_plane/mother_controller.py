@@ -19,7 +19,7 @@ from backend.core.control_plane.governance_engine import GovernanceEngine
 from backend.core.control_plane.learning_loop import LearningLoop
 from backend.core.control_plane.memory_store import MemoryStore
 from backend.core.control_plane.reasoning_router import ReasoningRouter
-from backend.domains.constants import DOMAIN_DEFAULT
+from backend.domains.constants import DEFAULT_JURISDICTION, DOMAIN_DEFAULT
 from backend.domains.context import domain_unavailable_response, require_operational_domain, resolve_request_domain
 from backend.domains.shared.errors import DomainDisabledError, UnsupportedDomainError
 
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class MotherInput:
     query: str
     facts: dict
-    jurisdiction: str = "EW"
+    jurisdiction: str = DEFAULT_JURISDICTION
     user_id: str = ""
     case_id: str = ""
     use_model: bool = True

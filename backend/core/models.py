@@ -23,6 +23,8 @@ from abc import ABC, abstractmethod
 from datetime import date
 from typing import Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 from shared.schemas import (
     Citation, Deadline, RetrievalBundle, StructuredAssessment, ValueRange,
 )
@@ -105,7 +107,7 @@ class StubReasoningModel(ReasoningModel):
 
         return StructuredAssessment(
             claim_type="unfair_dismissal",
-            jurisdiction=safe_facts.get("jurisdiction", "EW"),
+            jurisdiction=safe_facts.get("jurisdiction", DEFAULT_JURISDICTION),
             has_viable_claim="uncertain",
             strength="uncertain",
             reasoning_summary=(
@@ -249,7 +251,7 @@ Return ONLY the JSON object. No prose before or after."""
             logger.warning("Claude output not valid JSON  -  failing closed: %s", exc)
             return StructuredAssessment(
                 claim_type="unfair_dismissal",
-                jurisdiction=safe_facts.get("jurisdiction", "EW"),
+                jurisdiction=safe_facts.get("jurisdiction", DEFAULT_JURISDICTION),
                 has_viable_claim="uncertain", strength="uncertain",
                 reasoning_summary="Model output could not be safely parsed  -  insufficient grounding.",
                 value_range=ValueRange(low=0, high=0, currency="GBP", basis="unparseable model output"),
@@ -369,7 +371,7 @@ class OpenRouterReasoningModel(ReasoningModel):
             logger.warning("OpenRouter unavailable: %s  -  returning MODEL_UNAVAILABLE", exc)
             return StructuredAssessment(
                 claim_type="unfair_dismissal",
-                jurisdiction=safe_facts.get("jurisdiction", "EW"),
+                jurisdiction=safe_facts.get("jurisdiction", DEFAULT_JURISDICTION),
                 has_viable_claim="uncertain",
                 strength="uncertain",
                 reasoning_summary="Model unavailable  -  insufficient grounding.",
@@ -505,7 +507,7 @@ class LocalInferenceReasoningModel(ReasoningModel):
             )
             return StructuredAssessment(
                 claim_type="unfair_dismissal",
-                jurisdiction=safe_facts.get("jurisdiction", "EW"),
+                jurisdiction=safe_facts.get("jurisdiction", DEFAULT_JURISDICTION),
                 has_viable_claim="uncertain",
                 strength="uncertain",
                 reasoning_summary="Local inference unavailable  -  insufficient grounding.",

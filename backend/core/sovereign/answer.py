@@ -9,13 +9,15 @@ from __future__ import annotations
 
 from typing import Callable, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 
 def _get_conn():
     from ingestion.db import get_connection
     return get_connection()
 
 
-def retrieve_cited_chunks(query: str, jurisdiction: str = "EW",
+def retrieve_cited_chunks(query: str, jurisdiction: str = DEFAULT_JURISDICTION,
                           limit: int = 3, get_conn: Optional[Callable] = None) -> list[dict]:
     """DB-first retrieval: jurisdiction-filtered lexical match over corpus_chunks.
     Returns real rows with their UUIDs so the answer can cite them verifiably."""

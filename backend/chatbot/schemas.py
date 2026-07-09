@@ -5,6 +5,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 
 ChatMode = Literal["chat", "diagnosis", "document", "deadline", "handoff"]
 
@@ -14,7 +16,7 @@ class ChatMessageRequest(BaseModel):
     user_id: str = Field(..., min_length=1)
     case_id: Optional[UUID] = None
     message: str = Field(..., min_length=1)
-    jurisdiction: str = "EW"
+    jurisdiction: str = DEFAULT_JURISDICTION
     mode: ChatMode = "chat"
 
 

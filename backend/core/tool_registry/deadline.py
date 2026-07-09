@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from backend.core.tool_registry.base import AgentTool, ToolResult
+from backend.domains.constants import DEFAULT_JURISDICTION
 
 
 class DeadlineCalculateTool(AgentTool):
@@ -12,7 +13,7 @@ class DeadlineCalculateTool(AgentTool):
     def invoke(self, **kwargs) -> ToolResult:
         event_date = kwargs.get("event_date") or kwargs.get("edt")
         event_type = kwargs.get("event_type") or kwargs.get("claim_type") or "dismissal"
-        jurisdiction = kwargs.get("jurisdiction") or "EW"
+        jurisdiction = kwargs.get("jurisdiction") or DEFAULT_JURISDICTION
         if not event_date:
             return ToolResult(
                 tool_name=self.name,

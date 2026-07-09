@@ -10,11 +10,12 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from backend.core.rag.graph_engine import build_graph_chain, search_graph_by_query
+from backend.domains.constants import DEFAULT_JURISDICTION
 
 
 def build_legal_chain(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     max_depth: int = 10,
     query: Optional[str] = None,
 ) -> dict[str, Any]:
@@ -51,7 +52,7 @@ def score_path(chain: dict[str, Any]) -> float:
     return min(1.0, base + test_bonus + source_bonus)
 
 
-def search_legal_chain(query: str, jurisdiction: str = "EW", limit: int = 10) -> dict[str, Any]:
+def search_legal_chain(query: str, jurisdiction: str = DEFAULT_JURISDICTION, limit: int = 10) -> dict[str, Any]:
     """Query-driven graph search used by port 8018 /api/graph/search."""
     result = search_graph_by_query(query, jurisdiction=jurisdiction, limit=limit)
     result["path_score"] = score_path(result)

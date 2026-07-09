@@ -12,6 +12,8 @@ import logging
 import os
 from typing import Any, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 logger = logging.getLogger(__name__)
 
 _GRAPH_CACHE_PREFIX = "graph:chain:"
@@ -248,7 +250,7 @@ def _format_path_text(path: list[dict], edges: list[dict]) -> str:
 
 def build_graph_chain(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     max_depth: int = 10,
     query: Optional[str] = None,
     use_cache: bool = True,
@@ -282,7 +284,7 @@ def build_graph_chain(
     return result
 
 
-def search_graph_by_query(query: str, jurisdiction: str = "EW", limit: int = 10) -> dict:
+def search_graph_by_query(query: str, jurisdiction: str = DEFAULT_JURISDICTION, limit: int = 10) -> dict:
     """Map natural-language query to claim type and return graph chain."""
     q = (query or "").lower()
     claim_type = "unfair_dismissal"

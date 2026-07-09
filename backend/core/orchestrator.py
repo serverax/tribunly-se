@@ -18,6 +18,8 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 from backend.core.agents.base import AgentResult
 from backend.core.agents.registry import get_registry
 from backend.core.agents.domain_plugins import get_domain_plugin
@@ -63,13 +65,13 @@ class Orchestrator:
       4. merge     -  combine AgentResults into OrchestrationResult
     """
 
-    def classify(self, message: str, facts: dict, jurisdiction: str = "EW") -> dict:
+    def classify(self, message: str, facts: dict, jurisdiction: str = DEFAULT_JURISDICTION) -> dict:
         from backend.core.classify import classify as _classify
 
         clf = _classify(message, facts)
-        j = (facts.get("jurisdiction") or jurisdiction or "EW").upper()
+        j = (facts.get("jurisdiction") or jurisdiction or DEFAULT_JURISDICTION).upper()
         if j not in ("EW", "SC", "NI"):
-            j = "EW"
+            j = DEFAULT_JURISDICTION
         claim_type = clf.matter_type if clf.in_scope else "out_of_scope"
         legal_area = "employment_law" if clf.in_scope else "out_of_scope"
         return {
@@ -112,7 +114,7 @@ class Orchestrator:
         message: str,
         facts: dict,
         bundle: Any,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
     ) -> list[AgentResult]:
         registry = get_registry()
         results: list[AgentResult] = []
@@ -163,7 +165,7 @@ class Orchestrator:
         facts: dict,
         bundle: Any,
         *,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
         claim_type: Optional[str] = None,
         urgency: str = "safe",
         domain: str = DOMAIN_DEFAULT,
@@ -209,7 +211,7 @@ class Orchestrator:
         context: dict,
         case_id: str,
         user_id: str,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
         claim_type: str = "unfair_dismissal",
     ) -> dict:
         """Backward-compatible entry  -  delegates to brain.execute_generative_lane."""

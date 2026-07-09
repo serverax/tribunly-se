@@ -25,6 +25,7 @@ from datetime import date, datetime
 from typing import Optional, Union
 
 from backend.core.retrieve import retrieve_rules
+from backend.domains.constants import DEFAULT_JURISDICTION
 
 # Standard non-advice framing appended to every screen/estimate. The preview is
 # informational; the full assessment requires login + the governed brain path.
@@ -167,7 +168,7 @@ def check_claim(facts: Union[str, dict]) -> dict:
 def calculate_deadline(
     event_date: Union[str, date],
     event_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
 ) -> dict:
     """Deterministic Employment Tribunal limitation date for an event.
 
@@ -221,7 +222,7 @@ def calculate_deadline(
 def estimate_compensation(
     weekly_pay: float,
     months_employed: int,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
 ) -> dict:
     """Deterministic statutory BASIC AWARD estimate for unfair dismissal / redundancy.
 

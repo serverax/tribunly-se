@@ -8,6 +8,8 @@ import logging
 import os
 from typing import Any, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 logger = logging.getLogger(__name__)
 
 _DEFAULT_TTL = int(os.getenv("GRAPH_CACHE_TTL_SECONDS", "3600"))
@@ -33,7 +35,7 @@ def _redis_client():
 def get_cached_chain(
     query: str,
     claim_type: str = "",
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     mode: str = "postgres",
 ) -> Optional[dict[str, Any]]:
     client = _redis_client()
@@ -53,7 +55,7 @@ def set_cached_chain(
     payload: dict[str, Any],
     query: str,
     claim_type: str = "",
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     mode: str = "postgres",
     ttl: int = _DEFAULT_TTL,
 ) -> None:

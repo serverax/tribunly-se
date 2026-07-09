@@ -28,6 +28,7 @@ from datetime import date
 from typing import Optional, Union
 
 from shared.schemas import ClassificationResult, RetrievalBundle, StructuredAssessment
+from backend.domains.constants import DEFAULT_JURISDICTION
 from backend.core.classify import classify
 from backend.core.retrieve import retrieve
 from backend.domains.employment.deadline import compute_limitation_date, check_qualifying_period
@@ -152,7 +153,7 @@ def assess(
     query: str,
     facts: dict,
     model: Optional[ReasoningModel] = None,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     graph_context: Optional[dict] = None,
     domain: Optional[str] = None,
 ) -> dict:

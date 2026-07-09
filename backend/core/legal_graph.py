@@ -16,6 +16,8 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 logger = logging.getLogger(__name__)
 
 # Claim type → root node mapping
@@ -40,7 +42,7 @@ _RELATIONSHIP_PRIORITY = [
 
 def get_claim_subgraph(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     max_depth: int = 2,
 ) -> dict:
     """
@@ -74,7 +76,7 @@ def get_claim_subgraph(
         return _empty_graph(str(exc))
 
 
-def get_concept_context(node_ids: list[str], jurisdiction: str = "EW") -> dict:
+def get_concept_context(node_ids: list[str], jurisdiction: str = DEFAULT_JURISDICTION) -> dict:
     """
     Fetch specific node context by node_id list.
 
@@ -236,7 +238,7 @@ def select_rag_sources(
     claim_type: str,
     risk_level: str,
     is_generic: bool,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
 ) -> dict:
     """
     Determine which RAG sources to activate for this query.

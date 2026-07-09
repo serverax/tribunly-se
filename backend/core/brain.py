@@ -45,7 +45,7 @@ import uuid
 
 from typing import Any, Optional
 
-from backend.domains.constants import DOMAIN_DEFAULT
+from backend.domains.constants import DEFAULT_JURISDICTION, DOMAIN_DEFAULT
 
 logger = logging.getLogger(__name__)
 
@@ -224,7 +224,7 @@ def _run_safety_checks(assessment: dict, trace_id: str, user_id: Optional[str]) 
         blocked = True
 
     # Check 4: Jurisdiction boundary (EW only for now)
-    resp_j = assessment.get("jurisdiction", "EW")
+    resp_j = assessment.get("jurisdiction", DEFAULT_JURISDICTION)
     c4_pass = resp_j in ("EW", "SC", "NI") or assessment.get("status") == "not_supported"
     checks.append({"check": "jurisdiction_valid", "passed": c4_pass, "severity": "high"})
     if not c4_pass:
@@ -267,7 +267,7 @@ def _run_safety_checks(assessment: dict, trace_id: str, user_id: Optional[str]) 
 
 
 def get_deterministic_guide(claim_type: str = "unfair_dismissal",
-                            jurisdiction: str = "EW") -> dict:
+                            jurisdiction: str = DEFAULT_JURISDICTION) -> dict:
     """Deterministic 'safe haven' content  -  rules-table only, no model. Returned
     when the generative model fails the corpus-citation gate after retries."""
     rules = []
@@ -288,7 +288,7 @@ def get_deterministic_guide(claim_type: str = "unfair_dismissal",
 
 def execute_generative_lane(query: str, context: Optional[dict] = None,
                             case_id: str = "", user_id: str = "",
-                            jurisdiction: str = "EW", claim_type: str = "unfair_dismissal",
+                            jurisdiction: str = DEFAULT_JURISDICTION, claim_type: str = "unfair_dismissal",
                             messages: Optional[list] = None, model=None) -> dict:
     """Generative lane gatekeeper (LLM Fabric / CitationGuard directive).
 
@@ -348,7 +348,7 @@ class Orchestrator:
         context: dict,
         case_id: str,
         user_id: str,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
         claim_type: str = "unfair_dismissal",
     ) -> dict:
         return execute_generative_lane(
@@ -361,7 +361,7 @@ class Orchestrator:
         )
 
     @staticmethod
-    def classify(message: str, facts: dict, jurisdiction: str = "EW") -> dict:
+    def classify(message: str, facts: dict, jurisdiction: str = DEFAULT_JURISDICTION) -> dict:
         from backend.core.orchestrator import orchestrator as _orch
         return _orch.classify(message, facts, jurisdiction)
 
@@ -517,7 +517,7 @@ def run_brain(
     facts: dict,
     user_id: Optional[str]  = None,
     case_id: Optional[str]  = None,
-    jurisdiction: str       = "EW",
+    jurisdiction: str       = DEFAULT_JURISDICTION,
     model                   = None,
     memory_consent: bool    = False,
 ) -> dict:
@@ -599,7 +599,7 @@ def run_brain(
     # ── Step 3: Detect jurisdiction ──────────────────────────────────────────
     j = facts.get("jurisdiction", jurisdiction).upper()
     if j not in ("EW", "SC", "NI"):
-        j = "EW"
+        j = DEFAULT_JURISDICTION
     trace.jurisdiction = j
     trace.record_step("detect_jurisdiction", "ok", {"jurisdiction": j})
 

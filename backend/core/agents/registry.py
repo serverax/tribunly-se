@@ -11,6 +11,7 @@ import logging
 from typing import Optional
 
 from backend.core.agents.base import LegalAgent, AgentResult
+from backend.domains.constants import DEFAULT_JURISDICTION
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,7 @@ class EmploymentLawAgent(LegalAgent):
     allowed_tools = ["retrieve_rules", "hybrid_search", "citation_verify", "deadline_calculate"]
     prohibited_actions = LegalAgent.prohibited_actions + ["predict_outcome_probability"]
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         findings = []
         citations = []
         gaps = []
@@ -80,7 +81,7 @@ class DeadlineAgent(LegalAgent):
     allowed_tools = ["retrieve_rules", "deadline_calculate", "calendar"]
     prohibited_actions = LegalAgent.prohibited_actions + ["estimate_deadline"]
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         import datetime as _dt
         findings = []
         gaps = []
@@ -148,7 +149,7 @@ class EvidenceAgent(LegalAgent):
     allowed_tools = ["evidence_checklist", "document_classify", "gap_detect"]
     prohibited_actions = LegalAgent.prohibited_actions
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         from backend.core.evidence_gap import detect_gaps
         claim_type = facts.get("claim_type", "unfair_dismissal")
         gaps = detect_gaps(claim_type, facts)
@@ -171,7 +172,7 @@ class CitationVerificationAgent(LegalAgent):
     allowed_tools = ["citation_verify", "legislation_lookup", "case_law_lookup"]
     prohibited_actions = LegalAgent.prohibited_actions + ["fabricate_citation", "approximate_citation"]
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         if not bundle or not hasattr(bundle, "authorities"):
             return AgentResult(agent_name=self.name, status="ok", confidence=1.0)
 
@@ -197,7 +198,7 @@ class CompensationAgent(LegalAgent):
     allowed_tools = ["retrieve_rules", "compensation_calculate"]
     prohibited_actions = LegalAgent.prohibited_actions + ["guarantee_amount"]
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         findings = []
         if bundle and hasattr(bundle, "exact_rules"):
             cap_rule = next(
@@ -236,7 +237,7 @@ class RiskReviewAgent(LegalAgent):
     allowed_tools = ["risk_score", "weakness_detect"]
     prohibited_actions = LegalAgent.prohibited_actions
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         risks = []
         human_review = False
         reason = None
@@ -262,7 +263,7 @@ class EvaluationAgent(LegalAgent):
     allowed_tools = ["evaluate_assessment"]
     prohibited_actions = LegalAgent.prohibited_actions
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         return AgentResult(
             agent_name=self.name,
             status="ok",
@@ -278,7 +279,7 @@ class HumanReviewAgent(LegalAgent):
     allowed_tools = []
     prohibited_actions = LegalAgent.prohibited_actions
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         return AgentResult(
             agent_name=self.name,
             status="ok",
@@ -300,7 +301,7 @@ class SafetyAbuseAgent(LegalAgent):
         "jailbreak", "pretend you are", "system prompt",
     ]
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         lowered = message.lower()
         for pattern in self._BLOCKED_PATTERNS:
             if pattern in lowered:
@@ -337,7 +338,7 @@ class DocumentDraftingAgent(LegalAgent):
         "submit_et1",
     ]
 
-    def process(self, message: str, facts: dict, bundle, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         claim_type = facts.get("claim_type", "unfair_dismissal")
         generated = []
         citations = []

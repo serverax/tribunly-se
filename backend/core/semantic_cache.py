@@ -27,6 +27,8 @@ import json
 import logging
 from typing import Any, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 logger = logging.getLogger(__name__)
 
 # ── Safety classification ─────────────────────────────────────────────────────
@@ -86,7 +88,7 @@ def _get_current_source_version(jurisdiction: str) -> str:
 
 def cache_lookup(
     query: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     facts: Optional[dict] = None,
 ) -> dict:
     """
@@ -147,7 +149,7 @@ def cache_lookup(
 def cache_store(
     query: str,
     answer: Any,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     facts: Optional[dict] = None,
 ) -> dict:
     """

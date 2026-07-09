@@ -11,7 +11,7 @@ import logging
 from datetime import date
 from typing import Any, Optional
 
-from backend.domains.constants import DOMAIN_DEFAULT
+from backend.domains.constants import DEFAULT_JURISDICTION, DOMAIN_DEFAULT
 from backend.domains.context import resolve_request_domain
 from backend.domains.registry import jurisdiction_supported_for_domain
 
@@ -25,7 +25,7 @@ class ReasoningRouter:
         self,
         query: str,
         facts: dict,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
         *,
         domain: Optional[str] = None,
     ) -> dict:
@@ -135,7 +135,7 @@ class ReasoningRouter:
         self,
         query: str,
         facts: dict,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
         *,
         domain: Optional[str] = None,
     ) -> dict:
@@ -194,7 +194,7 @@ class ReasoningRouter:
         query: str,
         facts: dict,
         *,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
         use_model: bool = True,
         model=None,
         domain: Optional[str] = None,

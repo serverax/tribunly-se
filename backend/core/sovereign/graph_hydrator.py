@@ -17,6 +17,8 @@ from typing import Optional
 
 import networkx as nx
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 
 def _get_conn():
     from ingestion.db import get_connection
@@ -97,7 +99,7 @@ def _add_months(d: date, months: int) -> date:
 
 
 def compute_timeline_deadline(conn, trigger_date: date, claim_type: str = "unfair_dismissal",
-                              jurisdiction: str = "EW", today: Optional[date] = None) -> dict:
+                              jurisdiction: str = DEFAULT_JURISDICTION, today: Optional[date] = None) -> dict:
     """ET limitation: '<N> months less one day' from the trigger date, where N is the
     months value from the rules table (NOT hardcoded). Fails closed if the rule is absent."""
     from backend.core.retrieve import retrieve_rules

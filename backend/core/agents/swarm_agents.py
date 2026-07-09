@@ -10,6 +10,7 @@ import logging
 from typing import Any
 
 from backend.core.agents.base import AgentResult, LegalAgent
+from backend.domains.constants import DEFAULT_JURISDICTION
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ class IntakeAgent(LegalAgent):
     description = "Classifies jurisdiction, claim type, urgency; detects missing facts."
     allowed_tools = ["classify", "validate_facts"]
 
-    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         from backend.core.classify import classify
         from backend.core.evidence_gap import detect_gaps
 
@@ -44,7 +45,7 @@ class RetrievalAgent(LegalAgent):
     description = "Hybrid RAG + rules retrieval from Postgres corpus."
     allowed_tools = ["retrieve", "hybrid_search", "retrieve_rules"]
 
-    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         if not bundle:
             return AgentResult(
                 agent_name=self.name,
@@ -68,7 +69,7 @@ class GraphAgent(LegalAgent):
     description = "Postgres legal_nodes/legal_edges BFS traversal (NOT Neo4j)."
     allowed_tools = ["graph_traverse", "legal_graph"]
 
-    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         from backend.core.control_plane.graph_controller import GraphController
 
         claim = facts.get("claim_type") or "unfair_dismissal"
@@ -88,7 +89,7 @@ class ReasoningAgent(LegalAgent):
     description = "Routes to governed pipeline assess (rules + RAG + local LLM)."
     allowed_tools = ["pipeline_assess", "orchestrator"]
 
-    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         from backend.core.models import StubReasoningModel
         from backend.core.pipeline import assess
 
@@ -107,7 +108,7 @@ class RiskAgent(LegalAgent):
     description = "Deadline urgency, weaknesses, human-review flags."
     allowed_tools = ["risk_score", "deadline_calculate"]
 
-    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         risks = []
         human_review = False
         reason = None
@@ -132,7 +133,7 @@ class JudgeAgent(LegalAgent):
     description = "Governance + citation verification gate (Critic/CitationGuard)."
     allowed_tools = ["govern", "citation_verify", "legal_truth_validator"]
 
-    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         assessment = facts.get("_assessment_snapshot") or {}
         if not assessment:
             if bundle and hasattr(bundle, "authorities"):
@@ -165,7 +166,7 @@ class DocumentAgent(LegalAgent):
     description = "Self-help document drafts from structured assessment."
     allowed_tools = ["generate_particulars", "generate_schedule_of_loss"]
 
-    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = "EW") -> AgentResult:
+    def process(self, message: str, facts: dict, bundle: Any, jurisdiction: str = DEFAULT_JURISDICTION) -> AgentResult:
         claim_type = facts.get("claim_type", "unfair_dismissal")
         generated = []
         gaps = []

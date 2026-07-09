@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 
 class GraphController:
     """Read-only Postgres graph access for the control plane."""
@@ -15,7 +17,7 @@ class GraphController:
     def get_subgraph(
         self,
         claim_type: str,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
         max_depth: int = 2,
     ) -> dict:
         from backend.core.legal_graph import get_claim_subgraph
@@ -25,7 +27,7 @@ class GraphController:
     def traverse_from_nodes(
         self,
         node_ids: list[str],
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
     ) -> dict:
         from backend.core.legal_graph import get_concept_context
 
@@ -34,7 +36,7 @@ class GraphController:
     def enrich_bundle_context(
         self,
         claim_type: str,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
     ) -> Optional[dict]:
         g = self.get_subgraph(claim_type, jurisdiction)
         if g.get("nodes"):

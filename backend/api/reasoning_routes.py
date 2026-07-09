@@ -19,6 +19,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 
+from backend.domains.constants import DEFAULT_JURISDICTION
 from backend.core.path_splitter import (
     FAST_DETERMINISTIC, route as split_route, sse_frames,
 )
@@ -35,7 +36,7 @@ _SYSTEM = (
 class ReasonRequest(BaseModel):
     query: str
     facts: Optional[dict] = None
-    jurisdiction: str = "EW"
+    jurisdiction: str = DEFAULT_JURISDICTION
 
 
 def _local_enabled() -> bool:

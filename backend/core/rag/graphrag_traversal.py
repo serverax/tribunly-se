@@ -17,6 +17,7 @@ import logging
 
 import psycopg2.extras
 
+from backend.domains.constants import DEFAULT_JURISDICTION
 from ingestion.db import get_connection
 
 logger = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ _CLAIM_TYPE_TO_MODULE = {
 def build_legal_path(
     claim_type: str,
     module: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     max_depth: int = 10,
 ) -> dict:
     """
@@ -236,7 +237,7 @@ def _empty_path(claim_type: str, jurisdiction: str, missing: list[str]) -> dict:
 
 def traverse_requirements(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
 ) -> dict:
     """
     List all legal requirements (tests, procedures, evidence) for a claim type.
@@ -280,7 +281,7 @@ def traverse_requirements(
 
 def find_remedies_for_claim(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
 ) -> dict:
     """
     List all remedies (awards, remedies) applicable to a claim type.
@@ -320,7 +321,7 @@ def find_remedies_for_claim(
 
 def find_deadlines_for_claim(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
 ) -> dict:
     """
     List all time limits and deadlines applicable to a claim type.
@@ -409,7 +410,7 @@ class GraphRAGTraversal:
             logger.warning("GraphRAG database check failed: %s", exc)
             return False
 
-    def traverse(self, claim_type: str, module: str = "", jurisdiction: str = "EW", **kwargs) -> list[dict]:
+    def traverse(self, claim_type: str, module: str = "", jurisdiction: str = DEFAULT_JURISDICTION, **kwargs) -> list[dict]:
         if not self._db_ok:
             return []
         result = build_legal_path(claim_type, module or claim_type, jurisdiction=jurisdiction)
@@ -467,11 +468,11 @@ class GraphRAGTraversal:
         return {"status": "degraded", "mode": "fail_closed", "engine": "postgres_unavailable"}
 
 
-def graphrag_traversal(claim_type: str, module: str = "", jurisdiction: str = "EW", **kwargs) -> list[dict]:
+def graphrag_traversal(claim_type: str, module: str = "", jurisdiction: str = DEFAULT_JURISDICTION, **kwargs) -> list[dict]:
     return GraphRAGTraversal().traverse(claim_type, module, jurisdiction, **kwargs)
 
 
-def traverse(claim_type: str, module: str = "", jurisdiction: str = "EW", **kwargs) -> list[dict]:
+def traverse(claim_type: str, module: str = "", jurisdiction: str = DEFAULT_JURISDICTION, **kwargs) -> list[dict]:
     return graphrag_traversal(claim_type, module, jurisdiction, **kwargs)
 
 
@@ -503,7 +504,7 @@ def graph_engine_mode() -> str:
 def build_legal_path_cached(
     claim_type: str,
     module: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     max_depth: int = 10,
     query: str = "",
 ) -> dict:
@@ -528,7 +529,7 @@ def build_legal_path_cached(
     }
 
 
-def search_legal_graph_cached(query: str, jurisdiction: str = "EW", limit: int = 10) -> dict:
+def search_legal_graph_cached(query: str, jurisdiction: str = DEFAULT_JURISDICTION, limit: int = 10) -> dict:
     """Natural-language graph search with Redis cache."""
     from backend.core.rag.graph_rag_chain import search_legal_chain
 

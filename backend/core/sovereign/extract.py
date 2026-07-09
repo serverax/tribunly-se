@@ -10,6 +10,8 @@ import re
 from datetime import date
 from typing import Callable, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 _MONTHS = {
     "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
     "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12,
@@ -84,7 +86,7 @@ def _get_conn():
     return get_connection()
 
 
-def write_user_profile(user_id: str, variables: dict, jurisdiction_code: str = "EW",
+def write_user_profile(user_id: str, variables: dict, jurisdiction_code: str = DEFAULT_JURISDICTION,
                        get_conn: Optional[Callable] = None) -> None:
     """Upsert the extracted variables into user_legal_profiles (idempotent per user)."""
     conn = (get_conn or _get_conn)()

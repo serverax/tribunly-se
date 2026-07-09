@@ -14,6 +14,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 
 @dataclass
 class AgentResult:
@@ -62,7 +64,7 @@ class LegalAgent(ABC):
         message: str,
         facts: dict,
         bundle: Any,
-        jurisdiction: str = "EW",
+        jurisdiction: str = DEFAULT_JURISDICTION,
     ) -> AgentResult:
         """
         Process a legal request and return structured findings.

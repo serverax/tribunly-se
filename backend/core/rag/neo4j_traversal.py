@@ -12,6 +12,8 @@ import os
 import re
 from typing import Any, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 logger = logging.getLogger(__name__)
 
 _NEO4J_URI = os.getenv("NEO4J_URI", "bolt://neo4j:7687")
@@ -91,7 +93,7 @@ def _row_to_node(record: dict, depth: int = 0) -> dict:
 def build_legal_chain(
     claim_type: str,
     module: str = "",
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     max_depth: int = 10,
 ) -> dict[str, Any]:
     """Traverse Neo4j from claim root through REQUIRES / LEADS_TO edges."""
@@ -176,7 +178,7 @@ def build_legal_chain(
         driver.close()
 
 
-def search_legal_graph(query: str, jurisdiction: str = "EW", limit: int = 10) -> dict[str, Any]:
+def search_legal_graph(query: str, jurisdiction: str = DEFAULT_JURISDICTION, limit: int = 10) -> dict[str, Any]:
     """Full-text or keyword graph search; returns matched nodes and a short chain."""
     from backend.core.rag.graphrag_traversal import build_legal_path as pg_build
 

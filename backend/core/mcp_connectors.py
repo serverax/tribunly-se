@@ -28,6 +28,8 @@ import datetime as _dt
 import logging
 from typing import Any, Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
+
 logger = logging.getLogger(__name__)
 
 # ── Tool allowlist (deny-by-default) ─────────────────────────────────────────
@@ -127,7 +129,7 @@ def _dispatch(tool_name: str, action: str, params: dict) -> Any:
 def _legislation_lookup(params: dict) -> dict:
     """Retrieve a legislation section from the DB by ERA/section reference."""
     section_ref = params.get("section_ref", "")
-    jurisdiction = params.get("jurisdiction", "EW")
+    jurisdiction = params.get("jurisdiction", DEFAULT_JURISDICTION)
     claim_type = params.get("claim_type", "")
 
     from ingestion.db import get_connection
@@ -163,7 +165,7 @@ def _legislation_lookup(params: dict) -> dict:
 def _rules_lookup(params: dict) -> dict:
     """Retrieve effective-dated rules for a claim type."""
     claim_type = params.get("claim_type", "unfair_dismissal")
-    jurisdiction = params.get("jurisdiction", "EW")
+    jurisdiction = params.get("jurisdiction", DEFAULT_JURISDICTION)
     ref_date = params.get("ref_date")
 
     from backend.core.retrieve import retrieve_rules
@@ -191,7 +193,7 @@ def _document_generate(params: dict) -> dict:
     doc_type = params.get("doc_type", "particulars_of_claim")
     facts = params.get("facts", {})
     assessment = params.get("assessment", {})
-    jurisdiction = params.get("jurisdiction", "EW")
+    jurisdiction = params.get("jurisdiction", DEFAULT_JURISDICTION)
 
     if doc_type == "particulars_of_claim":
         from backend.core.documents import generate_particulars_of_claim

@@ -27,6 +27,7 @@ from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel, Field
 import uvicorn
 
+from backend.domains.constants import DEFAULT_JURISDICTION
 from backend.core.rag.graphrag_traversal import (
     build_legal_path,
     build_legal_path_cached,
@@ -56,7 +57,7 @@ PORT = int(os.getenv("PORT", 8018))
 class GraphRAGTraverseRequest(BaseModel):
     claim_type: str = Field(..., description="Claim type: unfair_dismissal | constructive_dismissal | employment_status")
     module: str = Field(..., description="Module for graph context")
-    jurisdiction: str = Field(default="EW", description="EW (England/Wales) | S (Scotland)")
+    jurisdiction: str = Field(default=DEFAULT_JURISDICTION, description="EW (England/Wales) | S (Scotland)")
     facts: dict = Field(default_factory=dict, description="Optional claim facts for path validation")
 
 
@@ -117,7 +118,7 @@ class DeadlinesResponse(BaseModel):
 
 class GraphSearchRequest(BaseModel):
     query: str = Field(..., description="Natural language graph search query")
-    jurisdiction: str = Field(default="EW", description="EW | S")
+    jurisdiction: str = Field(default=DEFAULT_JURISDICTION, description="EW | S")
     limit: int = Field(default=10, ge=1, le=50)
 
 
@@ -343,7 +344,7 @@ async def graph_search(
 @app.get("/api/graphrag/requirements/{claim_type}", response_model=RequirementsResponse)
 async def get_requirements(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     x_trace_id: Optional[str] = Header(None),
 ):
     """
@@ -402,7 +403,7 @@ async def get_requirements(
 @app.get("/api/graphrag/remedies/{claim_type}", response_model=RemediesResponse)
 async def get_remedies(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     x_trace_id: Optional[str] = Header(None),
 ):
     """
@@ -445,7 +446,7 @@ async def get_remedies(
 @app.get("/api/graphrag/deadlines/{claim_type}", response_model=DeadlinesResponse)
 async def get_deadlines(
     claim_type: str,
-    jurisdiction: str = "EW",
+    jurisdiction: str = DEFAULT_JURISDICTION,
     x_trace_id: Optional[str] = Header(None),
 ):
     """

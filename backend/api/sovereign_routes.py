@@ -11,6 +11,7 @@ from __future__ import annotations
 import uuid as _uuid
 from typing import Optional
 
+from backend.domains.constants import DEFAULT_JURISDICTION
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
@@ -21,12 +22,12 @@ router = APIRouter(tags=["sovereign"])
 class IngestRequest(BaseModel):
     raw_text: str
     user_id: Optional[str] = None
-    jurisdiction: str = "EW"
+    jurisdiction: str = DEFAULT_JURISDICTION
 
 
 class QueryRequest(BaseModel):
     raw_text: str
-    jurisdiction: str = "EW"
+    jurisdiction: str = DEFAULT_JURISDICTION
 
 
 def _trace_id() -> str:

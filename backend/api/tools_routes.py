@@ -26,6 +26,7 @@ from pydantic import BaseModel
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
+from backend.domains.constants import DEFAULT_JURISDICTION
 from backend.core import tools
 
 router = APIRouter(prefix="/api/tools", tags=["tools"])
@@ -44,13 +45,13 @@ class ClaimCheckerRequest(BaseModel):
 class DeadlineRequest(BaseModel):
     event_date: str
     event_type: str
-    jurisdiction: str = "EW"
+    jurisdiction: str = DEFAULT_JURISDICTION
 
 
 class CompensationRequest(BaseModel):
     weekly_pay: float
     months_employed: int
-    jurisdiction: str = "EW"
+    jurisdiction: str = DEFAULT_JURISDICTION
 
 
 class AcasPrepRequest(BaseModel):

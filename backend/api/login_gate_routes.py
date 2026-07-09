@@ -23,6 +23,7 @@ from typing import Optional
 from fastapi import APIRouter, Header, Request
 from pydantic import BaseModel
 
+from backend.domains.constants import DEFAULT_JURISDICTION
 from backend.core import login_gate
 from backend.core import otel as _otel
 from backend.core.user_auth import get_current_user
@@ -44,7 +45,7 @@ class FullResultRequest(BaseModel):
     tool: str = "employment_rights_check"
     answers: dict = {}
     resume_token: Optional[str] = None
-    jurisdiction: str = "EW"
+    jurisdiction: str = DEFAULT_JURISDICTION
 
 
 class ResumeRequest(BaseModel):
