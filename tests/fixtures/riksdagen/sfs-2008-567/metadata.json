@@ -1,0 +1,20 @@
+{
+  "beteckning": "2008:567",
+  "titel": "Diskrimineringslag (2008:567)",
+  "undertitel": "t.o.m. SFS 2025:736",
+  "datum": "2008-06-05",
+  "publicerad": "2025-10-17 04:37:24",
+  "systemdatum": "2025-10-17 04:37:24",
+  "dokument_url_text": "https://data.riksdagen.se/dokument/sfs-2008-567.text",
+  "dokument_url_html": "https://data.riksdagen.se/dokument/sfs-2008-567.html",
+  "amendment_effective_from": null,
+  "fetched_at": "2026-07-09T01:04:35.599265+00:00",
+  "listing_url": "https://data.riksdagen.se/dokumentlista/?sok=2008%3A567&doktyp=sfs&utformat=json",
+  "text_url": "https://data.riksdagen.se/dokument/sfs-2008-567.text",
+  "html_url": "https://data.riksdagen.se/dokument/sfs-2008-567.html",
+  "content_types": {
+    "listing": "application/json; charset=utf-8",
+    "text": "text/plain; charset=utf-8",
+    "html": "text/html; charset=utf-8"
+  }
+}

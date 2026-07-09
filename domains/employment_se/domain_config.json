@@ -1,0 +1,67 @@
+{
+  "domain": "employment_se",
+  "title": "Swedish Employment Law",
+  "country_code": "SE",
+  "jurisdictions": [
+    "SE"
+  ],
+  "default_jurisdiction": "SE",
+  "active": false,
+  "version": "0.1-draft",
+  "active_claim_types": [
+    "dismissal",
+    "fixed_term_conversion",
+    "trial_employment",
+    "collective_agreement_boundary",
+    "discrimination",
+    "agency_worker",
+    "sick_pay",
+    "working_time",
+    "holiday",
+    "parental_leave",
+    "wage_caveat"
+  ],
+  "partial_claim_types": [
+    "dismissal",
+    "fixed_term_conversion",
+    "trial_employment",
+    "collective_agreement_boundary",
+    "discrimination",
+    "agency_worker"
+  ],
+  "required_claim_types": [
+    "dismissal",
+    "fixed_term_conversion",
+    "trial_employment",
+    "collective_agreement_boundary",
+    "discrimination",
+    "agency_worker",
+    "sick_pay",
+    "working_time",
+    "holiday",
+    "parental_leave",
+    "wage_caveat"
+  ],
+  "future_claim_types": [
+    "collective_agreement_boundary",
+    "discrimination",
+    "agency_worker",
+    "sick_pay",
+    "working_time",
+    "holiday",
+    "parental_leave"
+  ],
+  "manifests": {
+    "sources": "sources.yaml",
+    "rules": "rules_manifest.yaml",
+    "workflows": "workflows.yaml",
+    "citation_policy": "citation_policy.yaml",
+    "licence_policy": "licence_policy.yaml"
+  },
+  "tables": {
+    "legislation": "legislation",
+    "rules": "rules",
+    "source_registry": "legal_sources",
+    "case_law": "case_law_documents"
+  }
+}

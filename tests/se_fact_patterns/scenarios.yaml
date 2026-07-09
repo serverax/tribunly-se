@@ -1,0 +1,107 @@
+domain: employment_se
+status: DRAFT
+scenarios:
+- id: se-dismissal-no-sakliga-skal
+  title: Uppsägning utan sakliga skäl
+  facts_sv: Arbetsgivaren säger upp en person för att snabbt byta ut personalen, men
+    kan inte peka på arbetsbrist eller personliga skäl och har inte erbjudit omplacering.
+  expected_outcome: 'DRAFT: likely challengeable dismissal; ask for document trail
+    and collective-agreement check.'
+  statutory_anchor:
+  - LAS 7 §
+  - LAS 2 c §
+  status: DRAFT
+- id: se-dismissal-reassignment-available
+  title: Omplacering fanns men testades inte
+  facts_sv: Arbetstagaren hade kompetens för ett ledigt jobb i samma verksamhet, men
+    arbetsgivaren gjorde ingen omplaceringsutredning innan uppsägning.
+  expected_outcome: 'DRAFT: likely weak dismissal case unless a collective agreement
+    changes the analysis.'
+  statutory_anchor:
+  - LAS 7 §
+  - LAS 2 b §
+  status: DRAFT
+- id: se-trial-period-expired
+  title: Provanställning löper ut
+  facts_sv: Prövotiden är satt till åtta månader och arbetsgivaren vill fortsätta
+    behandla anställningen som provanställning.
+  expected_outcome: 'DRAFT: incorrect; LAS caps probationary employment at six months
+    unless a valid exception exists.'
+  statutory_anchor:
+  - LAS 6 §
+  status: DRAFT
+- id: se-fixed-term-conversion
+  title: Särskild visstid konverterar
+  facts_sv: En arbetstagare har varit anställd i särskild visstidsanställning i drygt
+    tolv månader under fem år.
+  expected_outcome: 'DRAFT: treat as conversion candidate to permanent employment.'
+  statutory_anchor:
+  - LAS 5 a §
+  status: DRAFT
+- id: se-fixed-term-no-conversion
+  title: Under tröskeln för konvertering
+  facts_sv: En vikarie har arbetat i 18 månader fördelat över fem år.
+  expected_outcome: 'DRAFT: not yet at the two-year threshold for vikariat conversion.'
+  statutory_anchor:
+  - LAS 5 a §
+  status: DRAFT
+- id: se-missed-invalidity-window
+  title: Frist för ogiltigförklaring har gått ut
+  facts_sv: Arbetstagaren väntar i tre veckor med att underrätta arbetsgivaren efter
+    en uppsägning och fick inget särskilt ogiltighetsbesked.
+  expected_outcome: 'DRAFT: likely deadline-barred unless a special saving rule applies;
+    flag honesty caveat.'
+  statutory_anchor:
+  - LAS 40 §
+  status: DRAFT
+- id: se-damages-deadline-expired
+  title: Skadeståndsfristen är passerad
+  facts_sv: Ett krav på skadestånd väcks fem månader efter den påstådda överträdelsen,
+    utan förhandling i tid.
+  expected_outcome: 'DRAFT: likely deadline-barred under LAS 41 §.'
+  statutory_anchor:
+  - LAS 41 §
+  status: DRAFT
+- id: se-collective-agreement-override
+  title: Kollektivavtal ändrar sakliga skäl
+  facts_sv: Parterna omfattas av ett centralt kollektivavtal som uttryckligen ändrar
+    prövningen av sakliga skäl.
+  expected_outcome: 'DRAFT: collective agreement may reshape the analysis; do not
+    answer as if LAS 7 § were untouched.'
+  statutory_anchor:
+  - LAS 2 c §
+  - LAS 2 b §
+  status: DRAFT
+- id: se-discrimination-retaliation
+  title: Diskriminering och repressalie
+  facts_sv: En person får försämrade villkor efter att ha anmält diskriminering.
+  expected_outcome: 'DRAFT: rights under the discrimination act are non-waivable;
+    route to discrimination analysis.'
+  statutory_anchor:
+  - Diskrimineringslag 2008:567 3 §
+  status: DRAFT
+- id: se-agency-worker
+  title: Bemanningsarbete
+  facts_sv: En uthyrd arbetstagare får sämre grundläggande arbetsvillkor än en direktanställd
+    i samma jobb.
+  expected_outcome: 'DRAFT: check equal-treatment and host-company conditions; collective
+    agreement may matter.'
+  statutory_anchor:
+  - Lag 2012:854 om uthyrning av arbetstagare 5-6 §§
+  status: DRAFT
+- id: se-sick-pay-karens
+  title: Karensavdrag i sjuklön
+  facts_sv: Arbetstagaren är sjuk första dagen och frågar varför ett karensavdrag
+    görs.
+  expected_outcome: 'DRAFT: explain karensavdrag rather than inventing a wage number.'
+  statutory_anchor:
+  - SjLL 1991:1047 6 §
+  status: DRAFT
+- id: se-no-nmw-wage-question
+  title: Ingen lagstadgad minimilön
+  facts_sv: En person frågar vad den lagstadgade minimilönen är i Sverige.
+  expected_outcome: 'DRAFT: answer with the caveat that Sweden has no statutory minimum
+    wage and route to kollektivavtal analysis.'
+  statutory_anchor:
+  - SE no statutory minimum wage caveat
+  status: DRAFT

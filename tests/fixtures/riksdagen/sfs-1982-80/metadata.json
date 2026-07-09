@@ -1,0 +1,20 @@
+{
+  "beteckning": "1982:80",
+  "titel": "Lag (1982:80) om anställningsskydd",
+  "undertitel": "t.o.m. SFS 2022:836",
+  "datum": "1982-02-24",
+  "publicerad": "2025-10-17 04:36:02",
+  "systemdatum": "2025-10-17 04:36:02",
+  "dokument_url_text": "https://data.riksdagen.se/dokument/sfs-1982-80.text",
+  "dokument_url_html": "https://data.riksdagen.se/dokument/sfs-1982-80.html",
+  "amendment_effective_from": "2022-10-01",
+  "fetched_at": "2026-07-09T01:04:19.452751+00:00",
+  "listing_url": "https://data.riksdagen.se/dokumentlista/?sok=1982%3A80&doktyp=sfs&utformat=json",
+  "text_url": "https://data.riksdagen.se/dokument/sfs-1982-80.text",
+  "html_url": "https://data.riksdagen.se/dokument/sfs-1982-80.html",
+  "content_types": {
+    "listing": "application/json; charset=utf-8",
+    "text": "text/plain; charset=utf-8",
+    "html": "text/html; charset=utf-8"
+  }
+}

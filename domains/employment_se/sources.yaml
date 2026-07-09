@@ -1,0 +1,117 @@
+domain: employment_se
+country_code: SE
+jurisdiction: SE
+status: DRAFT
+legislation:
+- act_title: Lag (1982:80) om anställningsskydd
+  sfs_number: 1982:80
+  base_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  text_url: https://data.riksdagen.se/dokument/sfs-1982-80.text
+  html_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  parser_type: riksdagen_consolidated_text
+  licence_type: open_public_data
+  amendment_state: t.o.m. SFS 2022:836
+  sections:
+  - 2 b §
+  - 2 c §
+  - 5 a §
+  - 6 §
+  - 7 §
+  - 11 §
+  - 18 §
+  - 22 §
+  - 25 §
+  - 40 §
+  - 41 §
+  - 33 d §
+  notes: Core dismissal and deadline rules. 2022 sakliga skäl reform is effective
+    2022-10-01.
+- act_title: Lag (1976:580) om medbestämmande i arbetslivet
+  sfs_number: 1976:580
+  base_url: https://data.riksdagen.se/dokument/sfs-1976-580.html
+  text_url: https://data.riksdagen.se/dokument/sfs-1976-580.text
+  html_url: https://data.riksdagen.se/dokument/sfs-1976-580.html
+  parser_type: riksdagen_consolidated_text
+  licence_type: open_public_data
+  amendment_state: t.o.m. SFS 2026:886
+  sections:
+  - 4 §
+  notes: Collective agreement boundary law; cross-reference in LAS 2 b/2 c.
+- act_title: Diskrimineringslag (2008:567)
+  sfs_number: 2008:567
+  base_url: https://data.riksdagen.se/dokument/sfs-2008-567.html
+  text_url: https://data.riksdagen.se/dokument/sfs-2008-567.text
+  html_url: https://data.riksdagen.se/dokument/sfs-2008-567.html
+  parser_type: riksdagen_consolidated_text
+  licence_type: open_public_data
+  amendment_state: t.o.m. SFS 2025:736
+  sections:
+  - 3 §
+  notes: Non-waiver rule for rights and obligations under the discrimination act.
+- act_title: Arbetstidslag (1982:673)
+  sfs_number: 1982:673
+  base_url: https://data.riksdagen.se/dokument/sfs-1982-673.html
+  text_url: https://data.riksdagen.se/dokument/sfs-1982-673.text
+  html_url: https://data.riksdagen.se/dokument/sfs-1982-673.html
+  parser_type: riksdagen_consolidated_text
+  licence_type: open_public_data
+  amendment_state: t.o.m. SFS 2022:450
+  sections:
+  - 3 §
+  notes: Collective agreement gate for working-time deviations.
+- act_title: Semesterlag (1977:480)
+  sfs_number: 1977:480
+  base_url: https://data.riksdagen.se/dokument/sfs-1977-480.html
+  text_url: https://data.riksdagen.se/dokument/sfs-1977-480.text
+  html_url: https://data.riksdagen.se/dokument/sfs-1977-480.html
+  parser_type: riksdagen_consolidated_text
+  licence_type: open_public_data
+  amendment_state: t.o.m. SFS 2014:424
+  sections:
+  - 2 a §
+  notes: Collective agreement gateway for vacation-law deviations.
+- act_title: Föräldraledighetslag (1995:584)
+  sfs_number: 1995:584
+  base_url: https://data.riksdagen.se/dokument/sfs-1995-584.html
+  text_url: https://data.riksdagen.se/dokument/sfs-1995-584.text
+  html_url: https://data.riksdagen.se/dokument/sfs-1995-584.html
+  parser_type: riksdagen_consolidated_text
+  licence_type: open_public_data
+  amendment_state: t.o.m. SFS 2025:733
+  sections:
+  - 2 §
+  notes: Limited collective agreement derogations plus unpaid caregiving leave boundary.
+- act_title: Lag (1991:1047) om sjuklön
+  sfs_number: 1991:1047
+  base_url: https://data.riksdagen.se/dokument/sfs-1991-1047.html
+  text_url: https://data.riksdagen.se/dokument/sfs-1991-1047.text
+  html_url: https://data.riksdagen.se/dokument/sfs-1991-1047.html
+  parser_type: riksdagen_consolidated_text
+  licence_type: open_public_data
+  amendment_state: t.o.m. SFS 2025:938
+  sections:
+  - 2 §
+  - 6 §
+  - 7 §
+  notes: Sickness-pay and karensavdrag rules. Collective agreement boundary is narrow.
+- act_title: Lag (2012:854) om uthyrning av arbetstagare
+  sfs_number: 2012:854
+  base_url: https://data.riksdagen.se/dokument/sfs-2012-854.html
+  text_url: https://data.riksdagen.se/dokument/sfs-2012-854.text
+  html_url: https://data.riksdagen.se/dokument/sfs-2012-854.html
+  parser_type: riksdagen_consolidated_text
+  licence_type: open_public_data
+  amendment_state: t.o.m. SFS 2014:961
+  sections:
+  - 5 §
+  - 6 §
+  notes: Agency-worker equal-treatment boundary and basic-work-condition definitions.
+case_law:
+  source_name: Arbetsdomstolen publicerade avgöranden
+  source_type: case_law
+  base_url: https://www.domstol.se/arbetsdomstolen/
+  search_url: https://www.domstol.se/arbetsdomstolen/avgoranden/
+  access_mode: public_html_search
+  bulk_allowed: false
+  computational_analysis_allowed: false
+  assessment_only: true

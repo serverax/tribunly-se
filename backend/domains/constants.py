@@ -8,10 +8,20 @@ import os
 DOMAIN_DEFAULT: str = "employment"
 
 ENV_DOMAIN_KEY = "LAWAPP_DOMAIN"
+ENV_DEFAULT_JURISDICTION_KEY = "LAWAPP_DEFAULT_JURISDICTION"
+VALID_DEFAULT_JURISDICTIONS = ("EW", "SC", "NI")
 
-# Default jurisdiction when none supplied by the caller.
-# Configurable via env so a future deployment can override without code changes.
-DEFAULT_JURISDICTION: str = os.getenv("LAWAPP_DEFAULT_JURISDICTION", "EW")
+
+def _load_default_jurisdiction() -> str:
+    raw = os.getenv(ENV_DEFAULT_JURISDICTION_KEY, "EW").strip().upper()
+    if raw not in VALID_DEFAULT_JURISDICTIONS:
+        raise RuntimeError(
+            f"{ENV_DEFAULT_JURISDICTION_KEY} must be one of {list(VALID_DEFAULT_JURISDICTIONS)}; got {raw!r}"
+        )
+    return raw
+
+
+DEFAULT_JURISDICTION: str = _load_default_jurisdiction()
 
 
 def active_domain_from_env() -> str:

@@ -1,0 +1,20 @@
+{
+  "beteckning": "1976:580",
+  "titel": "Lag (1976:580) om medbestämmande i arbetslivet",
+  "undertitel": "t.o.m. SFS 2026:886",
+  "datum": "1976-06-10",
+  "publicerad": "2026-07-04 04:33:02",
+  "systemdatum": "2026-07-04 04:33:02",
+  "dokument_url_text": "https://data.riksdagen.se/dokument/sfs-1976-580.text",
+  "dokument_url_html": "https://data.riksdagen.se/dokument/sfs-1976-580.html",
+  "amendment_effective_from": null,
+  "fetched_at": "2026-07-09T01:04:26.785785+00:00",
+  "listing_url": "https://data.riksdagen.se/dokumentlista/?sok=1976%3A580&doktyp=sfs&utformat=json",
+  "text_url": "https://data.riksdagen.se/dokument/sfs-1976-580.text",
+  "html_url": "https://data.riksdagen.se/dokument/sfs-1976-580.html",
+  "content_types": {
+    "listing": "application/json; charset=utf-8",
+    "text": "text/plain; charset=utf-8",
+    "html": "text/html; charset=utf-8"
+  }
+}

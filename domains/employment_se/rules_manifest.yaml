@@ -1,0 +1,464 @@
+domain: employment_se
+country_code: SE
+jurisdiction: SE
+status: DRAFT
+lawyer_signoff_gate: D-SE5
+candidate_rules:
+- rule_key: dismissal.sakliga_skal_anchor
+  claim_type: dismissal
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 7 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: sakliga skäl
+  quote: "7 § Uppsägning från arbetsgivarens sida ska grunda sig på \n\nsakliga skäl.\
+    \ Sakliga skäl kan vara arbetsbrist eller \n\nförhållanden som hänför sig till\
+    \ arbetstagaren personligen.\n\n\n\nEn uppsägning är inte grundad på sakliga skäl\
+    \ om det är \n\nskäligt att kräva att arbetsgivaren bereder arbetstagaren \n\n\
+    annat arbete hos sig. Om arbetsgivaren tidigare har berett \n\narbetstagaren annat\
+    \ arbete hos sig på grund av förhållanden \n\nsom hänför sig till arbetstagaren\
+    \ personligen, ska \n\narbetsgivaren anses ha uppfyllt sin omplaceringsskyldighet,\
+    \ om \n\ndet inte finns särskilda skäl.\n\n\n\nVid en sådan övergång av ett företag,\
+    \ en verksamhet eller en \n\ndel av en verksamhet som sägs i 6 b § ska övergången\
+    \ i sig \n\ninte utgöra sakliga skäl för att säga upp arbetstagaren. Detta \n\n\
+    förbud ska dock inte hindra uppsägningar som sker av \n\nekonomiska, tekniska\
+    \ eller organisatoriska skäl där \n\nförändringar i arbetsstyrkan ingår.\n\n\n\
+    \nOm uppsägningen beror på förhållanden som hänför sig till \n\narbetstagaren\
+    \ personligen, får den inte grundas enbart på \n\nomständigheter som arbetsgivaren\
+    \ har känt till antingen mer än \n\ntvå månader innan underrättelse lämnades enligt\
+    \ 30 § eller, om \n\nnågon sådan underrättelse inte lämnats, två månader före\
+    \ \n\ntidpunkten för uppsägningen. Arbetsgivaren får dock grunda \n\nuppsägningen\
+    \ enbart på omständigheter som arbetsgivaren har \n\nkänt till mer än två månader,\
+    \ om tidsöverdraget berott på att \n\narbetsgivaren på arbetstagarens begäran\
+    \ eller med \n\narbetstagarens medgivande dröjt med underrättelsen eller \n\n\
+    uppsägningen eller om det finns synnerliga skäl för att \n\nåberopa omständigheterna.\
+    \ Lag (2022:835)."
+  boundary_note: Collective-agreement overrides can narrow or reshape this through
+    LAS 2 b § and 2 c §.
+- rule_key: dismissal.omplacering_requirement
+  claim_type: dismissal
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 7 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: omplacering
+  quote: "7 § Uppsägning från arbetsgivarens sida ska grunda sig på \n\nsakliga skäl.\
+    \ Sakliga skäl kan vara arbetsbrist eller \n\nförhållanden som hänför sig till\
+    \ arbetstagaren personligen.\n\n\n\nEn uppsägning är inte grundad på sakliga skäl\
+    \ om det är \n\nskäligt att kräva att arbetsgivaren bereder arbetstagaren \n\n\
+    annat arbete hos sig. Om arbetsgivaren tidigare har berett \n\narbetstagaren annat\
+    \ arbete hos sig på grund av förhållanden \n\nsom hänför sig till arbetstagaren\
+    \ personligen, ska \n\narbetsgivaren anses ha uppfyllt sin omplaceringsskyldighet,\
+    \ om \n\ndet inte finns särskilda skäl.\n\n\n\nVid en sådan övergång av ett företag,\
+    \ en verksamhet eller en \n\ndel av en verksamhet som sägs i 6 b § ska övergången\
+    \ i sig \n\ninte utgöra sakliga skäl för att säga upp arbetstagaren. Detta \n\n\
+    förbud ska dock inte hindra uppsägningar som sker av \n\nekonomiska, tekniska\
+    \ eller organisatoriska skäl där \n\nförändringar i arbetsstyrkan ingår.\n\n\n\
+    \nOm uppsägningen beror på förhållanden som hänför sig till \n\narbetstagaren\
+    \ personligen, får den inte grundas enbart på \n\nomständigheter som arbetsgivaren\
+    \ har känt till antingen mer än \n\ntvå månader innan underrättelse lämnades enligt\
+    \ 30 § eller, om \n\nnågon sådan underrättelse inte lämnats, två månader före\
+    \ \n\ntidpunkten för uppsägningen. Arbetsgivaren får dock grunda \n\nuppsägningen\
+    \ enbart på omständigheter som arbetsgivaren har \n\nkänt till mer än två månader,\
+    \ om tidsöverdraget berott på att \n\narbetsgivaren på arbetstagarens begäran\
+    \ eller med \n\narbetstagarens medgivande dröjt med underrättelsen eller \n\n\
+    uppsägningen eller om det finns synnerliga skäl för att \n\nåberopa omständigheterna.\
+    \ Lag (2022:835)."
+  boundary_note: Collective-agreement overrides can narrow or reshape this through
+    LAS 2 b § and 2 c §.
+- rule_key: dismissal.notice_period.min_one_month
+  claim_type: dismissal
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 11 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 1 month
+  quote: 11 § För både arbetsgivare och arbetstagare gäller en minsta uppsägningstid
+    av en månad.
+  boundary_note: Collective agreements may vary notice-period rules inside LAS 2 b
+    § / 2 c § gates.
+- rule_key: dismissal.notice_period.tenure_2y
+  claim_type: dismissal
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 11 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 2 months
+  quote: '- två månader, om den sammanlagda anställningstiden hos arbetsgivaren är
+    minst två år men kortare än fyra år,'
+  boundary_note: Collective agreements may vary notice-period rules inside LAS 2 b
+    § / 2 c § gates.
+- rule_key: dismissal.notice_period.tenure_4y
+  claim_type: dismissal
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 11 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 3 months
+  quote: '- tre månader, om den sammanlagda anställningstiden är minst fyra år men
+    kortare än sex år,'
+  boundary_note: Collective agreements may vary notice-period rules inside LAS 2 b
+    § / 2 c § gates.
+- rule_key: dismissal.notice_period.tenure_6y
+  claim_type: dismissal
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 11 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 4 months
+  quote: '- fyra månader, om den sammanlagda anställningstiden är minst sex år men
+    kortare än åtta år,'
+  boundary_note: Collective agreements may vary notice-period rules inside LAS 2 b
+    § / 2 c § gates.
+- rule_key: dismissal.notice_period.tenure_8y
+  claim_type: dismissal
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 11 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 5 months
+  quote: '- fem månader, om den sammanlagda anställningstiden är minst åtta år men
+    kortare än tio år, och'
+  boundary_note: Collective agreements may vary notice-period rules inside LAS 2 b
+    § / 2 c § gates.
+- rule_key: dismissal.notice_period.tenure_10y
+  claim_type: dismissal
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 11 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 6 months
+  quote: '- sex månader, om den sammanlagda anställningstiden är minst tio år.'
+  boundary_note: Collective agreements may vary notice-period rules inside LAS 2 b
+    § / 2 c § gates.
+- rule_key: trial_employment.max_months
+  claim_type: trial_employment
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 6 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 6 months
+  quote: 6 § Avtal får även träffas om tidsbegränsad provanställning, om
+  boundary_note: Collective agreements may adjust only within LAS 2 b § gates.
+- rule_key: fixed_term_conversion.special_visstid_12m
+  claim_type: fixed_term_conversion
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 5 a §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 12 months / 5 years
+  quote: 5 a § En särskild visstidsanställning övergår till en
+  boundary_note: Collective agreements may adjust only within LAS 2 b § gates.
+- rule_key: fixed_term_conversion.vikariat_2y
+  claim_type: fixed_term_conversion
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 5 a §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 2 years / 5 years
+  quote: Ett vikariat övergår till en tillsvidareanställning när en arbetstagare har
+    varit anställd hos arbetsgivaren i vikariat i sammanlagt mer än två år under en
+    femårsperiod.
+  boundary_note: Collective agreements may adjust only within LAS 2 b § gates.
+- rule_key: fixed_term_conversion.follow_on_gap_6m
+  claim_type: fixed_term_conversion
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 5 a §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 6 months
+  quote: En anställning har följt på en annan om den tillträtts inom sex månader från
+    den föregående anställningens slutdag.
+  boundary_note: Collective agreements may adjust only within LAS 2 b § gates.
+- rule_key: invalidity.deadline_2_weeks
+  claim_type: invalidity
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 40 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 2 weeks
+  quote: 40 § En arbetstagare som avser att yrka ogiltigförklaring av en
+  boundary_note: Collective agreements may not erase the honesty caveat that a missed
+    deadline can extinguish the claim.
+- rule_key: invalidity.deadline_1_month_no_warning
+  claim_type: invalidity
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 40 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 1 month
+  quote: Har arbetstagaren inte fått något sådant besked om ogiltighetstalan som avses
+    i 8 § andra stycket eller 19 § andra stycket, uppgår dock tidsfristen till en
+    månad och räknas från den dag då anställningen upphörde.
+  boundary_note: Collective agreements may not erase the honesty caveat that a missed
+    deadline can extinguish the claim.
+- rule_key: invalidity.fixed_term_claim_1_month
+  claim_type: invalidity
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 40 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 1 month after end
+  quote: Om en arbetstagare gör gällande att ett anställningsavtal har tidsbegränsats
+    i strid mot 4 § första stycket och avser att yrka förklaring att avtalet skall
+    gälla tills vidare, skall arbetstagaren underrätta arbetsgivaren om detta senast
+    en månad efter anställningstidens utgång.
+  boundary_note: Collective agreements may not erase the honesty caveat that a missed
+    deadline can extinguish the claim.
+- rule_key: damages.notice_4_months
+  claim_type: damages
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 41 §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: 4 months
+  quote: 41 § Den som vill kräva skadestånd eller framställa annat
+  boundary_note: Collective agreements may not erase the honesty caveat that a missed
+    deadline can extinguish the claim.
+- rule_key: discrimination.non_derogable
+  claim_type: discrimination
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 2008:567
+  section_ref: 3 §
+  source_url: https://data.riksdagen.se/dokument/sfs-2008-567.html
+  value: rights are not waivable by contract
+  quote: 3 § Ett avtal som inskränker någons rättigheter eller skyldigheter enligt
+    denna lag är utan verkan i den delen.
+  boundary_note: The discrimination act does not permit contracting out of protected
+    rights in that section.
+- rule_key: collective_agreement.general_gate
+  claim_type: collective_agreement
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 2 b §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: LAS 2 b § general gate
+  quote: 2 b § Genom ett kollektivavtal får det göras avvikelser från 5
+  boundary_note: This is the main collective-agreement override gateway for the drafted
+    LAS topics.
+- rule_key: collective_agreement.central_gate
+  claim_type: collective_agreement
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 2 b §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: LAS 2 b § central gate
+  quote: Genom ett kollektivavtal som har slutits eller godkänts av en central arbetstagarorganisation
+    får det även göras avvikelser från 4 b, 11, 15, 21, 28, 32, 33 a, 33 b, 40 och
+    41 §§.
+  boundary_note: Central-signatory gates matter for notice, deadline, and other key
+    rights.
+- rule_key: collective_agreement.sakliga_skal_gate
+  claim_type: collective_agreement
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  sfs_number: 1982:80
+  section_ref: 2 c §
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-80.html
+  value: LAS 2 c § sakliga skäl gate
+  quote: 2 c § Genom eller med stöd av ett kollektivavtal får det göras
+  boundary_note: This is the sakliga-skäl carve-out and must be surfaced honestly
+    in any answer.
+boundary_notes:
+- topic: mbl_collective_agreement_boundary
+  act: MBL 1976:580
+  section_ref: 4 §
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  source_url: https://data.riksdagen.se/dokument/sfs-1976-580.html
+  quote: "4 § Ett avtal är ogiltigt i den mån det innebär att en \n\nrättighet eller\
+    \ skyldighet enligt denna lag upphävs eller \n\ninskränks.\n\n\n\nGenom ett kollektivavtal\
+    \ får det dock göras avvikelser från \n\n11, 12, 14 och 19 §§, 20 § första stycket,\
+    \ 21, 22 och 28 §§,"
+  note_sv: Kollektivavtal kan avvika från flera MBL-regler. Kontrollera alltid avtal
+    före svaret.
+  note_en: Collective agreements can override several MBL rules; verify the agreement
+    before answering.
+  note_ar: يمكن لاتفاقيات العمل الجماعية أن تستبعد أو تغيّر عدة قواعد في قانون المشاركة.
+    تحقق من الاتفاق أولًا.
+- topic: arbetstids_collective_agreement_boundary
+  act: Arbetstidslag 1982:673
+  section_ref: 3 §
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  source_url: https://data.riksdagen.se/dokument/sfs-1982-673.html
+  quote: "3 § Genom ett kollektivavtal som har slutits eller godkänts av \r\nen central\
+    \ arbetstagarorganisation får det göras undantag från \r\nlagen i dess helhet\
+    \ eller avvikelser från 5 och 6 §§, 7 § \r\nandra stycket, 8-10 b §§, 12-14 §§\
+    \ samt 15 § andra och tredje \r\nstyckena. Vidare får raster bytas ut mot måltidsuppehåll\
+    \ genom \r\nsådana kollektivavtal. Avvikelser från 10 b § får dock inte \r\ninnebära\
+    \ en längre beräkningsperiod än tolv månader. \r\nAvvikelser från 12 § får göras\
+    \ endast om avtalet respekterar \r\ndet övergripande skydd för arbetstagare som\
+    \ avses i \r\nEuropaparlamentets och rådets direktiv (EU) 2019/1152 av den \r\n\
+    20 juni 2019 om tydliga och förutsägbara arbetsvillkor i \r\nEuropeiska unionen,\
+    \ i den ursprungliga lydelsen.\r\n\r\nAvvikelser från 8 och 8 a §§, 9 § andra\
+    \ stycket, 10 och"
+  note_sv: Arbetstidsregler kan avtalas bort eller ändras genom centrala kollektivavtal.
+  note_en: Working-time rules can be overridden or adjusted by central collective
+    agreements.
+  note_ar: يمكن تعديل قواعد وقت العمل أو استبعادها باتفاقيات جماعية مركزية.
+- topic: semester_collective_agreement_boundary
+  act: Semesterlag 1977:480
+  section_ref: 2 a §
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  source_url: https://data.riksdagen.se/dokument/sfs-1977-480.html
+  quote: "2 a § Genom avtal får avvikelse göras från 5, 12, 12 b, 19-21\r\noch 30\
+    \ a §§, i den utsträckning som framgår av de\r\nbestämmelserna.\r\n\r\nGenom kollektivavtal,\
+    \ som på arbetstagarsidan har slutits\r\neller godkänts av en central arbetstagarorganisation,\
+    \ får\r\navvikelse göras från 3, 3 a, 9, 11 § andra stycket, 16-16 b,\r\n22, 26,\
+    \ 26 a, 29, 29 a och 30 §§.\r\n\r\nEn arbetsgivare, som är bunden av ett kollektivavtal\
+    \ som\r\nomfattar frågor som avses i första och andra styckena, får i\r\ndessa\
+    \ frågor tillämpa avtalet även på en arbetstagare som\r\ninte är medlem av den\
+    \ avtalsslutande\r\narbetstagarorganisationen. Detta gäller under förutsättning\r\
+    \natt arbetstagaren sysselsätts i arbete som avses med avtalet\r\noch inte omfattas\
+    \ av något annat tillämpligt kollektivavtal.\r\nLag (2009:1439).\r\n\r\nSemesterår\
+    \ och intjänandeår"
+  note_sv: Semesterregler har flera avtalsportar; läs alltid kollektivavtalet först.
+  note_en: Vacation rules have several collective-agreement gateways; read the agreement
+    first.
+  note_ar: لقواعد الإجازة أبواب متعددة عبر الاتفاقات الجماعية؛ اقرأ الاتفاق أولًا.
+- topic: foraldraledig_collective_agreement_boundary
+  act: Föräldraledighetslag 1995:584
+  section_ref: 2 §
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  source_url: https://data.riksdagen.se/dokument/sfs-1995-584.html
+  quote: "2 § Ett avtal som innebär att arbetstagares rättigheter enligt\r\ndenna\
+    \ lag inskränks är ogiltigt i den delen.\r\n\r\nGenom ett kollektivavtal som på\
+    \ arbetstagarsidan har slutits\r\neller godkänts av en sådan central arbetstagarorganisation\
+    \ som\r\navses i lagen (1976:580) om medbestämmande i arbetslivet får\r\ndet dock\
+    \ göras avvikelser från lagen i fråga om\r\n\r\n- anmälan om ledighet (13 §),\r\
+    \n\r\n- tiden för arbetstagarens underrättelse om återgång till\r\narbete (15\
+    \ § andra stycket),\r\n\r\n- den tid arbetsgivaren har rätt att skjuta upp arbetstagarens\r\
+    \nåtergång till arbete (15 § tredje stycket).\r\n\r\nGenom ett kollektivavtal\
+    \ som kommit till på det sätt som anges\r\ni andra stycket får även bestämmas\
+    \ den närmare tillämpningen i\r\nfråga om\r\n\r\n- ledighetens förläggning (11\
+    \ och 12 §§),\r\n\r\n- förbudet mot missgynnande behandling (16 §).\r\n\r\nArbetsgivare\
+    \ som är bundna av ett kollektivavtal enligt andra\r\neller tredje stycket, får\
+    \ tillämpa avtalet även på arbetstagare\r\nsom inte tillhör den avtalsslutande\
+    \ arbetstagarorganisationen,\r\nom arbetstagarna sysselsätts i arbete som avses\
+    \ med avtalet och\r\ninte omfattas av något annat tillämpligt kollektivavtal.\r\
+    \nLag (2006:442).\r\n\r\nRätten till ledighet\r\n\r\nÖversikt över de olika formerna\
+    \ av föräldraledighet för arbetstagare"
+  note_sv: Föräldraledighet kan bara avtalas bort inom de snäva uttryckliga undantagen.
+  note_en: Parental leave can be adjusted only inside the narrow express exceptions.
+  note_ar: يمكن تعديل إجازة الوالدين فقط ضمن الاستثناءات الضيقة الصريحة.
+- topic: sjll_collective_agreement_boundary
+  act: SjLL 1991:1047
+  section_ref: 2 §
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  source_url: https://data.riksdagen.se/dokument/sfs-1991-1047.html
+  quote: "2 § Ett avtal som innebär att arbetstagarens rättigheter \r\nenligt denna\
+    \ lag upphävs eller inskränks är ogiltigt i den \r\ndelen.\r\n\r\nUtan hinder\
+    \ av första stycket får avvikelser göras från 8 § \r\nandra stycket, 9 § och 10\
+    \ a § första och andra styckena genom \r\nkollektivavtal som på arbetstagarsidan\
+    \ har slutits eller \r\ngodkänts av en sådan central arbetstagarorganisation som\
+    \ \r\navses i lagen (1976:580) om medbestämmande i arbetslivet. Den \r\nnärmare\
+    \ beräkningen av sjuklönens storlek enligt 6 § första \r\nstycket och avdrag enligt\
+    \ andra stycket samma paragraf får \r\nockså bestämmas på det sättet. En arbetsgivare\
+    \ som är bunden \r\nav ett sådant kollektivavtal får tillämpa avtalet även på\
+    \ \r\narbetstagare som inte tillhör den avtalsslutande \r\narbetstagarorganisationen,\
+    \ under förutsättning att de \r\nsysselsätts i arbete som avses med avtalet och\
+    \ inte omfattas \r\nav något annat tillämpligt kollektivavtal. Lag (2018:648)."
+  note_sv: Sjuklönereglerna har begränsade kollektivavtalsportar; karensavdrag ska
+    inte gissas bort.
+  note_en: Sick-pay rules have limited collective-agreement gateways; do not guess
+    away the karens deduction.
+  note_ar: قواعد أجر المرض لها منافذ محدودة عبر الاتفاقيات الجماعية؛ لا تتجاهل خصم
+    الكارنس بالحدس.
+- topic: diskriminerings_non_derogable
+  act: Diskrimineringslag 2008:567
+  section_ref: 3 §
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  source_url: https://data.riksdagen.se/dokument/sfs-2008-567.html
+  quote: '3 § Om den som anser sig ha blivit diskriminerad eller utsatt
+
+
+    för repressalier visar omständigheter som ger anledning att
+
+
+    anta att han eller hon har blivit diskriminerad eller utsatt
+
+
+    för repressalier, är det svaranden som ska visa att
+
+
+    diskriminering eller repressalier inte har förekommit.
+
+
+
+
+    Preskription
+
+
+
+
+    Arbetslivet'
+  note_sv: Här finns ingen avtalsfrihet bort från rättigheterna i den delen.
+  note_en: There is no contracting-out of the rights covered by this section.
+  note_ar: لا يمكن الاتفاق على إلغاء الحقوق التي يغطيها هذا النص.
+- topic: agency_worker_collective_agreement_boundary
+  act: Lag 2012:854 om uthyrning av arbetstagare
+  section_ref: 5-6 §§
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  source_url: https://data.riksdagen.se/dokument/sfs-2012-854.html
+  quote: "5 § I denna lag avses med\r\n\r\n1. bemanningsföretag: en fysisk eller juridisk\
+    \ person som har\r\narbetstagare anställda i syfte att hyra ut dessa till\r\n\
+    kundföretag för arbete under kundföretagets kontroll och\r\nledning,\r\n\r\n2.\
+    \ kundföretag: en fysisk eller juridisk person för vilken\r\noch under vars kontroll\
+    \ och ledning arbetstagare som hyrs ut\r\nav bemanningsföretag arbetar, och\r\n\
+    \r\n3. grundläggande arbets- och anställningsvillkor: villkor som\r\nfastställts\
+    \ i kollektivavtal eller andra bindande generella\r\nbestämmelser som gäller hos\
+    \ kundföretaget och som avser\r\n\r\na) arbetstidens längd, övertid, raster, vilotid,\
+    \ nattarbete,\r\nsemester eller helgdagar,\r\n\r\nb) lön,\r\n\r\nc) skydd för\
+    \ barn och ungdomar, gravida, nyblivna mödrar och\r\nammande kvinnor, eller\r\n\
+    \r\nd) skydd mot diskriminering på grund av kön, könsöverskridande\r\nidentitet\
+    \ eller uttryck, etnisk tillhörighet, religion eller\r\nannan trosuppfattning,\
+    \ funktionsnedsättning, sexuell läggning\r\neller ålder. Lag (2014:961).\r\n\r\
+    \nSkyldigheter för bemanningsföretag\r\n\r\nLikabehandling\n\n6 § Ett bemanningsföretag\
+    \ ska, under den tid en arbetstagares\r\nuppdrag i kundföretaget varar, tillförsäkra\
+    \ arbetstagaren\r\nminst de grundläggande arbets- och anställningsvillkor som\r\
+    \nskulle ha gällt om han eller hon hade anställts direkt av\r\nkundföretaget för\
+    \ att utföra samma arbete."
+  note_sv: Bemanningsfrågor styrs av likabehandling och kollektivt fastställda villkor
+    hos kundföretaget.
+  note_en: Agency-worker issues are governed by equal treatment and collectively set
+    host-company conditions.
+  note_ar: تخضع قضايا العاملين المؤقتين لمبدأ المساواة وللشروط المحددة جماعيًا لدى
+    الشركة المستفيدة.
+- topic: no_statutory_minimum_wage_caveat
+  act: Sweden-wide policy caveat
+  section_ref: N/A
+  status: DRAFT-UNVALIDATED
+  lawyer_signoff_gate: D-SE5
+  source_url: null
+  quote: null
+  note_sv: Sverige har ingen lagstadgad minimilön i de källor vi använder här. Svara
+    inte med ett lagstadgat siffersvar.
+  note_en: Sweden has no statutory minimum wage in the sources used here. Do not answer
+    with a statutory numeric floor.
+  note_ar: لا يوجد في السويد حد أدنى للأجور منصوص عليه في المصادر المستخدمة هنا. لا
+    تقدّم رقمًا قانونيًا كحد أدنى.

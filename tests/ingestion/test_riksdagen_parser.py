@@ -45,7 +45,6 @@ def test_resolver_raises_on_title_mismatch():
 
 
 def test_parser_splits_las_into_current_sections_only():
-    bundle = load_fixture_bundle(bundle_path("sfs-1982-80"))
     chunks = parse_fixture_bundle(bundle_path("sfs-1982-80"))
     refs = [chunk["section_ref"] for chunk in chunks]
     assert "7 §" in refs
@@ -69,7 +68,7 @@ def test_specific_sections_have_expected_text():
     assert "sakliga skäl" in by_ref["7 §"]
     assert "sex månader" in by_ref["6 §"]
     assert "två månader" in by_ref["11 §"]
-    assert "Underrättelse" in by_ref["40 §"] or "underrätta" in by_ref["40 §"].lower()
+    assert "underrätta" in by_ref["40 §"].lower()
     assert "fyra månader" in by_ref["41 §"]
 
 

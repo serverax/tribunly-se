@@ -120,7 +120,10 @@ def resolve_listing_item(
 
     fallback: list[ResolverCandidate] = []
     for item in candidates:
-        if isinstance(item, dict) and normalise_sfs_number(str(item.get("beteckning") or item.get("id") or "0:0")) == expected_sfs:
+        if not isinstance(item, dict):
+            continue
+        candidate_sfs = str(item.get("beteckning") or item.get("id") or "")
+        if candidate_sfs and normalise_sfs_number(candidate_sfs) == expected_sfs:
             fallback.append(_candidate_from_item(item))
 
     raise RiksdagenAmbiguityError(
@@ -135,7 +138,7 @@ def _published_at_from_item(items: list[dict[str, Any]], expected_sfs: str) -> s
         if not isinstance(item, dict):
             continue
         candidate_sfs = str(item.get("beteckning") or item.get("id") or "").strip()
-        if normalise_sfs_number(candidate_sfs) != expected_sfs:
+        if candidate_sfs and normalise_sfs_number(candidate_sfs) != expected_sfs:
             continue
         value = item.get("publicerad") or item.get("systemdatum")
         return str(value) if value else None
@@ -147,7 +150,7 @@ def _issued_at_from_item(items: list[dict[str, Any]], expected_sfs: str) -> str 
         if not isinstance(item, dict):
             continue
         candidate_sfs = str(item.get("beteckning") or item.get("id") or "").strip()
-        if normalise_sfs_number(candidate_sfs) != expected_sfs:
+        if candidate_sfs and normalise_sfs_number(candidate_sfs) != expected_sfs:
             continue
         value = item.get("datum")
         return str(value) if value else None

@@ -1,0 +1,21 @@
+domain: employment_se
+trust_order:
+- primary_legislation
+- collective_agreement_when_in_scope
+- official_guidance
+- case_law
+- internal_draft
+rag_acceptance:
+  citation_must_resolve_to_db_row: true
+  source_url_required: true
+  chunk_must_have_parent_source: true
+  reject_if_stale: true
+  reject_if_outside_licence_policy: true
+  reject_fabricated_citation: true
+primary_authority_only_from:
+- legislation
+- collective_agreement_when_in_scope
+- official_guidance
+- case_law
+secondary_as_commentary_only: true
+translation_unreviewed_flag: TRANSLATION-UNREVIEWED

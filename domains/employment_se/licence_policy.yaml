@@ -1,0 +1,33 @@
+domain: employment_se
+sources:
+- source_id: riksdagen_open_data
+  source_name: Riksdagen open data
+  source_type: primary_legislation
+  licence_type: open_public_data
+  licence_status: GRANTED
+  bulk_allowed: true
+  computational_analysis_allowed: true
+  requires_owner_approval: false
+  gate_env_var: null
+  last_verified_at: '2026-07-09'
+  notes: Public text/html/json endpoints, no published numeric rate limit found in
+    the checked docs.
+- source_id: domstol_se
+  source_name: Domstol.se public decisions
+  source_type: case_law
+  licence_type: public_web_assessment_only
+  licence_status: ASSESSED_ONLY
+  bulk_allowed: false
+  computational_analysis_allowed: false
+  requires_owner_approval: true
+  gate_env_var: SE_CASE_LAW_BULK_ALLOWED
+  last_verified_at: '2026-07-09'
+  notes: Official access route exists; bulk decision harvesting stays off until a
+    dedicated review says otherwise.
+forbidden_sources:
+- solicitor_blogs
+- wikipedia
+- forums
+- ai_generated_summaries
+- unlicensed_paid_datasets
+- unofficial_case_summaries

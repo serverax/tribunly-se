@@ -1,0 +1,380 @@
+[
+  {
+    "query_id": "las-7-sakliga-skal-sv",
+    "language": "sv",
+    "query": "Vad betyder sakliga skäl när arbetsgivaren säger upp någon?",
+    "expected_passage_id": "las-7-sakliga-skal",
+    "source_act": "LAS 1982:80",
+    "section_ref": "7 §",
+    "passage_text": "7 § Uppsägning från arbetsgivarens sida ska grunda sig på \n\nsakliga skäl. Sakliga skäl kan vara arbetsbrist eller \n\nförhållanden som hänför sig till arbetstagaren personligen.\n\n\n\nEn uppsägning är inte grundad på sakliga skäl om det är \n\nskäligt att kräva att arbetsgivaren bereder arbetstagaren \n\nannat arbete hos sig. Om arbetsgivaren tidigare har berett \n\narbetstagaren annat arbete hos sig på grund av förhållanden \n\nsom hänför sig till arbetstagaren personligen, ska \n\narbetsgivaren anses ha uppfyllt sin omplaceringsskyldighet, om \n\ndet inte finns särskilda skäl.\n\n\n\nVid en sådan övergång av ett företag, en verksamhet eller en \n\ndel av en verksamhet som sägs i 6 b § ska övergången i sig \n\ninte utgöra sakliga skäl för att säga upp arbetstagaren. Detta \n\nförbud ska dock inte hindra uppsägningar som sker av \n\nekonomiska, tekniska eller organisatoriska skäl där \n\nförändringar i arbetsstyrkan ingår.\n\n\n\nOm uppsägningen beror på förhållanden som hänför sig till \n\narbetstagaren personligen, får den inte grundas enbart på \n\nomständigheter som arbetsgivaren har känt till antingen mer än \n\ntvå månader innan underrättelse lämnades enligt 30 § eller, om \n\nnågon sådan underrättelse inte lämnats, två månader före \n\ntidpunkten för uppsägningen. Arbetsgivaren får dock grunda \n\nuppsägningen enbart på omständigheter som arbetsgivaren har \n\nkänt till mer än två månader, om tidsöverdraget berott på att \n\narbetsgivaren på arbetstagarens begäran eller med \n\narbetstagarens medgivande dröjt med underrättelsen eller \n\nuppsägningen eller om det finns synnerliga skäl för att \n\nåberopa omständigheterna. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-7-sakliga-skal-en",
+    "language": "en",
+    "query": "What do objective grounds mean when an employer terminates employment?",
+    "expected_passage_id": "las-7-sakliga-skal",
+    "source_act": "LAS 1982:80",
+    "section_ref": "7 §",
+    "passage_text": "7 § Uppsägning från arbetsgivarens sida ska grunda sig på \n\nsakliga skäl. Sakliga skäl kan vara arbetsbrist eller \n\nförhållanden som hänför sig till arbetstagaren personligen.\n\n\n\nEn uppsägning är inte grundad på sakliga skäl om det är \n\nskäligt att kräva att arbetsgivaren bereder arbetstagaren \n\nannat arbete hos sig. Om arbetsgivaren tidigare har berett \n\narbetstagaren annat arbete hos sig på grund av förhållanden \n\nsom hänför sig till arbetstagaren personligen, ska \n\narbetsgivaren anses ha uppfyllt sin omplaceringsskyldighet, om \n\ndet inte finns särskilda skäl.\n\n\n\nVid en sådan övergång av ett företag, en verksamhet eller en \n\ndel av en verksamhet som sägs i 6 b § ska övergången i sig \n\ninte utgöra sakliga skäl för att säga upp arbetstagaren. Detta \n\nförbud ska dock inte hindra uppsägningar som sker av \n\nekonomiska, tekniska eller organisatoriska skäl där \n\nförändringar i arbetsstyrkan ingår.\n\n\n\nOm uppsägningen beror på förhållanden som hänför sig till \n\narbetstagaren personligen, får den inte grundas enbart på \n\nomständigheter som arbetsgivaren har känt till antingen mer än \n\ntvå månader innan underrättelse lämnades enligt 30 § eller, om \n\nnågon sådan underrättelse inte lämnats, två månader före \n\ntidpunkten för uppsägningen. Arbetsgivaren får dock grunda \n\nuppsägningen enbart på omständigheter som arbetsgivaren har \n\nkänt till mer än två månader, om tidsöverdraget berott på att \n\narbetsgivaren på arbetstagarens begäran eller med \n\narbetstagarens medgivande dröjt med underrättelsen eller \n\nuppsägningen eller om det finns synnerliga skäl för att \n\nåberopa omständigheterna. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-7-sakliga-skal-ar",
+    "language": "ar",
+    "query": "ماذا تعني الأسباب الموضوعية عند إنهاء العمل من قبل صاحب العمل؟",
+    "expected_passage_id": "las-7-sakliga-skal",
+    "source_act": "LAS 1982:80",
+    "section_ref": "7 §",
+    "passage_text": "7 § Uppsägning från arbetsgivarens sida ska grunda sig på \n\nsakliga skäl. Sakliga skäl kan vara arbetsbrist eller \n\nförhållanden som hänför sig till arbetstagaren personligen.\n\n\n\nEn uppsägning är inte grundad på sakliga skäl om det är \n\nskäligt att kräva att arbetsgivaren bereder arbetstagaren \n\nannat arbete hos sig. Om arbetsgivaren tidigare har berett \n\narbetstagaren annat arbete hos sig på grund av förhållanden \n\nsom hänför sig till arbetstagaren personligen, ska \n\narbetsgivaren anses ha uppfyllt sin omplaceringsskyldighet, om \n\ndet inte finns särskilda skäl.\n\n\n\nVid en sådan övergång av ett företag, en verksamhet eller en \n\ndel av en verksamhet som sägs i 6 b § ska övergången i sig \n\ninte utgöra sakliga skäl för att säga upp arbetstagaren. Detta \n\nförbud ska dock inte hindra uppsägningar som sker av \n\nekonomiska, tekniska eller organisatoriska skäl där \n\nförändringar i arbetsstyrkan ingår.\n\n\n\nOm uppsägningen beror på förhållanden som hänför sig till \n\narbetstagaren personligen, får den inte grundas enbart på \n\nomständigheter som arbetsgivaren har känt till antingen mer än \n\ntvå månader innan underrättelse lämnades enligt 30 § eller, om \n\nnågon sådan underrättelse inte lämnats, två månader före \n\ntidpunkten för uppsägningen. Arbetsgivaren får dock grunda \n\nuppsägningen enbart på omständigheter som arbetsgivaren har \n\nkänt till mer än två månader, om tidsöverdraget berott på att \n\narbetsgivaren på arbetstagarens begäran eller med \n\narbetstagarens medgivande dröjt med underrättelsen eller \n\nuppsägningen eller om det finns synnerliga skäl för att \n\nåberopa omständigheterna. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-7-omplacering-sv",
+    "language": "sv",
+    "query": "När måste arbetsgivaren prova omplacering innan uppsägning?",
+    "expected_passage_id": "las-7-omplacering",
+    "source_act": "LAS 1982:80",
+    "section_ref": "7 §",
+    "passage_text": "7 § Uppsägning från arbetsgivarens sida ska grunda sig på \n\nsakliga skäl. Sakliga skäl kan vara arbetsbrist eller \n\nförhållanden som hänför sig till arbetstagaren personligen.\n\n\n\nEn uppsägning är inte grundad på sakliga skäl om det är \n\nskäligt att kräva att arbetsgivaren bereder arbetstagaren \n\nannat arbete hos sig. Om arbetsgivaren tidigare har berett \n\narbetstagaren annat arbete hos sig på grund av förhållanden \n\nsom hänför sig till arbetstagaren personligen, ska \n\narbetsgivaren anses ha uppfyllt sin omplaceringsskyldighet, om \n\ndet inte finns särskilda skäl.\n\n\n\nVid en sådan övergång av ett företag, en verksamhet eller en \n\ndel av en verksamhet som sägs i 6 b § ska övergången i sig \n\ninte utgöra sakliga skäl för att säga upp arbetstagaren. Detta \n\nförbud ska dock inte hindra uppsägningar som sker av \n\nekonomiska, tekniska eller organisatoriska skäl där \n\nförändringar i arbetsstyrkan ingår.\n\n\n\nOm uppsägningen beror på förhållanden som hänför sig till \n\narbetstagaren personligen, får den inte grundas enbart på \n\nomständigheter som arbetsgivaren har känt till antingen mer än \n\ntvå månader innan underrättelse lämnades enligt 30 § eller, om \n\nnågon sådan underrättelse inte lämnats, två månader före \n\ntidpunkten för uppsägningen. Arbetsgivaren får dock grunda \n\nuppsägningen enbart på omständigheter som arbetsgivaren har \n\nkänt till mer än två månader, om tidsöverdraget berott på att \n\narbetsgivaren på arbetstagarens begäran eller med \n\narbetstagarens medgivande dröjt med underrättelsen eller \n\nuppsägningen eller om det finns synnerliga skäl för att \n\nåberopa omständigheterna. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-7-omplacering-en",
+    "language": "en",
+    "query": "When must the employer consider reassignment before termination?",
+    "expected_passage_id": "las-7-omplacering",
+    "source_act": "LAS 1982:80",
+    "section_ref": "7 §",
+    "passage_text": "7 § Uppsägning från arbetsgivarens sida ska grunda sig på \n\nsakliga skäl. Sakliga skäl kan vara arbetsbrist eller \n\nförhållanden som hänför sig till arbetstagaren personligen.\n\n\n\nEn uppsägning är inte grundad på sakliga skäl om det är \n\nskäligt att kräva att arbetsgivaren bereder arbetstagaren \n\nannat arbete hos sig. Om arbetsgivaren tidigare har berett \n\narbetstagaren annat arbete hos sig på grund av förhållanden \n\nsom hänför sig till arbetstagaren personligen, ska \n\narbetsgivaren anses ha uppfyllt sin omplaceringsskyldighet, om \n\ndet inte finns särskilda skäl.\n\n\n\nVid en sådan övergång av ett företag, en verksamhet eller en \n\ndel av en verksamhet som sägs i 6 b § ska övergången i sig \n\ninte utgöra sakliga skäl för att säga upp arbetstagaren. Detta \n\nförbud ska dock inte hindra uppsägningar som sker av \n\nekonomiska, tekniska eller organisatoriska skäl där \n\nförändringar i arbetsstyrkan ingår.\n\n\n\nOm uppsägningen beror på förhållanden som hänför sig till \n\narbetstagaren personligen, får den inte grundas enbart på \n\nomständigheter som arbetsgivaren har känt till antingen mer än \n\ntvå månader innan underrättelse lämnades enligt 30 § eller, om \n\nnågon sådan underrättelse inte lämnats, två månader före \n\ntidpunkten för uppsägningen. Arbetsgivaren får dock grunda \n\nuppsägningen enbart på omständigheter som arbetsgivaren har \n\nkänt till mer än två månader, om tidsöverdraget berott på att \n\narbetsgivaren på arbetstagarens begäran eller med \n\narbetstagarens medgivande dröjt med underrättelsen eller \n\nuppsägningen eller om det finns synnerliga skäl för att \n\nåberopa omständigheterna. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-7-omplacering-ar",
+    "language": "ar",
+    "query": "متى يجب على صاحب العمل النظر في النقل الداخلي قبل إنهاء العمل؟",
+    "expected_passage_id": "las-7-omplacering",
+    "source_act": "LAS 1982:80",
+    "section_ref": "7 §",
+    "passage_text": "7 § Uppsägning från arbetsgivarens sida ska grunda sig på \n\nsakliga skäl. Sakliga skäl kan vara arbetsbrist eller \n\nförhållanden som hänför sig till arbetstagaren personligen.\n\n\n\nEn uppsägning är inte grundad på sakliga skäl om det är \n\nskäligt att kräva att arbetsgivaren bereder arbetstagaren \n\nannat arbete hos sig. Om arbetsgivaren tidigare har berett \n\narbetstagaren annat arbete hos sig på grund av förhållanden \n\nsom hänför sig till arbetstagaren personligen, ska \n\narbetsgivaren anses ha uppfyllt sin omplaceringsskyldighet, om \n\ndet inte finns särskilda skäl.\n\n\n\nVid en sådan övergång av ett företag, en verksamhet eller en \n\ndel av en verksamhet som sägs i 6 b § ska övergången i sig \n\ninte utgöra sakliga skäl för att säga upp arbetstagaren. Detta \n\nförbud ska dock inte hindra uppsägningar som sker av \n\nekonomiska, tekniska eller organisatoriska skäl där \n\nförändringar i arbetsstyrkan ingår.\n\n\n\nOm uppsägningen beror på förhållanden som hänför sig till \n\narbetstagaren personligen, får den inte grundas enbart på \n\nomständigheter som arbetsgivaren har känt till antingen mer än \n\ntvå månader innan underrättelse lämnades enligt 30 § eller, om \n\nnågon sådan underrättelse inte lämnats, två månader före \n\ntidpunkten för uppsägningen. Arbetsgivaren får dock grunda \n\nuppsägningen enbart på omständigheter som arbetsgivaren har \n\nkänt till mer än två månader, om tidsöverdraget berott på att \n\narbetsgivaren på arbetstagarens begäran eller med \n\narbetstagarens medgivande dröjt med underrättelsen eller \n\nuppsägningen eller om det finns synnerliga skäl för att \n\nåberopa omständigheterna. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-5a-special-visstid-sv",
+    "language": "sv",
+    "query": "När blir en särskild visstidsanställning tillsvidare?",
+    "expected_passage_id": "las-5a-special-visstid",
+    "source_act": "LAS 1982:80",
+    "section_ref": "5 a §",
+    "passage_text": "5 a § En särskild visstidsanställning övergår till en \n\ntillsvidareanställning när arbetstagaren har varit anställd \n\nhos arbetsgivaren i särskild visstidsanställning i sammanlagt \n\nmer än tolv månader\n\n\n\n1. under en femårsperiod, eller\n\n\n\n2. under en period då arbetstagaren har haft tidsbegränsade \n\nanställningar hos arbetsgivaren i form av särskild \n\nvisstidsanställning, vikariat eller säsongsarbete och \n\nanställningarna följt på varandra.\n\n\n\nEn anställning har följt på en annan om den tillträtts inom \n\nsex månader från den föregående anställningens slutdag.\n\n\n\nEtt vikariat övergår till en tillsvidareanställning när en \n\narbetstagare har varit anställd hos arbetsgivaren i vikariat i \n\nsammanlagt mer än två år under en femårsperiod. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-5a-special-visstid-en",
+    "language": "en",
+    "query": "When does a special fixed-term contract convert into permanent employment?",
+    "expected_passage_id": "las-5a-special-visstid",
+    "source_act": "LAS 1982:80",
+    "section_ref": "5 a §",
+    "passage_text": "5 a § En särskild visstidsanställning övergår till en \n\ntillsvidareanställning när arbetstagaren har varit anställd \n\nhos arbetsgivaren i särskild visstidsanställning i sammanlagt \n\nmer än tolv månader\n\n\n\n1. under en femårsperiod, eller\n\n\n\n2. under en period då arbetstagaren har haft tidsbegränsade \n\nanställningar hos arbetsgivaren i form av särskild \n\nvisstidsanställning, vikariat eller säsongsarbete och \n\nanställningarna följt på varandra.\n\n\n\nEn anställning har följt på en annan om den tillträtts inom \n\nsex månader från den föregående anställningens slutdag.\n\n\n\nEtt vikariat övergår till en tillsvidareanställning när en \n\narbetstagare har varit anställd hos arbetsgivaren i vikariat i \n\nsammanlagt mer än två år under en femårsperiod. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-5a-special-visstid-ar",
+    "language": "ar",
+    "query": "متى يتحول العقد المحدد المدة الخاص إلى عقد دائم؟",
+    "expected_passage_id": "las-5a-special-visstid",
+    "source_act": "LAS 1982:80",
+    "section_ref": "5 a §",
+    "passage_text": "5 a § En särskild visstidsanställning övergår till en \n\ntillsvidareanställning när arbetstagaren har varit anställd \n\nhos arbetsgivaren i särskild visstidsanställning i sammanlagt \n\nmer än tolv månader\n\n\n\n1. under en femårsperiod, eller\n\n\n\n2. under en period då arbetstagaren har haft tidsbegränsade \n\nanställningar hos arbetsgivaren i form av särskild \n\nvisstidsanställning, vikariat eller säsongsarbete och \n\nanställningarna följt på varandra.\n\n\n\nEn anställning har följt på en annan om den tillträtts inom \n\nsex månader från den föregående anställningens slutdag.\n\n\n\nEtt vikariat övergår till en tillsvidareanställning när en \n\narbetstagare har varit anställd hos arbetsgivaren i vikariat i \n\nsammanlagt mer än två år under en femårsperiod. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-6-provanstallning-sv",
+    "language": "sv",
+    "query": "Hur lång får en provanställning vara?",
+    "expected_passage_id": "las-6-provanstallning",
+    "source_act": "LAS 1982:80",
+    "section_ref": "6 §",
+    "passage_text": "6 § Avtal får även träffas om tidsbegränsad provanställning, om\n\nprövotiden är högst sex månader.\n\n\n\nVill inte arbetsgivaren eller arbetstagaren att anställningen skall\n\nfortsätta efter det att prövotiden har löpt ut, skall besked om detta\n\nlämnas till motparten senast vid prövotidens utgång. Görs inte\n\ndetta, övergår provanställningen i en tillsvidareanställning.\n\n\n\nOm inte annat har avtalats, får en provanställning avbrytas även\n\nföre prövotidens utgång. Lag (1994:1685)."
+  },
+  {
+    "query_id": "las-6-provanstallning-en",
+    "language": "en",
+    "query": "How long may a probationary period be?",
+    "expected_passage_id": "las-6-provanstallning",
+    "source_act": "LAS 1982:80",
+    "section_ref": "6 §",
+    "passage_text": "6 § Avtal får även träffas om tidsbegränsad provanställning, om\n\nprövotiden är högst sex månader.\n\n\n\nVill inte arbetsgivaren eller arbetstagaren att anställningen skall\n\nfortsätta efter det att prövotiden har löpt ut, skall besked om detta\n\nlämnas till motparten senast vid prövotidens utgång. Görs inte\n\ndetta, övergår provanställningen i en tillsvidareanställning.\n\n\n\nOm inte annat har avtalats, får en provanställning avbrytas även\n\nföre prövotidens utgång. Lag (1994:1685)."
+  },
+  {
+    "query_id": "las-6-provanstallning-ar",
+    "language": "ar",
+    "query": "كم يمكن أن تكون مدة فترة التجربة؟",
+    "expected_passage_id": "las-6-provanstallning",
+    "source_act": "LAS 1982:80",
+    "section_ref": "6 §",
+    "passage_text": "6 § Avtal får även träffas om tidsbegränsad provanställning, om\n\nprövotiden är högst sex månader.\n\n\n\nVill inte arbetsgivaren eller arbetstagaren att anställningen skall\n\nfortsätta efter det att prövotiden har löpt ut, skall besked om detta\n\nlämnas till motparten senast vid prövotidens utgång. Görs inte\n\ndetta, övergår provanställningen i en tillsvidareanställning.\n\n\n\nOm inte annat har avtalats, får en provanställning avbrytas även\n\nföre prövotidens utgång. Lag (1994:1685)."
+  },
+  {
+    "query_id": "las-11-min-uppsagningstid-sv",
+    "language": "sv",
+    "query": "Vad är den minsta uppsägningstiden i LAS?",
+    "expected_passage_id": "las-11-min-uppsagningstid",
+    "source_act": "LAS 1982:80",
+    "section_ref": "11 §",
+    "passage_text": "11 § För både arbetsgivare och arbetstagare gäller en minsta \n\nuppsägningstid av en månad.\n\n\n\nArbetstagaren har rätt till en uppsägningstid av\n\n\n\n- två månader, om den sammanlagda anställningstiden hos \n\narbetsgivaren är minst två år men kortare än fyra år,\n\n\n\n- tre månader, om den sammanlagda anställningstiden är minst \n\nfyra år men kortare än sex år,\n\n\n\n- fyra månader, om den sammanlagda anställningstiden är minst \n\nsex år men kortare än åtta år,\n\n\n\n- fem månader, om den sammanlagda anställningstiden är minst \n\nåtta år men kortare än tio år, och\n\n\n\n- sex månader, om den sammanlagda anställningstiden är minst \n\ntio år.\n\n\n\nOm en arbetstagare som är föräldraledig enligt 4 eller 5 § \n\nföräldraledighetslagen (1995:584) sägs upp på grund av \n\narbetsbrist, börjar uppsägningstiden löpa\n\n\n\n- när arbetstagaren helt eller delvis återupptar arbetet, \n\neller\n\n\n\n- när arbetstagaren skulle ha återupptagit sitt arbete enligt \n\nden anmälan om föräldraledighet som gäller när uppsägningen \n\nsker. Lag (2015:759).\n\n\n\nLön och andra förmåner under uppsägningstiden"
+  },
+  {
+    "query_id": "las-11-min-uppsagningstid-en",
+    "language": "en",
+    "query": "What is the minimum notice period under LAS?",
+    "expected_passage_id": "las-11-min-uppsagningstid",
+    "source_act": "LAS 1982:80",
+    "section_ref": "11 §",
+    "passage_text": "11 § För både arbetsgivare och arbetstagare gäller en minsta \n\nuppsägningstid av en månad.\n\n\n\nArbetstagaren har rätt till en uppsägningstid av\n\n\n\n- två månader, om den sammanlagda anställningstiden hos \n\narbetsgivaren är minst två år men kortare än fyra år,\n\n\n\n- tre månader, om den sammanlagda anställningstiden är minst \n\nfyra år men kortare än sex år,\n\n\n\n- fyra månader, om den sammanlagda anställningstiden är minst \n\nsex år men kortare än åtta år,\n\n\n\n- fem månader, om den sammanlagda anställningstiden är minst \n\nåtta år men kortare än tio år, och\n\n\n\n- sex månader, om den sammanlagda anställningstiden är minst \n\ntio år.\n\n\n\nOm en arbetstagare som är föräldraledig enligt 4 eller 5 § \n\nföräldraledighetslagen (1995:584) sägs upp på grund av \n\narbetsbrist, börjar uppsägningstiden löpa\n\n\n\n- när arbetstagaren helt eller delvis återupptar arbetet, \n\neller\n\n\n\n- när arbetstagaren skulle ha återupptagit sitt arbete enligt \n\nden anmälan om föräldraledighet som gäller när uppsägningen \n\nsker. Lag (2015:759).\n\n\n\nLön och andra förmåner under uppsägningstiden"
+  },
+  {
+    "query_id": "las-11-min-uppsagningstid-ar",
+    "language": "ar",
+    "query": "ما هي أقل مدة إشعار بموجب قانون الحماية من الفصل؟",
+    "expected_passage_id": "las-11-min-uppsagningstid",
+    "source_act": "LAS 1982:80",
+    "section_ref": "11 §",
+    "passage_text": "11 § För både arbetsgivare och arbetstagare gäller en minsta \n\nuppsägningstid av en månad.\n\n\n\nArbetstagaren har rätt till en uppsägningstid av\n\n\n\n- två månader, om den sammanlagda anställningstiden hos \n\narbetsgivaren är minst två år men kortare än fyra år,\n\n\n\n- tre månader, om den sammanlagda anställningstiden är minst \n\nfyra år men kortare än sex år,\n\n\n\n- fyra månader, om den sammanlagda anställningstiden är minst \n\nsex år men kortare än åtta år,\n\n\n\n- fem månader, om den sammanlagda anställningstiden är minst \n\nåtta år men kortare än tio år, och\n\n\n\n- sex månader, om den sammanlagda anställningstiden är minst \n\ntio år.\n\n\n\nOm en arbetstagare som är föräldraledig enligt 4 eller 5 § \n\nföräldraledighetslagen (1995:584) sägs upp på grund av \n\narbetsbrist, börjar uppsägningstiden löpa\n\n\n\n- när arbetstagaren helt eller delvis återupptar arbetet, \n\neller\n\n\n\n- när arbetstagaren skulle ha återupptagit sitt arbete enligt \n\nden anmälan om föräldraledighet som gäller när uppsägningen \n\nsker. Lag (2015:759).\n\n\n\nLön och andra förmåner under uppsägningstiden"
+  },
+  {
+    "query_id": "las-18-avskedande-sv",
+    "language": "sv",
+    "query": "När får arbetsgivaren avskeda någon?",
+    "expected_passage_id": "las-18-avskedande",
+    "source_act": "LAS 1982:80",
+    "section_ref": "18 §",
+    "passage_text": "18 § Avskedande får ske, om arbetstagaren grovt har åsidosatt sina åligganden mot arbetsgivaren."
+  },
+  {
+    "query_id": "las-18-avskedande-en",
+    "language": "en",
+    "query": "When may the employer summarily dismiss someone?",
+    "expected_passage_id": "las-18-avskedande",
+    "source_act": "LAS 1982:80",
+    "section_ref": "18 §",
+    "passage_text": "18 § Avskedande får ske, om arbetstagaren grovt har åsidosatt sina åligganden mot arbetsgivaren."
+  },
+  {
+    "query_id": "las-18-avskedande-ar",
+    "language": "ar",
+    "query": "متى يجوز لصاحب العمل الفصل الفوري؟",
+    "expected_passage_id": "las-18-avskedande",
+    "source_act": "LAS 1982:80",
+    "section_ref": "18 §",
+    "passage_text": "18 § Avskedande får ske, om arbetstagaren grovt har åsidosatt sina åligganden mot arbetsgivaren."
+  },
+  {
+    "query_id": "las-22-turordning-sv",
+    "language": "sv",
+    "query": "Hur fungerar turordning vid arbetsbrist?",
+    "expected_passage_id": "las-22-turordning",
+    "source_act": "LAS 1982:80",
+    "section_ref": "22 §",
+    "passage_text": "22 § Vid uppsägning på grund av arbetsbrist ska arbetsgivaren iaktta följande turordningsregler."
+  },
+  {
+    "query_id": "las-22-turordning-en",
+    "language": "en",
+    "query": "How does redundancy order work in redundancy situations?",
+    "expected_passage_id": "las-22-turordning",
+    "source_act": "LAS 1982:80",
+    "section_ref": "22 §",
+    "passage_text": "22 § Vid uppsägning på grund av arbetsbrist ska arbetsgivaren iaktta följande turordningsregler."
+  },
+  {
+    "query_id": "las-22-turordning-ar",
+    "language": "ar",
+    "query": "كيف يعمل ترتيب الأولوية عند التخفيض؟",
+    "expected_passage_id": "las-22-turordning",
+    "source_act": "LAS 1982:80",
+    "section_ref": "22 §",
+    "passage_text": "22 § Vid uppsägning på grund av arbetsbrist ska arbetsgivaren iaktta följande turordningsregler."
+  },
+  {
+    "query_id": "las-25-foretradesratt-sv",
+    "language": "sv",
+    "query": "När har en uppsagd arbetstagare företrädesrätt till återanställning?",
+    "expected_passage_id": "las-25-foretradesratt",
+    "source_act": "LAS 1982:80",
+    "section_ref": "25 §",
+    "passage_text": "25 § Arbetstagare som har sagts upp på grund av arbetsbrist har företrädesrätt till återanställning i den verksamhet där de tidigare har varit sysselsatta."
+  },
+  {
+    "query_id": "las-25-foretradesratt-en",
+    "language": "en",
+    "query": "When does a dismissed employee have priority re-employment rights?",
+    "expected_passage_id": "las-25-foretradesratt",
+    "source_act": "LAS 1982:80",
+    "section_ref": "25 §",
+    "passage_text": "25 § Arbetstagare som har sagts upp på grund av arbetsbrist har företrädesrätt till återanställning i den verksamhet där de tidigare har varit sysselsatta."
+  },
+  {
+    "query_id": "las-25-foretradesratt-ar",
+    "language": "ar",
+    "query": "متى يكون للعامل المفصول حق الأولوية في إعادة التوظيف؟",
+    "expected_passage_id": "las-25-foretradesratt",
+    "source_act": "LAS 1982:80",
+    "section_ref": "25 §",
+    "passage_text": "25 § Arbetstagare som har sagts upp på grund av arbetsbrist har företrädesrätt till återanställning i den verksamhet där de tidigare har varit sysselsatta."
+  },
+  {
+    "query_id": "las-40-ogiltigforklaring-sv",
+    "language": "sv",
+    "query": "Vilken deadline gäller för ogiltigförklaring av uppsägning?",
+    "expected_passage_id": "las-40-ogiltigforklaring",
+    "source_act": "LAS 1982:80",
+    "section_ref": "40 §",
+    "passage_text": "40 § En arbetstagare som avser att yrka ogiltigförklaring av en\n\nuppsägning eller ett avskedande, skall underrätta arbetsgivaren om detta\n\nsenast två veckor efter det att uppsägningen eller avskedandet skedde.\n\nHar arbetstagaren inte fått något sådant besked om ogiltighetstalan som\n\navses i 8 § andra stycket eller 19 § andra stycket, uppgår dock\n\ntidsfristen till en månad och räknas från den dag då anställningen\n\nupphörde.\n\n\n\nOm en arbetstagare gör gällande att ett anställningsavtal har\n\ntidsbegränsats i strid mot 4 § första stycket och avser att yrka\n\nförklaring att avtalet skall gälla tills vidare, skall arbetstagaren\n\nunderrätta arbetsgivaren om detta senast en månad efter\n\nanställningstidens utgång.\n\n\n\nHar inom underrättelsetiden påkallats förhandling rörande tvistefrågan\n\nenligt lagen (1976:580) om medbestämmande i arbetslivet eller med stöd\n\nav kollektivavtal, skall talan väckas inom två veckor efter det att\n\nförhandlingen avslutades. I annat fall skall talan väckas inom två\n\nveckor efter det att tiden för underrättelse gick ut."
+  },
+  {
+    "query_id": "las-40-ogiltigforklaring-en",
+    "language": "en",
+    "query": "What is the deadline to challenge a dismissal as invalid?",
+    "expected_passage_id": "las-40-ogiltigforklaring",
+    "source_act": "LAS 1982:80",
+    "section_ref": "40 §",
+    "passage_text": "40 § En arbetstagare som avser att yrka ogiltigförklaring av en\n\nuppsägning eller ett avskedande, skall underrätta arbetsgivaren om detta\n\nsenast två veckor efter det att uppsägningen eller avskedandet skedde.\n\nHar arbetstagaren inte fått något sådant besked om ogiltighetstalan som\n\navses i 8 § andra stycket eller 19 § andra stycket, uppgår dock\n\ntidsfristen till en månad och räknas från den dag då anställningen\n\nupphörde.\n\n\n\nOm en arbetstagare gör gällande att ett anställningsavtal har\n\ntidsbegränsats i strid mot 4 § första stycket och avser att yrka\n\nförklaring att avtalet skall gälla tills vidare, skall arbetstagaren\n\nunderrätta arbetsgivaren om detta senast en månad efter\n\nanställningstidens utgång.\n\n\n\nHar inom underrättelsetiden påkallats förhandling rörande tvistefrågan\n\nenligt lagen (1976:580) om medbestämmande i arbetslivet eller med stöd\n\nav kollektivavtal, skall talan väckas inom två veckor efter det att\n\nförhandlingen avslutades. I annat fall skall talan väckas inom två\n\nveckor efter det att tiden för underrättelse gick ut."
+  },
+  {
+    "query_id": "las-40-ogiltigforklaring-ar",
+    "language": "ar",
+    "query": "ما آخر موعد للطعن في الإنهاء باعتباره باطلًا؟",
+    "expected_passage_id": "las-40-ogiltigforklaring",
+    "source_act": "LAS 1982:80",
+    "section_ref": "40 §",
+    "passage_text": "40 § En arbetstagare som avser att yrka ogiltigförklaring av en\n\nuppsägning eller ett avskedande, skall underrätta arbetsgivaren om detta\n\nsenast två veckor efter det att uppsägningen eller avskedandet skedde.\n\nHar arbetstagaren inte fått något sådant besked om ogiltighetstalan som\n\navses i 8 § andra stycket eller 19 § andra stycket, uppgår dock\n\ntidsfristen till en månad och räknas från den dag då anställningen\n\nupphörde.\n\n\n\nOm en arbetstagare gör gällande att ett anställningsavtal har\n\ntidsbegränsats i strid mot 4 § första stycket och avser att yrka\n\nförklaring att avtalet skall gälla tills vidare, skall arbetstagaren\n\nunderrätta arbetsgivaren om detta senast en månad efter\n\nanställningstidens utgång.\n\n\n\nHar inom underrättelsetiden påkallats förhandling rörande tvistefrågan\n\nenligt lagen (1976:580) om medbestämmande i arbetslivet eller med stöd\n\nav kollektivavtal, skall talan väckas inom två veckor efter det att\n\nförhandlingen avslutades. I annat fall skall talan väckas inom två\n\nveckor efter det att tiden för underrättelse gick ut."
+  },
+  {
+    "query_id": "las-41-skadestand-sv",
+    "language": "sv",
+    "query": "Vilken deadline gäller för skadeståndsyrkande enligt LAS?",
+    "expected_passage_id": "las-41-skadestand",
+    "source_act": "LAS 1982:80",
+    "section_ref": "41 §",
+    "passage_text": "41 § Den som vill kräva skadestånd eller framställa annat\n\nfordringsanspråk som grundar sig på bestämmelserna i denna lag\n\nskall underrätta motparten om detta inom fyra månader från den\n\ntidpunkt då den skadegörande handlingen företogs eller\n\nfordringen förföll till betalning. Har en arbetstagare inte\n\nfått något sådant besked om skadeståndstalan som avses i 8 §\n\nandra stycket eller 19 § andra stycket, räknas tiden i stället\n\nfrån den dag då anställningen upphörde. Avser arbetstagarens\n\nyrkande brott mot 4 § första stycket, räknas tidsfristen från\n\nanställningstidens utgång. Avser arbetstagarens yrkande brott\n\nmot 6 f § räknas tidsfristen från den dag då någon anställdes\n\npå den lediga anställningen.\n\n\n\nHar inom underrättelsetiden påkallats förhandling rörande\n\ntvistefrågan enligt lagen (1976:580) om medbestämmande i\n\narbetslivet eller med stöd av kollektivavtal, skall talan\n\nväckas inom fyra månader efter det att förhandlingen\n\navslutades. I annat fall skall talan väckas inom fyra månader\n\nefter det att tiden för underrättelse gick ut. Lag (2006:439)."
+  },
+  {
+    "query_id": "las-41-skadestand-en",
+    "language": "en",
+    "query": "What is the deadline for a damages claim under LAS?",
+    "expected_passage_id": "las-41-skadestand",
+    "source_act": "LAS 1982:80",
+    "section_ref": "41 §",
+    "passage_text": "41 § Den som vill kräva skadestånd eller framställa annat\n\nfordringsanspråk som grundar sig på bestämmelserna i denna lag\n\nskall underrätta motparten om detta inom fyra månader från den\n\ntidpunkt då den skadegörande handlingen företogs eller\n\nfordringen förföll till betalning. Har en arbetstagare inte\n\nfått något sådant besked om skadeståndstalan som avses i 8 §\n\nandra stycket eller 19 § andra stycket, räknas tiden i stället\n\nfrån den dag då anställningen upphörde. Avser arbetstagarens\n\nyrkande brott mot 4 § första stycket, räknas tidsfristen från\n\nanställningstidens utgång. Avser arbetstagarens yrkande brott\n\nmot 6 f § räknas tidsfristen från den dag då någon anställdes\n\npå den lediga anställningen.\n\n\n\nHar inom underrättelsetiden påkallats förhandling rörande\n\ntvistefrågan enligt lagen (1976:580) om medbestämmande i\n\narbetslivet eller med stöd av kollektivavtal, skall talan\n\nväckas inom fyra månader efter det att förhandlingen\n\navslutades. I annat fall skall talan väckas inom fyra månader\n\nefter det att tiden för underrättelse gick ut. Lag (2006:439)."
+  },
+  {
+    "query_id": "las-41-skadestand-ar",
+    "language": "ar",
+    "query": "ما آخر موعد للمطالبة بالتعويض بموجب قانون الحماية من الفصل؟",
+    "expected_passage_id": "las-41-skadestand",
+    "source_act": "LAS 1982:80",
+    "section_ref": "41 §",
+    "passage_text": "41 § Den som vill kräva skadestånd eller framställa annat\n\nfordringsanspråk som grundar sig på bestämmelserna i denna lag\n\nskall underrätta motparten om detta inom fyra månader från den\n\ntidpunkt då den skadegörande handlingen företogs eller\n\nfordringen förföll till betalning. Har en arbetstagare inte\n\nfått något sådant besked om skadeståndstalan som avses i 8 §\n\nandra stycket eller 19 § andra stycket, räknas tiden i stället\n\nfrån den dag då anställningen upphörde. Avser arbetstagarens\n\nyrkande brott mot 4 § första stycket, räknas tidsfristen från\n\nanställningstidens utgång. Avser arbetstagarens yrkande brott\n\nmot 6 f § räknas tidsfristen från den dag då någon anställdes\n\npå den lediga anställningen.\n\n\n\nHar inom underrättelsetiden påkallats förhandling rörande\n\ntvistefrågan enligt lagen (1976:580) om medbestämmande i\n\narbetslivet eller med stöd av kollektivavtal, skall talan\n\nväckas inom fyra månader efter det att förhandlingen\n\navslutades. I annat fall skall talan väckas inom fyra månader\n\nefter det att tiden för underrättelse gick ut. Lag (2006:439)."
+  },
+  {
+    "query_id": "las-2b-general-gate-sv",
+    "language": "sv",
+    "query": "Vilka delar av LAS kan kollektivavtal avvika från?",
+    "expected_passage_id": "las-2b-general-gate",
+    "source_act": "LAS 1982:80",
+    "section_ref": "2 b §",
+    "passage_text": "2 b § Genom ett kollektivavtal får det göras avvikelser från 5 \n\noch 5 a §§, 6 § andra och tredje styckena, 7 a, 7 b, 22, 25-27 \n\noch 33 d §§. Om avtalet inte har slutits eller godkänts av en \n\ncentral arbetstagarorganisation, krävs dock att det mellan \n\nparterna i andra frågor gäller ett kollektivavtal som har \n\nslutits eller godkänts av en sådan organisation eller att ett \n\nsådant kollektivavtal tillfälligt inte gäller. Under samma \n\nförutsättning är det också tillåtet att genom ett \n\nkollektivavtal bestämma den närmare beräkningen av förmåner \n\nsom avses i 12 §.\n\n\n\nGenom ett kollektivavtal som har slutits eller godkänts av en \n\ncentral arbetstagarorganisation får det även göras avvikelser \n\nfrån 4 b, 11, 15, 21, 28, 32, 33 a, 33 b, 40 och 41 §§. Det är \n\nockså tillåtet att genom ett sådant kollektivavtal göra \n\navvikelser\n\n\n\n1. från 6 b-e §§, under förutsättning att avtalet inte innebär \n\natt mindre förmånliga regler ska tillämpas för arbetstagarna \n\nän som följer av\n\n\n\n- rådets direktiv 2001/23/EG av den 12 mars 2001 om \n\ntillnärmning av medlemsstaternas lagstiftning om skydd för \n\narbetstagares rättigheter vid överlåtelse av företag, \n\nverksamheter eller delar av företag eller verksamheter, i \n\nlydelsen enligt Europaparlamentets och rådets direktiv (EU) \n\n2015/1794, eller\n\n\n\n- Europaparlamentets och rådets direktiv (EU) 2019/1152 av den \n\n20 juni 2019 om tydliga och förutsägbara arbetsvillkor i \n\nEuropeiska unionen, i den ursprungliga lydelsen,\n\n\n\n2. från 30 a §, när det gäller besked enligt 15 §,\n\n\n\n3. från 30, 30 a och 31 §§, när det gäller den lokala \n\narbetstagar-organisationens rättigheter, \n\n\n\n4. från 4 § andra stycket när det gäller hur ett \n\nanställningsavtal som gäller tills vidare kan upphöra vid den \n\ntidpunkt som anges i 32 a §, och\n\n\n\n5. från 6 § första stycket, 6 h och 6 i §§ under förutsättning \n\natt avtalet respekterar det övergripande skydd för \n\narbetstagare som avses i Europaparlamentets och rådets \n\ndirektiv (EU) 2019/1152, i den ursprungliga lydelsen.\n\n\n\nAvtal om avvikelser från 21 § får träffas även utanför \n\nkollektivavtals-förhållanden, om avtalet innebär att \n\nkollektivavtal som med stöd av andra stycket har träffats för \n\nverksamhetsområdet ska tillämpas. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-2b-general-gate-en",
+    "language": "en",
+    "query": "Which parts of LAS can a collective agreement derogate from?",
+    "expected_passage_id": "las-2b-general-gate",
+    "source_act": "LAS 1982:80",
+    "section_ref": "2 b §",
+    "passage_text": "2 b § Genom ett kollektivavtal får det göras avvikelser från 5 \n\noch 5 a §§, 6 § andra och tredje styckena, 7 a, 7 b, 22, 25-27 \n\noch 33 d §§. Om avtalet inte har slutits eller godkänts av en \n\ncentral arbetstagarorganisation, krävs dock att det mellan \n\nparterna i andra frågor gäller ett kollektivavtal som har \n\nslutits eller godkänts av en sådan organisation eller att ett \n\nsådant kollektivavtal tillfälligt inte gäller. Under samma \n\nförutsättning är det också tillåtet att genom ett \n\nkollektivavtal bestämma den närmare beräkningen av förmåner \n\nsom avses i 12 §.\n\n\n\nGenom ett kollektivavtal som har slutits eller godkänts av en \n\ncentral arbetstagarorganisation får det även göras avvikelser \n\nfrån 4 b, 11, 15, 21, 28, 32, 33 a, 33 b, 40 och 41 §§. Det är \n\nockså tillåtet att genom ett sådant kollektivavtal göra \n\navvikelser\n\n\n\n1. från 6 b-e §§, under förutsättning att avtalet inte innebär \n\natt mindre förmånliga regler ska tillämpas för arbetstagarna \n\nän som följer av\n\n\n\n- rådets direktiv 2001/23/EG av den 12 mars 2001 om \n\ntillnärmning av medlemsstaternas lagstiftning om skydd för \n\narbetstagares rättigheter vid överlåtelse av företag, \n\nverksamheter eller delar av företag eller verksamheter, i \n\nlydelsen enligt Europaparlamentets och rådets direktiv (EU) \n\n2015/1794, eller\n\n\n\n- Europaparlamentets och rådets direktiv (EU) 2019/1152 av den \n\n20 juni 2019 om tydliga och förutsägbara arbetsvillkor i \n\nEuropeiska unionen, i den ursprungliga lydelsen,\n\n\n\n2. från 30 a §, när det gäller besked enligt 15 §,\n\n\n\n3. från 30, 30 a och 31 §§, när det gäller den lokala \n\narbetstagar-organisationens rättigheter, \n\n\n\n4. från 4 § andra stycket när det gäller hur ett \n\nanställningsavtal som gäller tills vidare kan upphöra vid den \n\ntidpunkt som anges i 32 a §, och\n\n\n\n5. från 6 § första stycket, 6 h och 6 i §§ under förutsättning \n\natt avtalet respekterar det övergripande skydd för \n\narbetstagare som avses i Europaparlamentets och rådets \n\ndirektiv (EU) 2019/1152, i den ursprungliga lydelsen.\n\n\n\nAvtal om avvikelser från 21 § får träffas även utanför \n\nkollektivavtals-förhållanden, om avtalet innebär att \n\nkollektivavtal som med stöd av andra stycket har träffats för \n\nverksamhetsområdet ska tillämpas. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-2b-general-gate-ar",
+    "language": "ar",
+    "query": "ما أجزاء قانون الحماية من الفصل التي يمكن للاتفاق الجماعي أن يخرج عنها؟",
+    "expected_passage_id": "las-2b-general-gate",
+    "source_act": "LAS 1982:80",
+    "section_ref": "2 b §",
+    "passage_text": "2 b § Genom ett kollektivavtal får det göras avvikelser från 5 \n\noch 5 a §§, 6 § andra och tredje styckena, 7 a, 7 b, 22, 25-27 \n\noch 33 d §§. Om avtalet inte har slutits eller godkänts av en \n\ncentral arbetstagarorganisation, krävs dock att det mellan \n\nparterna i andra frågor gäller ett kollektivavtal som har \n\nslutits eller godkänts av en sådan organisation eller att ett \n\nsådant kollektivavtal tillfälligt inte gäller. Under samma \n\nförutsättning är det också tillåtet att genom ett \n\nkollektivavtal bestämma den närmare beräkningen av förmåner \n\nsom avses i 12 §.\n\n\n\nGenom ett kollektivavtal som har slutits eller godkänts av en \n\ncentral arbetstagarorganisation får det även göras avvikelser \n\nfrån 4 b, 11, 15, 21, 28, 32, 33 a, 33 b, 40 och 41 §§. Det är \n\nockså tillåtet att genom ett sådant kollektivavtal göra \n\navvikelser\n\n\n\n1. från 6 b-e §§, under förutsättning att avtalet inte innebär \n\natt mindre förmånliga regler ska tillämpas för arbetstagarna \n\nän som följer av\n\n\n\n- rådets direktiv 2001/23/EG av den 12 mars 2001 om \n\ntillnärmning av medlemsstaternas lagstiftning om skydd för \n\narbetstagares rättigheter vid överlåtelse av företag, \n\nverksamheter eller delar av företag eller verksamheter, i \n\nlydelsen enligt Europaparlamentets och rådets direktiv (EU) \n\n2015/1794, eller\n\n\n\n- Europaparlamentets och rådets direktiv (EU) 2019/1152 av den \n\n20 juni 2019 om tydliga och förutsägbara arbetsvillkor i \n\nEuropeiska unionen, i den ursprungliga lydelsen,\n\n\n\n2. från 30 a §, när det gäller besked enligt 15 §,\n\n\n\n3. från 30, 30 a och 31 §§, när det gäller den lokala \n\narbetstagar-organisationens rättigheter, \n\n\n\n4. från 4 § andra stycket när det gäller hur ett \n\nanställningsavtal som gäller tills vidare kan upphöra vid den \n\ntidpunkt som anges i 32 a §, och\n\n\n\n5. från 6 § första stycket, 6 h och 6 i §§ under förutsättning \n\natt avtalet respekterar det övergripande skydd för \n\narbetstagare som avses i Europaparlamentets och rådets \n\ndirektiv (EU) 2019/1152, i den ursprungliga lydelsen.\n\n\n\nAvtal om avvikelser från 21 § får träffas även utanför \n\nkollektivavtals-förhållanden, om avtalet innebär att \n\nkollektivavtal som med stöd av andra stycket har träffats för \n\nverksamhetsområdet ska tillämpas. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-2c-sakliga-skal-gate-sv",
+    "language": "sv",
+    "query": "Kan kollektivavtal ändra vad sakliga skäl betyder?",
+    "expected_passage_id": "las-2c-sakliga-skal-gate",
+    "source_act": "LAS 1982:80",
+    "section_ref": "2 c §",
+    "passage_text": "2 c § Genom eller med stöd av ett kollektivavtal får det göras \n\navvikelser från 7 § första stycket när det gäller vad som ska \n\nanses utgöra sakliga skäl eller andra stycket om omplacering \n\nunder förutsättning att avtalet på arbetstagarsidan har \n\nslutits av en sådan sammanslutning av centrala \n\narbetstagarorganisationer som avses i 6 § tredje stycket lagen \n\n(1976:580) om medbestämmande i arbetslivet.\n\n\n\nEn överträdelse av en bestämmelse i ett kollektivavtal enligt \n\nförsta stycket som har trätt i lagens ställe ska anses utgöra \n\nen överträdelse av lagen. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-2c-sakliga-skal-gate-en",
+    "language": "en",
+    "query": "Can a collective agreement change what objective grounds mean?",
+    "expected_passage_id": "las-2c-sakliga-skal-gate",
+    "source_act": "LAS 1982:80",
+    "section_ref": "2 c §",
+    "passage_text": "2 c § Genom eller med stöd av ett kollektivavtal får det göras \n\navvikelser från 7 § första stycket när det gäller vad som ska \n\nanses utgöra sakliga skäl eller andra stycket om omplacering \n\nunder förutsättning att avtalet på arbetstagarsidan har \n\nslutits av en sådan sammanslutning av centrala \n\narbetstagarorganisationer som avses i 6 § tredje stycket lagen \n\n(1976:580) om medbestämmande i arbetslivet.\n\n\n\nEn överträdelse av en bestämmelse i ett kollektivavtal enligt \n\nförsta stycket som har trätt i lagens ställe ska anses utgöra \n\nen överträdelse av lagen. Lag (2022:835)."
+  },
+  {
+    "query_id": "las-2c-sakliga-skal-gate-ar",
+    "language": "ar",
+    "query": "هل يمكن للاتفاق الجماعي أن يغيّر معنى الأسباب الموضوعية؟",
+    "expected_passage_id": "las-2c-sakliga-skal-gate",
+    "source_act": "LAS 1982:80",
+    "section_ref": "2 c §",
+    "passage_text": "2 c § Genom eller med stöd av ett kollektivavtal får det göras \n\navvikelser från 7 § första stycket när det gäller vad som ska \n\nanses utgöra sakliga skäl eller andra stycket om omplacering \n\nunder förutsättning att avtalet på arbetstagarsidan har \n\nslutits av en sådan sammanslutning av centrala \n\narbetstagarorganisationer som avses i 6 § tredje stycket lagen \n\n(1976:580) om medbestämmande i arbetslivet.\n\n\n\nEn överträdelse av en bestämmelse i ett kollektivavtal enligt \n\nförsta stycket som har trätt i lagens ställe ska anses utgöra \n\nen överträdelse av lagen. Lag (2022:835)."
+  },
+  {
+    "query_id": "mbl-4-collective-gate-sv",
+    "language": "sv",
+    "query": "När får kollektivavtal avvika från MBL?",
+    "expected_passage_id": "mbl-4-collective-gate",
+    "source_act": "MBL 1976:580",
+    "section_ref": "4 §",
+    "passage_text": "4 § Ett avtal är ogiltigt i den mån det innebär att en \n\nrättighet eller skyldighet enligt denna lag upphävs eller \n\ninskränks.\n\n\n\nGenom ett kollektivavtal får det dock göras avvikelser från \n\n11, 12, 14 och 19 §§, 20 § första stycket, 21, 22 och 28 §§,"
+  },
+  {
+    "query_id": "mbl-4-collective-gate-en",
+    "language": "en",
+    "query": "When may a collective agreement derogate from the MBL?",
+    "expected_passage_id": "mbl-4-collective-gate",
+    "source_act": "MBL 1976:580",
+    "section_ref": "4 §",
+    "passage_text": "4 § Ett avtal är ogiltigt i den mån det innebär att en \n\nrättighet eller skyldighet enligt denna lag upphävs eller \n\ninskränks.\n\n\n\nGenom ett kollektivavtal får det dock göras avvikelser från \n\n11, 12, 14 och 19 §§, 20 § första stycket, 21, 22 och 28 §§,"
+  },
+  {
+    "query_id": "mbl-4-collective-gate-ar",
+    "language": "ar",
+    "query": "متى يجوز للاتفاق الجماعي أن يخرج عن قانون المشاركة في الحياة العملية؟",
+    "expected_passage_id": "mbl-4-collective-gate",
+    "source_act": "MBL 1976:580",
+    "section_ref": "4 §",
+    "passage_text": "4 § Ett avtal är ogiltigt i den mån det innebär att en \n\nrättighet eller skyldighet enligt denna lag upphävs eller \n\ninskränks.\n\n\n\nGenom ett kollektivavtal får det dock göras avvikelser från \n\n11, 12, 14 och 19 §§, 20 § första stycket, 21, 22 och 28 §§,"
+  },
+  {
+    "query_id": "diskrim-3-nonwaiver-sv",
+    "language": "sv",
+    "query": "Kan man avtala bort rättigheter enligt diskrimineringslagen?",
+    "expected_passage_id": "diskrim-3-nonwaiver",
+    "source_act": "Diskrimineringslag 2008:567",
+    "section_ref": "3 §",
+    "passage_text": "3 § Om den som anser sig ha blivit diskriminerad eller utsatt\n\nför repressalier visar omständigheter som ger anledning att\n\nanta att han eller hon har blivit diskriminerad eller utsatt\n\nför repressalier, är det svaranden som ska visa att\n\ndiskriminering eller repressalier inte har förekommit.\n\n\n\nPreskription\n\n\n\nArbetslivet"
+  },
+  {
+    "query_id": "diskrim-3-nonwaiver-en",
+    "language": "en",
+    "query": "Can rights under the Discrimination Act be waived by contract?",
+    "expected_passage_id": "diskrim-3-nonwaiver",
+    "source_act": "Diskrimineringslag 2008:567",
+    "section_ref": "3 §",
+    "passage_text": "3 § Om den som anser sig ha blivit diskriminerad eller utsatt\n\nför repressalier visar omständigheter som ger anledning att\n\nanta att han eller hon har blivit diskriminerad eller utsatt\n\nför repressalier, är det svaranden som ska visa att\n\ndiskriminering eller repressalier inte har förekommit.\n\n\n\nPreskription\n\n\n\nArbetslivet"
+  },
+  {
+    "query_id": "diskrim-3-nonwaiver-ar",
+    "language": "ar",
+    "query": "هل يمكن التنازل تعاقديًا عن الحقوق بموجب قانون مكافحة التمييز؟",
+    "expected_passage_id": "diskrim-3-nonwaiver",
+    "source_act": "Diskrimineringslag 2008:567",
+    "section_ref": "3 §",
+    "passage_text": "3 § Om den som anser sig ha blivit diskriminerad eller utsatt\n\nför repressalier visar omständigheter som ger anledning att\n\nanta att han eller hon har blivit diskriminerad eller utsatt\n\nför repressalier, är det svaranden som ska visa att\n\ndiskriminering eller repressalier inte har förekommit.\n\n\n\nPreskription\n\n\n\nArbetslivet"
+  }
+]

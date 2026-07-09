@@ -58,6 +58,10 @@ _SECTION_PREFIX_RE = re.compile(
     re.IGNORECASE,
 )
 
+_LEGISLATION_SOURCE_SLUG_RE = re.compile(
+    r"^[A-Za-z0-9]+(?:/[A-Za-z0-9]+){1,6}$"
+)
+
 
 def _parse_legislation_cite(cite: str) -> tuple[str, str | None]:
     """Extract act_title and section_ref from a citation string."""
@@ -102,15 +106,19 @@ def _verify_legislation_in_db(act_title: str, section_ref: str | None) -> bool:
 
 def _verify_legislation_by_source_url(slug: str) -> bool:
     """Check legislation table for a source_url containing the slug."""
+    slug = slug.strip().strip("/")
+    if not slug or not _LEGISLATION_SOURCE_SLUG_RE.fullmatch(slug):
+        return False
     try:
         from ingestion.db import get_connection
+
         conn = get_connection()
         try:
             with conn.cursor() as cur:
                 cur.execute(
                     "SELECT 1 FROM legislation "
-                    "WHERE source_url LIKE %s LIMIT 1",
-                    (f"%{slug}%",),
+                    "WHERE source_url LIKE %s OR source_url LIKE %s LIMIT 1",
+                    (f"%/{slug}", f"%/{slug}/%"),
                 )
                 return cur.fetchone() is not None
         finally:

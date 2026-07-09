@@ -1,0 +1,134 @@
+domain: employment_se
+workflows:
+- workflow_id: source_intake
+  domain: employment_se
+  claim_type: any
+  required_tables:
+  - documents
+  - extracted_facts
+  required_rules: []
+  required_sources:
+  - employment_se.sources.yaml
+  validators:
+  - citation_required
+  - fail_closed_on_zero_facts
+  output_schema: extracted_facts_v1
+  status: draft
+- workflow_id: dismissal_review
+  domain: employment_se
+  claim_type: dismissal
+  required_tables:
+  - documents
+  - extracted_facts
+  required_rules:
+  - dismissal.sakliga_skal_anchor
+  - dismissal.omplacering_requirement
+  - collective_agreement.sakliga_skal_gate
+  required_sources:
+  - LAS 1982:80
+  - MBL 1976:580
+  validators:
+  - collective_agreement_boundary_check
+  - citation_required
+  output_schema: swedish_dismissal_review_v1
+  status: draft
+- workflow_id: fixed_term_conversion_review
+  domain: employment_se
+  claim_type: fixed_term_conversion
+  required_tables:
+  - documents
+  - extracted_facts
+  required_rules:
+  - fixed_term_conversion.special_visstid_12m
+  - fixed_term_conversion.vikariat_2y
+  - fixed_term_conversion.follow_on_gap_6m
+  required_sources:
+  - LAS 1982:80
+  validators:
+  - citation_required
+  output_schema: swedish_fixed_term_review_v1
+  status: draft
+- workflow_id: deadline_review
+  domain: employment_se
+  claim_type: dismissal
+  required_tables:
+  - documents
+  - extracted_facts
+  required_rules:
+  - invalidity.deadline_2_weeks
+  - invalidity.deadline_1_month_no_warning
+  - invalidity.fixed_term_claim_1_month
+  - damages.notice_4_months
+  required_sources:
+  - LAS 1982:80
+  validators:
+  - deadline_window_check
+  - citation_required
+  output_schema: swedish_deadline_review_v1
+  status: draft
+- workflow_id: collective_agreement_boundary_review
+  domain: employment_se
+  claim_type: collective_agreement_boundary
+  required_tables:
+  - documents
+  - extracted_facts
+  required_rules:
+  - collective_agreement.general_gate
+  - collective_agreement.central_gate
+  - collective_agreement.sakliga_skal_gate
+  required_sources:
+  - LAS 1982:80
+  - MBL 1976:580
+  - Arbetstidslag 1982:673
+  - Semesterlag 1977:480
+  - Föräldraledighetslag 1995:584
+  - Lag 1991:1047 om sjuklön
+  - Diskrimineringslag 2008:567
+  - Lag 2012:854 om uthyrning av arbetstagare
+  validators:
+  - collective_agreement_boundary_check
+  output_schema: swedish_boundary_review_v1
+  status: draft
+- workflow_id: discrimination_review
+  domain: employment_se
+  claim_type: discrimination
+  required_tables:
+  - documents
+  - extracted_facts
+  required_rules:
+  - discrimination.non_derogable
+  required_sources:
+  - Diskrimineringslag 2008:567
+  validators:
+  - citation_required
+  output_schema: swedish_discrimination_review_v1
+  status: draft
+- workflow_id: agency_worker_review
+  domain: employment_se
+  claim_type: agency_worker
+  required_tables:
+  - documents
+  - extracted_facts
+  required_rules:
+  - agency_worker_collective_agreement_boundary
+  required_sources:
+  - Lag 2012:854 om uthyrning av arbetstagare
+  validators:
+  - citation_required
+  output_schema: swedish_agency_worker_review_v1
+  status: draft
+- workflow_id: wage_caveat_review
+  domain: employment_se
+  claim_type: wage_caveat
+  required_tables:
+  - documents
+  - extracted_facts
+  required_rules: []
+  required_sources:
+  - employment_se source pack caveats
+  validators:
+  - no_numeric_wage_floor
+  - citation_required
+  output_schema: swedish_wage_caveat_review_v1
+  status: draft
+
