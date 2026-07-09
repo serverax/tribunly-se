@@ -109,6 +109,10 @@ def _verify_legislation_by_source_url(slug: str) -> bool:
     slug = slug.strip().strip("/")
     if not slug or not _LEGISLATION_SOURCE_SLUG_RE.fullmatch(slug):
         return False
+    exact_urls = (
+        f"https://data.riksdagen.se/dokument/{slug}/contents",
+        f"https://data.riksdagen.se/dokument/{slug}",
+    )
     try:
         from ingestion.db import get_connection
 
@@ -117,8 +121,14 @@ def _verify_legislation_by_source_url(slug: str) -> bool:
             with conn.cursor() as cur:
                 cur.execute(
                     "SELECT 1 FROM legislation "
-                    "WHERE source_url LIKE %s OR source_url LIKE %s LIMIT 1",
-                    (f"%/{slug}", f"%/{slug}/%"),
+                    "WHERE source_url = %s OR source_url = %s "
+                    "OR source_url LIKE %s OR source_url LIKE %s LIMIT 1",
+                    (
+                        exact_urls[0],
+                        exact_urls[1],
+                        f"%/{slug}",
+                        f"%/{slug}/%",
+                    ),
                 )
                 return cur.fetchone() is not None
         finally:
