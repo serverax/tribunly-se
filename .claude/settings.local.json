@@ -9,7 +9,17 @@
       "Bash(uv --version)",
       "PowerShell(gh run *)",
       "Bash(Get-ChildItem *)",
-      "Bash(wsl *)"
+      "Bash(wsl *)",
+      "Bash(git checkout *)",
+      "Bash(docker volume *)",
+      "Bash(docker run *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(docker compose *)",
+      "Bash(timeout 120 bash -c 'while true; do *)",
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(python -m json.tool)",
+      "Bash(git check-ignore *)"
     ]
   },
   "enabledMcpjsonServers": [
