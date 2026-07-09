@@ -80,3 +80,5 @@ Base: `main-restored@526cbcc`
 - Task 6: pending
 - Task 7: pending
 - Task 8: pending
+
+WO011-R reconciliation complete: WO010 fixes rebased onto WO009 line @ 81e95a4; backup at backup/wo010-divergent; buggy slug fallback eliminated from origin.
