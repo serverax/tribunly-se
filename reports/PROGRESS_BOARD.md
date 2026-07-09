@@ -82,3 +82,5 @@ Base: `main-restored@526cbcc`
 - Task 8: pending
 
 WO011-R reconciliation complete: WO010 fixes rebased onto WO009 line @ 81e95a4; backup at backup/wo010-divergent; buggy slug fallback eliminated from origin.
+
+| WO011 A4 | Floor: 1829 passed / 5 failed / 156 skipped | COMPLETE | `this commit` | `pytest -q` tail; failures logged, not patched: `tests/brain/test_brain.py::TestRunBrain::test_brain_safety_passes_for_normal_query` blocks on offline Ollama + `DeadlineAgent` month parsing; `tests/integration/test_semantic_retrieval.py::{test_semantic_retrieval_returns_legislation,test_semantic_retrieval_fairness_reasons,test_semantic_retrieval_acas_code,test_semantic_retrieval_case_law}` hit keyword-fallback chunks with `distance=None` | 2026-07-09 |
