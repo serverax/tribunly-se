@@ -17,6 +17,7 @@ This module imports NOTHING from any concrete domain implementation module.
 
 from __future__ import annotations
 
+import os
 import logging
 from typing import Dict, List, Optional
 
@@ -34,6 +35,13 @@ from backend.domains.shared.types import DomainSpec
 logger = logging.getLogger(__name__)
 
 domain_registry: Dict[str, DomainSpec] = {}
+
+_CORE_JURISDICTIONS = ("EW", "SC", "NI")
+_SE_DOMAIN = "employment_se"
+
+
+def _env_flag(name: str) -> bool:
+    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _pack_to_spec(pack: DomainPack) -> DomainSpec:
@@ -160,6 +168,24 @@ def jurisdiction_supported_for_domain(domain: str, jurisdiction: str) -> bool:
     return jurisdiction in domain_registry[domain].get("jurisdiction", [])
 
 
+def supported_jurisdictions() -> List[str]:
+    """Registry-driven jurisdiction allow-list.
+
+    EW/SC/NI are always on. SE is only admitted when LAWAPP_ENABLE_SE is true
+    and the Swedish pack is present in the registry.
+    """
+    jurisdictions = list(_CORE_JURISDICTIONS)
+    if _env_flag("LAWAPP_ENABLE_SE") and is_domain_registered(_SE_DOMAIN):
+        if "SE" not in jurisdictions:
+            jurisdictions.append("SE")
+    return jurisdictions
+
+
+def jurisdiction_supported(jurisdiction: str) -> bool:
+    """True when the jurisdiction is admitted by the registry allow-list."""
+    return (jurisdiction or "").upper() in supported_jurisdictions()
+
+
 # ── Retrieval scoping ─────────────────────────────────────────────────────────
 
 def retrieval_domain_for(domain: str) -> str:
@@ -211,6 +237,8 @@ __all__ = [
     "resolve_domain_for_matter",
     "require_supported_matter",
     "jurisdiction_supported_for_domain",
+    "supported_jurisdictions",
+    "jurisdiction_supported",
     "retrieval_domain_for",
     "register_domain",
     "unregister_domain",

@@ -19,6 +19,7 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 
 from backend.domains.constants import DEFAULT_JURISDICTION
+from backend.domains.registry import supported_jurisdictions
 
 from backend.core.agents.base import AgentResult
 from backend.core.agents.registry import get_registry
@@ -70,7 +71,7 @@ class Orchestrator:
 
         clf = _classify(message, facts)
         j = (facts.get("jurisdiction") or jurisdiction or DEFAULT_JURISDICTION).upper()
-        if j not in ("EW", "SC", "NI"):
+        if j not in supported_jurisdictions():
             j = DEFAULT_JURISDICTION
         claim_type = clf.matter_type if clf.in_scope else "out_of_scope"
         legal_area = "employment_law" if clf.in_scope else "out_of_scope"

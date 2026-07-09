@@ -27,6 +27,7 @@ from typing import Optional
 import psycopg2.extras
 
 from ingestion.db import get_connection
+from backend.domains.registry import supported_jurisdictions
 from shared.schemas import RetrievalBundle
 from backend.core.retrieval.trust_scorer import score_authorities
 from backend.core.retrieval.rrf import reciprocal_rank_fusion
@@ -67,7 +68,10 @@ _JURISDICTION_CODE_MAP = {
 
 def juris_codes(jurisdiction: str) -> tuple[str, ...]:
     """jurisdiction values that may satisfy this user jurisdiction (fail-closed default)."""
-    return _JURISDICTION_CODE_MAP.get((jurisdiction or "").upper(), ("__none__",))
+    j = (jurisdiction or "").upper()
+    if j == "SE":
+        return ("SE",) if "SE" in supported_jurisdictions() else ("__none__",)
+    return _JURISDICTION_CODE_MAP.get(j, ("__none__",))
 
 
 def jurisdiction_supported(jurisdiction: str) -> bool:

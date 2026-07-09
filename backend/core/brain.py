@@ -46,6 +46,7 @@ import uuid
 from typing import Any, Optional
 
 from backend.domains.constants import DEFAULT_JURISDICTION, DOMAIN_DEFAULT
+from backend.domains.registry import supported_jurisdictions
 
 logger = logging.getLogger(__name__)
 
@@ -225,7 +226,7 @@ def _run_safety_checks(assessment: dict, trace_id: str, user_id: Optional[str]) 
 
     # Check 4: Jurisdiction boundary (EW only for now)
     resp_j = assessment.get("jurisdiction", DEFAULT_JURISDICTION)
-    c4_pass = resp_j in ("EW", "SC", "NI") or assessment.get("status") == "not_supported"
+    c4_pass = resp_j in supported_jurisdictions() or assessment.get("status") == "not_supported"
     checks.append({"check": "jurisdiction_valid", "passed": c4_pass, "severity": "high"})
     if not c4_pass:
         failures.append(f"invalid_jurisdiction:{resp_j}")
@@ -598,7 +599,7 @@ def run_brain(
 
     # ── Step 3: Detect jurisdiction ──────────────────────────────────────────
     j = facts.get("jurisdiction", jurisdiction).upper()
-    if j not in ("EW", "SC", "NI"):
+    if j not in supported_jurisdictions():
         j = DEFAULT_JURISDICTION
     trace.jurisdiction = j
     trace.record_step("detect_jurisdiction", "ok", {"jurisdiction": j})
