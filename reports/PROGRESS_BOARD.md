@@ -26,6 +26,7 @@ Base: `main-restored@526cbcc`
 | Stage 2 Closure | Authenticated workspace persistence proven across a fresh browser context | COMPLETE | `this commit` | `reports/frontend_persistence_proof.json`, `reports/frontend_persistence_before.png`, `reports/frontend_persistence_restored.png` | 2026-07-08 |
 | Stage 2 Closure | Deadline live preview repaired and proven against server-supplied rules values | COMPLETE | `this commit` | `reports/frontend_deadline_recalc_proof.json`, `reports/frontend_deadline_recalc.png` | 2026-07-08 |
 | Stage 2 Closure | P2/P3 accessibility log captured for the remaining surface issues | COMPLETE | `this commit` | `reports/frontend_accessibility_log.md` | 2026-07-08 |
+<<<<<<< HEAD
 | WO006 | Ollama promoted to default compose service; all URL defaults repointed to compose DNS | COMPLETE | `01eb310` | `docker-compose.yml`, `control-plane/src/core/config.ts`, `backend/services/lawapp-rag-service/ollama_embed.py` | 2026-07-08 |
 | WO006 | Live brain proof: 15 services healthy, /health ai_provider active, live /assess with citations + rules deadline | COMPLETE | `01eb310` | compose ps + /health + /assess evidence in WO006 close | 2026-07-08 |
 | WO006 | .tmp/ gitignored; frontendproof.env throwaway-only, never committed | COMPLETE | `f7cb65e` | `git check-ignore .tmp/frontendproof.env` | 2026-07-08 |
@@ -64,3 +65,18 @@ Base: `main-restored@526cbcc`
 | WO009 T5 | k6 smoke latency: health p95=926ms (cold-start), assess p95=28.5s, 0% failures, citations verified | COMPLETE | `this commit` | `reports/k6_smoke_latency_report.md` | 2026-07-09 |
 | WO009 T6 | Accessibility P2/P3 fixes (5 items) + plain-English jargon sweep (6 fixes, 5 logged-not-changed) | COMPLETE | `this commit` | `reports/frontend_accessibility_log.md` | 2026-07-09 |
 | WO009 T7 | Ship package: floor 1841/0/0/52, live journey proven, OWNER_RUNBOOK.md, state docs updated | COMPLETE | `this commit` | `reports/OWNER_RUNBOOK.md`, `reports/SHIP_READINESS.md`, `reports/wo009_live_journey_proof.md` | 2026-07-09 |
+
+## WO010 — Codex Autonomous Closure Order
+
+- Executor: Codex
+- Branch: `cc/convergence`
+- Base: `eb3ed3f`
+- Date: 2026-07-09
+- Tasks: 2, 3, 4, 5, 6, 7, 8
+- Task 2: pending
+- Task 3: pending
+- Task 4: pending
+- Task 5: pending
+- Task 6: pending
+- Task 7: pending
+- Task 8: pending
