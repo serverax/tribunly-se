@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "lawapp",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "echo Docker compose backend already serving on 8000 && pause"],
+      "port": 8000,
+      "autoPort": false
+    }
+  ]
+}
