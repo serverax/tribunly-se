@@ -18,4 +18,6 @@ HEALTHCHECK --interval=10s --timeout=5s --retries=6 --start-period=5s \
   CMD python -c "import requests; requests.get('http://localhost:8017/health', timeout=2)" || exit 1
 
 # Run service
+USER 65532:65532
+
 CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8017"]

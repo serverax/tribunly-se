@@ -11,4 +11,6 @@ COPY graph_update_worker.py .
 # Ingestion worker is not a service, it's a batch worker
 # Can be invoked as: docker run ... python graph_update_worker.py demo
 
+USER 65532:65532
+
 CMD ["python", "graph_update_worker.py"]

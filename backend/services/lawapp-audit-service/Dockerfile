@@ -15,4 +15,6 @@ HEALTHCHECK --interval=10s --timeout=5s --retries=6 --start-period=5s \
     CMD python -c "import requests; requests.get('http://localhost:8020/health', timeout=5)"
 
 # Run service
+USER 65532:65532
+
 CMD ["python", "main.py"]

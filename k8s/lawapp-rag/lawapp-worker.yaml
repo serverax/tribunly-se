@@ -21,11 +21,24 @@ spec:
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: lawapp-worker
           image: ghcr.io/serverax/lawapp-worker:b13c59d01e73e861b35498cac2b37d566609c262
           imagePullPolicy: Always
           command: ["python", "-m", "services.lawapp_worker.app"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: SERVICE_NAME
               value: "lawapp-worker"
