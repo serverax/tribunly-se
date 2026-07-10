@@ -60,7 +60,7 @@ jobs:
             ${{ env.IMAGE_FRONTEND }}:${{ github.sha }}
             ${{ env.IMAGE_FRONTEND }}:latest
 
-      - uses: azure/setup-kubectl@v4
+      - uses: azure/setup-kubectl@v5
         with:
           version: latest
 
