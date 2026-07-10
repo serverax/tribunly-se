@@ -8,4 +8,6 @@ COPY services /app/services
 ENV PYTHONPATH=/app
 ENV SERVICE_NAME=lawapp_worker
 
+USER 65532:65532
+
 CMD ["python", "-m", "services.lawapp_worker.app"]

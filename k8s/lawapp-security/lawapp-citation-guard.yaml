@@ -21,12 +21,24 @@ spec:
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: lawapp-citation-guard
           image: ghcr.io/serverax/lawapp-citation-guard:b13c59d01e73e861b35498cac2b37d566609c262
           imagePullPolicy: Always
           command: ["uvicorn"]
           args: ["services.lawapp_citation_guard.app:app", "--host", "0.0.0.0", "--port", "8080"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 8080
           env:

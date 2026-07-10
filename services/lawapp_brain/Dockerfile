@@ -10,4 +10,6 @@ ENV SERVICE_NAME=lawapp_brain
 
 EXPOSE 8080
 
+USER 65532:65532
+
 CMD ["uvicorn", "services.lawapp_brain.app:app", "--host", "0.0.0.0", "--port", "8080"]
