@@ -39,7 +39,7 @@ spec:
           name: brain-api
         securityContext:
           allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: false
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 10001
           capabilities:
@@ -74,6 +74,12 @@ spec:
           limits:
             cpu: 1000m
             memory: 2Gi
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
