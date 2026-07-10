@@ -5,12 +5,17 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
+ENV FASTEMBED_CACHE_PATH=/app/fastembed_cache
 
 # System deps  -  libpq for psycopg2-binary runtime,
 # libxml2/libxslt for lxml binary wheel
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        libpq-dev libxml2-dev libxslt1-dev \
+    && groupadd --system appuser \
+    && useradd --system --gid appuser --home-dir /app --shell /usr/sbin/nologin appuser \
+    && mkdir -p /app/fastembed_cache \
+    && chown -R appuser:appuser /app \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml ./
@@ -46,8 +51,10 @@ RUN pip install --no-cache-dir --upgrade pip \
        "fastembed>=0.3.0" \
        "redis[hiredis]>=5.0"
 
-ENV FASTEMBED_CACHE_PATH=/app/fastembed_cache
 RUN python -c "from fastembed import TextEmbedding; TextEmbedding('BAAI/bge-small-en-v1.5')" \
     && echo "fastembed model pre-downloaded OK"
 
 COPY . .
+RUN chown -R appuser:appuser /app
+
+USER appuser

@@ -42,6 +42,8 @@ spec:
           emptyDir: {}
         - name: tools
           emptyDir: {}
+        - name: tmp
+          emptyDir: {}
       initContainers:
         - name: copy-busybox-taskset
           image: busybox:1.36
@@ -56,8 +58,11 @@ spec:
           volumeMounts:
             - name: tools
               mountPath: /tools
+            - name: tmp
+              mountPath: /tmp
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
@@ -103,6 +108,8 @@ spec:
               mountPath: /root/.ollama
             - name: tools
               mountPath: /tools
+            - name: tmp
+              mountPath: /tmp
           command:
             - /bin/sh
             - -lc
@@ -148,6 +155,7 @@ spec:
             failureThreshold: 5
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
