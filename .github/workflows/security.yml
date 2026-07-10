@@ -61,6 +61,7 @@ jobs:
 
   codeql:
     name: codeql
+    if: ${{ github.repository_visibility == 'public' || vars.ENABLE_PRIVATE_CODEQL == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
