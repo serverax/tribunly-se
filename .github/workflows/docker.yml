@@ -1,0 +1,82 @@
+name: Docker
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  POSTGRES_PASSWORD: ci-password
+  POSTGRES_DB: postgres
+  POSTGRES_USER: lawapp
+  JWT_SECRET: ci-jwt-secret
+  ADMIN_API_KEY: ci-admin-key
+  ENCRYPTION_KEY: ci-encryption-key-00000000000000000000000000000000
+  LAWAPP_DOMAIN: employment_se
+  LAWAPP_ENABLE_SE: "true"
+  LAWAPP_LLM_PROVIDER: ollama_local
+  LAWAPP_OLLAMA_BASE_URL: http://ollama:11434
+  LAWAPP_OLLAMA_MODEL: qwen2.5:3b-instruct-q6_K
+  BACKEND_PORT: "6450"
+  OLLAMA_PORT: "11450"
+  REDACTION_SERVICE_PORT: "8150"
+  RATELIMIT_STORAGE_URI: redis://redis:6379
+  PAYMENT_MODE: disabled
+  LOG_LEVEL: INFO
+  ENVIRONMENT: development
+
+jobs:
+  compose-config:
+    name: compose-config
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate compose files
+        shell: bash
+        run: bash scripts/ci-check.sh compose-only
+
+  build-images:
+    name: build-images
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build root compose images
+        shell: bash
+        run: |
+          docker compose build \
+            backend \
+            db-bootstrap \
+            db-init \
+            ingestion \
+            ingestion-worker \
+            outbox-worker \
+            control-plane \
+            frontend \
+            lawapp-admin-service \
+            lawapp-audit-service \
+            lawapp-case-service \
+            lawapp-graph-rag-service \
+            lawapp-notification-service \
+            lawapp-rag-service \
+            lawapp-redaction-service \
+            lawapp-rules-service

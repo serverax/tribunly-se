@@ -1,0 +1,7 @@
+# Placeholder ownership map.
+# Replace the placeholder handle with the real owner before enforcing CODEOWNERS.
+* @serverax/owner-placeholder
+.github/workflows/ @serverax/owner-placeholder
+docs/ @serverax/owner-placeholder
+scripts/ @serverax/owner-placeholder
+docker-compose*.yml @serverax/owner-placeholder

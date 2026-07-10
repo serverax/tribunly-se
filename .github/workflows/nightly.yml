@@ -1,0 +1,67 @@
+name: Nightly Floor
+
+on:
+  schedule:
+    - cron: "11 2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: nightly-floor
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  POSTGRES_PASSWORD: ci-password
+  POSTGRES_DB: postgres
+  POSTGRES_USER: lawapp
+  JWT_SECRET: ci-jwt-secret
+  ADMIN_API_KEY: ci-admin-key
+  ENCRYPTION_KEY: ci-encryption-key-00000000000000000000000000000000
+  LAWAPP_DOMAIN: employment_se
+  LAWAPP_ENABLE_SE: "true"
+  LAWAPP_LLM_PROVIDER: ollama_local
+  LAWAPP_OLLAMA_BASE_URL: http://ollama:11434
+  LAWAPP_OLLAMA_MODEL: qwen2.5:3b-instruct-q6_K
+  BACKEND_PORT: "6450"
+  OLLAMA_PORT: "11450"
+  REDACTION_SERVICE_PORT: "8150"
+  RATELIMIT_STORAGE_URI: redis://redis:6379
+  PAYMENT_MODE: disabled
+  LOG_LEVEL: INFO
+  ENVIRONMENT: development
+
+jobs:
+  full-floor:
+    name: full-floor
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bring the stack up
+        shell: bash
+        run: docker compose up -d --build
+
+      - name: Wait for backend health
+        shell: bash
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:8000/health | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('db',''))" | grep -q connected; then
+              exit 0
+            fi
+            sleep 10
+          done
+          docker compose logs backend --tail=60
+          exit 1
+
+      - name: Show compose ps
+        shell: bash
+        run: docker compose ps
+
+      - name: Run full regression proof
+        shell: bash
+        run: bash scripts/prove_full_regression.sh
