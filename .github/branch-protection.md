@@ -25,8 +25,9 @@ It is a human-readable target, not an API-configured state.
 - `Docker / build-images`
 - `Security / pip-audit`
 - `Security / gitleaks`
+- `Security / codeql (javascript)`
+- `Security / codeql (python)`
 - `Security / trivy`
-- `Security / codeql`
 - `Nightly Floor / full-floor`
 
 ## Notes
