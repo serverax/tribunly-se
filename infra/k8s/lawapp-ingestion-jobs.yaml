@@ -25,6 +25,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 10001
           runAsGroup: 10001
@@ -40,6 +41,12 @@ spec:
           limits:
             cpu: 500m
             memory: 512Mi
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
       restartPolicy: OnFailure
       imagePullSecrets:
       - name: ghcr-pull-secret
@@ -71,6 +78,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 10001
           runAsGroup: 10001
@@ -86,6 +94,12 @@ spec:
           limits:
             cpu: 500m
             memory: 512Mi
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
       restartPolicy: OnFailure
       imagePullSecrets:
       - name: ghcr-pull-secret
