@@ -32,6 +32,8 @@ spec:
               effect: NoSchedule
           restartPolicy: OnFailure
           securityContext:
+            seccompProfile:
+              type: RuntimeDefault
             runAsNonRoot: true
             runAsUser: 10001
             runAsGroup: 10001
@@ -54,6 +56,11 @@ spec:
                 secretKeyRef:
                   name: lawapp-secrets
                   key: POSTGRES_PASSWORD
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+              readOnlyRootFilesystem: true
             resources:
               requests:
                 cpu: 100m
@@ -61,6 +68,12 @@ spec:
               limits:
                 cpu: 500m
                 memory: 256Mi
+            volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          volumes:
+          - name: tmp
+            emptyDir: {}
 ---
 # Health probe CronJob  -  every 5 minutes
 apiVersion: batch/v1
@@ -85,9 +98,20 @@ spec:
               operator: Exists
               effect: NoSchedule
           restartPolicy: OnFailure
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
           containers:
           - name: probe
             image: curlimages/curl:latest
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+              readOnlyRootFilesystem: true
             command:
             - /bin/sh
             - -c
@@ -103,3 +127,9 @@ spec:
               limits:
                 cpu: 100m
                 memory: 64Mi
+            volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          volumes:
+          - name: tmp
+            emptyDir: {}

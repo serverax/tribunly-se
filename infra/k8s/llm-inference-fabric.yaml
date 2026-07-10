@@ -46,10 +46,9 @@ spec:
         project: lawapp
     spec:
       # Hardening "where compatible with Ollama": the upstream ollama/ollama image
-      # runs as root and writes models under /root/.ollama, so runAsNonRoot /
-      # readOnlyRootFilesystem are intentionally NOT set (they break Ollama without
-      # a custom image). We still drop all capabilities, block privilege
-      # escalation, and apply the RuntimeDefault seccomp profile.
+      # still runs as root, so runAsNonRoot is intentionally not set. The model
+      # store and scratch space are mounted volumes, which lets us keep the root
+      # filesystem read-only while preserving Ollama writes.
       securityContext:
         seccompProfile:
           type: RuntimeDefault
@@ -78,6 +77,7 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop: ["ALL"]
+            readOnlyRootFilesystem: true
           # PART 3  -  idempotent per-node model preload. Waits for the server then
           # pulls. `ollama pull` is idempotent (no-op if the blob already exists).
           lifecycle:
@@ -105,6 +105,8 @@ spec:
           volumeMounts:
             - name: ollama-models
               mountPath: /root/.ollama
+            - name: tmp
+              mountPath: /tmp
           # Probes hit /api/tags. startupProbe gives the model time to load before
           # liveness can kill the pod.
           startupProbe:
@@ -135,6 +137,8 @@ spec:
           hostPath:
             path: /var/lib/lawapp/ollama
             type: DirectoryOrCreate
+        - name: tmp
+          emptyDir: {}
       # If Talos Pod Security blocks the hostPath above, replace `volumes` with a
       # per-node local-path PVC, e.g.:
       #   volumes:

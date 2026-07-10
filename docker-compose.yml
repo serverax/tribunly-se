@@ -418,7 +418,7 @@ services:
   lawapp-graph-rag-service:
     build:
       context: .
-      dockerfile: ./backend/services/lawapp-graph-rag-service/Dockerfile.root
+      dockerfile: ./backend/services/lawapp-graph-rag-service/Dockerfile
     restart: unless-stopped
     ports:
       - "${GRAPH_RAG_SERVICE_PORT:-8018}:8018"

@@ -34,6 +34,8 @@ spec:
           # not a daemon  -  running it here caused a restart loop.
           command: ["python", "-m", "backend.core.outbox_worker"]
           env:
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
             # Same DB credential source as lawapp-brain  -  the POSTGRES_* values
             # in lawapp-ai-secrets do not match the lawapp-postgres instance.
             - name: DATABASE_URL
@@ -46,6 +48,11 @@ spec:
                 name: lawapp-ai-config
             - secretRef:
                 name: lawapp-ai-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
           resources:
             requests:
               cpu: 200m
@@ -53,5 +60,11 @@ spec:
             limits:
               cpu: "1"
               memory: 1Gi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
       imagePullSecrets:
         - name: ghcr-pull-secret

@@ -55,13 +55,20 @@ spec:
         part-of: lawapp
     spec:
       securityContext:
+        fsGroup: 999
         runAsUser: 999
         runAsGroup: 999
-        fsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: postgres
         image: pgvector/pgvector:pg16
         imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          readOnlyRootFilesystem: true
         ports:
         - containerPort: 5432
           name: postgres
@@ -104,6 +111,15 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data
+        - name: postgres-run
+          mountPath: /var/run/postgresql
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: postgres-run
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
   volumeClaimTemplates:
   - metadata:
       name: data
