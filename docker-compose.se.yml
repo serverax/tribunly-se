@@ -1,0 +1,140 @@
+name: sweden-lane
+
+x-se-common-env: &se-common-env
+  POSTGRES_HOST: db
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: ${POSTGRES_DB:-postgres}
+  POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+  LAWAPP_LLM_PROVIDER: ${LAWAPP_LLM_PROVIDER:-ollama_local}
+  LAWAPP_OLLAMA_BASE_URL: ${LAWAPP_OLLAMA_BASE_URL:-http://ollama:11434}
+  LAWAPP_OLLAMA_MODEL: ${LAWAPP_OLLAMA_MODEL:-qwen2.5:3b-instruct-q6_K}
+  LAWAPP_ENABLE_SE: "true"
+  LAWAPP_DOMAIN: ${LAWAPP_DOMAIN:-employment_se}
+  LAWAPP_AUTH_MODE: ${LAWAPP_AUTH_MODE:-jwt}
+  JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required (set it in .env.se or the environment)}
+  JWT_ISSUER: ${JWT_ISSUER:-sweden-lane-issuer}
+  JWT_AUDIENCE: ${JWT_AUDIENCE:-sweden-lane-audience}
+  ENCRYPTION_KEY: ${ENCRYPTION_KEY:?ENCRYPTION_KEY is required}
+  ADMIN_API_KEY: ${ADMIN_API_KEY:?ADMIN_API_KEY is required (set it in .env.se or the environment)}
+  PAYMENT_MODE: ${PAYMENT_MODE:-disabled}
+  STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+  STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+  RATELIMIT_STORAGE_URI: ${RATELIMIT_STORAGE_URI:-redis://redis:6379}
+  LAWAPP_LOAD_TEST_MODE: ${LAWAPP_LOAD_TEST_MODE:-}
+  LAWAPP_ASSESS_RATE_LIMIT: ${LAWAPP_ASSESS_RATE_LIMIT:-}
+  RULES_SERVICE_URL: ${RULES_SERVICE_URL:-http://lawapp-rules-service:8016}
+  RAG_SERVICE_URL: ${RAG_SERVICE_URL:-http://lawapp-rag-service:8017}
+  GRAPH_RAG_SERVICE_URL: ${GRAPH_RAG_SERVICE_URL:-http://lawapp-graph-rag-service:8018}
+  AUDIT_SERVICE_URL: ${AUDIT_SERVICE_URL:-http://lawapp-audit-service:8020}
+  REDACTION_SERVICE_URL: ${REDACTION_SERVICE_URL:-http://lawapp-redaction-service:8019}
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
+  ENVIRONMENT: ${ENVIRONMENT:-development}
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5450}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-lawapp}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - se_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lawapp} -d ${POSTGRES_DB:-lawapp}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    command: ["postgres", "-c", "shared_buffers=256MB", "-c", "max_connections=100"]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "${OLLAMA_PORT:-11450}:11434"
+    volumes:
+      - se_ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  lawapp-redaction-service:
+    build:
+      context: ./backend/services/lawapp-redaction-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${REDACTION_SERVICE_PORT:-8150}:8019"
+    environment:
+      <<: *se-common-env
+      PORT: "8019"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8019/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-6450}:8000"
+    environment:
+      <<: *se-common-env
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-lawapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      LAWAPP_OLLAMA_BASE_URL: http://ollama:11434
+      REDACTION_SERVICE_URL: http://lawapp-redaction-service:8019
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required (set it in .env.se or the environment)}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?ADMIN_API_KEY is required (set it in .env.se or the environment)}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?ENCRYPTION_KEY is required}
+      LAWAPP_ENABLE_SE: "true"
+      LAWAPP_DOMAIN: ${LAWAPP_DOMAIN:-employment_se}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+    volumes:
+      - ./client/public:/app/client/public:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+      lawapp-redaction-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
+volumes:
+  se_pgdata:
+  se_ollama_data:

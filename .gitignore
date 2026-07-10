@@ -1,6 +1,7 @@
 # Environment
 .env
 .env.local
+.env.se
 
 # Python
 __pycache__/
