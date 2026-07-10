@@ -4601,7 +4601,7 @@ async def api_payment_webhook(
     if mode in ("stripe", "stripe_test", "stripe_live"):
         # Check secret is configured before accepting any webhook
         webhook_secret = _os.getenv("STRIPE_WEBHOOK_SECRET", "")
-        if not webhook_secret or webhook_secret in ("placeholder", "whsec_PLACEHOLDER", ""):
+        if not webhook_secret or "placeholder" in webhook_secret.lower():
             raise HTTPException(
                 status_code=503,
                 detail=(

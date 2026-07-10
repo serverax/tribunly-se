@@ -48,6 +48,18 @@ _VALID_MODES = ("disabled", "test", "stripe", "stripe_test", "stripe_live")
 _PAID_STATUSES = ("paid", "verified", "complete")
 
 
+def _is_placeholder_secret(value: str | None) -> bool:
+    token = (value or "").strip()
+    if not token:
+        return True
+    lowered = token.lower()
+    return (
+        lowered in {"placeholder", "changeme"}
+        or "placeholder" in lowered
+        or "your_key" in lowered
+    )
+
+
 def get_payment_mode() -> str:
     """Return the current payment mode. Unset/invalid => 'disabled' (never unlocks)."""
     mode = os.getenv("PAYMENT_MODE", "").lower()
@@ -125,7 +137,7 @@ def _verify_stripe_token(token: str, mode: str) -> bool:
     Returns True if payment is succeeded/paid.
     """
     stripe_key = os.getenv("STRIPE_SECRET_KEY", "")
-    if not stripe_key or stripe_key in ("placeholder", "sk_" + "test_PLACEHOLDER", "sk_" + "live_PLACEHOLDER"):
+    if _is_placeholder_secret(stripe_key):
         logger.warning("Stripe key not configured  -  cannot verify token")
         return False
     try:
@@ -159,7 +171,7 @@ def verify_webhook_signature(payload: bytes, sig_header: str) -> dict:
     Raises ImportError if stripe SDK is not installed.
     """
     webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-    if not webhook_secret or webhook_secret in ("placeholder", "whsec_PLACEHOLDER"):
+    if _is_placeholder_secret(webhook_secret):
         raise EnvironmentError(
             "STRIPE_WEBHOOK_SECRET is not configured. "
             "Set it in .env before enabling Stripe webhook verification."
@@ -167,7 +179,7 @@ def verify_webhook_signature(payload: bytes, sig_header: str) -> dict:
 
     try:
         stripe_key = os.getenv("STRIPE_SECRET_KEY", "")
-        if stripe_key and stripe_key not in ("placeholder",):
+        if not _is_placeholder_secret(stripe_key):
             stripe.api_key = stripe_key
 
         event = stripe.Webhook.construct_event(

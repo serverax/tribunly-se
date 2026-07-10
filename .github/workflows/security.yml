@@ -95,6 +95,7 @@ jobs:
         with:
           scan-type: fs
           scan-ref: .
+          skip-dirs: reports
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"

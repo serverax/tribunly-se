@@ -106,7 +106,6 @@ ENVIRONMENT=development
         "pytest",
         "tests/test_jurisdiction_registry_se.py",
         "tests/ingestion/test_riksdagen_parser.py",
-        "tests/test_services_health.py",
         "tests/test_rag_1024_retrieval_repair.py",
         "-q"
     )

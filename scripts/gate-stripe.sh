@@ -40,7 +40,7 @@ else
 fi
 
 # Check STRIPE_WEBHOOK_SECRET
-if [ -z "$WEBHOOK_SECRET" ] || echo "$WEBHOOK_SECRET" | grep -qE "placeholder|whsec_PLACEHOLDER"; then
+if [ -z "$WEBHOOK_SECRET" ] || echo "$WEBHOOK_SECRET" | grep -qE "placeholder|YOUR_KEY|PLACEHOLDER"; then
   echo "FAIL: STRIPE_WEBHOOK_SECRET is not set or is a placeholder."
   FAIL=1
 else
